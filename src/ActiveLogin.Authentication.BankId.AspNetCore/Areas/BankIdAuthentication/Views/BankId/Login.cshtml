@@ -1,0 +1,23 @@
+﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+
+@{
+    ViewData["Title"] = "Sign in with BankID"; //TODO: Make configurable
+}
+
+<partial name="_Login" model="Model" />
+
+@section Styles {
+<style type="text/css">
+    .bankid-login {
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+        .bankid-login input[name="PersonalIdentityNumber"] {
+            text-align: center;
+        }
+</style>
+}

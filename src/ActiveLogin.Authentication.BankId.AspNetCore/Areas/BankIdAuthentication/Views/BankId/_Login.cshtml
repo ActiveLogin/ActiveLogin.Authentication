@@ -1,0 +1,10 @@
+﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+
+<div class="bankid-login">
+    <div class="h3 mb-3 font-weight-normal">Sign in with BankID</div>
+
+    <partial name="_LoginStatus" />
+    <partial name="_LoginForm" model="Model" />
+    <partial name="_LoginScript" model="Model" />
+</div>

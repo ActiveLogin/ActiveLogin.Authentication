@@ -1,0 +1,16 @@
+﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+
+<form id="bankIdLoginForm">
+    <input name="RequestVerificationToken" type="hidden" value="@Model.AntiXsrfRequestToken">
+    <input name="ReturnUrl" type="hidden" value="@Model.ReturnUrl"/>
+
+    <fieldset>
+        <div class="form-group mb-2">
+            <label for="bankIdLoginPersonalIdentityNumber">Personal Identity Number</label>
+            <input id="bankIdLoginPersonalIdentityNumber" name="PersonalIdentityNumber" type="tel" class="form-control" placeholder="ÅÅMMDD-XXXX" autofocus required/>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+    </fieldset>
+</form>
