@@ -35,5 +35,4 @@
   <ItemGroup>
     <PackageReference Include="ActiveLogin.Authentication.Common" Version="0.1.1" />
   </ItemGroup>
-
 </Project>
