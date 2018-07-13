@@ -116,7 +116,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             AppendStateCookie(properties);
 
             var loginUrl = GetLoginUrl();
-            Response.StatusCode = 401;
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
