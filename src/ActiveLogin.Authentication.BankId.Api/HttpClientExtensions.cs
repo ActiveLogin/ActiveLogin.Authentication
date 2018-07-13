@@ -11,11 +11,11 @@ namespace ActiveLogin.Authentication.BankId.Api
     {
         public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
-            var httpResponseMessage = await GetHttpResponse(url, request, httpClient.PostAsync);
+            var httpResponseMessage = await GetHttpResponseAsync(url, request, httpClient.PostAsync);
             return JsonSerialization.Deserialize<TResult>(await httpResponseMessage.Content.ReadAsStreamAsync());
         }
 
-        private static async Task<HttpResponseMessage> GetHttpResponse<TRequest>(string url, TRequest request, Func<string, HttpContent, Task<HttpResponseMessage>> httpRequest)
+        private static async Task<HttpResponseMessage> GetHttpResponseAsync<TRequest>(string url, TRequest request, Func<string, HttpContent, Task<HttpResponseMessage>> httpRequest)
         {
             var requestJson = JsonSerialization.Serialize(request);
             var requestContent = GetJsonStringContent(requestJson);

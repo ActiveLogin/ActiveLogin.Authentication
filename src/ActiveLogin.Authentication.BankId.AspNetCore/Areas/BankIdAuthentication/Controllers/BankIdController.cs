@@ -33,8 +33,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                     RefreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs,
                     InitialStatusMessage = "", //TODO: Set initial status
 
-                    BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.Initialize), "BankIdApi"),
-                    BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.Status), "BankIdApi")
+                    BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.InitializeAsync), "BankIdApi"),
+                    BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.StatusAsync), "BankIdApi")
                 }
             });
         }

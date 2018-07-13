@@ -30,7 +30,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         [ValidateAntiForgeryToken]
         [HttpPost("Initialize")]
-        public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
+        public async Task<ActionResult<BankIdLoginApiInitializeResponse>> InitializeAsync(BankIdLoginApiInitializeRequest request)
         {
             var endUserIp = HttpContext.Connection.RemoteIpAddress.ToString();
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(request.PersonalIdentityNumber);
@@ -51,7 +51,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         [ValidateAntiForgeryToken]
         [HttpPost("Status")]
-        public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
+        public async Task<ActionResult> StatusAsync(BankIdLoginApiStatusRequest request)
         {
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
             var collectResponse = await _bankIdApiClient.CollectAsync(orderRef.OrderRef);

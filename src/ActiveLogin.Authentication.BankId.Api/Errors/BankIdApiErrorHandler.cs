@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
     {
         public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage)
         {
-            var error = await TryGetError(httpResponseMessage);
+            var error = await TryGetErrorAsync(httpResponseMessage);
 
             try
             {
@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
         }
 
-        private static async Task<Error> TryGetError(HttpResponseMessage httpResponseMessage)
+        private static async Task<Error> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
         {
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
