@@ -57,6 +57,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private BankIdState GetStateFromCookie()
         {
             var protectedState = Request.Cookies[Options.StateCookie.Name];
+            if (string.IsNullOrEmpty(protectedState))
+            {
+                return null;
+            }
+
             var state = Options.StateDataFormat.Unprotect(protectedState);
             return state;
         }
