@@ -8,10 +8,18 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     {
         [DataMember(Name = "notBefore")]
         private string notBefore { get; set; }
+
+        /// <summary>
+        /// Start of validity of the users BankID.
+        /// </summary>
         public DateTime NotBefore => ParseUnixTimestampMillis(notBefore);
 
         [DataMember(Name = "notAfter")]
         private string notAfter { get; set; }
+
+        /// <summary>
+        /// End of validity of the Users BankID.
+        /// </summary>
         public DateTime NotAfter => ParseUnixTimestampMillis(notAfter);
 
 
