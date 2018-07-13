@@ -2,6 +2,9 @@
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
+    /// <summary>
+    /// Cancel request parameters.
+    /// </summary>
     [DataContract]
     public class CancelRequest
     {
@@ -10,6 +13,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
             OrderRef = orderRef;
         }
 
+        /// <summary>
+        /// The OrderRef from the response from auth or sign.
+        /// </summary>
         [DataMember(Name = "orderRef")]
         public string OrderRef { get; set; }
     }

@@ -2,6 +2,9 @@
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
+    /// <summary>
+    /// Collect request parameters.
+    /// </summary>
     [DataContract]
     public class CollectRequest
     {
@@ -10,6 +13,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
             OrderRef = orderRef;
         }
 
+        /// <summary>
+        /// The OrderRef returned from auth or sign.
+        /// </summary>
         [DataMember(Name = "orderRef")]
         public string OrderRef { get; set; }
     }
