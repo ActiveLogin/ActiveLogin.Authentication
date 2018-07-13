@@ -286,13 +286,3 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
-
-# Certificates
-*.crt
-
-
-# Local Configs
-Local*.config
-
-# Marketing web
-App_Data/
