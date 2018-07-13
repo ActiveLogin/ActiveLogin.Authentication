@@ -2,6 +2,26 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+
+    <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
+    <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
+
+    <Description>ASP.NET Core middleware that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
+    <PackageTags>bankid;swedish;sweden;aspnetcore;authentication</PackageTags>
+
+    <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+    <Copyright>Copyright © ActiveLogin</Copyright>
+
+    <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
+
+    <PackageLicenseUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/LICENSE</PackageLicenseUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

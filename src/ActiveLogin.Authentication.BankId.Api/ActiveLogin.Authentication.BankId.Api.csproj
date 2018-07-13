@@ -3,6 +3,25 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+
+    <AssemblyName>ActiveLogin.Authentication.BankId.Api</AssemblyName>
+    <PackageId>ActiveLogin.Authentication.BankId.Api</PackageId>
+
+    <Description>API client that enables an application to call Swedish BankID's (svenskt BankIDs) REST API in .NET.</Description>
+    <PackageTags>bankid;swedish;sweden;rest;api;client</PackageTags>
+
+    <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+    <Copyright>Copyright © ActiveLogin</Copyright>
+
+    <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
+
+    <PackageLicenseUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/LICENSE</PackageLicenseUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
