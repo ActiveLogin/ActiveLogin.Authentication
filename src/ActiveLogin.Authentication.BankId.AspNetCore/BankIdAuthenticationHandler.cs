@@ -128,7 +128,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             {
                 AuthenticationProperties = properties
             };
-            var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
+            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
 
             Response.Cookies.Append(Options.StateCookie.Name, Options.StateDataFormat.Protect(state), cookieOptions);
         }
