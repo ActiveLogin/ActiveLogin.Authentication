@@ -58,6 +58,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             _givenName = givenName;
             _surname = surname;
             _name = name;
+            _statusesToReturn = statusesToReturn;
         }
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
