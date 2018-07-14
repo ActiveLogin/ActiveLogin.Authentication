@@ -7,7 +7,7 @@ using ActiveLogin.Authentication.Common.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
-    public static class HttpClientExtensions
+    internal static class HttpClientExtensions
     {
         public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
