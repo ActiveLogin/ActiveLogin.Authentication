@@ -8,6 +8,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CancelRequest
     {
+        /// <summary></summary>
+        /// <param name="orderRef">
+        /// The OrderRef from the response from auth or sign.
+        /// </param>
         public CancelRequest(string orderRef)
         {
             OrderRef = orderRef;

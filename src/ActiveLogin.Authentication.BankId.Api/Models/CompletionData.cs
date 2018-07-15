@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         public User User { get; set; }
 
         /// <summary>
-        /// Information related to the device, holds the following child.
+        /// Information related to the device.
         /// </summary>
         [DataMember(Name = "device")]
         public Device Device { get; set; }

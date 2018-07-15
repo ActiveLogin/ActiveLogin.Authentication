@@ -8,6 +8,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CollectRequest
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderRef">
+        /// The OrderRef returned from auth or sign.
+        /// </param>
         public CollectRequest(string orderRef)
         {
             OrderRef = orderRef;

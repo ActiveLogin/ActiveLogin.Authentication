@@ -4,10 +4,17 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
+    /// <summary>
+    /// HTTP based client for the BankID REST API.
+    /// </summary>
     public class BankIdApiClient : IBankIdApiClient
     {
         private readonly HttpClient _httpClient;
 
+        /// <summary>
+        /// Creates an instance of <see cref="BankIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
+        /// </summary>
+        /// <param name="httpClient">The HttpClient to use.</param>
         public BankIdApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;

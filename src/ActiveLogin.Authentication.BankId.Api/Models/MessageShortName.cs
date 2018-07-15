@@ -2,6 +2,7 @@
 {
     public enum MessageShortName {
         Unknown,
+
         RFA1,
         RFA2,
         RFA3,

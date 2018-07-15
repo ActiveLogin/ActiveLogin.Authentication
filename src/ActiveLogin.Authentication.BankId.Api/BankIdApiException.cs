@@ -4,6 +4,9 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
+    /// <summary>
+    /// Exception that wraps any error returned by the BankID API.
+    /// </summary>
     public class BankIdApiException : HttpRequestException
     {
         public BankIdApiException(string description, Exception inner)
@@ -25,7 +28,14 @@ namespace ActiveLogin.Authentication.BankId.Api
             Details = details;
         }
 
+        /// <summary>
+        /// The category of error.
+        /// </summary>
         public ErrorCode ErrorCode { get; }
+
+        /// <summary>
+        /// Details about the error.
+        /// </summary>
         public string Details { get; }
     }
 }

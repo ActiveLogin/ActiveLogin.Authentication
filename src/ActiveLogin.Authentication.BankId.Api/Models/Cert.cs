@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
+    /// <summary>
+    /// Information related to the users certificate (BankID).
+    /// </summary>
     [DataContract]
     public class Cert
     {

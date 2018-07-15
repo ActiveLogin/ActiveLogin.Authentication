@@ -2,6 +2,9 @@
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
+    /// <summary>
+    /// Information related to the device.
+    /// </summary>
     [DataContract]
     public class Device
     {

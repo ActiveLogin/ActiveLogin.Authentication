@@ -3,6 +3,9 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
+    /// <summary>
+    /// BankID API Client that defines the supported methods as defined in the document "BankID Relying Party Guidelines".
+    /// </summary>
     public interface IBankIdApiClient
     {
         /// <summary>
