@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace IdentityServerSample.Certificates
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Cryptography
 {
     public class X509CertificateChainValidator
     {
@@ -16,12 +16,7 @@ namespace IdentityServerSample.Certificates
 
         public bool Validate(HttpRequestMessage httpRequestMessage, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            if (IsValidChain(_certificateAuthority, certificate))
-            {
-                return true;
-            }
-
-            return false;
+            return IsValidChain(_certificateAuthority, certificate);
         }
 
         private static bool IsValidChain(X509Certificate2 certificateAuthority, X509Certificate2 certificate)
