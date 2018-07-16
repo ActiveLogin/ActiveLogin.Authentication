@@ -119,7 +119,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             {
                 // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
                 var jwtGender = GetJwtGender(personalIdentityNumber.Gender);
-                claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
+                if (!string.IsNullOrEmpty(jwtGender))
+                {
+                    claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
+                }
             }
 
             if (Options.IssueBirthdateClaim)
