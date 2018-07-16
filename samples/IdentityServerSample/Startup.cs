@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
@@ -35,16 +36,10 @@ namespace IdentityServerSample
 
             services.AddMvc();
 
-            services.AddIdentityServer()
+            services.AddIdentityServer(x => { x.Authentication.CookieLifetime = TimeSpan.FromHours(1); })
                     .AddDeveloperSigningCredential()
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
-
-            // Fake BankID API
-            if (Configuration.GetValue("ActiveLogin:BankId:UseFakeApi", false))
-            {
-                services.AddSingleton<IBankIdApiClient>(x => new FakeBankIdApiClient("Fake", "User"));
-            }
 
             services.AddAuthentication()
                 .AddBankId()
@@ -72,6 +67,12 @@ namespace IdentityServerSample
                             configuration.ApiBaseUrl = BankIdUrls.TestApiBaseUrl;
                         }
                     });
+
+            // Fake BankID API
+            if (Configuration.GetValue("ActiveLogin:BankId:UseFakeApi", false))
+            {
+                services.AddSingleton<IBankIdApiClient>(x => new FakeBankIdApiClient("Fake", "User"));
+            }
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
