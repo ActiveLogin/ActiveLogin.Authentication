@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
+    <NoWarn>1701;1702;1591</NoWarn>
 
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
