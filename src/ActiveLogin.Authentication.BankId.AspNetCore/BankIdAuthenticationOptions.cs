@@ -9,29 +9,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     {
         private const string DefaultStateCookieName = "__BankIdState";
 
-        private CookieBuilder _stateCookieBuilder;
+        private CookieBuilder _stateCookieBuilder = new CookieBuilder
+        {
+            Name = DefaultStateCookieName,
+            SecurePolicy = CookieSecurePolicy.SameAsRequest,
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
+            IsEssential = true
+        };
 
         public BankIdAuthenticationOptions()
         {
             CallbackPath = new PathString("/signin-bankid");
-            BankIdLoginPath = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
-
-            AuthenticationMethodName = BankIdAuthenticationDefaults.AuthenticationMethodName;
-            IdentityProviderName = BankIdAuthenticationDefaults.IdentityProviderName;
-
-            _stateCookieBuilder = new CookieBuilder()
-            {
-                Name = DefaultStateCookieName,
-                SecurePolicy = CookieSecurePolicy.SameAsRequest,
-                HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
-                IsEssential = true
-            };
         }
 
-        public PathString BankIdLoginPath { get; set; }
-        public string AuthenticationMethodName { get; set; }
-        public string IdentityProviderName { get; set; }
+        public PathString BankIdLoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
+        public string AuthenticationMethodName { get; set; } = BankIdAuthenticationDefaults.AuthenticationMethodName;
+        public string IdentityProviderName { get; set; } = BankIdAuthenticationDefaults.IdentityProviderName;
 
         public ISecureDataFormat<BankIdState> StateDataFormat { get; set; }
 
