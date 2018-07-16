@@ -57,6 +57,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private BankIdState GetStateFromCookie()
         {
             var protectedState = Request.Cookies[Options.StateCookie.Name];
+            if (string.IsNullOrEmpty(protectedState))
+            {
+                return null;
+            }
+
             var state = Options.StateDataFormat.Unprotect(protectedState);
             return state;
         }
@@ -116,7 +121,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             AppendStateCookie(properties);
 
             var loginUrl = GetLoginUrl();
-            Response.StatusCode = 401;
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
@@ -128,7 +132,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             {
                 AuthenticationProperties = properties
             };
-            var cookieOptions = Options.CorrelationCookie.Build(Context, Clock.UtcNow);
+            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
 
             Response.Cookies.Append(Options.StateCookie.Name, Options.StateDataFormat.Protect(state), cookieOptions);
         }
