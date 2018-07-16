@@ -8,6 +8,8 @@ namespace IdentityServerSample
 {
     public class Config
     {
+        private const string PersonaIidentityNumberScopeName = "personalidentitynumber";
+
         public static IEnumerable<Client> GetClients(IConfiguration clientsConfiguration)
         {
             return new List<Client>
@@ -30,10 +32,10 @@ namespace IdentityServerSample
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        BankIdAuthenticationConstants.PersonalIdentityNumberScopeName
+                        PersonaIidentityNumberScopeName
                     },
 
-                    RequireConsent = false  
+                    RequireConsent = false          
                 }
             };
         }
@@ -44,7 +46,7 @@ namespace IdentityServerSample
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource(BankIdAuthenticationConstants.PersonalIdentityNumberScopeName, new List<string>
+                new IdentityResource(PersonaIidentityNumberScopeName, new List<string>
                 {
                     BankIdClaimTypes.SwedishPersonalIdentityNumber
                 })
