@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment_name": {
+      "value": "dev"
+    },
+    "application_name": {
+      "value": "activelogin"
+    },
+    "web_server_resource_name": {
+      "value": "activelogin-server-demo"
+    },
+    "web_site_resource_name": {
+      "value": "activelogin-server-demo"
+    },
+    "insights_resource_name": {
+      "value": "activelogin-server-demo"
+    }
+  }
+}

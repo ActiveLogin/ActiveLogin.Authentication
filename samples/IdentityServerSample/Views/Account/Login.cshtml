@@ -1,0 +1,36 @@
+﻿@using IdentityServerSample.Models
+@model IdentityServerSample.Models.AccountLoginViewModel
+@{
+    ViewData["Title"] = "Choose provider";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    @if (Model.ExternalProviders.Any())
+    {
+        <div class="col-md-6 col-sm-6">
+            <ul class="list-inline">
+                @foreach (var provider in Model.ExternalProviders)
+                {
+                    <li class="mb-1">
+                        <a class="btn btn-info"
+                           asp-action="ExternalLogin"
+                           asp-route-provider="@provider.AuthenticationScheme"
+                           asp-route-returnUrl="@Model.ReturnUrl">
+                            @provider.DisplayName
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+@if (!Model.ExternalProviders.Any())
+{
+    <div class="alert alert-warning">
+        <strong>Invalid login request</strong>
+        There are no login schemes configured for this client.
+    </div>
+}
