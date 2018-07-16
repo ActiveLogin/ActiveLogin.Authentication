@@ -105,14 +105,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private void AddOptionalClaims(List<Claim> claims)
         {
-            if (!string.IsNullOrEmpty(Options.AuthenticationMethodName))
+            if (Options.IssueAuthenticationMethodClaim)
             {
                 claims.Add(new Claim(BankIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
             }
 
-            if (!string.IsNullOrEmpty(Options.IdentityProviderName))
+            if (Options.IssueIdentityProviderClaim)
             {
-                claims.Add(new Claim(BankIdClaimTypes.IdentityProivder, Options.IdentityProviderName));
+                claims.Add(new Claim(BankIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
             }
         }
 

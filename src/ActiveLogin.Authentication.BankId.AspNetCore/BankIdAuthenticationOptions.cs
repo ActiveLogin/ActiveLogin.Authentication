@@ -24,7 +24,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         }
 
         public PathString BankIdLoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
+
+        public bool IssueAuthenticationMethodClaim { get; set; } = true;
         public string AuthenticationMethodName { get; set; } = BankIdAuthenticationDefaults.AuthenticationMethodName;
+
+        public bool IssueIdentityProviderClaim { get; set; } = true;
         public string IdentityProviderName { get; set; } = BankIdAuthenticationDefaults.IdentityProviderName;
 
         public ISecureDataFormat<BankIdState> StateDataFormat { get; set; }
