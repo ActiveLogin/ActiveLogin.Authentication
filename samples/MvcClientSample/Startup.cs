@@ -52,6 +52,8 @@ namespace MvcClientSample
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
                     options.Scope.Add("personalidentitynumber");
+
+                    options.UseTokenLifetime = true;
                 });
         }
 

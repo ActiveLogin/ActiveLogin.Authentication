@@ -7,6 +7,7 @@
         public const string Subject = "sub";
         public const string AuthenticationMethod = "amr";
         public const string IdentityProvider = "idp";
+        public const string Expires = "exp";
 
         public const string Name = "name";
         public const string GivenName = "given_name";

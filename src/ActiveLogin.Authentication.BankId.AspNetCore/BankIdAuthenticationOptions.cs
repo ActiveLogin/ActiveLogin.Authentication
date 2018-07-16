@@ -24,6 +24,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         }
 
         public PathString BankIdLoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
+        public TimeSpan? TokenExpiresIn { get; set; } = TimeSpan.FromSeconds(BankIdAuthenticationDefaults.MaximumSessionLifespanS);
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;
         public string AuthenticationMethodName { get; set; } = BankIdAuthenticationDefaults.AuthenticationMethodName;

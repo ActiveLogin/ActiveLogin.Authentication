@@ -9,5 +9,7 @@
         public const string AuthenticationMethodName = "bankid";
 
         public const int StatusRefreshIntervalMs = 2000;
+
+        public const int MaximumSessionLifespanS = 3600;
     }
 }

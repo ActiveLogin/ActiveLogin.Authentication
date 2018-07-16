@@ -75,14 +75,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
         {
-            var claims = GetClaims(loginResult);
+            DateTimeOffset? expiresUtc = null;
+            if (Options.TokenExpiresIn.HasValue)
+            {
+                expiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
+                properties.ExpiresUtc = expiresUtc;
+            }
+
+            var claims = GetClaims(loginResult, expiresUtc);
             var identity = new ClaimsIdentity(claims, Scheme.Name, BankIdClaimTypes.Name, BankIdClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
 
             return new AuthenticationTicket(principal, properties, Scheme.Name);
         }
 
-        private IEnumerable<Claim> GetClaims(BankIdLoginResult loginResult)
+        private IEnumerable<Claim> GetClaims(BankIdLoginResult loginResult, DateTimeOffset? expiresUtc)
         {
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
             var claims = new List<Claim>
@@ -93,18 +100,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 new Claim(BankIdClaimTypes.FamilyName, loginResult.Surname),
                 new Claim(BankIdClaimTypes.GivenName, loginResult.GivenName),
 
-                //TODO: Add claim for when the bankid cert expires as not before
-
                 new Claim(BankIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
             };
 
-            AddOptionalClaims(claims, personalIdentityNumber);
+            AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);
 
             return claims;
         }
 
-        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber)
+        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
         {
+            if (expiresUtc.HasValue)
+            {
+                claims.Add(new Claim(BankIdClaimTypes.Expires, expiresUtc.Value.ToUnixTimeSeconds().ToString("D")));
+            }
+
             if (Options.IssueAuthenticationMethodClaim)
             {
                 claims.Add(new Claim(BankIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
