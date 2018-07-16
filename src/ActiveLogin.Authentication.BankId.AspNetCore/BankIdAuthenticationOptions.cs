@@ -32,6 +32,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public string IdentityProviderName { get; set; } = BankIdAuthenticationDefaults.IdentityProviderName;
 
         public bool IssueGenderClaim { get; set; } = true;
+        public bool IssueBirthdateClaim { get; set; } = true;
 
         public ISecureDataFormat<BankIdState> StateDataFormat { get; set; }
 

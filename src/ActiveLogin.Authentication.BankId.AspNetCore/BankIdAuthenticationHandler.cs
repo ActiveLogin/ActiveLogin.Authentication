@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -116,8 +117,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
+                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
                 var jwtGender = GetJwtGender(personalIdentityNumber.LegalGender);
                 claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
+            }
+
+            if (Options.IssueBirthdateClaim)
+            {
+                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
+                var jwtGender = GetJwtBirthdate(personalIdentityNumber.DateOfBirth);
+                claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtGender));
             }
         }
 
@@ -132,6 +141,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             }
 
             return "other";
+        }
+
+        private static string GetJwtBirthdate(DateTime dateOfBirth)
+        {
+            return dateOfBirth.Date.ToString("yyyy-MM-dd");
         }
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)

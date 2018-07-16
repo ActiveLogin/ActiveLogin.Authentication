@@ -13,7 +13,7 @@
         public const string FamilyName = "family_name";
 
         public const string Gender = "gender";
-        public const string BirthDate = "birthdate";
+        public const string Birthdate = "birthdate";
 
         public static string SwedishPersonalIdentityNumber = "swedish_personal_identity_number";
     }

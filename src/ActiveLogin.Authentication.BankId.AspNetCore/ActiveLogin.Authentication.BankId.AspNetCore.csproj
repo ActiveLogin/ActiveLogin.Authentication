@@ -34,9 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActiveLogin.Authentication.BankId.Api" Version="0.1.3" />
+    <PackageReference Include="ActiveLogin.Authentication.BankId.Api" Version="0.1.7" />
     <PackageReference Include="ActiveLogin.Authentication.Common" Version="0.1.18" />
-    <PackageReference Include="ActiveLogin.Identity.Swedish.AspNetCore" Version="0.1.4" />
+    <PackageReference Include="ActiveLogin.Identity.Swedish.AspNetCore" Version="0.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
