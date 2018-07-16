@@ -1,6 +1,7 @@
 ﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 @using ActiveLogin.Authentication.Common.Serialization
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@inject IJsonSerializer JsonSerializer
 
 <script>
     (function (options) {
@@ -119,5 +120,5 @@
         function hide(element) {
             element.style.display = 'none';
         }
-    }(@Html.Raw(JsonSerialization.Serialize(Model.LoginScriptOptions))));
+    }(@Html.Raw(JsonSerializer.Serialize(Model.LoginScriptOptions))));
 </script>

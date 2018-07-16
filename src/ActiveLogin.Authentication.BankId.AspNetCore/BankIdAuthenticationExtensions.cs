@@ -1,5 +1,6 @@
 ﻿using System;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -68,6 +69,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             services.TryAddSingleton<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
             services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+
+            services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
         }
     }
 }

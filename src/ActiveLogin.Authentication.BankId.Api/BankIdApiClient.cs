@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.Common.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
@@ -10,14 +11,17 @@ namespace ActiveLogin.Authentication.BankId.Api
     public class BankIdApiClient : IBankIdApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly IJsonSerializer _jsonSerializer;
 
         /// <summary>
         /// Creates an instance of <see cref="BankIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
         /// </summary>
         /// <param name="httpClient">The HttpClient to use.</param>
-        public BankIdApiClient(HttpClient httpClient)
+        /// <param name="jsonSerializer">The JsonSerializer to se for serializing and deserializing requests and responses.</param>
+        public BankIdApiClient(HttpClient httpClient, IJsonSerializer jsonSerializer)
         {
             _httpClient = httpClient;
+            _jsonSerializer = jsonSerializer;
         }
 
         /// <summary>
@@ -26,7 +30,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
         public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            return _httpClient.PostAsync<AuthRequest, AuthResponse>("/auth", request);
+            return _httpClient.PostAsync<AuthRequest, AuthResponse>("/auth", request, _jsonSerializer);
         }
 
         /// <summary>
@@ -37,7 +41,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// <returns>The user identity is returned when complete.</returns>
         public Task<CollectResponse> CollectAsync(CollectRequest request)
         {
-            return _httpClient.PostAsync<CollectRequest, CollectResponse>("/collect", request);
+            return _httpClient.PostAsync<CollectRequest, CollectResponse>("/collect", request, _jsonSerializer);
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// </summary>
         public Task<CancelResponse> CancelAsync(CancelRequest request)
         {
-            return _httpClient.PostAsync<CancelRequest, CancelResponse>("/cancel", request);
+            return _httpClient.PostAsync<CancelRequest, CancelResponse>("/cancel", request, _jsonSerializer);
         }
     }
 }
