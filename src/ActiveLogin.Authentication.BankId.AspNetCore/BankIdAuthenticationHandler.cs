@@ -118,29 +118,29 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             if (Options.IssueGenderClaim)
             {
                 // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtGender = GetJwtGender(personalIdentityNumber.LegalGender);
+                var jwtGender = GetJwtGender(personalIdentityNumber.Gender);
                 claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
             }
 
             if (Options.IssueBirthdateClaim)
             {
                 // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtGender = GetJwtBirthdate(personalIdentityNumber.DateOfBirth);
-                claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtGender));
+                var jwtBirthdate = GetJwtBirthdate(personalIdentityNumber.DateOfBirth);
+                claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtBirthdate));
             }
         }
 
-        private static string GetJwtGender(SwedishLegalGender gender)
+        private static string GetJwtGender(SwedishGender gender)
         {
             switch (gender)
             {
-                case SwedishLegalGender.Woman:
+                case SwedishGender.Female:
                     return "female";
-                case SwedishLegalGender.Man:
+                case SwedishGender.Male:
                     return "male";
             }
 
-            return "other";
+            return string.Empty;
         }
 
         private static string GetJwtBirthdate(DateTime dateOfBirth)
