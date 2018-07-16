@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <NeutralLanguage>en-US</NeutralLanguage>
+    <NeutralLanguage>en</NeutralLanguage>
 
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
