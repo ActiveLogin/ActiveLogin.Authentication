@@ -92,18 +92,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 new Claim(BankIdClaimTypes.FamilyName, loginResult.Surname),
                 new Claim(BankIdClaimTypes.GivenName, loginResult.GivenName),
 
-                //TODO: Add claims for gender and dateofbirth based on PersonalIdentityNumber
                 //TODO: Add claim for when the bankid cert expires as not before
 
                 new Claim(BankIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
             };
 
-            AddOptionalClaims(claims);
+            AddOptionalClaims(claims, personalIdentityNumber);
 
             return claims;
         }
 
-        private void AddOptionalClaims(List<Claim> claims)
+        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber)
         {
             if (Options.IssueAuthenticationMethodClaim)
             {
@@ -114,6 +113,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             {
                 claims.Add(new Claim(BankIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
             }
+
+            if (Options.IssueGenderClaim)
+            {
+                var jwtGender = GetJwtGender(personalIdentityNumber.LegalGender);
+                claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
+            }
+        }
+
+        private static string GetJwtGender(SwedishLegalGender gender)
+        {
+            switch (gender)
+            {
+                case SwedishLegalGender.Woman:
+                    return "female";
+                case SwedishLegalGender.Man:
+                    return "male";
+            }
+
+            return "other";
         }
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
