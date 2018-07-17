@@ -9,7 +9,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -89,7 +88,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private string GetStatusMessage(CollectResponse collectResponse)
         {
-            //TODO: Set these to correct values
+            //TODO: Set these to correct values, might be provided from option / depending on what requirements are set
             var authPersonalIdentityNumberProvided = true;
             var accessedFromMobileDevice = true;
 

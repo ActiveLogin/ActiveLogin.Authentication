@@ -174,4 +174,16 @@
   <data name="BankIdUserMessage_ShortName_RFA9" xml:space="preserve">
     <value>Skriv in din säkerhetskod i BankIDappen och välj Legitimera eller Skriv under.</value>
   </data>
+  <data name="PersonalIdentityNumber_Label" xml:space="preserve">
+    <value>Personnummer</value>
+  </data>
+  <data name="SignIn_Button" xml:space="preserve">
+    <value>Logga in</value>
+  </data>
+  <data name="SignIn_Header" xml:space="preserve">
+    <value>Logga in</value>
+  </data>
+  <data name="SingIn_Title" xml:space="preserve">
+    <value>Logga in med BankID</value>
+  </data>
 </root>

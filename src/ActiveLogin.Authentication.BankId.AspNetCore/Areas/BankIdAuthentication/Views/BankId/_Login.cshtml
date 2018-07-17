@@ -1,8 +1,9 @@
-﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+﻿@using Microsoft.Extensions.Localization
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
 
 <div class="bankid-login">
-    <div class="h3 mb-3 font-weight-normal">Sign in with BankID</div>
+    <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>
 
     <partial name="_LoginStatus" />
     <partial name="_LoginForm" model="Model" />

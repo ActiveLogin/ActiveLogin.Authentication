@@ -174,4 +174,16 @@
   <data name="BankIdUserMessage_ShortName_RFA9" xml:space="preserve">
     <value>Enter your security code in the BankID app and select Identify or Sign.</value>
   </data>
+  <data name="PersonalIdentityNumber_Label" xml:space="preserve">
+    <value>Personal Identity Number</value>
+  </data>
+  <data name="SignIn_Button" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="SignIn_Header" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="SingIn_Title" xml:space="preserve">
+    <value>Sign in with BankID</value>
+  </data>
 </root>

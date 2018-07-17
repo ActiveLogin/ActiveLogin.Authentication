@@ -73,6 +73,7 @@
   <ItemGroup>
     <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BankIdAuthenticationHandler.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.sv.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -85,6 +86,8 @@
     </Compile>
     <Compile Update="Resources\BankIdAuthenticationHandler.Designer.cs">
       <DependentUpon>BankIdAuthenticationHandler.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
 </Project>

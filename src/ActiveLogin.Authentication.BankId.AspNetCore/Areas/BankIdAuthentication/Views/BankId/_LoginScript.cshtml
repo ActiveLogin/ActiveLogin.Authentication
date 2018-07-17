@@ -84,7 +84,7 @@
                         return response.json();
                     }
 
-                    throw Error("Unknown error!");
+                    throw Error(options.unknownErrorMessage);
                 })
                 .then(function (data) {
                     if (!!data.errorMessage) {

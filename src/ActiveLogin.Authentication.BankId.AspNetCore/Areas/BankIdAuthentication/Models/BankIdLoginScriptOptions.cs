@@ -32,5 +32,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         [DataMember(Name = "initialStatusMessage")]
         public string InitialStatusMessage { get; set; } = string.Empty;
+
+        [DataMember(Name = "unknownErrorMessage")]
+        public string UnknownErrorMessage { get; set; } = string.Empty;
     }
 }

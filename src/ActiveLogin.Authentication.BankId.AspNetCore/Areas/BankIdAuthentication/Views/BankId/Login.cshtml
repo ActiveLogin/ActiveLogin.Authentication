@@ -1,23 +1,25 @@
-﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
 
 @{
-    ViewData["Title"] = "Sign in with BankID"; //TODO: Make configurable
+    ViewData["Title"] = Localizer["SingIn_Title"];
 }
 
 <partial name="_Login" model="Model" />
 
 @section Styles {
-<style type="text/css">
-    .bankid-login {
-        width: 100%;
-        max-width: 380px;
-        margin: 0 auto;
-        text-align: center;
-    }
-
-        .bankid-login input[name="PersonalIdentityNumber"] {
+    <style type="text/css">
+        .bankid-login {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
             text-align: center;
         }
-</style>
+
+            .bankid-login input[name="PersonalIdentityNumber"] {
+                text-align: center;
+            }
+    </style>
 }
