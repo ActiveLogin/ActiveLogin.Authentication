@@ -23,21 +23,26 @@
             var returnUrlElement = this.querySelector('[name="ReturnUrl"]');
             var personalIdentityNumberElement = this.querySelector('[name="PersonalIdentityNumber"]');
 
-            initialize(requestVerificationTokenElement.value, returnUrlElement.value, personalIdentityNumberElement.value);
+            initialize(requestVerificationTokenElement.value, returnUrlElement.value, personalIdentityNumberElement.value, personalIdentityNumberElement);
         });
 
         // BankID
 
-        function initialize(requestVerificationToken, returnUrl, personalIdentityNumber) {
+        function initialize(requestVerificationToken, returnUrl, personalIdentityNumber, personalIdentityNumberElement) {
             formFieldsetElement.disabled = true;
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl
             })
                 .then(function (data) {
-                    hide(formElement);
-                    showStatus(options.initialStatusMessage, 'info', true);
-                    checkStatus(requestVerificationToken, returnUrl, data.orderRef);
+                    if (!!data.PersonalIdentityNumber) {
+                        setInvalidUntilChange(personalIdentityNumberElement);
+                        formFieldsetElement.disabled = false;
+                    } else {
+                        hide(formElement);
+                        showStatus(options.initialStatusMessage, 'info', true);
+                        checkStatus(requestVerificationToken, returnUrl, data.orderRef);
+                    }
                 }).catch(function (error) {
                     showStatus(error.message, 'danger');
                     formFieldsetElement.disabled = false;
@@ -119,6 +124,20 @@
 
         function hide(element) {
             element.style.display = 'none';
+        }
+
+        function setInvalidUntilChange(element) {
+            if (!element.classList) {
+                return;
+            }
+
+            element.classList.add('is-invalid');
+            element.addEventListener('input', removeInvalid);
+            
+            function removeInvalid() {
+                element.removeEventListener('input', removeInvalid);
+                element.classList.remove('is-invalid');
+            }
         }
     }(@Html.Raw(JsonSerializer.Serialize(Model.LoginScriptOptions))));
 </script>
