@@ -1,5 +1,7 @@
 ﻿using System;
+using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
 using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,9 +70,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<BankIdAuthenticationOptions>, BankIdAuthenticationPostConfigureOptions>());
 
             services.TryAddSingleton<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
-            services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+            services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();    
+
+            services.TryAddSingleton<IBankIdUserMessage, BankIdRecommendedUserMessage>();
+            services.TryAddSingleton<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
+            
+            services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
         }
     }
 }

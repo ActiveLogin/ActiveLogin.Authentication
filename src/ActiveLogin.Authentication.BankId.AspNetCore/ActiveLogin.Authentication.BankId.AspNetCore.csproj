@@ -30,6 +30,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Resources\BankIdAuthenticationHandler.sv.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\BankIdAuthenticationHandler.sv.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BankIdAuthenticationHandler.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63102-01" PrivateAssets="All" />
   </ItemGroup>
 
@@ -40,6 +51,18 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\BankIdAuthenticationHandler.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BankIdAuthenticationHandler.sv.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   
   <ItemGroup>
@@ -64,5 +87,12 @@
     <Content Update="Areas\BankIdAuthentication\Views\_ViewStart.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BankIdAuthenticationHandler - Copy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
 
         [Theory]
         [InlineData(CollectHintCode.OutstandingTransaction, MessageShortName.RFA13)]
-        [InlineData(CollectHintCode.NoClient, MessageShortName.RFA1)]
+        [InlineData(CollectHintCode.NoClient, MessageShortName.RFA13)]
         [InlineData(CollectHintCode.Started, MessageShortName.RFA15A)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
@@ -49,7 +49,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
 
         [Theory]
         [InlineData(CollectHintCode.OutstandingTransaction, MessageShortName.RFA13)]
-        [InlineData(CollectHintCode.NoClient, MessageShortName.RFA1)]
+        [InlineData(CollectHintCode.NoClient, MessageShortName.RFA13)]
         [InlineData(CollectHintCode.Started, MessageShortName.RFA15B)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]

@@ -3,10 +3,13 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -16,16 +19,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     public class BankIdApiController : Controller
     {
         private readonly UrlEncoder _urlEncoder;
+        private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdApiClient _bankIdApiClient;
         private readonly IBankIdOrderRefProtector _orderRefProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
+        private readonly IBankIdUserMessage _bankIdUserMessage;
 
-        public BankIdApiController(UrlEncoder urlEncoder, IBankIdApiClient bankIdApiClient, IBankIdOrderRefProtector orderRefProtector, IBankIdLoginResultProtector loginResultProtector)
+        public BankIdApiController(UrlEncoder urlEncoder,
+            IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+            IBankIdApiClient bankIdApiClient,
+            IBankIdOrderRefProtector orderRefProtector,
+            IBankIdLoginResultProtector loginResultProtector,
+            IBankIdUserMessage bankIdUserMessage)
         {
             _urlEncoder = urlEncoder;
+            _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
             _bankIdApiClient = bankIdApiClient;
             _orderRefProtector = orderRefProtector;
             _loginResultProtector = loginResultProtector;
+            _bankIdUserMessage = bankIdUserMessage;
         }
 
         [ValidateAntiForgeryToken]
@@ -75,15 +87,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return BadRequest(new BankIdLoginApiErrorResponse(statusMessage));
         }
 
-        private static string GetStatusMessage(CollectResponse collectResponse)
+        private string GetStatusMessage(CollectResponse collectResponse)
         {
-            //TODO: Set these to correct values when we have support for multiple BankId configs
-            // Should be based on config in the Options-class
-            var bankIdAppStartedAutomatically = false;
-            var bankIdType = BankIdType.MobileBankId;
-            var statusMessage = RecommendedUserMessage
-                .GetMessageForCollectResponse(collectResponse, bankIdAppStartedAutomatically, bankIdType)
-                .SwedishText;
+            //TODO: Set these to correct values
+            var authPersonalIdentityNumberProvided = true;
+            var accessedFromMobileDevice = true;
+
+            var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(collectResponse.Status, collectResponse.HintCode, authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
 
             return statusMessage;
         }
