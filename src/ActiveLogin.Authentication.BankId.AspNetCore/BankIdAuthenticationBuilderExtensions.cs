@@ -31,6 +31,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
+        public static BankIdAuthenticationBuilder AddBankIdRootCaCertificate(this BankIdAuthenticationBuilder builder, string certificateFilePath)
+        {
+            builder.AddBankIdRootCaCertificate(() => new X509Certificate2(certificateFilePath));
+
+            return builder;
+        }
+
         public static BankIdAuthenticationBuilder AddBankIdEnvironmentConfiguration(this BankIdAuthenticationBuilder builder, Action<BankIdEnvironmentConfiguration> configureBankIdEnvironment)
         {
             var configuration = new BankIdEnvironmentConfiguration();

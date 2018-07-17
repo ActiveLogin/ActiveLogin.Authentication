@@ -55,11 +55,7 @@ namespace IdentityServerSample
                             return keyVaultCertificateClient.GetX509Certificate2Async(keyVaultBaseUrl, keyVaultSecretName).GetAwaiter().GetResult();
                         }
                     })
-                    .AddBankIdRootCaCertificate(() =>
-                    {
-                        var certificateFilePath = Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath"));
-                        return new X509Certificate2(certificateFilePath);
-                    })
+                    .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                     .AddBankIdEnvironmentConfiguration(configuration =>
                     {
                         if (Configuration.GetValue("ActiveLogin:BankId:UseTestApiEndpoint", false))
