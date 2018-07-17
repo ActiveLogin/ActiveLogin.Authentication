@@ -63,6 +63,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
+            await SimulateResponseDelay();
+
             await EnsureNoExistingAuth(request);
 
             var orderRef = Guid.NewGuid().ToString();
@@ -85,8 +87,10 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
         }
 
-        public Task<CollectResponse> CollectAsync(CollectRequest request)
+        public async Task<CollectResponse> CollectAsync(CollectRequest request)
         {
+            await SimulateResponseDelay();
+
             if (!_auths.ContainsKey(request.OrderRef))
             {
                 throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found");
@@ -105,7 +109,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             auth.CollectCalls += 1;
 
-            return Task.FromResult(response);
+            return response;
         }
 
         private CompletionData GetCompletionData(CollectStatus status, string personalIdentityNumber)
@@ -144,14 +148,21 @@ namespace ActiveLogin.Authentication.BankId.Api
             return Math.Min(collectCalls, (_statusesToReturn.Count - 1));
         }
 
-        public Task<CancelResponse> CancelAsync(CancelRequest request)
+        public async Task<CancelResponse> CancelAsync(CancelRequest request)
         {
+            await SimulateResponseDelay();
+
             if (_auths.ContainsKey(request.OrderRef))
             {
                 _auths.Remove(request.OrderRef);
             }
 
-            return Task.FromResult(new CancelResponse());
+            return new CancelResponse();
+        }
+
+        private static async Task SimulateResponseDelay()
+        {
+            await Task.Delay(250);
         }
 
         private class Auth
