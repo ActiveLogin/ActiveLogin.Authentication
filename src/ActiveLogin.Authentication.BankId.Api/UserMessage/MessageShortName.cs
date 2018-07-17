@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.BankId.Api.Models
+﻿namespace ActiveLogin.Authentication.BankId.Api.UserMessage
 {
     public enum MessageShortName {
         Unknown,
@@ -6,6 +6,7 @@
         RFA1,
         RFA2,
         RFA3,
+        RFA4,
         RFA5,
         RFA6,
         RFA8,

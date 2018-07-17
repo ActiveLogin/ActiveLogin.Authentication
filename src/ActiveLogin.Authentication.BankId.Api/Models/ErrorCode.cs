@@ -27,6 +27,8 @@
         /// </summary>
         InvalidParameters,
 
+        Canceled,
+
         // 401
         Unauthorized,
 
