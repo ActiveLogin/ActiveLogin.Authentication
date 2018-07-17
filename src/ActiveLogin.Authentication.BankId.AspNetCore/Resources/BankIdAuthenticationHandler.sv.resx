@@ -162,6 +162,9 @@
   <data name="BankIdUserMessage_ShortName_RFA3" xml:space="preserve">
     <value>Åtgärden avbruten. Försök igen.</value>
   </data>
+  <data name="BankIdUserMessage_ShortName_RFA4" xml:space="preserve">
+    <value>En identifiering eller underskrift för det här personnumret är redan påbörjad. Försök igen.</value>
+  </data>
   <data name="BankIdUserMessage_ShortName_RFA5" xml:space="preserve">
     <value>Internt tekniskt fel. Försök igen.</value>
   </data>

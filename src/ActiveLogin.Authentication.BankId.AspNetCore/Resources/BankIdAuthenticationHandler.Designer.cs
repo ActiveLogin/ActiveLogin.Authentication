@@ -197,6 +197,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An identification or signing for this personal number is already started. Please try again..
+        /// </summary>
+        internal static string BankIdUserMessage_ShortName_RFA4 {
+            get {
+                return ResourceManager.GetString("BankIdUserMessage_ShortName_RFA4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal error. Please try again..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA5 {

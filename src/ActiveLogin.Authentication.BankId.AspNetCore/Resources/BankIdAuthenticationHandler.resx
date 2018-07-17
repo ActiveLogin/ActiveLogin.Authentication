@@ -162,6 +162,9 @@
   <data name="BankIdUserMessage_ShortName_RFA3" xml:space="preserve">
     <value>Action cancelled. Please try again.</value>
   </data>
+  <data name="BankIdUserMessage_ShortName_RFA4" xml:space="preserve">
+    <value>An identification or signing for this personal number is already started. Please try again.</value>
+  </data>
   <data name="BankIdUserMessage_ShortName_RFA5" xml:space="preserve">
     <value>Internal error. Please try again.</value>
   </data>

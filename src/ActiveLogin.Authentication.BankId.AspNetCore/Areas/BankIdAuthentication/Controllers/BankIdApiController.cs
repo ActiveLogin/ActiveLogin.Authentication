@@ -18,25 +18,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     public class BankIdApiController : Controller
     {
         private readonly UrlEncoder _urlEncoder;
+        private readonly IBankIdUserMessage _bankIdUserMessage;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdApiClient _bankIdApiClient;
         private readonly IBankIdOrderRefProtector _orderRefProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
-        private readonly IBankIdUserMessage _bankIdUserMessage;
 
         public BankIdApiController(UrlEncoder urlEncoder,
+            IBankIdUserMessage bankIdUserMessage,
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
             IBankIdApiClient bankIdApiClient,
             IBankIdOrderRefProtector orderRefProtector,
-            IBankIdLoginResultProtector loginResultProtector,
-            IBankIdUserMessage bankIdUserMessage)
+            IBankIdLoginResultProtector loginResultProtector)
         {
             _urlEncoder = urlEncoder;
+            _bankIdUserMessage = bankIdUserMessage;
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
             _bankIdApiClient = bankIdApiClient;
             _orderRefProtector = orderRefProtector;
             _loginResultProtector = loginResultProtector;
-            _bankIdUserMessage = bankIdUserMessage;
         }
 
         [ValidateAntiForgeryToken]
@@ -46,7 +46,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var endUserIp = HttpContext.Connection.RemoteIpAddress.ToString();
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(request.PersonalIdentityNumber);
 
-            var authResponse = await _bankIdApiClient.AuthAsync(endUserIp, personalIdentityNumber.ToLongString());
+            AuthResponse authResponse;
+            try
+            {
+                authResponse = await _bankIdApiClient.AuthAsync(endUserIp, personalIdentityNumber.ToLongString());
+            }
+            catch (BankIdApiException bankIdApiException)
+            {
+                var errorStatusMessage = GetStatusMessage(bankIdApiException);
+                return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
+            }
 
             var orderRef = authResponse.OrderRef;
             var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef()
@@ -65,7 +74,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         public async Task<ActionResult> StatusAsync(BankIdLoginApiStatusRequest request)
         {
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
-            var collectResponse = await _bankIdApiClient.CollectAsync(orderRef.OrderRef);
+            CollectResponse collectResponse;
+            try
+            {
+                collectResponse = await _bankIdApiClient.CollectAsync(orderRef.OrderRef);
+            }
+            catch (BankIdApiException bankIdApiException)
+            {
+                var errorStatusMessage = GetStatusMessage(bankIdApiException);
+                return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
+            }
+
             var statusMessage = GetStatusMessage(collectResponse);
 
             if (collectResponse.Status == CollectStatus.Pending)
@@ -97,7 +116,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             return statusMessage;
         }
-        
+
+        private string GetStatusMessage(BankIdApiException bankIdApiException)
+        {
+            var messageShortName = _bankIdUserMessage.GetMessageShortNameForErrorResponse(bankIdApiException.ErrorCode);
+            var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
+
+            return statusMessage;
+        }
+
         private string GetSuccessReturnUri(User user, string returnUrl)
         {
             var loginResult = BankIdLoginResult.Success(user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
