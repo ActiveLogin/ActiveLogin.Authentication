@@ -9,6 +9,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -18,6 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     public class BankIdApiController : Controller
     {
         private readonly UrlEncoder _urlEncoder;
+        private readonly ILogger<BankIdApiController> _logger;
         private readonly IBankIdUserMessage _bankIdUserMessage;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdApiClient _bankIdApiClient;
@@ -25,6 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdLoginResultProtector _loginResultProtector;
 
         public BankIdApiController(UrlEncoder urlEncoder,
+            ILogger<BankIdApiController> logger,
             IBankIdUserMessage bankIdUserMessage,
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
             IBankIdApiClient bankIdApiClient,
@@ -32,6 +35,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdLoginResultProtector loginResultProtector)
         {
             _urlEncoder = urlEncoder;
+            _logger = logger;
             _bankIdUserMessage = bankIdUserMessage;
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
             _bankIdApiClient = bankIdApiClient;
@@ -53,6 +57,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
+                _logger.BankIdAuthFailure(personalIdentityNumber, bankIdApiException);
+
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
@@ -62,6 +68,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             {
                 OrderRef = orderRef
             });
+
+            _logger.BankIdAuthSuccess(personalIdentityNumber, orderRef);
 
             return Ok(new BankIdLoginApiInitializeResponse
             {
@@ -81,6 +89,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
+                _logger.BankIdCollectFailure(orderRef.OrderRef, bankIdApiException);
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
@@ -89,11 +98,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (collectResponse.Status == CollectStatus.Pending)
             {
+                _logger.BankIdCollectPending(collectResponse.OrderRef, collectResponse.HintCode);
                 return Ok(BankIdLoginApiStatusResponse.Pending(statusMessage));
             }
 
             if (collectResponse.Status == CollectStatus.Complete)
             {
+                _logger.BankIdCollectCompleted(collectResponse.OrderRef, collectResponse.CompletionData);
+
                 var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
                 if (!Url.IsLocalUrl(returnUri))
                 {
@@ -102,6 +114,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 return Ok(BankIdLoginApiStatusResponse.Finished(returnUri));
             }
 
+            _logger.BankIdCollectFailure(collectResponse.OrderRef, collectResponse.HintCode);
             return BadRequest(new BankIdLoginApiErrorResponse(statusMessage));
         }
 

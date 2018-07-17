@@ -14,16 +14,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public class BankIdAuthenticationHandler : RemoteAuthenticationHandler<BankIdAuthenticationOptions>
     {
+        private readonly ILogger<BankIdAuthenticationHandler> _logger;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
 
         public BankIdAuthenticationHandler(
             IOptionsMonitor<BankIdAuthenticationOptions> options,
-            ILoggerFactory logger,
+            ILoggerFactory loggerFactory,
             UrlEncoder encoder,
             ISystemClock clock,
+            ILogger<BankIdAuthenticationHandler> logger,
             IBankIdLoginResultProtector loginResultProtector)
-            : base(options, logger, encoder, clock)
+            : base(options, loggerFactory, encoder, clock)
         {
+            _logger = logger;
             _loginResultProtector = loginResultProtector;
         }
 
@@ -51,6 +54,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             var properties = state.AuthenticationProperties;
             var ticket = GetAuthenticationTicket(loginResult, properties);
+
+            _logger.BankIdAuthenticationTicketCreated(loginResult.PersonalIdentityNumber);
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
         }
