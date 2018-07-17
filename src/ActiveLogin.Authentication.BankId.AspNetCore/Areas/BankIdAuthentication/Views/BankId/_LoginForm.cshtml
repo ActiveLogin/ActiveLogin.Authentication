@@ -13,6 +13,9 @@
             <input id="bankIdLoginPersonalIdentityNumber" name="PersonalIdentityNumber" type="tel" class="form-control" placeholder="ÅÅMMDD-XXXX" autofocus required />
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">@Localizer["SignIn_Button"]</button>
+        <button type="submit" class="btn btn-primary btn-block">
+            <span class="submit-text">@Localizer["SignIn_Button"]</span>
+            <i class="fa fa-spinner fa-2x fa-spin fa-pulse status-spinner" style="display: none;"></i>
+        </button>
     </fieldset>
 </form>

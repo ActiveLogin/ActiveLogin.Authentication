@@ -12,6 +12,9 @@
         var statusMessageElement = statusElement.querySelector('.status-message');
 
         var formElement = document.querySelector('#bankIdLoginForm');
+        var formSubmitButtonElement = formElement.querySelector('button[type="submit"]');
+        var formSubmitButtonTextElement = formSubmitButtonElement.querySelector('.submit-text');
+        var formSubmitButtonSpinnerElement = formSubmitButtonElement.querySelector('.status-spinner');
         var formFieldsetElement = formElement.querySelector('fieldset');
 
         // Events
@@ -30,6 +33,8 @@
 
         function initialize(requestVerificationToken, returnUrl, personalIdentityNumber, personalIdentityNumberElement) {
             formFieldsetElement.disabled = true;
+            show(formSubmitButtonSpinnerElement);
+            hide(formSubmitButtonTextElement);
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl
@@ -43,6 +48,8 @@
                         showStatus(options.initialStatusMessage, 'info', true);
                         checkStatus(requestVerificationToken, returnUrl, data.orderRef);
                     }
+                    show(formSubmitButtonTextElement);
+                    hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
                     showStatus(error.message, 'danger');
                     formFieldsetElement.disabled = false;
