@@ -66,10 +66,10 @@ namespace IdentityServerSample
                         }
                     });
 
-            // Fake BankID API
-            if (Configuration.GetValue("ActiveLogin:BankId:UseFakeApi", false))
+            // Development BankID API
+            if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentApi", false))
             {
-                services.AddSingleton<IBankIdApiClient>(x => new FakeBankIdApiClient("Fake", "User"));
+                services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient("Fake", "User"));
             }
         }
 

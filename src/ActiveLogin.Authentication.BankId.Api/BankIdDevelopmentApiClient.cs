@@ -7,9 +7,9 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 namespace ActiveLogin.Authentication.BankId.Api
 {
     /// <summary>
-    /// Dummy implementation that can be used for testing purposes.
+    /// Dummy implementation that can be used for development and testing purposes.
     /// </summary>
-    public class FakeBankIdApiClient : IBankIdApiClient
+    public class BankIdDevelopmentApiClient : IBankIdApiClient
     {
         private static readonly List<KeyValuePair<CollectStatus, CollectHintCode>> DefaultStatusesToReturn = new List<KeyValuePair<CollectStatus, CollectHintCode>>
         {
@@ -28,32 +28,32 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
 
-        public FakeBankIdApiClient()
+        public BankIdDevelopmentApiClient()
             : this(DefaultStatusesToReturn)
         {
         }
 
-        public FakeBankIdApiClient(List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
+        public BankIdDevelopmentApiClient(List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
             : this("GivenName", "Surname", "Name", statusesToReturn)
         {
         }
 
-        public FakeBankIdApiClient(string givenName, string surname)
+        public BankIdDevelopmentApiClient(string givenName, string surname)
             : this(givenName, surname, $"{givenName} {surname}")
         {
         }
 
-        public FakeBankIdApiClient(string givenName, string surname, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
+        public BankIdDevelopmentApiClient(string givenName, string surname, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
             : this(givenName, surname, $"{givenName} {surname}", statusesToReturn)
         {
         }
 
-        public FakeBankIdApiClient(string givenName, string surname, string name)
+        public BankIdDevelopmentApiClient(string givenName, string surname, string name)
             : this(givenName, surname, name, DefaultStatusesToReturn)
         {
         }
 
-        public FakeBankIdApiClient(string givenName, string surname, string name, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
+        public BankIdDevelopmentApiClient(string givenName, string surname, string name, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
         {
             _givenName = givenName;
             _surname = surname;
