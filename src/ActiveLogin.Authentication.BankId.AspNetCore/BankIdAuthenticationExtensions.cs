@@ -70,13 +70,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<BankIdAuthenticationOptions>, BankIdAuthenticationPostConfigureOptions>());
 
             services.TryAddSingleton<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
-            services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();    
+            services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
 
             services.TryAddSingleton<IBankIdUserMessage, BankIdRecommendedUserMessage>();
-            services.TryAddSingleton<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
-
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
-            
+
+            services.TryAddScoped<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
+
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
         }
     }

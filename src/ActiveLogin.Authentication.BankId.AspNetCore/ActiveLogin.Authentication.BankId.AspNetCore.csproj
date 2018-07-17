@@ -30,17 +30,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resources\BankIdAuthenticationHandler.sv.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Resources\BankIdAuthenticationHandler.sv.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>BankIdAuthenticationHandler.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63102-01" PrivateAssets="All" />
   </ItemGroup>
 
@@ -55,14 +44,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Resources\BankIdAuthenticationHandler.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>BankIdAuthenticationHandler.sv.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   
   <ItemGroup>
@@ -88,11 +69,22 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
-  
+
   <ItemGroup>
     <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>BankIdAuthenticationHandler - Copy.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.sv.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\BankIdAuthenticationHandler.Designer.cs">
+      <DependentUpon>BankIdAuthenticationHandler.sv.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\BankIdAuthenticationHandler.Designer.cs">
+      <DependentUpon>BankIdAuthenticationHandler.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
