@@ -3,19 +3,25 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environment_name": {
-      "value": "dev"
+      "value": "prod"
     },
     "application_name": {
       "value": "activelogin"
     },
     "web_server_resource_name": {
-      "value": "activelogin-server-demo"
+      "value": ""
     },
-    "web_site_resource_name": {
-      "value": "activelogin-server-demo"
+    "web_serversite_resource_name": {
+      "value": ""
+    },
+    "web_clientsite_enabled": {
+      "value": true
+    },
+    "web_clientsite_resource_name": {
+      "value": ""
     },
     "insights_resource_name": {
-      "value": "activelogin-server-demo"
+      "value": ""
     }
   }
 }

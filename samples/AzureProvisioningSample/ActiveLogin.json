@@ -67,7 +67,15 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Web app resource name."
+        "description": "Server web app resource name."
+      }
+    },
+
+    "web_clientsite_enabled": {
+      "defaultValue": true,
+      "type": "bool",
+      "metadata": {
+        "description": "Should the client be deployed."
       }
     },
 
@@ -76,7 +84,7 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Web app resource name."
+        "description": "Client web app resource name."
       }
     },
 
@@ -84,7 +92,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Enable remote debugging for the website."
+        "description": "Enable remote debugging for the websites."
       }
     },
 
@@ -92,7 +100,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Enable HTTP logs for the website."
+        "description": "Enable HTTP logs for the websites."
       }
     },
 
@@ -100,7 +108,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Enable failed request tracing for the website."
+        "description": "Enable failed request tracing for the websites."
       }
     },
 
@@ -108,11 +116,11 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Enable detailed error messages for the website."
+        "description": "Enable detailed error messages for the websites."
       }
     },
 
-    // Web server
+    // Insights
 
     "insights_resource_name": {
       "defaultValue": "",
@@ -139,8 +147,9 @@
 
     // Web site
 
-    "web_clientsite_resource_name": "[parameters('web_clientsite_resource_name')]",
     "web_serversite_resource_name": "[parameters('web_serversite_resource_name')]",
+    "web_clientsite_enabled": "[parameters('web_clientsite_enabled')]",
+    "web_clientsite_resource_name": "[parameters('web_clientsite_resource_name')]",
 
     "web_site_remotedebugging_enabled": "[parameters('web_site_remotedebugging_enabled')]",
     "web_site_remotedebugging_version": "VS2017",
@@ -233,7 +242,7 @@
       "dependsOn": []
     },
 
-    // Web site
+    // Web sites
 
     {
       "type": "Microsoft.Web/sites",
@@ -328,6 +337,8 @@
     },
 
     {
+      "condition": "[variables('web_clientsite_enabled')]",
+
       "type": "Microsoft.Web/sites",
       "name": "[variables('web_clientsite_resource_name')]",
       "apiVersion": "2015-08-01",
@@ -383,7 +394,7 @@
     },
     "web_clientsite_url": {
       "type": "string",
-      "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))).hostNames[0], '/')]"
+      "value": "[if(variables('web_clientsite_enabled'), concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))).hostNames[0], '/'), '')]"
     },
 
     // Insights
