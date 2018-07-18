@@ -6,6 +6,7 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Mvc;
@@ -25,14 +26,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdApiClient _bankIdApiClient;
         private readonly IBankIdOrderRefProtector _orderRefProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
+        private readonly IBankIdResultStore _bankIdResultStore;
 
-        public BankIdApiController(UrlEncoder urlEncoder,
+        public BankIdApiController(
+            UrlEncoder urlEncoder,
             ILogger<BankIdApiController> logger,
             IBankIdUserMessage bankIdUserMessage,
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
             IBankIdApiClient bankIdApiClient,
             IBankIdOrderRefProtector orderRefProtector,
-            IBankIdLoginResultProtector loginResultProtector)
+            IBankIdLoginResultProtector loginResultProtector,
+            IBankIdResultStore bankIdResultStore)
         {
             _urlEncoder = urlEncoder;
             _logger = logger;
@@ -41,6 +45,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _bankIdApiClient = bankIdApiClient;
             _orderRefProtector = orderRefProtector;
             _loginResultProtector = loginResultProtector;
+            _bankIdResultStore = bankIdResultStore;
         }
 
         [ValidateAntiForgeryToken]
@@ -105,12 +110,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             if (collectResponse.Status == CollectStatus.Complete)
             {
                 _logger.BankIdCollectCompleted(collectResponse.OrderRef, collectResponse.CompletionData);
+                await _bankIdResultStore.StoreCollectCompletedCompletionData(collectResponse.OrderRef, collectResponse.CompletionData);
 
                 var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
                 if (!Url.IsLocalUrl(returnUri))
                 {
                     throw new Exception(BankIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
                 }
+
                 return Ok(BankIdLoginApiStatusResponse.Finished(returnUri));
             }
 
