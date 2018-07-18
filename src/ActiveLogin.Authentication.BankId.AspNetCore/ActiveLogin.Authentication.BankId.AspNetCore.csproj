@@ -9,6 +9,10 @@
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
 
+    <VersionPrefix>0.2.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+    <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
+
     <Description>ASP.NET Core middleware that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
     <PackageTags>bankid;swedish;sweden;aspnetcore;authentication</PackageTags>
 
@@ -34,8 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActiveLogin.Authentication.BankId.Api" Version="0.1.7" />
-    <PackageReference Include="ActiveLogin.Authentication.Common" Version="0.1.18" />
     <PackageReference Include="ActiveLogin.Identity.Swedish.AspNetCore" Version="0.1.23" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.1" />
@@ -44,6 +46,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
+    <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" />
   </ItemGroup>
   
   <ItemGroup>
