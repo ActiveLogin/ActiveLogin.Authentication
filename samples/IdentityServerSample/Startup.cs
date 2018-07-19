@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
-using IdentityServerSample.Certificates;
+using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
@@ -45,18 +45,7 @@ namespace IdentityServerSample
 
             services.AddAuthentication()
                 .AddBankId()
-                    .AddBankIdClientCertificate(() =>
-                    {
-                        var azureAdClientId = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientId");
-                        var azureAdClientSecret = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientSecret");
-                        var keyVaultBaseUrl = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:BaseUrl");
-                        var keyVaultSecretName = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:SecretName");
-
-                        using (var keyVaultCertificateClient = new AzureKeyVaultCertificateClient(azureAdClientId, azureAdClientSecret))
-                        {
-                            return keyVaultCertificateClient.GetX509Certificate2Async(keyVaultBaseUrl, keyVaultSecretName).GetAwaiter().GetResult();
-                        }
-                    })
+                    .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
                     .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                     .AddBankIdEnvironmentConfiguration(configuration =>
                     {
@@ -69,7 +58,7 @@ namespace IdentityServerSample
             // Development BankID API
             if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentApi", false))
             {
-                services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient("Fake", "User"));
+                services.AddBankIdDevelopmentEnvironment();
             }
         }
 

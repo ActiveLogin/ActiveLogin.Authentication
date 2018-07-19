@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
-namespace IdentityServerSample.Certificates
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 {
     public class AzureKeyVaultCertificateClient : IDisposable
     {
@@ -20,9 +20,9 @@ namespace IdentityServerSample.Certificates
             _keyVaultClient = new KeyVaultClient(GetToken);
         }
 
-        public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultBaseUrl, string keyVaultSecretName)
+        public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
         {
-            var secret = await _keyVaultClient.GetSecretAsync(keyVaultBaseUrl, keyVaultSecretName);
+            var secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier);
             if (secret.ContentType != CertificateContentType)
             {
                 throw new ArgumentException($"This certificate must be of type {CertificateContentType}");

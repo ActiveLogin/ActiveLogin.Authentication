@@ -1,4 +1,5 @@
 ﻿using System;
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
@@ -80,6 +81,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
+        }
+
+        public static IServiceCollection AddBankIdDevelopmentEnvironment(this IServiceCollection services)
+        {
+            return AddBankIdDevelopmentEnvironment(services, "GivenName", "Surname");
+        }
+
+        public static IServiceCollection AddBankIdDevelopmentEnvironment(this IServiceCollection services, string givenName, string surname)
+        {
+            services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient(givenName, surname));
+            return services;
         }
     }
 }
