@@ -10,8 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Certificates\BankIdRootCertificate-Prod.crt" />
-    <Content Include="Certificates\BankIdRootCertificate-Test.crt" />
+    <Content Include="Certificates\BankIdRootCertificate-Prod.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Certificates\BankIdRootCertificate-Test.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
