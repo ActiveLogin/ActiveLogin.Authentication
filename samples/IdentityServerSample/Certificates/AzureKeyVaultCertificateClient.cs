@@ -36,10 +36,7 @@ namespace IdentityServerSample.Certificates
 
         private X509Certificate2 GetX509Certificate2(byte[] certificate)
         {
-            var exportedCertCollection = new X509Certificate2Collection();
-            exportedCertCollection.Import(certificate, string.Empty, X509KeyStorageFlags.MachineKeySet);
-
-            return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
+            return new X509Certificate2(certificate);
         }
 
         public async Task<string> GetToken(string authority, string resource, string scope)
