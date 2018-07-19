@@ -43,6 +43,14 @@
       }
     },
 
+    "keyvault_accesspolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Access policies object {\"tenantId\":\"\",\"objectId\":\"\",\"permissions\":{\"keys\":[\"\"],\"secrets\":[\"\"]}}"
+      }
+    },
+
     // Insights
 
     "insights_resource_name": {
@@ -163,6 +171,7 @@
 
     "keyvault_resource_name": "[parameters('keyvault_resource_name')]",
     "keyvault_tenantid": "[parameters('keyvault_tenantid')]",
+    "keyvault_accesspolicies": "[parameters('keyvault_accesspolicies')]",
 
     // Insights
 
@@ -237,6 +246,7 @@
           "family": "A",
           "name": "Premium"
         },
+        "accessPolicies": "[variables('keyvault_accesspolicies')]",
         "enabledForDeployment": "false",
         "enabledForDiskEncryption": "false",
         "enabledForTemplateDeployment": "false"
