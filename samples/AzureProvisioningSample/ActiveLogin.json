@@ -23,6 +23,37 @@
       }
     },
 
+    // KeyVault
+
+    "keyvault_resource_name": {
+      "defaultValue": "",
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "KeyVault resource name."
+      }
+    },
+
+    "keyvault_tenantid": {
+      "defaultValue": "",
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "KeyVault tenantid."
+      }
+    },
+
+    // Insights
+
+    "insights_resource_name": {
+      "defaultValue": "",
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Application Insights resource name."
+      }
+    },
+
     // Web server
 
     "web_server_resource_name": {
@@ -118,17 +149,6 @@
       "metadata": {
         "description": "Enable detailed error messages for the websites."
       }
-    },
-
-    // Insights
-
-    "insights_resource_name": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Application Insights resource name."
-      }
     }
   },
   "variables": {
@@ -138,6 +158,15 @@
     "resource_location": "[resourceGroup().location]",
     "environment_name": "[parameters('environment_name')]",
     "application_name": "[parameters('application_name')]",
+
+    // KeyVault
+
+    "keyvault_resource_name": "[parameters('keyvault_resource_name')]",
+    "keyvault_tenantid": "[parameters('keyvault_tenantid')]",
+
+    // Insights
+
+    "insights_resource_name": "[parameters('insights_resource_name')]",
 
     // Web server
 
@@ -186,14 +215,34 @@
       "ftpsState": "[variables('web_site_ftp_state')]"
     },
 
-    "web_site_stagingslot_resource_name": "staging",
-
-    // Insights
-
-    "insights_resource_name": "[parameters('insights_resource_name')]"
-
+    "web_site_stagingslot_resource_name": "staging"
   },
   "resources": [
+
+    // KeyVault,
+
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[variables('keyvault_resource_name')]",
+      "apiVersion": "2016-10-01",
+      "location": "[variables('resource_location')]",
+      "tags": {
+        "displayName": "KeyVault",
+        "environment": "[variables('environment_name')]",
+        "application": "[variables('application_name')]"
+      },
+      "properties": {
+        "tenantId": "[variables('keyvault_tenantid')]",
+        "sku": {
+          "family": "A",
+          "name": "Premium"
+        },
+        "enabledForDeployment": "false",
+        "enabledForDiskEncryption": "false",
+        "enabledForTemplateDeployment": "false",
+        "enableSoftDelete": "false"
+      }
+    },
 
     // Insights
 
