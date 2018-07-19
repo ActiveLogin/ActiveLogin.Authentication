@@ -4,7 +4,6 @@
     {
         public string AzureAdClientId { get; set; }
         public string AzureAdClientSecret { get; set; }
-        public string KeyVaultBaseUrl { get; set; }
-        public string KeyVaultSecretName { get; set; }
+        public string AzureKeyVaultSecretIdentifier { get; set; }
     }
 }

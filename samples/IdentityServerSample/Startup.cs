@@ -45,13 +45,7 @@ namespace IdentityServerSample
 
             services.AddAuthentication()
                 .AddBankId()
-                    .AddBankIdClientCertificateFromAzureKeyVault(new ClientCertificateFromAzureKeyVaultOptions()
-                    {
-                        AzureAdClientId = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientId"),
-                        AzureAdClientSecret = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientSecret"),
-                        KeyVaultBaseUrl = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:BaseUrl"),
-                        KeyVaultSecretName = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:SecretName")
-                    })
+                    .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
                     .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                     .AddBankIdEnvironmentConfiguration(configuration =>
                     {
