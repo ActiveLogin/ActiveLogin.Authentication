@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
-using IdentityServerSample.Certificates;
+using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
@@ -45,17 +45,12 @@ namespace IdentityServerSample
 
             services.AddAuthentication()
                 .AddBankId()
-                    .AddBankIdClientCertificate(() =>
+                    .AddBankIdClientCertificateFromAzureKeyVault(new ClientCertificateFromAzureKeyVaultOptions()
                     {
-                        var azureAdClientId = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientId");
-                        var azureAdClientSecret = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientSecret");
-                        var keyVaultBaseUrl = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:BaseUrl");
-                        var keyVaultSecretName = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:SecretName");
-
-                        using (var keyVaultCertificateClient = new AzureKeyVaultCertificateClient(azureAdClientId, azureAdClientSecret))
-                        {
-                            return keyVaultCertificateClient.GetX509Certificate2Async(keyVaultBaseUrl, keyVaultSecretName).GetAwaiter().GetResult();
-                        }
+                        AzureAdClientId = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientId"),
+                        AzureAdClientSecret = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureAd:ClientSecret"),
+                        KeyVaultBaseUrl = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:BaseUrl"),
+                        KeyVaultSecretName = Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate:AzureKeyVault:SecretName")
                     })
                     .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                     .AddBankIdEnvironmentConfiguration(configuration =>
