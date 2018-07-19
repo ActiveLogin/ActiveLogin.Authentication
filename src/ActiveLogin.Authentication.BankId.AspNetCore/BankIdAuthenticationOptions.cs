@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public class BankIdAuthenticationOptions : RemoteAuthenticationOptions
     {
-        private const string DefaultStateCookieName = "__BankIdState";
+        private const string DefaultStateCookieName = "__ActiveLogin.BankIdState";
 
         private CookieBuilder _stateCookieBuilder = new CookieBuilder
         {
