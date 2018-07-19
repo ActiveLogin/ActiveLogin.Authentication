@@ -69,7 +69,7 @@ namespace IdentityServerSample
             // Development BankID API
             if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentApi", false))
             {
-                services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient("Fake", "User"));
+                services.AddBankIdDevelopmentEnvironment();
             }
         }
 
