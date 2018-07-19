@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static void BankIdAuthFailure(this ILogger logger, SwedishPersonalIdentityNumber personalIdentityNumber, BankIdApiException bankIdApiException)
         {
-            logger.LogError(BankIdLoggingEvents.BankIdAuthHardFailure, "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'", bankIdApiException.ErrorCode, bankIdApiException.Details);
+            logger.LogError(bankIdApiException, "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'", bankIdApiException.ErrorCode, bankIdApiException.Details);
             logger.LogTrace(BankIdLoggingEvents.BankIdAuthHardFailure, "BankID auth failed for PersonalIdentityNumber '{PersonalIdentityNumber}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", personalIdentityNumber.ToLongString(), bankIdApiException.ErrorCode, bankIdApiException.Details);
         }
 
@@ -33,7 +33,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static void BankIdCollectFailure(this ILogger logger, string orderRef, BankIdApiException bankIdApiException)
         {
-            logger.LogInformation(BankIdLoggingEvents.BankIdCollectHardFailure, "BankID collect failed for OrderRef '{OrderRef}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", orderRef, bankIdApiException.ErrorCode, bankIdApiException.Details);
+            logger.LogError(bankIdApiException, "BankID collect failed for OrderRef '{OrderRef}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", orderRef, bankIdApiException.ErrorCode, bankIdApiException.Details);
         }
 
         public static void BankIdCollectFailure(this ILogger logger, string orderRef, CollectHintCode hintCode)
