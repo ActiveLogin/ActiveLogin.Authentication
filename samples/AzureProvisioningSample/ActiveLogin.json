@@ -394,6 +394,7 @@
             {
               "apiVersion": "2015-08-01",
               "name": "web",
+              "condition": "[variables('web_serversite_stagingslot_enabled')]",
               "type": "config",
               "dependsOn": [
                 "[resourceId('Microsoft.Web/Sites/Slots', variables('web_serversite_resource_name'), variables('web_site_stagingslot_resource_name'))]"
