@@ -77,6 +77,9 @@
       "type": "string",
       "defaultValue": "S1",
       "allowedValues": [
+        "B1",
+        "B2",
+        "B3",
         "S1",
         "S2",
         "S3",
@@ -107,6 +110,14 @@
       "minLength": 1,
       "metadata": {
         "description": "Server web app resource name."
+      }
+    },
+
+    "web_serversite_stagingslot_enabled": {
+      "defaultValue": true,
+      "type": "bool",
+      "metadata": {
+        "description": "If the server web app should have a staging slot enabled or not."
       }
     },
 
@@ -186,6 +197,8 @@
     // Web site
 
     "web_serversite_resource_name": "[parameters('web_serversite_resource_name')]",
+    "web_serversite_stagingslot_enabled": "[parameters('web_serversite_stagingslot_enabled')]",
+
     "web_clientsite_enabled": "[parameters('web_clientsite_enabled')]",
     "web_clientsite_resource_name": "[parameters('web_clientsite_resource_name')]",
 
@@ -370,6 +383,7 @@
         {
           "apiVersion": "2016-08-01",
           "name": "[variables('web_site_stagingslot_resource_name')]",
+          "condition": "[variables('web_serversite_stagingslot_enabled')]",
           "type": "slots",
           "location": "[variables('resource_location')]",
           "dependsOn": [
