@@ -9,7 +9,7 @@
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.Azure</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.Azure</PackageId>
 
-    <VersionPrefix>0.3.2</VersionPrefix>
+    <VersionPrefix>0.3.3</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
