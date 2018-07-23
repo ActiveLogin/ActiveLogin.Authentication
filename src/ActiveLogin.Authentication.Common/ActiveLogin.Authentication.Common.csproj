@@ -9,7 +9,7 @@
     <AssemblyName>ActiveLogin.Authentication.Common</AssemblyName>
     <PackageId>ActiveLogin.Authentication.Common</PackageId>
 
-    <VersionPrefix>0.3.3</VersionPrefix>
+    <VersionPrefix>0.3.4</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
