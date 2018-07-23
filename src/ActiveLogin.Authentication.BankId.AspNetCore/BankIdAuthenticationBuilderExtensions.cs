@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
@@ -46,6 +47,26 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             builder.ConfigureBankIdHttpClient(httpClient =>
             {
                 httpClient.BaseAddress = configuration.ApiBaseUrl;
+            });
+
+            return builder;
+        }
+
+        public static BankIdAuthenticationBuilder AddBankIdTestEnvironment(this BankIdAuthenticationBuilder builder)
+        {
+            builder.AddBankIdEnvironmentConfiguration(configuration =>
+            {
+                configuration.ApiBaseUrl = BankIdUrls.TestApiBaseUrl;
+            });
+
+            return builder;
+        }
+
+        public static BankIdAuthenticationBuilder AddBankIdProdEnvironment(this BankIdAuthenticationBuilder builder)
+        {
+            builder.AddBankIdEnvironmentConfiguration(configuration =>
+            {
+                configuration.ApiBaseUrl = BankIdUrls.ProdApiBaseUrl;
             });
 
             return builder;
