@@ -22,7 +22,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 
         public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
         {
-            var secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier);
+            var secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier).ConfigureAwait(false);
             if (secret.ContentType != CertificateContentType)
             {
                 throw new ArgumentException($"This certificate must be of type {CertificateContentType}");
@@ -45,7 +45,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
         public async Task<string> GetToken(string authority, string resource, string scope)
         {
             var authContext = new AuthenticationContext(authority);
-            var result = await authContext.AcquireTokenAsync(resource, _clientCredential);
+            var result = await authContext.AcquireTokenAsync(resource, _clientCredential).ConfigureAwait(false);
 
             if (result == null)
             {

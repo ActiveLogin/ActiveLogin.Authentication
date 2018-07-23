@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
     {
         public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage, IJsonSerializer jsonSerializer)
         {
-            var error = await TryGetErrorAsync(httpResponseMessage, jsonSerializer);
+            var error = await TryGetErrorAsync(httpResponseMessage, jsonSerializer).ConfigureAwait(false);
 
             try
             {
@@ -33,7 +33,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             {
                 try
                 {
-                    return jsonSerializer.Deserialize<Error>(await httpResponseMessage.Content.ReadAsStringAsync());
+                    return jsonSerializer.Deserialize<Error>(await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
                 }
                 catch (Exception)
                 {

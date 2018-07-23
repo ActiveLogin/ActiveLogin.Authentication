@@ -63,9 +63,9 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            await SimulateResponseDelay();
+            await SimulateResponseDelay().ConfigureAwait(false);
 
-            await EnsureNoExistingAuth(request);
+            await EnsureNoExistingAuth(request).ConfigureAwait(false);
 
             var orderRef = Guid.NewGuid().ToString();
             var auth = new Auth(orderRef, request.PersonalIdentityNumber);
@@ -82,14 +82,14 @@ namespace ActiveLogin.Authentication.BankId.Api
             if (_auths.Any(x => x.Value.PersonalIdentityNumber == request.PersonalIdentityNumber))
             {
                 var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == request.PersonalIdentityNumber).Key;
-                await CancelAsync(new CancelRequest(existingAuthOrderRef));
+                await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
                 throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
             }
         }
 
         public async Task<CollectResponse> CollectAsync(CollectRequest request)
         {
-            await SimulateResponseDelay();
+            await SimulateResponseDelay().ConfigureAwait(false);
 
             if (!_auths.ContainsKey(request.OrderRef))
             {
@@ -150,7 +150,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<CancelResponse> CancelAsync(CancelRequest request)
         {
-            await SimulateResponseDelay();
+            await SimulateResponseDelay().ConfigureAwait(false);
 
             if (_auths.ContainsKey(request.OrderRef))
             {
@@ -162,7 +162,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private static async Task SimulateResponseDelay()
         {
-            await Task.Delay(250);
+            await Task.Delay(250).ConfigureAwait(false);
         }
 
         private class Auth
