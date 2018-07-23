@@ -48,6 +48,9 @@ To start using a real implementation of BankID, there are a few steps to do. The
 
 1. Start by reading through the _BankID Relying Party Guidelines_ [available for download here](https://www.bankid.com/bankid-i-dina-tjanster/rp-info). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
 2. Deploy Azure KeyVault to yur subscription, the ARM-template available in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample) contains a KeyVault, so preferably you deploy that.
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fgithub.com%2FActiveLogin%2FActiveLogin.Authentication%2Ftree%2Fmaster%2Fsamples%2FAzureProvisioningSample%2FActiveLogin.json)
+
 3. Download the _SSL certificate for test (FPTestcert2.pfx)_ [available for download here](https://www.bankid.com/bankid-i-dina-tjanster/rp-info).
 4. [Import the certificate to your Azure Key Vault.](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate)
 5. Add the following to you `Startup.cs`:
