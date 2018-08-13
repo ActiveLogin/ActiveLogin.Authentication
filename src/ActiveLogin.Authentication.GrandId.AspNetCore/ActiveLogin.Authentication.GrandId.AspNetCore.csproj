@@ -1,0 +1,97 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <NeutralLanguage>en</NeutralLanguage>
+    <NoWarn>1701;1702;1591</NoWarn>
+
+    <AssemblyName>ActiveLogin.Authentication.GrandId.AspNetCore</AssemblyName>
+    <PackageId>ActiveLogin.Authentication.GrandId.AspNetCore</PackageId>
+
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>alpha-1</VersionSuffix>
+    <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
+
+    <Description>ASP.NET Core middleware that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
+    <PackageTags>GrandId;swedish;sweden;aspnetcore;authentication</PackageTags>
+
+    <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+    <Copyright>Copyright © ActiveLogin</Copyright>
+
+    <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/docs/images/active-login-logo-fingerprint-blue-256x256.png</PackageIconUrl>
+
+    <PackageLicenseUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/LICENSE.md</PackageLicenseUrl>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63102-01" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ActiveLogin.Identity.Swedish.AspNetCore" Version="0.3.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" />
+    <ProjectReference Include="..\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\Login.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_Login.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_LoginForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_LoginScript.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_LoginStatus.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\GrandIdAuthenticationHandler.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GrandIdAuthenticationHandler.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\GrandIdAuthenticationHandler.sv.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\GrandIdAuthenticationHandler.Designer.cs">
+      <DependentUpon>BankIdAuthenticationHandler.sv.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\GrandIdAuthenticationHandler.Designer.cs">
+      <DependentUpon>GrandIdAuthenticationHandler.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+</Project>

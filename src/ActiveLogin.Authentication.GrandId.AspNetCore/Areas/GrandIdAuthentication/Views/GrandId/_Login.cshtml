@@ -1,0 +1,11 @@
+﻿@using Microsoft.Extensions.Localization
+@model ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthentication.Models.GrandIdLoginViewModel
+@inject IStringLocalizer<ActiveLogin.Authentication.GrandId.AspNetCore.GrandIdAuthenticationHandler> Localizer
+
+<div class="bankid-login">
+    <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>
+
+    <partial name="_LoginStatus" />
+    <partial name="_LoginForm" model="Model" />
+    <partial name="_LoginScript" model="Model" />
+</div>

@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@model ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthentication.Models.GrandIdLoginViewModel
+@inject IStringLocalizer<ActiveLogin.Authentication.GrandId.AspNetCore.GrandIdAuthenticationHandler> Localizer
+
+<form id="bankIdLoginForm">
+    <input name="RequestVerificationToken" type="hidden" value="@Model.AntiXsrfRequestToken">
+    <input name="ReturnUrl" type="hidden" value="@Model.ReturnUrl" />
+
+    <fieldset>
+        <div class="form-group mb-2">
+            <label for="bankIdLoginPersonalIdentityNumber">@Localizer["PersonalIdentityNumber_Label"]</label>
+            <input id="bankIdLoginPersonalIdentityNumber" name="PersonalIdentityNumber" type="tel" class="form-control" placeholder="ÅÅMMDD-XXXX" autofocus required />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+            <span class="submit-text">@Localizer["SignIn_Button"]</span>
+            <i class="fa fa-spinner fa-2x fa-spin fa-pulse status-spinner" style="display: none;"></i>
+        </button>
+    </fieldset>
+</form>

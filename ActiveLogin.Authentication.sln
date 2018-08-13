@@ -39,6 +39,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7D32EB
 		docs\images\active-login-logo-fingerprint-blue-256x256.png = docs\images\active-login-logo-fingerprint-blue-256x256.png
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.GrandId.Api", "src\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj", "{00C97046-36F3-4431-9FC8-A2EED39B3EA9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.GrandId.AspNetCore", "src\ActiveLogin.Authentication.GrandId.AspNetCore\ActiveLogin.Authentication.GrandId.AspNetCore.csproj", "{A69DFAF3-21F8-4948-BD75-A3ECBB9117CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,14 @@ Global
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00C97046-36F3-4431-9FC8-A2EED39B3EA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C97046-36F3-4431-9FC8-A2EED39B3EA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C97046-36F3-4431-9FC8-A2EED39B3EA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C97046-36F3-4431-9FC8-A2EED39B3EA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A69DFAF3-21F8-4948-BD75-A3ECBB9117CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A69DFAF3-21F8-4948-BD75-A3ECBB9117CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A69DFAF3-21F8-4948-BD75-A3ECBB9117CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A69DFAF3-21F8-4948-BD75-A3ECBB9117CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +103,8 @@ Global
 		{ABC52082-8A5D-426E-B25A-D92934A51A4D} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{7D32EBEE-65D6-46D3-BC7E-65951C143969} = {4764448D-A014-403F-A956-3F4CFFA00AF2}
+		{00C97046-36F3-4431-9FC8-A2EED39B3EA9} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
+		{A69DFAF3-21F8-4948-BD75-A3ECBB9117CF} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}
