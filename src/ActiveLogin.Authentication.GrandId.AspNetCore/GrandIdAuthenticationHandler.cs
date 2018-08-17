@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.Common.Serialization;
+using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 using ActiveLogin.Identity.Swedish;
@@ -16,6 +20,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     {
         private readonly ILogger<GrandIdAuthenticationHandler> _logger;
         private readonly IGrandIdLoginResultProtector _loginResultProtector;
+        private readonly IJsonSerializer _jsonSerializer;
 
         public GrandIdAuthenticationHandler(
             IOptionsMonitor<GrandIdAuthenticationOptions> options,
@@ -23,11 +28,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             UrlEncoder encoder,
             ISystemClock clock,
             ILogger<GrandIdAuthenticationHandler> logger,
-            IGrandIdLoginResultProtector loginResultProtector)
+            IGrandIdLoginResultProtector loginResultProtector,
+            IJsonSerializer jsonSerializer
+            )
             : base(options, loggerFactory, encoder, clock)
         {
             _logger = logger;
             _loginResultProtector = loginResultProtector;
+            this._jsonSerializer = jsonSerializer;
         }
 
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
@@ -40,24 +48,61 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             DeleteStateCookie();
 
-            var loginResultProtected = Request.Query["loginResult"];
-            if (string.IsNullOrEmpty(loginResultProtected))
+            var sessionId = Request.Query["grandidsession"];
+
+            if (string.IsNullOrEmpty(sessionId))
             {
-                return Task.FromResult(HandleRequestResult.Fail("Missing login result."));
+                return Task.FromResult(HandleRequestResult.Fail("Missing sessionId."));
             }
 
-            var loginResult = _loginResultProtector.Unprotect(loginResultProtected);
-            if (loginResult == null || !loginResult.IsSuccessful)
-            {
-                return Task.FromResult(HandleRequestResult.Fail("Invalid login result."));
-            }
+            var loginResult = GetLoginResponse(sessionId);
 
             var properties = state.AuthenticationProperties;
             var ticket = GetAuthenticationTicket(loginResult, properties);
 
-            _logger.GrandIdAuthenticationTicketCreated(loginResult.PersonalIdentityNumber);
+            //_logger.GrandIdAuthenticationTicketCreated(loginResult.PersonalIdentityNumber);
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
+        }
+
+        private SessionStateResponse GetLoginResponse(string sessionId)
+        {
+            var absoluteUri = string.Concat(
+                     Request.Scheme,
+                     "://",
+                     Request.Host.ToUriComponent(),
+                     Request.PathBase.ToUriComponent());
+
+            var actionUrl = "/GrandIdAuthentication/Api/Session";
+            //var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
+            SessionStateResponse stateData;
+            try
+            {
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri(absoluteUri)
+                };
+                var request = new GrandIdLoginApiSessionRequest() { SessionId = sessionId, DeviceOption = Api.Models.DeviceOption.ChooseDevice };
+                var requestJson = _jsonSerializer.Serialize(request);
+                var requestContent = GetJsonStringContent(requestJson);
+                var response =  client.PostAsync(actionUrl, requestContent).GetAwaiter().GetResult();
+                response.EnsureSuccessStatusCode();
+                var data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                stateData = _jsonSerializer.Deserialize<SessionStateResponse>(data);
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return stateData;
+        }
+
+        private static StringContent GetJsonStringContent(string requestJson)
+        {
+            var requestContent = new StringContent(requestJson, Encoding.Default, "application/json");
+            requestContent.Headers.ContentType.CharSet = string.Empty;
+            return requestContent;
         }
 
         private GrandIdState GetStateFromCookie()
@@ -78,7 +123,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }
 
-        private AuthenticationTicket GetAuthenticationTicket(GrandIdLoginResult loginResult, AuthenticationProperties properties)
+        private AuthenticationTicket GetAuthenticationTicket(SessionStateResponse loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -94,16 +139,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return new AuthenticationTicket(principal, properties, Scheme.Name);
         }
 
-        private IEnumerable<Claim> GetClaims(GrandIdLoginResult loginResult, DateTimeOffset? expiresUtc)
+        private IEnumerable<Claim> GetClaims(SessionStateResponse loginResult, DateTimeOffset? expiresUtc)
         {
-            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
+            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalNumber);
             var claims = new List<Claim>
             {
                 new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
 
-                new Claim(GrandIdClaimTypes.Name, loginResult.Name),
-                new Claim(GrandIdClaimTypes.FamilyName, loginResult.Surname),
-                new Claim(GrandIdClaimTypes.GivenName, loginResult.GivenName),
+                new Claim(GrandIdClaimTypes.Name, loginResult.UserAttributes.Name),
+                new Claim(GrandIdClaimTypes.FamilyName, loginResult.UserAttributes.Surname),
+                new Claim(GrandIdClaimTypes.GivenName, loginResult.UserAttributes.GivenName),
 
                 new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
             };
@@ -189,7 +234,12 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private string GetLoginUrl()
         {
-            return $"{Options.GrandIdLoginPath}?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}";
+            var absoluteUri = string.Concat(
+                        Request.Scheme,
+                        "://",
+                        Request.Host.ToUriComponent(),
+                        Request.PathBase.ToUriComponent());
+            return $"{Options.GrandIdLoginPath}?returnUrl={UrlEncoder.Encode(absoluteUri + Options.CallbackPath)}";
         }
     }
 }

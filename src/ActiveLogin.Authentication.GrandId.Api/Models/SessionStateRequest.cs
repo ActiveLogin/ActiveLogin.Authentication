@@ -3,14 +3,13 @@
 namespace ActiveLogin.Authentication.GrandId.Api
 {
     [DataContract]
-    public class AuthRequest
+    public class SessionStateRequest
     {
-
-        public AuthRequest(string apiKey, string authenticateServiceKey, string callbackUrl)
+        public SessionStateRequest(string apiKey, string authenticateServiceKey, string sessionId)
         {
             ApiKey = apiKey;
             AuthenticateServiceKey = authenticateServiceKey;
-            CallbackUrl = callbackUrl;
+            SessionId = sessionId;
         }
 
         [DataMember(Name = "apiKey")]
@@ -19,7 +18,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         [DataMember(Name = "authenticateServiceKey")]
         public string AuthenticateServiceKey { get; set; }
 
-        [DataMember(Name = "callbackUrl")]
-        public string CallbackUrl { get; set; }
+        [DataMember(Name = "sessionId")]
+        public string SessionId { get; set; }
     }
 }

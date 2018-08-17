@@ -1,7 +1,7 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore.Models
 {
-    public class GrandIdOrderRef
+    public class GrandIdSessionId
     {
-        public string OrderRef { get; set; }
+        public string SessionId { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using ActiveLogin.Authentication.Common.Serialization;
 namespace ActiveLogin.Authentication.GrandId.Api
 {
     /// <summary>
-    /// HTTP based client for the BankID REST API.
+    /// HTTP based client for the GrandId REST API.
     /// </summary>
     public class GrandIdApiClient : IGrandIdApiClient
     {
@@ -24,33 +24,19 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _jsonSerializer = jsonSerializer;
         }
 
-        /// <summary>
-        /// Initiates an authentication or signing order. Use the collect method to query the status of the order.
-        /// </summary>
-        /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
+
         public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            return _httpClient.PostAsync<AuthRequest, AuthResponse>("/auth", request, _jsonSerializer);
+
+            return _httpClient.getAsync<AuthRequest, AuthResponse>("/FederatedLogin?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&callbackUrl=" + request.CallbackUrl, request, _jsonSerializer);
+            //return _httpClient.PostAsync<AuthRequest, AuthResponse>("/FederatedLogin", request, _jsonSerializer);
         }
 
-        /// <summary>
-        /// Collects the result of a sign or auth order using the OrderRef as reference.
-        /// RP should keep on calling collect every two seconds as long as status indicates pending.
-        /// RP must abort if status indicates failed.
-        /// </summary>
-        /// <returns>The user identity is returned when complete.</returns>
-        public Task<CollectResponse> CollectAsync(CollectRequest request)
+        public Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            return _httpClient.PostAsync<CollectRequest, CollectResponse>("/collect", request, _jsonSerializer);
-        }
+            return _httpClient.getAsync<SessionStateRequest, SessionStateResponse>("/GetSession?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&sessionid=" + request.SessionId, request, _jsonSerializer);
 
-        /// <summary>
-        /// Cancels an ongoing sign or auth order.
-        /// This is typically used if the user cancels the order in your service or app.
-        /// </summary>
-        public Task<CancelResponse> CancelAsync(CancelRequest request)
-        {
-            return _httpClient.PostAsync<CancelRequest, CancelResponse>("/cancel", request, _jsonSerializer);
+            //return _httpClient.PostAsync<SessionStateRequest, SessionStateResponse>("/GetSession", request, _jsonSerializer);
         }
     }
 }

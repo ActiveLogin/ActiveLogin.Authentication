@@ -5,31 +5,31 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore.DataProtection
 {
-    public class GrandIdOrderRefProtector : IGrandIdOrderRefProtector
+    public class GrandIdSessionIdProtector : IGrandIdOrderRefProtector
     {
-        private readonly ISecureDataFormat<GrandIdOrderRef> _secureDataFormat;
+        private readonly ISecureDataFormat<GrandIdSessionId> _secureDataFormat;
 
-        public GrandIdOrderRefProtector(IDataProtectionProvider dataProtectionProvider)
+        public GrandIdSessionIdProtector(IDataProtectionProvider dataProtectionProvider)
         {
             var dataProtector = dataProtectionProvider.CreateProtector(
-                typeof(GrandIdLoginResultProtector).FullName,
+                typeof(GrandIdSessionIdProtector).FullName,
                 "v1"
             );
 
-            _secureDataFormat = new SecureDataFormat<GrandIdOrderRef>(
-                new GrandIdOrderRefSerializer(),
+            _secureDataFormat = new SecureDataFormat<GrandIdSessionId>(
+                new GrandIdSessionIdSerializer(),
                 dataProtector
             );
         }
 
-        public string Protect(GrandIdOrderRef orderRef)
+        public string Protect(GrandIdSessionId sessionId)
         {
-            return _secureDataFormat.Protect(orderRef);
+            return _secureDataFormat.Protect(sessionId);
         }
 
-        public GrandIdOrderRef Unprotect(string protectedOrderRef)
+        public GrandIdSessionId Unprotect(string protectedSessionId)
         {
-            return _secureDataFormat.Unprotect(protectedOrderRef);
+            return _secureDataFormat.Unprotect(protectedSessionId);
         }
     }
 }

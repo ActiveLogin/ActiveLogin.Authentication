@@ -5,6 +5,8 @@ using System.IO;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
+using ActiveLogin.Authentication.GrandId.Api;
+using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
@@ -43,8 +45,13 @@ namespace IdentityServerSample
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
-            services.AddAuthentication()
-                .AddBankId()
+            services.AddAuthentication().AddGrandId().AddGrandIdEnvironmentConfiguration(configuration =>
+            {
+                var apiBaseUrl = Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false) ? GrandIdUrls.TestApiBaseUrl : GrandIdUrls.ProdApiBaseUrl;
+                configuration.ApiBaseUrl = apiBaseUrl;
+            });
+
+            services.AddAuthentication().AddBankId()
                     .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
                     .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                     .AddBankIdEnvironmentConfiguration(configuration =>

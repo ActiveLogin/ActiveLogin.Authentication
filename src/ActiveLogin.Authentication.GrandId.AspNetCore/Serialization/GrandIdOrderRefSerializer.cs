@@ -4,25 +4,25 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
 {
-    public class GrandIdOrderRefSerializer : IDataSerializer<GrandIdOrderRef>
+    public class GrandIdSessionIdSerializer : IDataSerializer<GrandIdSessionId>
     {
         private const int FormatVersion = 1;
 
-        public byte[] Serialize(GrandIdOrderRef model)
+        public byte[] Serialize(GrandIdSessionId model)
         {
             using (var memory = new MemoryStream())
             {
                 using (var writer = new BinaryWriter(memory))
                 {
                     writer.Write(FormatVersion);
-                    writer.Write(model.OrderRef);
+                    writer.Write(model.SessionId);
                     writer.Flush();
                     return memory.ToArray();
                 }
             }
         }
 
-        public GrandIdOrderRef Deserialize(byte[] data)
+        public GrandIdSessionId Deserialize(byte[] data)
         {
             using (var memory = new MemoryStream(data))
             {
@@ -33,9 +33,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
                         return null;
                     }
 
-                    return new GrandIdOrderRef
+                    return new GrandIdSessionId
                     {
-                        OrderRef = reader.ReadString()
+                        SessionId = reader.ReadString()
                     };
                 }
             }

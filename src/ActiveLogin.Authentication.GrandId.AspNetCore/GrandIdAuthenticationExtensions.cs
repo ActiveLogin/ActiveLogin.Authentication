@@ -67,31 +67,44 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return new GrandIdAuthenticationBuilder(builder, authenticationScheme);
         }
 
+        public static GrandIdAuthenticationBuilder AddGrandIdProdEnvironment(this GrandIdAuthenticationBuilder builder)
+        {
+            builder.AddGrandIdEnvironmentConfiguration(configuration =>
+            {
+                configuration.ApiBaseUrl = GrandIdUrls.ProdApiBaseUrl;
+            });
+
+            return builder;
+        }
+
         private static void AddGrandIdServices(IServiceCollection services)
         {
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());
 
-            services.TryAddSingleton<IGrandIdOrderRefProtector, GrandIdOrderRefProtector>();
+            services.TryAddSingleton<IGrandIdOrderRefProtector, GrandIdSessionIdProtector>();
             services.TryAddSingleton<IGrandIdLoginResultProtector, GrandIdLoginResultProtector>();
 
-            services.TryAddSingleton<IGrandIdUserMessage, GrandIdRecommendedUserMessage>();
+          //  services.TryAddSingleton<IGrandIdUserMessage, GrandIdRecommendedUserMessage>();
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
 
-            services.TryAddTransient<IGrandIdResultStore, GrandIdResultTraceLoggerStore>();
+            //services.TryAddTransient<IGrandIdResultStore, GrandIdResultTraceLoggerStore>();
             services.TryAddTransient<IGrandIdUserMessageLocalizer, GrandIdUserMessageStringLocalizer>();
 
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
         }
 
-        public static IServiceCollection AddGrandIdDevelopmentEnvironment(this IServiceCollection services)
+        public static GrandIdAuthenticationBuilder AddGrandIdEnvironmentConfiguration(this GrandIdAuthenticationBuilder builder, Action<GrandIdEnvironmentConfiguration> configureBankIdEnvironment)
         {
-            return AddGrandIdDevelopmentEnvironment(services, "GivenName", "Surname");
+            var configuration = new GrandIdEnvironmentConfiguration();
+            configureBankIdEnvironment(configuration);
+
+            builder.ConfigureGrandIdHttpClient(httpClient =>
+            {
+                httpClient.BaseAddress = configuration.ApiBaseUrl;
+            });
+
+            return builder;
         }
 
-        public static IServiceCollection AddGrandIdDevelopmentEnvironment(this IServiceCollection services, string givenName, string surname)
-        {
-            services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname));
-            return services;
-        }
     }
 }

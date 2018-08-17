@@ -2,11 +2,11 @@
 {
     public class GrandIdAuthenticationDefaults
     {
-        public const string AuthenticationScheme = "bankid";
-        public const string DisplayName = "BankID";
+        public const string AuthenticationScheme = "grandid";
+        public const string DisplayName = "GrandId";
 
-        public const string IdentityProviderName = "BankID";
-        public const string AuthenticationMethodName = "bankid";
+        public const string IdentityProviderName = "GrandId";
+        public const string AuthenticationMethodName = "grandid";
 
         public const int StatusRefreshIntervalMs = 2000;
 

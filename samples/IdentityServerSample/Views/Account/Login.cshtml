@@ -3,7 +3,11 @@
 @{
     ViewData["Title"] = "Choose provider";
 }
-
+<style>
+    .btn-fixed-width {
+        width: 10rem;
+    }
+</style>
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
@@ -14,7 +18,7 @@
                 @foreach (var provider in Model.ExternalProviders)
                 {
                     <li class="mb-1">
-                        <a class="btn btn-info"
+                        <a class="btn btn-info btn-fixed-width"
                            asp-action="ExternalLogin"
                            asp-route-provider="@provider.AuthenticationScheme"
                            asp-route-returnUrl="@Model.ReturnUrl">

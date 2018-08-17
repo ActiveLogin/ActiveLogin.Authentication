@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class Error
     {
-        [DataMember(Name = "errorCode")]
+        [DataMember(Name = "errorObject")]
         private string errorCode { get; set; }
 
         public ErrorCode ErrorCode
@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
             }
         }
 
-        [DataMember(Name = "details")]
+        [DataMember(Name = "message")]
         public string Details { get; set; }
     }
 }

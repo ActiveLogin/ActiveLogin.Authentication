@@ -8,6 +8,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Persistence
     /// </summary>
     public interface IGrandIdResultStore
     {
-        Task StoreCollectCompletedCompletionData(string orderRef, CompletionData completionData);
+        //Task StoreCollectCompletedCompletionData(string orderRef, CompletionData completionData);
     }
 }

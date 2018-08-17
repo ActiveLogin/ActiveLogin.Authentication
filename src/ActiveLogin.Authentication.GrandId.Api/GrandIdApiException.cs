@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
     public class GrandIdApiException : HttpRequestException
     {
         public GrandIdApiException(string description, Exception inner)
-            : this(ErrorCode.Unknown, description, inner)
+            : this(ErrorCode.UNKNOWN, description, inner)
         { }
 
         public GrandIdApiException(Error error, Exception inner)

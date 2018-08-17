@@ -1,23 +1,14 @@
 ﻿using System.Runtime.Serialization;
 
-namespace ActiveLogin.Authentication.GrandId.Api.Models
+namespace ActiveLogin.Authentication.GrandId.Api
 {
-    /// <summary>
-    /// Auth response result.
-    /// </summary>
     [DataContract]
     public class AuthResponse
     {
-        /// <summary>
-        /// Used to collect the status of the order.
-        /// </summary>
-        [DataMember(Name = "orderRef")]
-        public string OrderRef { get; set; }
+        [DataMember(Name = "redirectUrl")]
+        public string RedirectUrl { get; set; }
 
-        /// <summary>
-        /// Used as reference to this order when the client is started automatically.
-        /// </summary>
-        [DataMember(Name = "autoStartToken")]
-        public string AutoStartToken { get; set; }
+        [DataMember(Name = "sessionId")]
+        public string SessionId { get; set; }
     }
 }

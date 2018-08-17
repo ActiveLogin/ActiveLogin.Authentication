@@ -13,7 +13,7 @@
     <VersionSuffix>alpha-1</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-    <Description>ASP.NET Core middleware that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
+    <Description>ASP.NET Core middleware that enables an application to support Svensk e-handels GrandID's native authentication workflow.</Description>
     <PackageTags>GrandId;swedish;sweden;aspnetcore;authentication</PackageTags>
 
     <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
@@ -49,30 +49,6 @@
     <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" />
     <ProjectReference Include="..\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\Login.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_Login.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_LoginForm.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_LoginScript.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\_LoginStatus.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\_ViewImports.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\_ViewStart.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Resources\GrandIdAuthenticationHandler.resx">
@@ -93,5 +69,20 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\Verify.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\Login.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\GrandIdAuthentication\Views\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 </Project>

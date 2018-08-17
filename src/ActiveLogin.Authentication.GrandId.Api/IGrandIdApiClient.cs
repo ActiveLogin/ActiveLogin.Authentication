@@ -9,23 +9,15 @@ namespace ActiveLogin.Authentication.GrandId.Api
     public interface IGrandIdApiClient
     {
         /// <summary>
-        /// Initiates an authentication or signing order. Use the collect method to query the status of the order.
+        /// Initiates an authentication chain. Use this method to retrieve the url to redirect the user to.
         /// </summary>
-        /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
+        /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
         Task<AuthResponse> AuthAsync(AuthRequest request);
 
         /// <summary>
-        /// Collects the result of a sign or auth order using the OrderRef as reference.
-        /// RP should keep on calling collect every two seconds as long as status indicates pending.
-        /// RP must abort if status indicates failed.
+        /// Fetches the currents Session Data for a sessionId
         /// </summary>
-        /// <returns>The user identity is returned when complete.</returns>
-        Task<CollectResponse> CollectAsync(CollectRequest request);
-
-        /// <summary>
-        /// Cancels an ongoing sign or auth order.
-        /// This is typically used if the user cancels the order in your service or app.
-        /// </summary>
-        Task<CancelResponse> CancelAsync(CancelRequest request);
+        /// <returns>If the request is successful, the sessionData is returned</returns>
+        Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request);
     }
 }

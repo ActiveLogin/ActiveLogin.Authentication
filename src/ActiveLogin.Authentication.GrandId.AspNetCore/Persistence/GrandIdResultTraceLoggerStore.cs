@@ -17,11 +17,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Persistence
             _logger = logger;
         }
 
-        public Task StoreCollectCompletedCompletionData(string orderRef, CompletionData completionData)
-        {
-            _logger.LogTrace(_eventId, "Storing completion data for OrderRef '{OrderRef}' (UserPersonalIdentityNumber: '{UserPersonalIdentityNumber}'; UserGivenName: '{UserGivenName}'; UserSurname: '{UserSurname}'; UserName: '{UserName}'; Signature: '{Signature}'; OcspResponse: '{OcspResponse}')", orderRef, completionData.User.PersonalIdentityNumber, completionData.User.GivenName, completionData.User.Surname, completionData.User.Name, completionData.Signature, completionData.OcspResponse);
+        //public Task StoreCollectCompletedCompletionData(string orderRef, CompletionData completionData)
+        //{
+        //    _logger.LogTrace(_eventId, "Storing completion data for OrderRef '{OrderRef}' (UserPersonalIdentityNumber: '{UserPersonalIdentityNumber}'; UserGivenName: '{UserGivenName}'; UserSurname: '{UserSurname}'; UserName: '{UserName}'; Signature: '{Signature}'; OcspResponse: '{OcspResponse}')", orderRef, completionData.User.PersonalIdentityNumber, completionData.User.GivenName, completionData.User.Surname, completionData.User.Name, completionData.Signature, completionData.OcspResponse);
 
-            return Task.CompletedTask;
-        }
+        //    return Task.CompletedTask;
+        //}
     }
 }
