@@ -25,18 +25,23 @@ namespace ActiveLogin.Authentication.GrandId.Api
         }
 
 
-        public Task<AuthResponse> AuthAsync(AuthRequest request)
+        public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-
-            return _httpClient.getAsync<AuthRequest, AuthResponse>("/FederatedLogin?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&callbackUrl=" + request.CallbackUrl, request, _jsonSerializer);
-            //return _httpClient.PostAsync<AuthRequest, AuthResponse>("/FederatedLogin", request, _jsonSerializer);
+            var authResponse = await _httpClient.getAsync<AuthRequest, AuthResponse>("/FederatedLogin?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&callbackUrl=" + request.CallbackUrl, request, _jsonSerializer);
+            if (authResponse.ErrorObject != null)
+            {
+                throw new GrandIdApiException(authResponse.ErrorObject.Code, authResponse.ErrorObject.Message);
+            }
+            return authResponse;
         }
 
-        public Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
+        public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            return _httpClient.getAsync<SessionStateRequest, SessionStateResponse>("/GetSession?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&sessionid=" + request.SessionId, request, _jsonSerializer);
-
-            //return _httpClient.PostAsync<SessionStateRequest, SessionStateResponse>("/GetSession", request, _jsonSerializer);
-        }
+            var sessionResponse = await _httpClient.getAsync<SessionStateRequest, SessionStateResponse>("/GetSession?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&sessionid=" + request.SessionId, request, _jsonSerializer);
+            if (sessionResponse.ErrorObject != null)
+            {
+                throw new GrandIdApiException(sessionResponse.ErrorObject.Code, sessionResponse.ErrorObject.Message);
+            }
+            return sessionResponse;        }
     }
 }

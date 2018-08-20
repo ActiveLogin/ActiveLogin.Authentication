@@ -9,5 +9,6 @@
 
         NOTLOGGEDIN,
 
+        FIELDSNOTVALID01
     }
 }

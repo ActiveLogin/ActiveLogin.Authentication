@@ -13,5 +13,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         [DataMember(Name = "userAttributes")]
         public UserAttributes UserAttributes { get; set; }
+
+        [DataMember(Name = "errorObject")]
+        public ErrorObject ErrorObject { get; set; }
     }
 }

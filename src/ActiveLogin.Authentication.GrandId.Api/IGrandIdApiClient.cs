@@ -4,7 +4,7 @@ using ActiveLogin.Authentication.GrandId.Api.Models;
 namespace ActiveLogin.Authentication.GrandId.Api
 {
     /// <summary>
-    /// BankID API Client that defines the supported methods as defined in the document "BankID Relying Party Guidelines".
+    /// GrandD API Client that defines the supported methods.
     /// </summary>
     public interface IGrandIdApiClient
     {

@@ -70,19 +70,4 @@
       <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\Verify.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\GrandId\Login.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\_ViewImports.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\GrandIdAuthentication\Views\_ViewStart.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-  </ItemGroup>
 </Project>

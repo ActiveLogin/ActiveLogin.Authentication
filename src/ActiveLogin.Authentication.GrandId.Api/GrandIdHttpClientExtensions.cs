@@ -15,9 +15,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return jsonSerializer.Deserialize<TResult>(await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false));
         }
 
-        public static async Task<TResult> getAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request, IJsonSerializer jsonSerializer)
+        public static async Task<TResult> getAsync<TRequest, TResult>(this HttpClient httpClient, string action, TRequest request, IJsonSerializer jsonSerializer)
         {
-            var callUrl = httpClient.BaseAddress + url;
+            var callUrl = httpClient.BaseAddress + action;
             var httpResponseMessage = await httpClient.GetAsync(callUrl);
             return jsonSerializer.Deserialize<TResult>(await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false));
         }

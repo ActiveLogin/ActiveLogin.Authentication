@@ -49,6 +49,10 @@ namespace IdentityServerSample
             {
                 var apiBaseUrl = Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false) ? GrandIdUrls.TestApiBaseUrl : GrandIdUrls.ProdApiBaseUrl;
                 configuration.ApiBaseUrl = apiBaseUrl;
+                configuration.ApiKey = Configuration.GetValue("ActiveLogin:GrandId:apiKey", "");
+                configuration.SameDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:SameDeviceServiceKey", "");
+                configuration.OtherDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:OtherDeviceServiceKey", "");
+                configuration.ChooseDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:ChooseDeviceServiceKey", "");
             });
 
             services.AddAuthentication().AddBankId()

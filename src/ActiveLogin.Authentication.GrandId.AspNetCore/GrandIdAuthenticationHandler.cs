@@ -7,7 +7,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api;
-using ActiveLogin.Authentication.GrandId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
@@ -19,8 +19,10 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     public class GrandIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdAuthenticationOptions>
     {
         private readonly ILogger<GrandIdAuthenticationHandler> _logger;
-        private readonly IGrandIdLoginResultProtector _loginResultProtector;
         private readonly IJsonSerializer _jsonSerializer;
+
+        public readonly IGrandIdApiClient _grandIdApiClient;
+        private readonly IGrandIdEnviromentConfiguration _enviromentConfiguration;
 
         public GrandIdAuthenticationHandler(
             IOptionsMonitor<GrandIdAuthenticationOptions> options,
@@ -28,14 +30,17 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             UrlEncoder encoder,
             ISystemClock clock,
             ILogger<GrandIdAuthenticationHandler> logger,
-            IGrandIdLoginResultProtector loginResultProtector,
-            IJsonSerializer jsonSerializer
+            IJsonSerializer jsonSerializer,
+            IGrandIdApiClient grandIdApiClient,
+            IGrandIdEnviromentConfiguration enviromentConfiguration
             )
             : base(options, loggerFactory, encoder, clock)
         {
             _logger = logger;
-            _loginResultProtector = loginResultProtector;
-            this._jsonSerializer = jsonSerializer;
+            _jsonSerializer = jsonSerializer;
+            _grandIdApiClient = grandIdApiClient;
+            _enviromentConfiguration = enviromentConfiguration;
+
         }
 
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
@@ -55,47 +60,43 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 return Task.FromResult(HandleRequestResult.Fail("Missing sessionId."));
             }
 
-            var loginResult = GetLoginResponse(sessionId);
-
-            var properties = state.AuthenticationProperties;
-            var ticket = GetAuthenticationTicket(loginResult, properties);
-
-            //_logger.GrandIdAuthenticationTicketCreated(loginResult.PersonalIdentityNumber);
-
-            return Task.FromResult(HandleRequestResult.Success(ticket));
-        }
-
-        private SessionStateResponse GetLoginResponse(string sessionId)
-        {
-            var absoluteUri = string.Concat(
-                     Request.Scheme,
-                     "://",
-                     Request.Host.ToUriComponent(),
-                     Request.PathBase.ToUriComponent());
-
-            var actionUrl = "/GrandIdAuthentication/Api/Session";
-            //var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
-            SessionStateResponse stateData;
+            var deviceOptionString = Request.Query["deviceOption"];
+            if (string.IsNullOrEmpty(deviceOptionString) || !Enum.TryParse(deviceOptionString, out DeviceOption deviceOption))
+            {
+                return Task.FromResult(HandleRequestResult.Fail("Missing or wrong deviceOption."));
+            }
             try
             {
-                var client = new HttpClient
-                {
-                    BaseAddress = new Uri(absoluteUri)
-                };
-                var request = new GrandIdLoginApiSessionRequest() { SessionId = sessionId, DeviceOption = Api.Models.DeviceOption.ChooseDevice };
-                var requestJson = _jsonSerializer.Serialize(request);
-                var requestContent = GetJsonStringContent(requestJson);
-                var response =  client.PostAsync(actionUrl, requestContent).GetAwaiter().GetResult();
-                response.EnsureSuccessStatusCode();
-                var data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                stateData = _jsonSerializer.Deserialize<SessionStateResponse>(data);
-                
+                var loginResult = GetLoginResponse(sessionId, deviceOption).GetAwaiter().GetResult();
+
+                var properties = state.AuthenticationProperties;
+                var ticket = GetAuthenticationTicket(loginResult, properties);
+                _logger.GrandIdAuthSuccess(loginResult.SessionId);
+
+                return Task.FromResult(HandleRequestResult.Success(ticket));
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.GrandIdAuthFailed(sessionId, ex);
+
+                return Task.FromResult(HandleRequestResult.Fail("Failed to fetch session"));
             }
-            return stateData;
+
+        }
+
+        private Task<SessionStateResponse> GetLoginResponse(string sessionId, DeviceOption deviceOption)
+        {
+            var request = GetRequest(deviceOption, sessionId);
+            return _grandIdApiClient.GetSessionAsync(request);
+        }
+
+        private SessionStateRequest GetRequest(DeviceOption deviceOption, string sessionId)
+        {
+            var apiKey = _enviromentConfiguration.ApiKey; // Todo: handle with configuration
+            // Todo move to helper to fetch values from config
+            var deviceOptionKey = _enviromentConfiguration.GetDeviceOptionKey(deviceOption);
+
+            return new SessionStateRequest(apiKey, deviceOptionKey, sessionId);
         }
 
         private static StringContent GetJsonStringContent(string requestJson)

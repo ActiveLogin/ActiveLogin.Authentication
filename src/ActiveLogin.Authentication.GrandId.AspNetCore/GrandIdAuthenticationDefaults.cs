@@ -8,8 +8,6 @@
         public const string IdentityProviderName = "GrandId";
         public const string AuthenticationMethodName = "grandid";
 
-        public const int StatusRefreshIntervalMs = 2000;
-
         public const int MaximumSessionLifespanS = 3600;
     }
 }

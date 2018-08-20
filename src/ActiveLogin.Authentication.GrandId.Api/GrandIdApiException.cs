@@ -5,7 +5,7 @@ using ActiveLogin.Authentication.GrandId.Api.Models;
 namespace ActiveLogin.Authentication.GrandId.Api
 {
     /// <summary>
-    /// Exception that wraps any error returned by the BankID API.
+    /// Exception that wraps any error returned by the GrandID API.
     /// </summary>
     public class GrandIdApiException : HttpRequestException
     {
@@ -27,6 +27,15 @@ namespace ActiveLogin.Authentication.GrandId.Api
             ErrorCode = errorCode;
             Details = details;
         }
+
+        public GrandIdApiException(string errorCodeString, string details)
+          : base($"{errorCodeString}: {details}", null)
+        {
+            ErrorCode errorCode;
+            ErrorCode = Enum.TryParse<ErrorCode>(errorCodeString, out errorCode) ? errorCode : ErrorCode.UNKNOWN;
+            Details = details;
+        }
+
 
         /// <summary>
         /// The category of error.
