@@ -15,17 +15,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly string _surname;
 
         private readonly Dictionary<string, AuthResponse> _auths = new Dictionary<string, AuthResponse>();
-
-
+        
         public GrandIdDevelopmentApiClient(string givenName, string surname)
         {
             _givenName = givenName;
             _surname = surname;
         }
-
-
- 
-
+        
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
@@ -52,8 +48,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
             };
         }
 
-     
-
         private static async Task SimulateResponseDelay()
         {
             await Task.Delay(250).ConfigureAwait(false);
@@ -69,7 +63,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             }
 
             var auth = _auths[request.SessionId];
-
+            _auths.Remove(request.SessionId);
             var response = new SessionStateResponse { SessionId = auth.SessionId, UserAttributes = GetUserAttributes("199508032381") };
 
             return response;
