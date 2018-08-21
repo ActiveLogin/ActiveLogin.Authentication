@@ -2,7 +2,7 @@
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace ActiveLogin.Authentication.GrandId
 {
     public class GrandIdEnvironmentConfiguration : IGrandIdEnviromentConfiguration
     {

@@ -49,25 +49,4 @@
     <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" />
     <ProjectReference Include="..\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\GrandIdAuthenticationHandler.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>GrandIdAuthenticationHandler.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\GrandIdAuthenticationHandler.sv.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Resources\GrandIdAuthenticationHandler.Designer.cs">
-      <DependentUpon>BankIdAuthenticationHandler.sv.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\GrandIdAuthenticationHandler.Designer.cs">
-      <DependentUpon>GrandIdAuthenticationHandler.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
 </Project>

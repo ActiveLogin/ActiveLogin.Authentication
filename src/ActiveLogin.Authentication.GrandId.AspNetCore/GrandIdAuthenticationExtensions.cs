@@ -1,5 +1,4 @@
 ﻿using System;
-using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Resources;
 using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.AspNetCore.Authentication;

@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using ActiveLogin.Authentication.GrandId.Api.Models;
+﻿using ActiveLogin.Authentication.GrandId.Api.Models;
+using System.Threading.Tasks;
 
 namespace ActiveLogin.Authentication.GrandId.Api
 {
@@ -8,14 +8,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public static class GrandIdApiClientExtensions
     {
-        public static Task<AuthResponse> AuthAsync(this IGrandIdApiClient apiClient, string apiKey, string authenticateServiceKey, string callbackUrl)
+        public static Task<AuthResponse> AuthAsync(this IGrandIdApiClient apiClient, DeviceOption deviceOption, string callbackUrl)
         {
-            return apiClient.AuthAsync(new AuthRequest(apiKey, authenticateServiceKey, callbackUrl));
+            return apiClient.AuthAsync(new AuthRequest(deviceOption, callbackUrl));
         }
 
-        public static Task<SessionStateResponse> GetSessionAsync(this IGrandIdApiClient apiClient, string apiKey, string authenticateServiceKey, string sessionId)
+        public static Task<SessionStateResponse> GetSessionAsync(this IGrandIdApiClient apiClient, DeviceOption deviceOption, string sessionId)
         {
-            return apiClient.GetSessionAsync(new SessionStateRequest(apiKey, authenticateServiceKey, sessionId));
+            return apiClient.GetSessionAsync(new SessionStateRequest(deviceOption, sessionId));
         }
     }
 }

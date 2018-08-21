@@ -1,6 +1,5 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.Common.Serialization;
 
 namespace ActiveLogin.Authentication.GrandId.Api
@@ -12,7 +11,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         private readonly HttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
-
+        private IGrandIdEnviromentConfiguration EnviromentConfiguration;
         /// <summary>
         /// Creates an instance of <see cref="GrandIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
         /// </summary>
@@ -27,7 +26,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var authResponse = await _httpClient.getAsync<AuthRequest, AuthResponse>("/FederatedLogin?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&callbackUrl=" + request.CallbackUrl, request, _jsonSerializer);
+
+            var apiKey = EnviromentConfiguration.ApiKey;
+            var deviceOptionKey =  EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption);
+            var authResponse = await _httpClient.getAsync<AuthRequest, AuthResponse>("/FederatedLogin?apiKey=" + apiKey + "&authenticateServiceKey=" + deviceOptionKey + "&callbackUrl=" + request.CallbackUrl, request, _jsonSerializer);
             if (authResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(authResponse.ErrorObject.Code, authResponse.ErrorObject.Message);
@@ -37,11 +39,19 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            var sessionResponse = await _httpClient.getAsync<SessionStateRequest, SessionStateResponse>("/GetSession?apiKey=" + request.ApiKey + "&authenticateServiceKey=" + request.AuthenticateServiceKey + "&sessionid=" + request.SessionId, request, _jsonSerializer);
+            var apiKey = EnviromentConfiguration.ApiKey; 
+            var deviceOptionKey = EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption);
+            var sessionResponse = await _httpClient.getAsync<SessionStateRequest, SessionStateResponse>("/GetSession?apiKey=" + apiKey + "&authenticateServiceKey=" + deviceOptionKey + "&sessionid=" + request.SessionId, request, _jsonSerializer);
             if (sessionResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(sessionResponse.ErrorObject.Code, sessionResponse.ErrorObject.Message);
             }
-            return sessionResponse;        }
+            return sessionResponse;
+        }
+
+        public void SetConfiguration(IGrandIdEnviromentConfiguration configuration)
+        {
+            EnviromentConfiguration = configuration;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using ActiveLogin.Authentication.GrandId.Api.Models;
+using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.GrandId.Api
 {
@@ -6,18 +7,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
     public class AuthRequest
     {
 
-        public AuthRequest(string apiKey, string authenticateServiceKey, string callbackUrl)
+        public AuthRequest(DeviceOption deviceOption, string callbackUrl)
         {
-            ApiKey = apiKey;
-            AuthenticateServiceKey = authenticateServiceKey;
+            DeviceOption = deviceOption;
             CallbackUrl = callbackUrl;
         }
 
-        [DataMember(Name = "apiKey")]
-        public string ApiKey { get; set; }
-
-        [DataMember(Name = "authenticateServiceKey")]
-        public string AuthenticateServiceKey { get; set; }
+        [DataMember(Name = "deviceOption")]
+        public DeviceOption DeviceOption { get; set; }
 
         [DataMember(Name = "callbackUrl")]
         public string CallbackUrl { get; set; }

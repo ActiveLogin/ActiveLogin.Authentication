@@ -22,7 +22,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         private readonly IJsonSerializer _jsonSerializer;
 
         public readonly IGrandIdApiClient _grandIdApiClient;
-        private readonly IGrandIdEnviromentConfiguration _enviromentConfiguration;
 
         public GrandIdAuthenticationHandler(
             IOptionsMonitor<GrandIdAuthenticationOptions> options,
@@ -39,8 +38,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             _logger = logger;
             _jsonSerializer = jsonSerializer;
             _grandIdApiClient = grandIdApiClient;
-            _enviromentConfiguration = enviromentConfiguration;
-
+            _grandIdApiClient.SetConfiguration(enviromentConfiguration);
         }
 
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
@@ -67,7 +65,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
             try
             {
-                var loginResult = GetLoginResponse(sessionId, deviceOption).GetAwaiter().GetResult();
+                var loginResult = GetLoginResponse(deviceOption, sessionId).GetAwaiter().GetResult();
 
                 var properties = state.AuthenticationProperties;
                 var ticket = GetAuthenticationTicket(loginResult, properties);
@@ -84,21 +82,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         }
 
-        private Task<SessionStateResponse> GetLoginResponse(string sessionId, DeviceOption deviceOption)
+        private Task<SessionStateResponse> GetLoginResponse(DeviceOption deviceOption, string sessionId)
         {
-            var request = GetRequest(deviceOption, sessionId);
-            return _grandIdApiClient.GetSessionAsync(request);
+            return _grandIdApiClient.GetSessionAsync(deviceOption, sessionId);
         }
-
-        private SessionStateRequest GetRequest(DeviceOption deviceOption, string sessionId)
-        {
-            var apiKey = _enviromentConfiguration.ApiKey; // Todo: handle with configuration
-            // Todo move to helper to fetch values from config
-            var deviceOptionKey = _enviromentConfiguration.GetDeviceOptionKey(deviceOption);
-
-            return new SessionStateRequest(apiKey, deviceOptionKey, sessionId);
-        }
-
+        
         private static StringContent GetJsonStringContent(string requestJson)
         {
             var requestContent = new StringContent(requestJson, Encoding.Default, "application/json");

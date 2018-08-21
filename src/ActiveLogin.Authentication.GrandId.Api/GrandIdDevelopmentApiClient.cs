@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.GrandId.Api.Models;
 
 namespace ActiveLogin.Authentication.GrandId.Api
 {
@@ -17,6 +14,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly string _givenName;
         private readonly string _surname;
         private readonly string _name;
+
+
+
         public Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
             throw new NotImplementedException();
@@ -25,6 +25,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
         public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
             throw new NotImplementedException();
+        }
+
+        public void SetConfiguration(IGrandIdEnviromentConfiguration configuration)
+        {
+            
         }
     }
 }
