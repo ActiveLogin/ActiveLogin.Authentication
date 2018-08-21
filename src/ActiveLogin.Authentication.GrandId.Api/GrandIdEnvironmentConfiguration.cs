@@ -1,8 +1,7 @@
 ﻿using System;
-using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 
-namespace ActiveLogin.Authentication.GrandId
+namespace ActiveLogin.Authentication.GrandId.Api
 {
     public class GrandIdEnvironmentConfiguration : IGrandIdEnviromentConfiguration
     {

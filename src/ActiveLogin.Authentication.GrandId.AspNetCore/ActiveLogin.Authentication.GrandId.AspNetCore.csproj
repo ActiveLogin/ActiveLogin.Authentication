@@ -16,7 +16,7 @@
     <Description>ASP.NET Core middleware that enables an application to support Svensk e-handels GrandID's native authentication workflow.</Description>
     <PackageTags>GrandId;swedish;sweden;aspnetcore;authentication</PackageTags>
 
-    <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+    <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn;Martin Sjölander</Authors>
     <Copyright>Copyright © ActiveLogin</Copyright>
 
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>

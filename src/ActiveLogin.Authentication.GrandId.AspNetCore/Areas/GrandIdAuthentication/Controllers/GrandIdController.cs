@@ -4,6 +4,7 @@ using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthentication.Controllers
 {
@@ -11,16 +12,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
     [Route("/[area]/[action]")]
     public class GrandIdController : Controller
     {
-        private readonly IAntiforgery _antiforgery;
-        public readonly IGrandIdApiClient _grandIdApiClient;
+        private readonly IGrandIdApiClient _grandIdApiClient;
+        private readonly ILogger<GrandIdAuthenticationHandler> _logger;
 
         public GrandIdController(IAntiforgery antiforgery,
             IGrandIdApiClient grandIdApiClient,
-            IGrandIdEnviromentConfiguration enviromentConfiguration)
+            IGrandIdEnviromentConfiguration enviromentConfiguration,
+            ILogger<GrandIdAuthenticationHandler> logger)
         {
-            _antiforgery = antiforgery;
             _grandIdApiClient = grandIdApiClient;
-            _grandIdApiClient.SetConfiguration(enviromentConfiguration);
+            _logger = logger;
         }
         
         public async Task<ActionResult> Login(string returnUrl)
@@ -42,6 +43,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error requesting redirectUrl for '{DeviceOption}'", deviceOption);
                 throw ex;
             }
         }

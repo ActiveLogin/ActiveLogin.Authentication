@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ActiveLogin.Authentication.GrandId.Api.Models
+﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     /// <summary>
     /// Different options on how to initialize authentication

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using ActiveLogin.Authentication.GrandId.Api.Models;
 
 namespace ActiveLogin.Authentication.GrandId.Api
 {
@@ -18,7 +19,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// </summary>
         /// <returns>If the request is successful, the sessionData is returned</returns>
         Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request);
-
-        void SetConfiguration(IGrandIdEnviromentConfiguration configuration);
+        
     }
 }

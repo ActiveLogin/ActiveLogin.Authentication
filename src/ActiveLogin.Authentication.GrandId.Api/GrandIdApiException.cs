@@ -31,8 +31,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         public GrandIdApiException(string errorCodeString, string details)
           : base($"{errorCodeString}: {details}", null)
         {
-            ErrorCode errorCode;
-            ErrorCode = Enum.TryParse<ErrorCode>(errorCodeString, out errorCode) ? errorCode : ErrorCode.UNKNOWN;
+            ErrorCode = Enum.TryParse<ErrorCode>(errorCodeString, out var errorCode) ? errorCode : ErrorCode.UNKNOWN;
             Details = details;
         }
 

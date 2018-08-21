@@ -19,9 +19,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     public class GrandIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdAuthenticationOptions>
     {
         private readonly ILogger<GrandIdAuthenticationHandler> _logger;
-        private readonly IJsonSerializer _jsonSerializer;
 
-        public readonly IGrandIdApiClient _grandIdApiClient;
+        private readonly IGrandIdApiClient _grandIdApiClient;
 
         public GrandIdAuthenticationHandler(
             IOptionsMonitor<GrandIdAuthenticationOptions> options,
@@ -29,16 +28,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             UrlEncoder encoder,
             ISystemClock clock,
             ILogger<GrandIdAuthenticationHandler> logger,
-            IJsonSerializer jsonSerializer,
             IGrandIdApiClient grandIdApiClient,
             IGrandIdEnviromentConfiguration enviromentConfiguration
             )
             : base(options, loggerFactory, encoder, clock)
         {
             _logger = logger;
-            _jsonSerializer = jsonSerializer;
             _grandIdApiClient = grandIdApiClient;
-            _grandIdApiClient.SetConfiguration(enviromentConfiguration);
         }
 
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()

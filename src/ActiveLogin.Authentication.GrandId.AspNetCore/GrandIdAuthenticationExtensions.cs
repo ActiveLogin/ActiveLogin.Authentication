@@ -1,5 +1,6 @@
 ﻿using System;
 using ActiveLogin.Authentication.Common.Serialization;
+using ActiveLogin.Authentication.GrandId.Api;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -78,7 +79,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             {
                 httpClient.BaseAddress = configuration.ApiBaseUrl;
             });
-            builder.services.TryAddSingleton<IGrandIdEnviromentConfiguration>(configuration);
+            builder.Services.TryAddSingleton<IGrandIdEnviromentConfiguration>(configuration);
             return builder;
         }
 

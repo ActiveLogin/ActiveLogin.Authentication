@@ -1,7 +1,4 @@
-﻿using ActiveLogin.Authentication.GrandId.Api.Models;
-using System.Runtime.Serialization;
-
-namespace ActiveLogin.Authentication.GrandId.Api
+﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     public class AuthRequest
     {

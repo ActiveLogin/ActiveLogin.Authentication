@@ -16,15 +16,15 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
         private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators = new List<Action<HttpClientHandler>>();
-        public IServiceCollection services; 
+        public IServiceCollection Services; 
         public GrandIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder, string name)
         {
             AuthenticationBuilder = authenticationBuilder;
             Name = name;
 
-            services = AuthenticationBuilder.Services;
+            Services = AuthenticationBuilder.Services;
 
-            AddGrandIdHttpClient(services, Name, _httpClientConfigurators, _httpClientHandlerConfigurators);
+            AddGrandIdHttpClient(Services, Name, _httpClientConfigurators, _httpClientHandlerConfigurators);
 
             ConfigureGrandIdHttpClient(httpClient => httpClient.BaseAddress = GrandIdUrls.ProdApiBaseUrl);
             ConfigureGrandIdHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);

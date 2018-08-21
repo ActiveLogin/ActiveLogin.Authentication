@@ -1,7 +1,4 @@
-﻿using ActiveLogin.Authentication.GrandId.Api.Models;
-
-
-namespace ActiveLogin.Authentication.GrandId.Api
+﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     public class SessionStateRequest
     {
