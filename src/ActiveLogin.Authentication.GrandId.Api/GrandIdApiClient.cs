@@ -26,9 +26,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var apiKey = EnviromentConfiguration.ApiKey;
-            var deviceOptionKey =  EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption);
-            var authResponse = await _httpClient.GetAsync<AuthResponse>("/FederatedLogin?apiKey=" + apiKey + "&authenticateServiceKey=" + deviceOptionKey + "&callbackUrl=" + request.CallbackUrl, _jsonSerializer);
+            var authResponse = await _httpClient.GetAsync<AuthResponse>("/FederatedLogin?apiKey=" + EnviromentConfiguration.ApiKey + "&authenticateServiceKey=" + EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption) + "&callbackUrl=" + request.CallbackUrl, _jsonSerializer);
             if (authResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(authResponse.ErrorObject.Code, authResponse.ErrorObject.Message);
@@ -38,9 +36,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            var apiKey = EnviromentConfiguration.ApiKey; 
-            var deviceOptionKey = EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption);
-            var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>("/GetSession?apiKey=" + apiKey + "&authenticateServiceKey=" + deviceOptionKey + "&sessionid=" + request.SessionId, _jsonSerializer);
+            var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>("/GetSession?apiKey=" + EnviromentConfiguration.ApiKey + "&authenticateServiceKey=" + EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption) + "&sessionid=" + request.SessionId, _jsonSerializer);
             if (sessionResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(sessionResponse.ErrorObject.Code, sessionResponse.ErrorObject.Message);
