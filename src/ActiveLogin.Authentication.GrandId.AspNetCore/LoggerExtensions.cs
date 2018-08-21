@@ -1,7 +1,4 @@
-﻿using ActiveLogin.Authentication.GrandId.Api;
-using ActiveLogin.Authentication.GrandId.Api.Models;
-using ActiveLogin.Identity.Swedish;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore

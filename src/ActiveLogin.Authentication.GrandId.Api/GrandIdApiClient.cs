@@ -22,8 +22,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _httpClient = httpClient;
             _jsonSerializer = jsonSerializer;
         }
-
-
+        /// <summary>
+        /// Request a redirectUrl to be used for authentication against GrandId
+        /// </summary>
+        /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
             var authResponse = await _httpClient.GetAsync<AuthResponse>("/FederatedLogin?apiKey=" + EnviromentConfiguration.ApiKey + "&authenticateServiceKey=" + EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption) + "&callbackUrl=" + request.CallbackUrl, _jsonSerializer);
@@ -34,6 +36,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return authResponse;
         }
 
+        /// <summary>
+        /// Requests the state of a login for a sessionId
+        /// </summary>
+        /// <returns>If the request is successfull returns the status of the login</returns>
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
             var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>("/GetSession?apiKey=" + EnviromentConfiguration.ApiKey + "&authenticateServiceKey=" + EnviromentConfiguration.GetDeviceOptionKey(request.DeviceOption) + "&sessionid=" + request.SessionId, _jsonSerializer);

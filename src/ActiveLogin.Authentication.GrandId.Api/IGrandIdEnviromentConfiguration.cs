@@ -10,7 +10,6 @@ namespace ActiveLogin.Authentication.GrandId
         string SameDeviceServiceKey { get; set; }
         string OtherDeviceServiceKey { get; set; }
         string ChooseDeviceServiceKey { get; set; }
-
         string GetDeviceOptionKey(DeviceOption deviceOption);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using ActiveLogin.Authentication.GrandId.AspNetCore.Resources;
 using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,7 +67,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());
             
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
-            services.TryAddTransient<IGrandIdUserMessageLocalizer, GrandIdUserMessageStringLocalizer>();
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
         }
 

@@ -11,7 +11,6 @@ namespace ActiveLogin.Authentication.GrandId
         public string SameDeviceServiceKey { get; set; }
         public string OtherDeviceServiceKey { get; set; }
         public string ChooseDeviceServiceKey { get; set; }
-
         public string GetDeviceOptionKey(DeviceOption deviceOption)
         {
             var deviceOptionKey = "";
