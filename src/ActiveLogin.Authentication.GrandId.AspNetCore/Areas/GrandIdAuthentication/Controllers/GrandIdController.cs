@@ -33,7 +33,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
             returnUrl = PrepareReturnUrl(returnUrl); // need to add baseAddress for grandId to return to correct page
             var deviceOption = DeviceOption.ChooseDevice; // Todo, how to handle this?
 
-            returnUrl += "?deviceOption=" + deviceOption.ToString();
+            returnUrl += "?deviceOption=" + deviceOption;
            
             try
             {

@@ -71,6 +71,11 @@ namespace IdentityServerSample
             {
                 services.AddBankIdDevelopmentEnvironment();
             }
+
+            if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentApi", false))
+            {
+                services.AddGrandIdDevelopmentEnvironment();
+            }
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

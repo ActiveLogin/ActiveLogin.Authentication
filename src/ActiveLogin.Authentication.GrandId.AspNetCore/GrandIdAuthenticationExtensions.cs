@@ -83,5 +83,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return builder;
         }
 
+
+        public static IServiceCollection AddGrandIdDevelopmentEnvironment(this IServiceCollection services)
+        {
+            return AddGrandIdDevelopmentEnvironment(services, "GivenName", "Surname");
+        }
+
+        public static IServiceCollection AddGrandIdDevelopmentEnvironment(this IServiceCollection services, string givenName, string surname)
+        {
+            services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname));
+            return services;
+        }
     }
 }
