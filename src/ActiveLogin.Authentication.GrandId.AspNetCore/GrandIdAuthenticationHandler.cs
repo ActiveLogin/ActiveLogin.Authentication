@@ -223,12 +223,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private string GetLoginUrl()
         {
-            var absoluteUri = string.Concat(
-                        Request.Scheme,
-                        "://",
-                        Request.Host.ToUriComponent(),
-                        Request.PathBase.ToUriComponent());
-            return $"{Options.GrandIdLoginPath}?returnUrl={UrlEncoder.Encode(absoluteUri + Options.CallbackPath)}";
+            return $"{Options.GrandIdLoginPath}?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}";
         }
     }
 }

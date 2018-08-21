@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using Microsoft.AspNetCore.Antiforgery;
@@ -15,28 +12,25 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
     public class GrandIdController : Controller
     {
         private readonly IAntiforgery _antiforgery;
-        private readonly IJsonSerializer _jsonSerializer;
-
         public readonly IGrandIdApiClient _grandIdApiClient;
 
         public GrandIdController(IAntiforgery antiforgery,
-            IJsonSerializer jsonSerializer,
             IGrandIdApiClient grandIdApiClient,
             IGrandIdEnviromentConfiguration enviromentConfiguration)
         {
             _antiforgery = antiforgery;
-            _jsonSerializer = jsonSerializer;
             _grandIdApiClient = grandIdApiClient;
             _grandIdApiClient.SetConfiguration(enviromentConfiguration);
         }
-
+        
         public async Task<ActionResult> Login(string returnUrl)
         {
-            //if (!Url.IsLocalUrl(returnUrl))
-            //{
-            //    throw new Exception(GrandIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
-            //}
-            var deviceOption = Api.Models.DeviceOption.ChooseDevice; // Todo, how to handle this?
+            if (!Url.IsLocalUrl(returnUrl))
+            {
+                throw new Exception(GrandIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
+            }
+            returnUrl = PrepareReturnUrl(returnUrl); // need to add baseAddress for grandId to return to correct page
+            var deviceOption = DeviceOption.ChooseDevice; // Todo, how to handle this?
 
             returnUrl += "?deviceOption=" + deviceOption.ToString();
            
@@ -52,11 +46,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
             }
         }
 
-        private static StringContent GetJsonStringContent(string requestJson)
+        private string PrepareReturnUrl(string returnUrl)
         {
-            var requestContent = new StringContent(requestJson, Encoding.Default, "application/json");
-            requestContent.Headers.ContentType.CharSet = string.Empty;
-            return requestContent;
+            var absoluteUri = string.Concat(
+                     Request.Scheme,
+                     "://",
+                     Request.Host.ToUriComponent(),
+                     Request.PathBase.ToUriComponent());
+            return absoluteUri + returnUrl;
         }
     }
 }

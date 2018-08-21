@@ -20,7 +20,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public GrandIdAuthenticationOptions()
         {
-            CallbackPath = new PathString($"/{GrandIdAuthenticationConstants.AreaName}");
+            CallbackPath = new PathString("/signin-grandid");
         }
 
         public PathString GrandIdLoginPath { get; set; } = new PathString($"/{GrandIdAuthenticationConstants.AreaName}/Login");
