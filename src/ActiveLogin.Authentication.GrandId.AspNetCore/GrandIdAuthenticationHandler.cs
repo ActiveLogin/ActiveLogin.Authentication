@@ -57,7 +57,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var deviceOptionString = Request.Query["deviceOption"];
             if (string.IsNullOrEmpty(deviceOptionString) || !Enum.TryParse(deviceOptionString, out DeviceOption deviceOption))
             {
-                return Task.FromResult(HandleRequestResult.Fail("Missing or wrong deviceOption."));
+                return Task.FromResult(HandleRequestResult.Fail("Missing or invalid deviceOption."));
             }
             try
             {
@@ -81,13 +81,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         private Task<SessionStateResponse> GetLoginResponse(DeviceOption deviceOption, string sessionId)
         {
             return _grandIdApiClient.GetSessionAsync(deviceOption, sessionId);
-        }
-        
-        private static StringContent GetJsonStringContent(string requestJson)
-        {
-            var requestContent = new StringContent(requestJson, Encoding.Default, "application/json");
-            requestContent.Headers.ContentType.CharSet = string.Empty;
-            return requestContent;
         }
 
         private GrandIdState GetStateFromCookie()

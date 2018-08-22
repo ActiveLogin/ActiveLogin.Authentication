@@ -34,17 +34,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
             var deviceOption = DeviceOption.ChooseDevice; // Todo, how to handle this?
 
             returnUrl += "?deviceOption=" + deviceOption;
-           
+
             try
             {
                 var response = await _grandIdApiClient.AuthAsync(deviceOption, returnUrl);
                 var redirectUrl = response.RedirectUrl;
                 return Redirect(redirectUrl);
             }
+            catch (GrandIdApiException grandIdApiException)
+            {
+                _logger.LogError(grandIdApiException, "Error requesting redirectUrl for '{DeviceOption}': '{ErrorCode}'-'{message}'", deviceOption, grandIdApiException.ErrorCode, grandIdApiException.Details);
+                throw new Exception("Something went wrong when initializing login, please contact the administrator if the problem persists");
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error requesting redirectUrl for '{DeviceOption}'", deviceOption);
-                throw ex;
+                throw;
             }
         }
 
