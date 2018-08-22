@@ -43,7 +43,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
             }
             catch (GrandIdApiException grandIdApiException)
             {
-                _logger.LogError(grandIdApiException, "Error requesting redirectUrl for '{DeviceOption}': '{ErrorCode}'-'{message}'", deviceOption, grandIdApiException.ErrorCode, grandIdApiException.Details);
+                _logger.LogError(grandIdApiException, $"Error requesting redirectUrl for {deviceOption} : {grandIdApiException.ErrorCode}-{ grandIdApiException.Details}");
                 throw new Exception("Something went wrong when initializing login, please contact the administrator if the problem persists");
             }
             catch (Exception ex)
