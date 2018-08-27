@@ -5,6 +5,8 @@ using System.IO;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
+using ActiveLogin.Authentication.GrandId.Api;
+using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
@@ -43,8 +45,17 @@ namespace IdentityServerSample
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
-            services.AddAuthentication()
-                .AddBankId()
+            services.AddAuthentication().AddGrandId().AddGrandIdEnvironmentConfiguration(configuration =>
+            {
+                var apiBaseUrl = Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false) ? GrandIdUrls.TestApiBaseUrl : GrandIdUrls.ProdApiBaseUrl;
+                configuration.ApiBaseUrl = apiBaseUrl;
+                configuration.ApiKey = Configuration.GetValue("ActiveLogin:GrandId:apiKey", "");
+                configuration.SameDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:SameDeviceServiceKey", "");
+                configuration.OtherDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:OtherDeviceServiceKey", "");
+                configuration.ChooseDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:ChooseDeviceServiceKey", "");
+            });
+
+            services.AddAuthentication().AddBankId()
                     .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
                     .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                     .AddBankIdEnvironmentConfiguration(configuration =>
@@ -59,6 +70,11 @@ namespace IdentityServerSample
             if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentApi", false))
             {
                 services.AddBankIdDevelopmentEnvironment();
+            }
+
+            if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentApi", false))
+            {
+                services.AddGrandIdDevelopmentEnvironment();
             }
         }
 
