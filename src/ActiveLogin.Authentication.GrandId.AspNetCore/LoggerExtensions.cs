@@ -5,7 +5,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public static class LoggerExtensions
     {
-
         public static void GrandIdAuthFailure(this ILogger logger, string errorMessage)
         {
             logger.LogError(errorMessage);

@@ -52,7 +52,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static GrandIdAuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdAuthenticationOptions> configureOptions)
         {
-                AddGrandIdServices(builder.Services);
+            AddGrandIdServices(builder.Services);
 
             builder.AddScheme<GrandIdAuthenticationOptions, GrandIdAuthenticationHandler>(
                 authenticationScheme,
@@ -66,7 +66,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         private static void AddGrandIdServices(IServiceCollection services)
         {
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());
-            
+
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
         }
@@ -82,7 +82,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             builder.Services.TryAddSingleton<IGrandIdEnviromentConfiguration>(configuration);
             return builder;
         }
-
 
         public static IServiceCollection AddGrandIdDevelopmentEnvironment(this IServiceCollection services)
         {

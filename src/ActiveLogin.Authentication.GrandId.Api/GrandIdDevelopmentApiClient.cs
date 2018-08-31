@@ -68,6 +68,5 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             return response;
         }
-
     }
 }
