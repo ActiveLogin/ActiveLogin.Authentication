@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.Common.Serialization;
@@ -34,8 +36,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            //TODO: URL Encode query string parameters
-            var authResponse = await _httpClient.GetAsync<AuthResponse>("/FederatedLogin?apiKey=" + _enviromentConfiguration.ApiKey + "&authenticateServiceKey=" + GetDeviceOptionKey(request.DeviceOption) + "&callbackUrl=" + request.CallbackUrl, _jsonSerializer);
+            var url = GetUrl("/FederatedLogin", new Dictionary<string, string>()
+            {
+                { "apiKey", _enviromentConfiguration.ApiKey },
+                { "authenticateServiceKey", GetDeviceOptionKey(request.DeviceOption) },
+                { "callbackUrl", request.CallbackUrl }
+            });
+            var authResponse = await _httpClient.GetAsync<AuthResponse>(url, _jsonSerializer);
             //TODO: Wrap error object and don't return if success
             if (authResponse.ErrorObject != null)
             {
@@ -50,8 +57,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If the request is successfull returns the status of the login</returns>
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            //TODO: URL Encode query string parameters
-            var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>("/GetSession?apiKey=" + _enviromentConfiguration.ApiKey + "&authenticateServiceKey=" + GetDeviceOptionKey(request.DeviceOption) + "&sessionid=" + request.SessionId, _jsonSerializer);
+            var url = GetUrl("/GetSession", new Dictionary<string, string>()
+            {
+                { "apiKey", _enviromentConfiguration.ApiKey },
+                { "authenticateServiceKey", GetDeviceOptionKey(request.DeviceOption) },
+                { "sessionid", request.SessionId }
+            });
+            var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>(url, _jsonSerializer);
             //TODO: Wrap error object and don't return if success
             if (sessionResponse.ErrorObject != null)
             {
@@ -73,6 +85,17 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 default:
                     throw new ArgumentException("Invalid device option", nameof(deviceOption));
             }
+        }
+        
+        internal static string GetUrl(string baseUrl, Dictionary<string, string> filter)
+        {
+            if (!filter.Any())
+            {
+                return baseUrl;
+            }
+
+            var queryString = string.Join("&", filter.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+            return $"{baseUrl}?{queryString}";
         }
     }
 }
