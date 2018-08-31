@@ -10,22 +10,23 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public class GrandIdDevelopmentApiClient : IGrandIdApiClient
     {
+        private const string FakePersonalIdentityNumber = "199908072391";
 
         private readonly string _givenName;
         private readonly string _surname;
 
         private readonly Dictionary<string, AuthResponse> _auths = new Dictionary<string, AuthResponse>();
-        
+
         public GrandIdDevelopmentApiClient(string givenName, string surname)
         {
             _givenName = givenName;
             _surname = surname;
         }
-        
+
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
-            
+
             var sessionId = Guid.NewGuid().ToString();
 
             var response = new AuthResponse
@@ -64,7 +65,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var auth = _auths[request.SessionId];
             _auths.Remove(request.SessionId);
-            var response = new SessionStateResponse { SessionId = auth.SessionId, UserAttributes = GetUserAttributes("199508032381") };
+            var response = new SessionStateResponse
+            {
+                SessionId = auth.SessionId,
+                UserAttributes = GetUserAttributes(FakePersonalIdentityNumber)
+            };
 
             return response;
         }
