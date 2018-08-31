@@ -16,7 +16,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
         private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators = new List<Action<HttpClientHandler>>();
-        public IServiceCollection Services; 
+
+        public IServiceCollection Services;
+
         public GrandIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder, string name)
         {
             AuthenticationBuilder = authenticationBuilder;
