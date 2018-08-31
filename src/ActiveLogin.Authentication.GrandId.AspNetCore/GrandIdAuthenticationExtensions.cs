@@ -70,18 +70,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
         }
 
-        public static GrandIdAuthenticationBuilder AddGrandIdEnvironmentConfiguration(this GrandIdAuthenticationBuilder builder, Action<GrandIdEnvironmentConfiguration> configureGrandIdEnvironment)
-        {
-            var configuration = new GrandIdEnvironmentConfiguration();
-            configureGrandIdEnvironment(configuration);
-            builder.ConfigureGrandIdHttpClient(httpClient =>
-            {
-                httpClient.BaseAddress = configuration.ApiBaseUrl;
-            });
-            builder.Services.TryAddSingleton<IGrandIdEnviromentConfiguration>(configuration);
-            return builder;
-        }
-
         public static IServiceCollection AddGrandIdDevelopmentEnvironment(this IServiceCollection services)
         {
             return AddGrandIdDevelopmentEnvironment(services, "GivenName", "Surname");

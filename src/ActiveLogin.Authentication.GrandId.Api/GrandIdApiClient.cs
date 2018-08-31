@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api.Models;
@@ -12,7 +13,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         private readonly HttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
-        private IGrandIdEnviromentConfiguration _enviromentConfiguration;
+        private readonly IGrandIdEnviromentConfiguration _enviromentConfiguration;
 
         /// <summary>
         /// Creates an instance of <see cref="GrandIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
@@ -26,13 +27,16 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _jsonSerializer = jsonSerializer;
             _enviromentConfiguration = enviromentConfiguration;
         }
+
         /// <summary>
         /// Request a redirectUrl to be used for authentication against GrandId
         /// </summary>
         /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var authResponse = await _httpClient.GetAsync<AuthResponse>("/FederatedLogin?apiKey=" + _enviromentConfiguration.ApiKey + "&authenticateServiceKey=" + _enviromentConfiguration.GetDeviceOptionKey(request.DeviceOption) + "&callbackUrl=" + request.CallbackUrl, _jsonSerializer);
+            //TODO: URL Encode query string parameters
+            var authResponse = await _httpClient.GetAsync<AuthResponse>("/FederatedLogin?apiKey=" + _enviromentConfiguration.ApiKey + "&authenticateServiceKey=" + GetDeviceOptionKey(request.DeviceOption) + "&callbackUrl=" + request.CallbackUrl, _jsonSerializer);
+            //TODO: Wrap error object and don't return if success
             if (authResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(authResponse.ErrorObject.Code, authResponse.ErrorObject.Message);
@@ -46,7 +50,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If the request is successfull returns the status of the login</returns>
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>("/GetSession?apiKey=" + _enviromentConfiguration.ApiKey + "&authenticateServiceKey=" + _enviromentConfiguration.GetDeviceOptionKey(request.DeviceOption) + "&sessionid=" + request.SessionId, _jsonSerializer);
+            //TODO: URL Encode query string parameters
+            var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>("/GetSession?apiKey=" + _enviromentConfiguration.ApiKey + "&authenticateServiceKey=" + GetDeviceOptionKey(request.DeviceOption) + "&sessionid=" + request.SessionId, _jsonSerializer);
+            //TODO: Wrap error object and don't return if success
             if (sessionResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(sessionResponse.ErrorObject.Code, sessionResponse.ErrorObject.Message);
@@ -54,5 +60,19 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return sessionResponse;
         }
 
+        private string GetDeviceOptionKey(DeviceOption deviceOption)
+        {
+            switch (deviceOption)
+            {
+                case DeviceOption.SameDevice:
+                    return _enviromentConfiguration.SameDeviceServiceKey;
+                case DeviceOption.OtherDevice:
+                    return _enviromentConfiguration.OtherDeviceServiceKey;
+                case DeviceOption.ChooseDevice:
+                    return _enviromentConfiguration.ChooseDeviceServiceKey;
+                default:
+                    throw new ArgumentException("Invalid device option", nameof(deviceOption));
+            }
+        }
     }
 }

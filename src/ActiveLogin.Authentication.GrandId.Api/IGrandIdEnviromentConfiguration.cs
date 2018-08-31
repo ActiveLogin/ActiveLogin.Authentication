@@ -1,5 +1,4 @@
 ﻿using System;
-using ActiveLogin.Authentication.GrandId.Api.Models;
 
 namespace ActiveLogin.Authentication.GrandId.Api
 {
@@ -10,6 +9,5 @@ namespace ActiveLogin.Authentication.GrandId.Api
         string SameDeviceServiceKey { get; set; }
         string OtherDeviceServiceKey { get; set; }
         string ChooseDeviceServiceKey { get; set; }
-        string GetDeviceOptionKey(DeviceOption deviceOption);
     }
 }

@@ -35,7 +35,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
             Details = details;
         }
 
-
         /// <summary>
         /// The category of error.
         /// </summary>

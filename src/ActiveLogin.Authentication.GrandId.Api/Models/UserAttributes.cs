@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         public string Name { get; set; }
 
         [DataMember(Name = "personalNumber")]
-        public string PersonalNumber { get; set; }
+        public string PersonalIdentityNumber { get; set; }
 
         [DataMember(Name = "notBefore")]
         public string NotBefore { get; set; }

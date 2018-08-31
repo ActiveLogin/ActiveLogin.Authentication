@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthentication.Controllers
 {
+    //TODO: Move into handler and change project type from Razor into classlibrary(?)
     [Area(GrandIdAuthenticationConstants.AreaName)]
     [Route("/[area]/[action]")]
     public class GrandIdController : Controller

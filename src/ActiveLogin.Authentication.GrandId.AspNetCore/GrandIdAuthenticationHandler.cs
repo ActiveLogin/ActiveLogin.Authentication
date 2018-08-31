@@ -110,7 +110,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private IEnumerable<Claim> GetClaims(SessionStateResponse loginResult, DateTimeOffset? expiresUtc)
         {
-            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalNumber);
+            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
                 new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),

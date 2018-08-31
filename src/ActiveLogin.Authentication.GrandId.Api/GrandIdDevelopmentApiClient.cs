@@ -45,7 +45,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 GivenName = _givenName,
                 Surname = _surname,
                 Name = $"{_givenName} {_surname}",
-                PersonalNumber = personalIdentityNumber
+                PersonalIdentityNumber = personalIdentityNumber
             };
         }
 

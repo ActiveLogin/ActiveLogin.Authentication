@@ -49,8 +49,11 @@ namespace IdentityServerSample
                     .AddGrandId()
                         .AddGrandIdEnvironmentConfiguration(configuration =>
                         {
-                            var apiBaseUrl = Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false) ? GrandIdUrls.TestApiBaseUrl : GrandIdUrls.ProdApiBaseUrl;
-                            configuration.ApiBaseUrl = apiBaseUrl;
+                            if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
+                            {
+                                configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
+                            }
+
                             configuration.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
                             configuration.SameDeviceServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
                             configuration.OtherDeviceServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");

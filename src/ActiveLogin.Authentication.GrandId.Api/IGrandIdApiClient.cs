@@ -19,6 +19,5 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// </summary>
         /// <returns>If the request is successful, the sessionData is returned</returns>
         Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request);
-        
     }
 }
