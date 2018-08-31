@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,14 +13,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
     public class GrandIdController : Controller
     {
         private readonly IGrandIdApiClient _grandIdApiClient;
+        private readonly UrlEncoder _urlEncoder;
         private readonly ILogger<GrandIdAuthenticationHandler> _logger;
 
-        public GrandIdController(IAntiforgery antiforgery,
+        public GrandIdController(
             IGrandIdApiClient grandIdApiClient,
-            IGrandIdEnviromentConfiguration enviromentConfiguration,
+            UrlEncoder urlEncoder,
             ILogger<GrandIdAuthenticationHandler> logger)
         {
             _grandIdApiClient = grandIdApiClient;
+            _urlEncoder = urlEncoder;
             _logger = logger;
         }
         
@@ -30,30 +32,25 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Areas.GrandIdAuthenticat
             {
                 throw new Exception(GrandIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
             }
-            returnUrl = PrepareReturnUrl(returnUrl); // need to add baseAddress for grandId to return to correct page
-            var deviceOption = DeviceOption.ChooseDevice; // Todo, how to handle this?
 
-            returnUrl += "?deviceOption=" + deviceOption;
+            var deviceOption = DeviceOption.ChooseDevice; // TODO: How to handle this?
+            returnUrl += "?deviceOption=" + _urlEncoder.Encode(deviceOption.ToString());
+            var absoluteReturnUrl = GetAbsoluteUrl(returnUrl);
 
             try
             {
-                var response = await _grandIdApiClient.AuthAsync(deviceOption, returnUrl);
+                var response = await _grandIdApiClient.AuthAsync(deviceOption, absoluteReturnUrl);
                 var redirectUrl = response.RedirectUrl;
                 return Redirect(redirectUrl);
             }
-            catch (GrandIdApiException grandIdApiException)
-            {
-                _logger.LogError(grandIdApiException, $"Error requesting redirectUrl for {deviceOption} : {grandIdApiException.ErrorCode}-{ grandIdApiException.Details}");
-                throw new Exception("Something went wrong when initializing login, please contact the administrator if the problem persists");
-            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error requesting redirectUrl for '{DeviceOption}'", deviceOption);
+                _logger.GrandIdAuthFailure(deviceOption, returnUrl, ex);
                 throw;
             }
         }
 
-        private string PrepareReturnUrl(string returnUrl)
+        private string GetAbsoluteUrl(string returnUrl)
         {
             var absoluteUri = string.Concat(
                      Request.Scheme,

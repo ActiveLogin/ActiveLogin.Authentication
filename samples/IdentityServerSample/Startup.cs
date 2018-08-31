@@ -45,26 +45,29 @@ namespace IdentityServerSample
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
-            services.AddAuthentication().AddGrandId().AddGrandIdEnvironmentConfiguration(configuration =>
-            {
-                var apiBaseUrl = Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false) ? GrandIdUrls.TestApiBaseUrl : GrandIdUrls.ProdApiBaseUrl;
-                configuration.ApiBaseUrl = apiBaseUrl;
-                configuration.ApiKey = Configuration.GetValue("ActiveLogin:GrandId:apiKey", "");
-                configuration.SameDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:SameDeviceServiceKey", "");
-                configuration.OtherDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:OtherDeviceServiceKey", "");
-                configuration.ChooseDeviceServiceKey = Configuration.GetValue("ActiveLogin:GrandId:ChooseDeviceServiceKey", "");
-            });
-
-            services.AddAuthentication().AddBankId()
-                    .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                    .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-                    .AddBankIdEnvironmentConfiguration(configuration =>
-                    {
-                        if (Configuration.GetValue("ActiveLogin:BankId:UseTestApiEndpoint", false))
+            services.AddAuthentication()
+                    .AddGrandId()
+                        .AddGrandIdEnvironmentConfiguration(configuration =>
                         {
-                            configuration.ApiBaseUrl = BankIdUrls.TestApiBaseUrl;
-                        }
-                    });
+                            var apiBaseUrl = Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false) ? GrandIdUrls.TestApiBaseUrl : GrandIdUrls.ProdApiBaseUrl;
+                            configuration.ApiBaseUrl = apiBaseUrl;
+                            configuration.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                            configuration.SameDeviceServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
+                            configuration.OtherDeviceServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+                            configuration.ChooseDeviceServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+                        });
+
+            services.AddAuthentication()
+                    .AddBankId()
+                        .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+                        .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+                        .AddBankIdEnvironmentConfiguration(configuration =>
+                        {
+                            if (Configuration.GetValue("ActiveLogin:BankId:UseTestApiEndpoint", false))
+                            {
+                                configuration.ApiBaseUrl = BankIdUrls.TestApiBaseUrl;
+                            }
+                        });
 
             // Development BankID API
             if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentApi", false))

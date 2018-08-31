@@ -33,12 +33,12 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             _grandIdApiClient = grandIdApiClient;
         }
 
-        protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
+        protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
             var state = GetStateFromCookie();
             if (state == null)
             {
-                return Task.FromResult(HandleRequestResult.Fail("Invalid state cookie."));
+                return HandleRequestResult.Fail("Invalid state cookie.");
             }
 
             DeleteStateCookie();
@@ -47,36 +47,31 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var sessionId = Request.Query["grandidsession"];
             if (string.IsNullOrEmpty(sessionId))
             {
-                return Task.FromResult(HandleRequestResult.Fail("Missing sessionId."));
+                return HandleRequestResult.Fail("Missing sessionId.");
             }
 
             var deviceOptionString = Request.Query["deviceOption"];
             if (string.IsNullOrEmpty(deviceOptionString) || !Enum.TryParse(deviceOptionString, out DeviceOption deviceOption))
             {
-                return Task.FromResult(HandleRequestResult.Fail("Missing or invalid deviceOption."));
+                return HandleRequestResult.Fail("Missing or invalid deviceOption.");
             }
 
             try
             {
-                var loginResult = GetLoginResponse(deviceOption, sessionId).GetAwaiter().GetResult();
+                var sessionResult = await _grandIdApiClient.GetSessionAsync(deviceOption, sessionId);
 
                 var properties = state.AuthenticationProperties;
-                var ticket = GetAuthenticationTicket(loginResult, properties);
-                _logger.GrandIdAuthSuccess(loginResult.SessionId);
+                var ticket = GetAuthenticationTicket(sessionResult, properties);
+                _logger.GrandIdGetSessionSuccess(sessionResult.SessionId);
 
-                return Task.FromResult(HandleRequestResult.Success(ticket));
+                return HandleRequestResult.Success(ticket);
             }
             catch (Exception ex)
             {
-                _logger.GrandIdAuthFailure(sessionId, ex);
+                _logger.GrandIdGetSessionFailure(sessionId, ex);
 
-                return Task.FromResult(HandleRequestResult.Fail("Failed to fetch session"));
+                return HandleRequestResult.Fail("Failed to fetch session");
             }
-        }
-
-        private Task<SessionStateResponse> GetLoginResponse(DeviceOption deviceOption, string sessionId)
-        {
-            return _grandIdApiClient.GetSessionAsync(deviceOption, sessionId);
         }
 
         private GrandIdState GetStateFromCookie()
