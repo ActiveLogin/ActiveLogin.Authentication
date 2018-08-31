@@ -68,7 +68,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());
 
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
-            services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
         }
 
         public static GrandIdAuthenticationBuilder AddGrandIdEnvironmentConfiguration(this GrandIdAuthenticationBuilder builder, Action<GrandIdEnvironmentConfiguration> configureGrandIdEnvironment)
