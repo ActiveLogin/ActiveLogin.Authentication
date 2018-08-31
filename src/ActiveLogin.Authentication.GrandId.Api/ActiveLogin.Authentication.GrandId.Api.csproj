@@ -16,7 +16,7 @@
     <Description>API client that enables an application to call Swedish BankID's (svenskt BankIDs) REST API in .NET.</Description>
     <PackageTags>GrandId;swedish;sweden;rest;api;client</PackageTags>
 
-    <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+    <Authors>Martin Sjölander;Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
     <Copyright>Copyright © ActiveLogin</Copyright>
 
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
