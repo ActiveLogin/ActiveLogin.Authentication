@@ -43,8 +43,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             DeleteStateCookie();
 
+            //TODO: If session id is expected to be a guid, make sure to parse it
             var sessionId = Request.Query["grandidsession"];
-
             if (string.IsNullOrEmpty(sessionId))
             {
                 return Task.FromResult(HandleRequestResult.Fail("Missing sessionId."));
@@ -55,6 +55,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             {
                 return Task.FromResult(HandleRequestResult.Fail("Missing or invalid deviceOption."));
             }
+
             try
             {
                 var loginResult = GetLoginResponse(deviceOption, sessionId).GetAwaiter().GetResult();
@@ -71,7 +72,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
                 return Task.FromResult(HandleRequestResult.Fail("Failed to fetch session"));
             }
-
         }
 
         private Task<SessionStateResponse> GetLoginResponse(DeviceOption deviceOption, string sessionId)
