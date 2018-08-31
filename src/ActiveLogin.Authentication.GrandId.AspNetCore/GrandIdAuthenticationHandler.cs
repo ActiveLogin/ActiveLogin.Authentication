@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
@@ -28,8 +25,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             UrlEncoder encoder,
             ISystemClock clock,
             ILogger<GrandIdAuthenticationHandler> logger,
-            IGrandIdApiClient grandIdApiClient,
-            IGrandIdEnviromentConfiguration enviromentConfiguration
+            IGrandIdApiClient grandIdApiClient
             )
             : base(options, loggerFactory, encoder, clock)
         {
@@ -71,7 +67,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
             catch (Exception ex)
             {
-                _logger.GrandIdAuthFailed(sessionId, ex);
+                _logger.GrandIdAuthFailure(sessionId, ex);
 
                 return Task.FromResult(HandleRequestResult.Fail("Failed to fetch session"));
             }
