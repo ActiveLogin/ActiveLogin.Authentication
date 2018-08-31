@@ -1,4 +1,6 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore
+﻿using System;
+
+namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public class BankIdAuthenticationDefaults
     {
@@ -10,6 +12,6 @@
 
         public const int StatusRefreshIntervalMs = 2000;
 
-        public const int MaximumSessionLifespanS = 3600;
+        public static readonly TimeSpan MaximumSessionLifespan = TimeSpan.FromHours(1);
     }
 }

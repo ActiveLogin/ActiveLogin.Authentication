@@ -24,7 +24,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         }
 
         public PathString GrandIdLoginPath { get; set; } = new PathString($"/{GrandIdAuthenticationConstants.AreaName}/Login");
-        public TimeSpan? TokenExpiresIn { get; set; } = TimeSpan.FromSeconds(GrandIdAuthenticationDefaults.MaximumSessionLifespanS);
+        public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;
         public string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.AuthenticationMethodName;
