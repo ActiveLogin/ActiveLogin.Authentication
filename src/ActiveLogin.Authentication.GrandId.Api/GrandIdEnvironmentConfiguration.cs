@@ -7,26 +7,24 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         public Uri ApiBaseUrl { get; set; } = GrandIdUrls.ProdApiBaseUrl;
         public string ApiKey { get; set; }
+
         public string SameDeviceServiceKey { get; set; }
         public string OtherDeviceServiceKey { get; set; }
         public string ChooseDeviceServiceKey { get; set; }
+
         public string GetDeviceOptionKey(DeviceOption deviceOption)
         {
-            var deviceOptionKey = "";
-
             switch (deviceOption)
             {
                 case DeviceOption.SameDevice:
-                    deviceOptionKey = SameDeviceServiceKey;
-                    break;
+                    return SameDeviceServiceKey;
                 case DeviceOption.OtherDevice:
-                    deviceOptionKey = OtherDeviceServiceKey;
-                    break;
+                    return OtherDeviceServiceKey;
                 case DeviceOption.ChooseDevice:
-                    deviceOptionKey = ChooseDeviceServiceKey;
-                    break;
+                    return ChooseDeviceServiceKey;
+                default:
+                    throw new ArgumentException("Invalid device option", nameof(deviceOption));
             }
-            return deviceOptionKey;
         }
     }
 }
