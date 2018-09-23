@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
+    //TODO: Alot code here could be shared with the BankId implementation
     public class GrandIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdAuthenticationOptions>
     {
         private readonly ILogger<GrandIdAuthenticationHandler> _logger;
@@ -50,15 +51,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 return HandleRequestResult.Fail("Missing sessionId.");
             }
 
-            var deviceOptionString = Request.Query["deviceOption"];
-            if (string.IsNullOrEmpty(deviceOptionString) || !Enum.TryParse(deviceOptionString, out DeviceOption deviceOption))
-            {
-                return HandleRequestResult.Fail("Missing or invalid deviceOption.");
-            }
-
             try
             {
-                var sessionResult = await _grandIdApiClient.GetSessionAsync(deviceOption, sessionId);
+                var sessionResult = await _grandIdApiClient.GetSessionAsync(Options.AuthenticateServiceKey, sessionId);
 
                 var properties = state.AuthenticationProperties;
                 var ticket = GetAuthenticationTicket(sessionResult, properties);
@@ -180,14 +175,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return dateOfBirth.Date.ToString("yyyy-MM-dd");
         }
 
-        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
+        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             AppendStateCookie(properties);
 
-            var loginUrl = GetLoginUrl();
-            Response.Redirect(loginUrl);
-
-            return Task.CompletedTask;
+            var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
+            try
+            {
+                var response = await _grandIdApiClient.AuthAsync(Options.AuthenticateServiceKey, absoluteReturnUrl);
+                _logger.GrandIdAuthSuccess(Options.AuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
+                Response.Redirect(response.RedirectUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.GrandIdAuthFailure(Options.AuthenticateServiceKey, absoluteReturnUrl, ex);
+                throw;
+            }
         }
 
         private void AppendStateCookie(AuthenticationProperties properties)
@@ -201,9 +204,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             Response.Cookies.Append(Options.StateCookie.Name, Options.StateDataFormat.Protect(state), cookieOptions);
         }
 
-        private string GetLoginUrl()
+        private string GetAbsoluteUrl(string returnUrl)
         {
-            return $"{Options.GrandIdLoginPath}?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}";
+            var absoluteUri = string.Concat(
+                Request.Scheme,
+                "://",
+                Request.Host.ToUriComponent(),
+                Request.PathBase.ToUriComponent());
+            return absoluteUri + returnUrl;
         }
     }
 }

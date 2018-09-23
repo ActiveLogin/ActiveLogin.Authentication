@@ -46,6 +46,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             
         private static void AddGrandIdHttpClient(IServiceCollection services, string name, List<Action<HttpClient>> httpClientConfigurators, List<Action<HttpClientHandler>> httpClientHandlerConfigurators)
         {
+            services.
             services.AddHttpClient<IGrandIdApiClient, GrandIdApiClient>(name, httpClient =>
                 {
                     httpClientConfigurators.ForEach(configurator => configurator(httpClient));

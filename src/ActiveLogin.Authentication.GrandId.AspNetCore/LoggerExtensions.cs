@@ -16,14 +16,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             logger.LogError(GrandIdLoggingEvents.GrandIdGetSessionHardFailure, exception, "GrandId get session failed for the sessionId '{SessionId}'", sessionId, exception);
         }
 
-        public static void GrandIdAuthSuccess(this ILogger logger, DeviceOption deviceOption, string returnUrl, string sessionId)
+        public static void GrandIdAuthSuccess(this ILogger logger, string authenticateServiceKey, string returnUrl, string sessionId)
         {
-            logger.LogInformation(GrandIdLoggingEvents.GrandIdAuthSuccess, "GrandId auth succedded for deviceOption '{DeviceOption}' and returnUrl '{returnUrl}'", deviceOption, returnUrl);
+            logger.LogInformation(GrandIdLoggingEvents.GrandIdAuthSuccess, "GrandId auth succedded for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
         }
 
-        public static void GrandIdAuthFailure(this ILogger logger, DeviceOption deviceOption, string returnUrl, Exception exception)
+        public static void GrandIdAuthFailure(this ILogger logger, string authenticateServiceKey, string returnUrl, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdAuthHardFailure, exception, "GrandId auth failed for deviceOption '{DeviceOption}' and returnUrl '{returnUrl}'", deviceOption, returnUrl);
+            logger.LogError(GrandIdLoggingEvents.GrandIdAuthHardFailure, exception, "GrandId auth failed for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
         }
     }
 }

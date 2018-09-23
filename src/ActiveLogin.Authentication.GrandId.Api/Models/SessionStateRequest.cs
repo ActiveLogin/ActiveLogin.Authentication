@@ -1,15 +1,14 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    //TODO: Make keys part of request
     public class SessionStateRequest
     {
-        public SessionStateRequest(DeviceOption deviceOption, string sessionId)
+        public SessionStateRequest(string authenticateServiceKey, string sessionId)
         {
-            DeviceOption = deviceOption;
+            AuthenticateServiceKey = authenticateServiceKey;
             SessionId = sessionId;
         }
-        public DeviceOption DeviceOption { get; set; }
-        
+
+        public string AuthenticateServiceKey { get; set; }
         public string SessionId { get; set; }
     }
 }

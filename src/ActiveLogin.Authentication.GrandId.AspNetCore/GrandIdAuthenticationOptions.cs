@@ -23,7 +23,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             CallbackPath = new PathString("/signin-grandid");
         }
 
-        public PathString GrandIdLoginPath { get; set; } = new PathString($"/{GrandIdAuthenticationConstants.AreaName}/Login");
+        public string AuthenticateServiceKey { get; set; }
+
         public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;

@@ -15,19 +15,19 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         private readonly HttpClient _httpClient;
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly IGrandIdEnviromentConfiguration _enviromentConfiguration;
+        private readonly string _apiKey;
 
         /// <summary>
         /// Creates an instance of <see cref="GrandIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
         /// </summary>
         /// <param name="httpClient">The HttpClient to use.</param>
         /// <param name="jsonSerializer">The JsonSerializer to se for serializing and deserializing requests and responses.</param>
-        /// <param name="enviromentConfiguration"></param>
-        public GrandIdApiClient(HttpClient httpClient, IJsonSerializer jsonSerializer, IGrandIdEnviromentConfiguration enviromentConfiguration)
+        /// <param name="apiKey">ApiKey for GrandId.</param>
+        public GrandIdApiClient(HttpClient httpClient, IJsonSerializer jsonSerializer, string apiKey)
         {
             _httpClient = httpClient;
             _jsonSerializer = jsonSerializer;
-            _enviromentConfiguration = enviromentConfiguration;
+            _apiKey = apiKey;
         }
 
         /// <summary>
@@ -36,10 +36,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var url = GetUrl("/FederatedLogin", new Dictionary<string, string>()
+            var url = GetUrl("/FederatedLogin", new Dictionary<string, string>
             {
-                { "apiKey", _enviromentConfiguration.ApiKey },
-                { "authenticateServiceKey", GetDeviceOptionKey(request.DeviceOption) },
+                { "apiKey", _apiKey },
+                { "authenticateServiceKey", request.AuthenticateServiceKey },
                 { "callbackUrl", request.CallbackUrl }
             });
             var authResponse = await _httpClient.GetAsync<AuthResponse>(url, _jsonSerializer);
@@ -57,10 +57,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If the request is successfull returns the status of the login</returns>
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            var url = GetUrl("/GetSession", new Dictionary<string, string>()
+            var url = GetUrl("/GetSession", new Dictionary<string, string>
             {
-                { "apiKey", _enviromentConfiguration.ApiKey },
-                { "authenticateServiceKey", GetDeviceOptionKey(request.DeviceOption) },
+                { "apiKey", _apiKey },
+                { "authenticateServiceKey", request.AuthenticateServiceKey },
                 { "sessionid", request.SessionId }
             });
             var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>(url, _jsonSerializer);
@@ -70,21 +70,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 throw new GrandIdApiException(sessionResponse.ErrorObject.Code, sessionResponse.ErrorObject.Message);
             }
             return sessionResponse;
-        }
-
-        private string GetDeviceOptionKey(DeviceOption deviceOption)
-        {
-            switch (deviceOption)
-            {
-                case DeviceOption.SameDevice:
-                    return _enviromentConfiguration.SameDeviceServiceKey;
-                case DeviceOption.OtherDevice:
-                    return _enviromentConfiguration.OtherDeviceServiceKey;
-                case DeviceOption.ChooseDevice:
-                    return _enviromentConfiguration.ChooseDeviceServiceKey;
-                default:
-                    throw new ArgumentException("Invalid device option", nameof(deviceOption));
-            }
         }
         
         internal static string GetUrl(string baseUrl, Dictionary<string, string> filter)
