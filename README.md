@@ -118,6 +118,15 @@ For more usecases, samples and inspiration; feel free to browse our unit tests a
 * [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)
 * [ActiveLogin.Authentication.BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
 
+#### 4. Running the MVC Client sample
+
+The samples are configured to run in development mode (no BankID certificates required) by default. The _MVC Client sample_ is using the _Identity Server Sample_ as its identity provider. So to run the _MVC Client_, the _Identity Server Sample_ needs to be running first.
+
+The easiest way to try the sample out is to:
+
+1. Configure the solution to use _Multiple startup projects_, and set it to start both _IdentityServerSample_ and _MvcClientSample_
+2. Press F5
+
 ## FAQ
 
 ### Can I try out a live demo of the samples?
