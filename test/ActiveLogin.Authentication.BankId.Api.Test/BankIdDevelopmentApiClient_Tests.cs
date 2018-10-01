@@ -17,14 +17,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void StartingTwoAuthenticationFlows__AtTheSameTime__ShouldThrow()
+        public async void AuthAsync__WithSamePersonalIdentityNumber_AtTheSameTime__ShouldThrow()
         {
             await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391"));
             await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "199908072391")));
         }
 
         [Fact]
-        public async void StartingTwoAuthenticationFlows__AfterOneAnother__ShouldBeAllowed()
+        public async void AuthAsync__WithSamePersonalIdentityNumber_OneAtTheTime__ShouldBeAllowed()
         {
             AuthResponse authResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391"));
             CollectResponse response;
