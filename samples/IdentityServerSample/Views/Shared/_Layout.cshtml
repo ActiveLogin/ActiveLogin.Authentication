@@ -23,6 +23,10 @@
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container">
             <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ActiveLogin - IdentityServerSample</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-area="" asp-controller="Account" asp-action="Logout" class="btn btn-primary">Logout</a>
+            }
         </div>
     </nav>
 

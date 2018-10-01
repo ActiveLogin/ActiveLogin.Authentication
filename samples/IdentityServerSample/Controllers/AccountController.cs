@@ -71,5 +71,11 @@ namespace IdentityServerSample.Controllers
 
             return Redirect("~/");
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return Redirect("~/");
+        }
     }
 }

@@ -16,6 +16,10 @@
     <nav class="navbar  navbar-dark bg-primary fixed-top">
         <div class="container">
             <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ActiveLogin - MvcClientSample</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-area="" asp-controller="Home" asp-action="Logout" class="btn btn-primary">Logout</a>
+            }
         </div>
     </nav>
 
