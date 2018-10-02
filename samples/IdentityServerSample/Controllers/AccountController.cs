@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServerSample.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -72,10 +73,26 @@ namespace IdentityServerSample.Controllers
             return Redirect("~/");
         }
 
-        public async Task<IActionResult> Logout()
+        [HttpGet]
+        public async Task<IActionResult> Logout(string logoutId)
+        {
+            LogoutRequest logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
+            var returnUrl = logoutRequest?.PostLogoutRedirectUri;
+
+            return await Logout(new LogoutModel { ReturnUrl = returnUrl });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout(LogoutModel model)
         {
             await HttpContext.SignOutAsync();
-            return Redirect("~/");
+
+            return Redirect(model?.ReturnUrl ?? "~/");
+        }
+
+        public class LogoutModel
+        {
+            public string ReturnUrl { get; set; }
         }
     }
 }

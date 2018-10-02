@@ -25,7 +25,9 @@
             <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ActiveLogin - IdentityServerSample</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <a asp-area="" asp-controller="Account" asp-action="Logout" class="btn btn-primary">Logout</a>
+                <form method = "post" asp-area="" asp-controller="Account" asp-action="Logout"> 
+                    <input type="submit" value="Logout" class="btn btn-primary"/> 
+                </form> 
             }
         </div>
     </nav>
