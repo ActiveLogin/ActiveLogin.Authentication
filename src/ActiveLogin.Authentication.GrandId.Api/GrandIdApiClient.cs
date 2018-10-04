@@ -36,12 +36,19 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var url = GetUrl("FederatedLogin", new Dictionary<string, string>
+            var queryStringParams = new Dictionary<string, string>
             {
                 { "apiKey", _apiKey },
                 { "authenticateServiceKey", request.AuthenticateServiceKey },
                 { "callbackUrl", request.CallbackUrl }
-            });
+            };
+
+            if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
+            {
+                queryStringParams.Add("pnr", request.PersonalIdentityNumber);
+            }
+
+            var url = GetUrl("FederatedLogin", queryStringParams);
 
             var fullResponse = await _httpClient.GetAsync<AuthFullResponse>(url, _jsonSerializer);
             if (fullResponse.ErrorObject != null)
@@ -74,14 +81,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return new SessionStateResponse(fullResponse);
         }
         
-        internal static string GetUrl(string baseUrl, Dictionary<string, string> filter)
+        internal static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
         {
-            if (!filter.Any())
+            if (!queryStringParams.Any())
             {
                 return baseUrl;
             }
 
-            var queryString = string.Join("&", filter.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+            var queryString = string.Join("&", queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
             return $"{baseUrl}?{queryString}";
         }
     }
