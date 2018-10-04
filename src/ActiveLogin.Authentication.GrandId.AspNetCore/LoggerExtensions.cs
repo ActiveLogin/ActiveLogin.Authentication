@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using ActiveLogin.Authentication.GrandId.Api.Models;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
