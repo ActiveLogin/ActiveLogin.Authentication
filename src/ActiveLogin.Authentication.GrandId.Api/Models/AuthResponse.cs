@@ -1,17 +1,19 @@
-﻿using System.Runtime.Serialization;
-
-namespace ActiveLogin.Authentication.GrandId.Api.Models
+﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    [DataContract]
     public class AuthResponse
     {
-        [DataMember(Name = "redirectUrl")]
+        public AuthResponse()
+        {
+            
+        }
+
+        public AuthResponse(AuthFullResponse fullResponse)
+        {
+            RedirectUrl = fullResponse.RedirectUrl;
+            SessionId = fullResponse.SessionId;
+        }
+
         public string RedirectUrl { get; set; }
-
-        [DataMember(Name = "sessionId")]
         public string SessionId { get; set; }
-
-        [DataMember(Name = "errorObject")]
-        public ErrorObject ErrorObject { get; set; }
     }
 }

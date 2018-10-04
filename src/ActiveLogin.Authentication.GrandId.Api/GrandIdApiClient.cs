@@ -22,12 +22,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// </summary>
         /// <param name="httpClient">The HttpClient to use.</param>
         /// <param name="jsonSerializer">The JsonSerializer to se for serializing and deserializing requests and responses.</param>
-        /// <param name="apiKey">ApiKey for GrandId.</param>
-        public GrandIdApiClient(HttpClient httpClient, IJsonSerializer jsonSerializer, string apiKey)
+        /// <param name="configuration">Configuration from GrandID.</param>
+        public GrandIdApiClient(HttpClient httpClient, IJsonSerializer jsonSerializer, GrandIdApiClientConfiguration configuration)
         {
             _httpClient = httpClient;
             _jsonSerializer = jsonSerializer;
-            _apiKey = apiKey;
+            _apiKey = configuration.ApiKey;
         }
 
         /// <summary>
@@ -36,19 +36,20 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var url = GetUrl("/FederatedLogin", new Dictionary<string, string>
+            var url = GetUrl("FederatedLogin", new Dictionary<string, string>
             {
                 { "apiKey", _apiKey },
                 { "authenticateServiceKey", request.AuthenticateServiceKey },
                 { "callbackUrl", request.CallbackUrl }
             });
-            var authResponse = await _httpClient.GetAsync<AuthResponse>(url, _jsonSerializer);
-            //TODO: Wrap error object and don't return if success
-            if (authResponse.ErrorObject != null)
+
+            var fullResponse = await _httpClient.GetAsync<AuthFullResponse>(url, _jsonSerializer);
+            if (fullResponse.ErrorObject != null)
             {
-                throw new GrandIdApiException(authResponse.ErrorObject.Code, authResponse.ErrorObject.Message);
+                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
             }
-            return authResponse;
+
+            return new AuthResponse(fullResponse);
         }
 
         /// <summary>
@@ -57,19 +58,20 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If the request is successfull returns the status of the login</returns>
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
-            var url = GetUrl("/GetSession", new Dictionary<string, string>
+            var url = GetUrl("GetSession", new Dictionary<string, string>
             {
                 { "apiKey", _apiKey },
                 { "authenticateServiceKey", request.AuthenticateServiceKey },
                 { "sessionid", request.SessionId }
             });
-            var sessionResponse = await _httpClient.GetAsync<SessionStateResponse>(url, _jsonSerializer);
-            //TODO: Wrap error object and don't return if success
-            if (sessionResponse.ErrorObject != null)
+
+            var fullResponse = await _httpClient.GetAsync<SessionStateFullResponse>(url, _jsonSerializer);
+            if (fullResponse.ErrorObject != null)
             {
-                throw new GrandIdApiException(sessionResponse.ErrorObject.Code, sessionResponse.ErrorObject.Message);
+                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
             }
-            return sessionResponse;
+
+            return new SessionStateResponse(fullResponse);
         }
         
         internal static string GetUrl(string baseUrl, Dictionary<string, string> filter)

@@ -5,7 +5,6 @@ using System.IO;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
-using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -46,53 +45,43 @@ namespace IdentityServerSample
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
             services.AddAuthentication()
-                .AddGrandId("grandid-samedevice", "GrandID - BankID - SameDevice",
-                    options =>
-                    {
-                        options.AuthenticateServiceKey =
-                            Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
-                    })
-                    .AddGrandIdEnvironmentConfiguration(configuration =>
-                    {
-                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
-                        {
-                            configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
-                        }
+                .AddGrandId(grandId =>
+                {
+                    //grandId.UseEnvironment(configuration =>
+                    //{
+                    //    configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
+                    //    configuration.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                    //});
 
-                        configuration.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                    })
-                    .AuthenticationBuilder
-                    .AddGrandId("grandid-samedevice", "GrandID - BankID - OtherDevice",
-                        options =>
+                    grandId.UseProdEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
+
+                    if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
+                    {
+                        grandId.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
+                    }
+
+                    if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentApi", false))
+                    {
+                        grandId.UseDevelopmentEnvironment("Alice", "Smith");
+                    }
+
+                    grandId
+                        .AddScheme("grandid-samedevice", "GrandID - SameDevice", options =>
                         {
-                            options.AuthenticateServiceKey =
-                                Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+                            options.CallbackPath = new PathString("/signin-grandid-samedevice");
+                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
                         })
-                    .AddGrandIdEnvironmentConfiguration(configuration =>
-                    {
-                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
+                        .AddScheme("grandid-otherdevice", "GrandID - OtherDevice", options =>
                         {
-                            configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
-                        }
-
-                        configuration.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                    })
-                    .AuthenticationBuilder
-                    .AddGrandId("grandid-samedevice", "GrandID - BankID - ChooseDevice",
-                        options =>
-                        {
-                            options.AuthenticateServiceKey =
-                                Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+                            options.CallbackPath = new PathString("/signin-grandid-otherdevice");
+                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
                         })
-                    .AddGrandIdEnvironmentConfiguration(configuration =>
-                    {
-                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
+                        .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
                         {
-                            configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
-                        }
-
-                        configuration.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                    });
+                            options.CallbackPath = new PathString("/signin-grandid-choosedevice");
+                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+                        });
+                });
 
             services.AddAuthentication()
                     .AddBankId()
@@ -110,11 +99,6 @@ namespace IdentityServerSample
             if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentApi", false))
             {
                 services.AddBankIdDevelopmentEnvironment();
-            }
-
-            if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentApi", false))
-            {
-                services.AddGrandIdDevelopmentEnvironment();
             }
         }
 

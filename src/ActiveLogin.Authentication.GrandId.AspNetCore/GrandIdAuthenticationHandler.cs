@@ -44,7 +44,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             DeleteStateCookie();
 
-            //TODO: If session id is expected to be a guid, make sure to parse it
             var sessionId = Request.Query["grandidsession"];
             if (string.IsNullOrEmpty(sessionId))
             {
@@ -200,8 +199,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 AuthenticationProperties = properties
             };
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            var cookieValue = Options.StateDataFormat.Protect(state);
 
-            Response.Cookies.Append(Options.StateCookie.Name, Options.StateDataFormat.Protect(state), cookieOptions);
+            Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
         }
 
         private string GetAbsoluteUrl(string returnUrl)

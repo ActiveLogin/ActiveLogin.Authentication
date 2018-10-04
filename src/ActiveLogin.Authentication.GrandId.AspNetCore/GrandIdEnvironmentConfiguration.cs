@@ -7,6 +7,5 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     {
         public Uri ApiBaseUrl { get; set; } = GrandIdUrls.ProdApiBaseUrl;
         public string ApiKey { get; set; }
-        public string AuthenticateServiceKey { get; set; }
     }
 }
