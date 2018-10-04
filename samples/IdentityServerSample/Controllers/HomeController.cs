@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using IdentityServerSample.Models;
-using Microsoft.AspNetCore.Authentication;
+﻿using IdentityServerSample.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +13,6 @@ namespace IdentityServerSample.Controllers
             {
                 Claims = User.Claims
             });
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            return Redirect("/");
         }
     }
 }
