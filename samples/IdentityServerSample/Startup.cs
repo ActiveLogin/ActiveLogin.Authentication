@@ -44,6 +44,7 @@ namespace IdentityServerSample
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
+            // Sample of using BankID through GrandID (Svensk E-identitet) with all configurations available
             services.AddAuthentication()
                 .AddGrandId(builder =>
                 {
@@ -82,6 +83,20 @@ namespace IdentityServerSample
                         });
                 });
 
+            // Sample of using BankID through GrandID (Svensk E-identitet) with minimum configuration
+            //services.AddAuthentication()
+            //    .AddGrandId(builder =>
+            //    {
+            //        builder
+            //            .UseProdEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+            //            .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
+            //            {
+            //                options.CallbackPath = new PathString("/signin-grandid-choosedevice");
+            //                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+            //            });
+            //    });
+
+            // Sample of using BankID nativly
             services.AddAuthentication()
                     .AddBankId()
                         .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))

@@ -29,7 +29,11 @@ It is expected that you have a basic understanding of how ASP.NET Core, ASP.NET 
 
 If this is your first external authentication provider, create or configure your `AccountController.cs` to support showing available AutehticationProviders as well as handling external logins. An example is [provided in IdentityServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/master/samples/IdentityServerSample/Controllers/AccountController.cs).
 
-#### 2.1 Try it out with an in memory Development environment
+There are providers for both [native BankID](https://www.bankid.com/bankid-i-dina-tjanster/sa-kommer-du-igang) as well as through [GrandID (Svensk E-identitet)](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/), examples of them both will follow.
+
+#### 2.1 Using native BankID
+
+##### 2.1.1 Try it out with an in memory Development environment
 
 BankID requires you to use a client certificate and trust a specific root CA-certificate. To try out the module without those certificates, you can use an in memory development implementation of the BankID REST API.
 
@@ -42,7 +46,7 @@ services.AddAuthentication()
 services.AddBankIdDevelopmentEnvironment();
 ```
 
-#### 2.2 Try it out with Bank ID test environment
+##### 2.1.2 Try it out with Bank ID test environment
 
 To start using a real implementation of BankID, there are a few steps to do. These steps describes the scenario where you utilize Azure for things like secure storage of the certificate in an Azure KeyVault.
 
@@ -99,7 +103,7 @@ services.AddAuthentication()
 
 12. You should now be ready to start!
 
-#### 2.3 Use production environment
+##### 2.1.3 Use production environment
 
 To use BankID production environment, the procedure is the same as for test, but the API url and the certificates are different.
 
@@ -116,6 +120,121 @@ services.AddAuthentication()
 ```
 
 5. Enjoy BankID in your application :)
+
+#### 2.2 Using BankID through GrandID (Svensk E-identitet)
+
+##### 2.2.1 Try it out with an in memory Development environment
+
+GrandID requires you to have an API-key. To try out the module without that key, you can use an in memory development implementation of the GrandID REST API.
+
+The authentication part in your `Startup.cs` should look something like this:
+
+```c#
+services.AddAuthentication()
+    .AddGrandId(builder =>
+    {
+        builder
+            .UseDevelopmentEnvironment("Alice", "Smith")
+            .AddScheme("grandid-samedevice", "GrandID - SameDevice", options =>
+            {
+                options.CallbackPath = new PathString("/signin-grandid-samedevice");
+                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
+            })
+            .AddScheme("grandid-otherdevice", "GrandID - OtherDevice", options =>
+            {
+                options.CallbackPath = new PathString("/signin-grandid-otherdevice");
+                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+            });
+    });
+```
+
+##### 2.1.2 Try it out with Bank ID test or prod environment
+
+To start using a real implementation of BankID through GrandID, there are a few steps to do.
+
+1. [Get in touch with Svensk E-identitet](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/) to recevie test and/or production keys.
+2. Add the following to you `Startup.cs`:
+
+```c#
+services.AddAuthentication()
+    .AddGrandId(builder =>
+    {
+        var apiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
+        {
+            builder.UseTestEnvironment(apiKey);
+        }
+        else
+        {
+            builder.UseProdEnvironment(apiKey);
+        }
+
+        builder
+            .AddScheme("grandid-samedevice", "GrandID - SameDevice", options =>
+            {
+                options.CallbackPath = new PathString("/signin-grandid-samedevice");
+                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
+            })
+            .AddScheme("grandid-otherdevice", "GrandID - OtherDevice", options =>
+            {
+                options.CallbackPath = new PathString("/signin-grandid-otherdevice");
+                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+            });
+    });
+```
+
+3. Add the following configuration values.
+
+```json
+{
+  "ActiveLogin:GrandId:ApiKey": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:GrandId:SameDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:GrandId:OtherDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:GrandId:ChooseDeviceServiceKey": "TODO-ADD-YOUR-VALUE"
+}
+```
+
+4. You should now be ready to start!
+5. Optionally, you can let GrandID display the UI for choosing BankID, then use this instead:
+
+```c#
+services.AddAuthentication()
+    .AddGrandId(builder =>
+    {
+        var apiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
+        {
+            builder.UseTestEnvironment(apiKey);
+        }
+        else
+        {
+            builder.UseProdEnvironment(apiKey);
+        }
+
+        builder
+            .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
+            {
+                options.CallbackPath = new PathString("/signin-grandid-choosedevice");
+                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+            });
+    });
+```
+
+6. And if you always aim for using the production environment, you can simplify it as this:
+
+```c#
+services.AddAuthentication()
+    .AddGrandId(builder =>
+    {
+        builder
+            .UseProdEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+            .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
+            {
+                options.CallbackPath = new PathString("/signin-grandid-choosedevice");
+                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+            });
+    });
+```
 
 ### 3. Browse tests and samples
 
