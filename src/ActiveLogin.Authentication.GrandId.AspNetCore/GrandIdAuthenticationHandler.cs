@@ -181,7 +181,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
             try
             {
-                var response = await _grandIdApiClient.AuthAsync(Options.AuthenticateServiceKey, absoluteReturnUrl);
+                var response = await _grandIdApiClient.FederatedLoginAsync(Options.AuthenticateServiceKey, absoluteReturnUrl);
                 _logger.GrandIdAuthSuccess(Options.AuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
                 Response.Redirect(response.RedirectUrl);
             }

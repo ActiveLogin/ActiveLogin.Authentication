@@ -34,7 +34,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// Request a redirectUrl to be used for authentication against GrandId
         /// </summary>
         /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
-        public async Task<AuthResponse> AuthAsync(AuthRequest request)
+        public async Task<AuthResponse> FederatedLoginAsync(AuthRequest request)
         {
             var queryStringParams = new Dictionary<string, string>
             {

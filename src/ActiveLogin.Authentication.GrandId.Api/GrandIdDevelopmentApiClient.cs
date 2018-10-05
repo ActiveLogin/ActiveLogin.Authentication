@@ -31,7 +31,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _personalIdentityNumber = personalIdentityNumber;
         }
 
-        public async Task<AuthResponse> AuthAsync(AuthRequest request)
+        public async Task<AuthResponse> FederatedLoginAsync(AuthRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 

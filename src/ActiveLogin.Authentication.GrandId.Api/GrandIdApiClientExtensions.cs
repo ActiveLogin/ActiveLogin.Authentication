@@ -8,14 +8,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public static class GrandIdApiClientExtensions
     {
-        public static Task<AuthResponse> AuthAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl)
+        public static Task<AuthResponse> FederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl)
         {
-            return apiClient.AuthAsync(new AuthRequest(authenticateServiceKey, callbackUrl));
+            return apiClient.FederatedLoginAsync(new AuthRequest(authenticateServiceKey, callbackUrl));
         }
 
-        public static Task<AuthResponse> AuthAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl, string personalIdentityNumber)
+        public static Task<AuthResponse> FederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl, string personalIdentityNumber)
         {
-            return apiClient.AuthAsync(new AuthRequest(authenticateServiceKey, callbackUrl, personalIdentityNumber));
+            return apiClient.FederatedLoginAsync(new AuthRequest(authenticateServiceKey, callbackUrl, personalIdentityNumber));
         }
 
         public static Task<SessionStateResponse> GetSessionAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string sessionId)
