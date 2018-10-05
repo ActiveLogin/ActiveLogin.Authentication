@@ -74,7 +74,12 @@ services.AddAuthentication()
 
 7. The root CA-certificate specified in _BankID Relying Party Guidelines_ needs to be trusted at the computer where the app will run.
 8. If running in Azure App Service, where trusting custom certificates is not supported, there are extensions to handle that scenario.
-9. Instead of trusting the certificate, place it in your web project.
+9. Instead of trusting the certificate, place it in your web project and make sure `CopyToOutputDirectory` is set to `Always`:
+```xml
+<Content Include="Certificates\BankIdRootCertificate-Test.crt">	
+  <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
+</Content>
+```
 10. Right after `.AddBankIdClientCertificateFromAzureKeyVault(..)`, add the following line:
 
 ```c#
