@@ -16,6 +16,6 @@
 
         public string SessionId { get; set; }
         public string UserName { get; set; }
-        public UserAttributes UserAttributes { get; set; }
+        public SessionUserAttributes UserAttributes { get; set; }
     }
 }

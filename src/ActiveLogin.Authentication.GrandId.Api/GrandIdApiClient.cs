@@ -17,12 +17,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly IJsonSerializer _jsonSerializer;
         private readonly string _apiKey;
 
-        /// <summary>
-        /// Creates an instance of <see cref="GrandIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
-        /// </summary>
-        /// <param name="httpClient">The HttpClient to use.</param>
-        /// <param name="jsonSerializer">The JsonSerializer to se for serializing and deserializing requests and responses.</param>
-        /// <param name="configuration">Configuration from GrandID.</param>
         public GrandIdApiClient(HttpClient httpClient, IJsonSerializer jsonSerializer, GrandIdApiClientConfiguration configuration)
         {
             _httpClient = httpClient;
@@ -31,9 +25,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
         }
 
         /// <summary>
-        /// Request a redirectUrl to be used for authentication against GrandId
+        /// This is the function to log in using an apiKey, authenticateServiceKey and a callbackUrl.
+        /// The return value will be a sessionid and a return URL.
         /// </summary>
-        /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
+        /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
         public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
         {
             var queryStringParams = new Dictionary<string, string>
@@ -60,9 +55,33 @@ namespace ActiveLogin.Authentication.GrandId.Api
         }
 
         /// <summary>
-        /// Requests the state of a login for a sessionId
+        /// This is the function for logging in using an apiKey, authenticateServiceKey, username and password.
+        /// The value returned value will be the user’s properties.
         /// </summary>
-        /// <returns>If the request is successfull returns the status of the login</returns>
+        /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
+        public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
+        {
+            var url = GetUrl("FederatedDirectLogin", new Dictionary<string, string>
+            {
+                { "apiKey", _apiKey },
+                { "authenticateServiceKey", request.AuthenticateServiceKey },
+                { "username", request.Username },
+                { "password", request.Password }
+            });
+
+            var fullResponse = await _httpClient.GetAsync<FederatedDirectLoginFullResponse>(url, _jsonSerializer);
+            if (fullResponse.ErrorObject != null)
+            {
+                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
+            }
+
+            return new FederatedDirectLoginResponse(fullResponse);
+        }
+
+        /// <summary>
+        /// Fetches the currents Session Data for a sessionId.
+        /// </summary>
+        /// <returns>If the request is successful, the sessionData is returned</returns>
         public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
         {
             var url = GetUrl("GetSession", new Dictionary<string, string>
@@ -80,7 +99,27 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             return new SessionStateResponse(fullResponse);
         }
-        
+
+        /// <summary>
+        /// This is the function to logout a user from an IDP.
+        /// </summary>
+        public async Task<LogoutResponse> LogoutAsync(LogoutRequest request)
+        {
+            var url = GetUrl("Logout", new Dictionary<string, string>
+            {
+                { "apiKey", _apiKey },
+                { "sessionid", request.SessionId }
+            });
+
+            var fullResponse = await _httpClient.GetAsync<LogoutFullResponse>(url, _jsonSerializer);
+            if (fullResponse.ErrorObject != null)
+            {
+                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
+            }
+
+            return new LogoutResponse(fullResponse);
+        }
+
         internal static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
         {
             if (!queryStringParams.Any())

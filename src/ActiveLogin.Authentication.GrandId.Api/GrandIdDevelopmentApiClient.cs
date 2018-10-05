@@ -14,7 +14,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly string _surname;
         private readonly string _personalIdentityNumber;
 
-        private readonly Dictionary<string, FederatedLoginResponse> _auths = new Dictionary<string, FederatedLoginResponse>();
+        private readonly Dictionary<string, FederatedLoginResponse> _federatedLogins = new Dictionary<string, FederatedLoginResponse>();
+        private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
 
         public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
         {
@@ -41,7 +42,29 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 SessionId = sessionId,
                 RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"
             };
-            _auths.Add(sessionId, response);
+            _federatedLogins.Add(sessionId, response);
+            return response;
+        }
+
+        public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
+        {
+            await SimulateResponseDelay().ConfigureAwait(false);
+
+            var sessionId = Guid.NewGuid().ToString();
+            var response = new FederatedDirectLoginResponse
+            {
+                SessionId = sessionId,
+                Username = $"{_givenName.ToLower()}.{_surname.ToLower()}@example.org",
+                UserAttributes = new FederatedDirectLoginUserAttributes
+                {
+                    GivenName = _givenName,
+                    Surname = _surname,
+                    MobilePhone = string.Empty,
+                    SameAccountName = $"{_givenName.ToLower()}.{_surname.ToLower()}",
+                    Title = "Software Developer"
+                }
+            };
+            _federatedDirectLogins.Add(sessionId, response);
             return response;
         }
 
@@ -49,13 +72,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (!_auths.ContainsKey(request.SessionId))
+            if (!_federatedLogins.ContainsKey(request.SessionId))
             {
                 throw new GrandIdApiException(ErrorCode.UNKNOWN, "SessionId not found");
             }
 
-            var auth = _auths[request.SessionId];
-            _auths.Remove(request.SessionId);
+            var auth = _federatedLogins[request.SessionId];
+            _federatedLogins.Remove(request.SessionId);
             var response = new SessionStateResponse
             {
                 SessionId = auth.SessionId,
@@ -65,9 +88,31 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return response;
         }
 
-        private UserAttributes GetUserAttributes(string personalIdentityNumber)
+        public async Task<LogoutResponse> LogoutAsync(LogoutRequest request)
         {
-            return new UserAttributes
+            await SimulateResponseDelay().ConfigureAwait(false);
+
+            var sessionId = request.SessionId;
+
+            if (_federatedLogins.ContainsKey(sessionId))
+            {
+                _federatedLogins.Remove(sessionId);
+            }
+
+            if (_federatedDirectLogins.ContainsKey(sessionId))
+            {
+                _federatedDirectLogins.Remove(sessionId);
+            }
+
+            return new LogoutResponse()
+            {
+                SessionDeleted = true
+            };
+        }
+
+        private SessionUserAttributes GetUserAttributes(string personalIdentityNumber)
+        {
+            return new SessionUserAttributes
             {
                 GivenName = _givenName,
                 Surname = _surname,

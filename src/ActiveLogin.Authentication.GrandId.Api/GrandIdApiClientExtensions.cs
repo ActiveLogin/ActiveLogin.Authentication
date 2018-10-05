@@ -18,9 +18,18 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return apiClient.FederatedLoginAsync(new FederatedLoginRequest(authenticateServiceKey, callbackUrl, personalIdentityNumber));
         }
 
+        public static Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
+        {
+            return apiClient.FederatedDirectLoginAsync(new FederatedDirectLoginRequest(authenticateServiceKey, username, password));
+        }
+
         public static Task<SessionStateResponse> GetSessionAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string sessionId)
         {
             return apiClient.GetSessionAsync(new SessionStateRequest(authenticateServiceKey, sessionId));
+        }
+        public static Task<LogoutResponse> LogoutAsync(this IGrandIdApiClient apiClient, string sessionId)
+        {
+            return apiClient.LogoutAsync(new LogoutRequest(sessionId));
         }
     }
 }

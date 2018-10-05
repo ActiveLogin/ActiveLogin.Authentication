@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class UserAttributes
+    public class SessionUserAttributes
     {
         [DataMember(Name = "signature")]
         public string Signature { get; set; }
@@ -29,5 +29,4 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         [DataMember(Name = "ipAddress")]
         public string IpAddress { get; set; }
     }
-
 }
