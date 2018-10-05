@@ -96,7 +96,7 @@ namespace IdentityServerSample
             //            });
             //    });
 
-            // Sample of using BankID nativly
+            // Sample of using BankID natively
             services.AddAuthentication()
                     .AddBankId()
                         .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
