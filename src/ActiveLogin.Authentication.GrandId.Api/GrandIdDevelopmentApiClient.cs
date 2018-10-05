@@ -39,7 +39,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             var response = new AuthResponse
             {
                 SessionId = sessionId,
-                RedirectUrl = $"/signin-grandid?grandidsession={sessionId}"
+                RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"
             };
             _auths.Add(sessionId, response);
             return response;
