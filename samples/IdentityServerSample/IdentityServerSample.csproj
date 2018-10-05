@@ -5,18 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Certificates\BankIdRootCertificate-Prod.crt" />
-    <None Remove="Certificates\BankIdRootCertificate-Test.crt" />
     <None Remove="tempkey.rsa" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Certificates\BankIdRootCertificate-Prod.crt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Certificates\BankIdRootCertificate-Test.crt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="tempkey.rsa">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -34,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Certificates\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
 

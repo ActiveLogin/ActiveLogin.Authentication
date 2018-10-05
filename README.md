@@ -74,7 +74,15 @@ services.AddAuthentication()
 
 7. The root CA-certificate specified in _BankID Relying Party Guidelines_ needs to be trusted at the computer where the app will run.
 8. If running in Azure App Service, where trusting custom certificates is not supported, there are extensions to handle that scenario.
-9. Instead of trusting the certificate, place it in your web project.
+9. Instead of trusting the certificate, place it in your web project and make sure `CopyToOutputDirectory` is set to `Always`:
+```xml
+<Content Include="Certificates\BankIdRootCertificate-Test.crt">	
+  <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
+</Content>
+<Content Include="Certificates\BankIdRootCertificate-Prod.crt">	
+  <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
+</Content>
+```
 10. Right after `.AddBankIdClientCertificateFromAzureKeyVault(..)`, add the following line:
 
 ```c#
@@ -117,6 +125,15 @@ For more usecases, samples and inspiration; feel free to browse our unit tests a
 * [MvcClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/MvcClientSample)
 * [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)
 * [ActiveLogin.Authentication.BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
+
+#### 4. Running the MVC Client sample
+
+The samples are configured to run in development mode (no BankID certificates required) by default. The _MVC Client sample_ is using the _Identity Server Sample_ as its identity provider. So to run the _MVC Client_, the _Identity Server Sample_ needs to be running first.
+
+The easiest way to try the sample out is to:
+
+1. Configure the solution to use _Multiple startup projects_, and set it to start both _IdentityServerSample_ and _MvcClientSample_
+2. Press F5
 
 ## FAQ
 
