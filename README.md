@@ -4,12 +4,12 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 
 ## Continuous integration & Packages overview
 
-| Project | Description | NuGet | Build (VSTS) |
+| Project | Description | NuGet | Build (Azure DevOps) |
 | ------- | ----------- | ----- | ------------ |
-| [ActiveLogin.Authentication.BankId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.Api) | API client for Swedish BankID's REST API | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) | [![VSTS Build](https://activesolution.visualstudio.com/_apis/public/build/definitions/131274d9-4174-4035-a0e3-f6e5e9444d9f/155/badge)](https://activesolution.visualstudio.com/ActiveLogin/_build/index?definitionId=155) |
-| [ActiveLogin.Authentication.BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore) | ASP.NET Core middleware for Swedish BankID | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) | [![VSTS Build](https://activesolution.visualstudio.com/_apis/public/build/definitions/131274d9-4174-4035-a0e3-f6e5e9444d9f/155/badge)](https://activesolution.visualstudio.com/ActiveLogin/_build/index?definitionId=155) |
-| [ActiveLogin.Authentication.BankId.AspNetCore.Azure](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.Azure) | Azure integrations for ActiveLogin.Authentication.BankId.AspNetCore | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) | [![VSTS Build](https://activesolution.visualstudio.com/_apis/public/build/definitions/131274d9-4174-4035-a0e3-f6e5e9444d9f/155/badge)](https://activesolution.visualstudio.com/ActiveLogin/_build/index?definitionId=155) |
-| [ActiveLogin.Authentication.Common](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.Common) | Handles common tasks in ActiveLogin.Authentication | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.Common.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.Common/) | [![VSTS Build](https://activesolution.visualstudio.com/_apis/public/build/definitions/131274d9-4174-4035-a0e3-f6e5e9444d9f/155/badge)](https://activesolution.visualstudio.com/ActiveLogin/_build/index?definitionId=155) |
+| [ActiveLogin.Authentication.BankId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.Api) | API client for Swedish BankID's REST API | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) | [![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155) |
+| [ActiveLogin.Authentication.BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore) | ASP.NET Core middleware for Swedish BankID | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) | [![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155) |
+| [ActiveLogin.Authentication.BankId.AspNetCore.Azure](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.Azure) | Azure integrations for ActiveLogin.Authentication.BankId.AspNetCore | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) | [![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155) |
+| [ActiveLogin.Authentication.Common](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.Common) | Handles common tasks in ActiveLogin.Authentication | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.Common.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.Common/) | [![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155) |
 
 ## Getting started
 
@@ -74,7 +74,15 @@ services.AddAuthentication()
 
 7. The root CA-certificate specified in _BankID Relying Party Guidelines_ needs to be trusted at the computer where the app will run.
 8. If running in Azure App Service, where trusting custom certificates is not supported, there are extensions to handle that scenario.
-9. Instead of trusting the certificate, place it in your web project.
+9. Instead of trusting the certificate, place it in your web project and make sure `CopyToOutputDirectory` is set to `Always`:
+```xml
+<Content Include="Certificates\BankIdRootCertificate-Test.crt">	
+  <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
+</Content>
+<Content Include="Certificates\BankIdRootCertificate-Prod.crt">	
+  <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
+</Content>
+```
 10. Right after `.AddBankIdClientCertificateFromAzureKeyVault(..)`, add the following line:
 
 ```c#
@@ -117,6 +125,15 @@ For more usecases, samples and inspiration; feel free to browse our unit tests a
 * [MvcClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/MvcClientSample)
 * [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)
 * [ActiveLogin.Authentication.BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
+
+#### 4. Running the MVC Client sample
+
+The samples are configured to run in development mode (no BankID certificates required) by default. The _MVC Client sample_ is using the _Identity Server Sample_ as its identity provider. So to run the _MVC Client_, the _Identity Server Sample_ needs to be running first.
+
+The easiest way to try the sample out is to:
+
+1. Configure the solution to use _Multiple startup projects_, and set it to start both _IdentityServerSample_ and _MvcClientSample_
+2. Press F5
 
 ## FAQ
 
