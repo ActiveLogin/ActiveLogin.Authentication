@@ -12,5 +12,11 @@ namespace MvcClientSample.Controllers
                 Claims = User.Claims
             });
         }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            return new SignOutResult(new[] { "Cookies", "oidc" });
+        }
     }
 }

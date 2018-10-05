@@ -27,6 +27,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         private readonly List<KeyValuePair<CollectStatus, CollectHintCode>> _statusesToReturn;
 
         private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
+        private static TimeSpan _delay;
 
         public BankIdDevelopmentApiClient()
             : this(DefaultStatusesToReturn)
@@ -59,6 +60,13 @@ namespace ActiveLogin.Authentication.BankId.Api
             _surname = surname;
             _name = name;
             _statusesToReturn = statusesToReturn;
+            _delay = TimeSpan.FromMilliseconds(250);
+        }
+
+        public TimeSpan Delay
+        {
+            get => _delay;
+            set => _delay = value < TimeSpan.Zero ? TimeSpan.Zero : value;
         }
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
@@ -107,7 +115,17 @@ namespace ActiveLogin.Authentication.BankId.Api
                 CompletionData = completionData
             };
 
-            auth.CollectCalls += 1;
+            if (status == CollectStatus.Complete)
+            {
+                if (_auths.ContainsKey(request.OrderRef))
+                {
+                    _auths.Remove(request.OrderRef);
+                }
+            }
+            else
+            {
+                auth.CollectCalls += 1;
+            }
 
             return response;
         }
@@ -162,7 +180,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private static async Task SimulateResponseDelay()
         {
-            await Task.Delay(250).ConfigureAwait(false);
+            await Task.Delay(_delay).ConfigureAwait(false);
         }
 
         private class Auth
