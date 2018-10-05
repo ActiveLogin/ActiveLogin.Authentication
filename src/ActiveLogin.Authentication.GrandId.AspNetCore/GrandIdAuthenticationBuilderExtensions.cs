@@ -10,15 +10,15 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     {
         public static GrandIdAuthenticationBuilder AddDefaultServices(this GrandIdAuthenticationBuilder builder)
         {
-            builder.Services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
+            builder.AuthenticationBuilder.Services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
 
             return builder;
         }
 
         public static GrandIdAuthenticationBuilder AddGrandIdApiClient(this GrandIdAuthenticationBuilder builder, string apiKey)
         {
-            builder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey));
-            builder.Services.TryAddTransient<IGrandIdApiClient, GrandIdApiClient>();
+            builder.AuthenticationBuilder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey));
+            builder.AuthenticationBuilder.Services.TryAddTransient<IGrandIdApiClient, GrandIdApiClient>();
 
             return builder;
         }
@@ -63,21 +63,21 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static GrandIdAuthenticationBuilder UseDevelopmentEnvironment(this GrandIdAuthenticationBuilder builder)
         {
-            builder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient());
+            builder.AuthenticationBuilder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient());
 
             return builder;
         }
 
         public static GrandIdAuthenticationBuilder UseDevelopmentEnvironment(this GrandIdAuthenticationBuilder builder, string givenName, string surname)
         {
-            builder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname));
+            builder.AuthenticationBuilder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname));
 
             return builder;
         }
 
         public static GrandIdAuthenticationBuilder UseDevelopmentEnvironment(this GrandIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
         {
-            builder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname, personalIdentityNumber));
+            builder.AuthenticationBuilder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname, personalIdentityNumber));
 
             return builder;
         }
