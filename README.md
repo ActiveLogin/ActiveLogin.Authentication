@@ -79,6 +79,9 @@ services.AddAuthentication()
 <Content Include="Certificates\BankIdRootCertificate-Test.crt">	
   <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
 </Content>
+<Content Include="Certificates\BankIdRootCertificate-Prod.crt">	
+  <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
+</Content>
 ```
 10. Right after `.AddBankIdClientCertificateFromAzureKeyVault(..)`, add the following line:
 
