@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         Task<AuthResponse> FederatedLoginAsync(AuthRequest request);
 
         /// <summary>
-        /// Fetches the currents Session Data for a sessionId
+        /// Fetches the currents Session Data for a sessionId.
         /// </summary>
         /// <returns>If the request is successful, the sessionData is returned</returns>
         Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request);
