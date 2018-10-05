@@ -45,27 +45,26 @@ namespace IdentityServerSample
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
             services.AddAuthentication()
-                .AddGrandId(grandId =>
+                .AddGrandId(builder =>
                 {
-                    //grandId.UseEnvironment(configuration =>
-                    //{
-                    //    configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
-                    //    configuration.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                    //});
-
-                    grandId.UseProdEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
-
-                    if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
-                    {
-                        grandId.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
-                    }
-
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentApi", false))
                     {
-                        grandId.UseDevelopmentEnvironment("Alice", "Smith");
+                        builder.UseDevelopmentEnvironment("Alice", "Smith");
+                    }
+                    else
+                    {
+                        var apiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
+                        {
+                            builder.UseTestEnvironment(apiKey);
+                        }
+                        else
+                        {
+                            builder.UseProdEnvironment(apiKey);
+                        }
                     }
 
-                    grandId
+                    builder
                         .AddScheme("grandid-samedevice", "GrandID - SameDevice", options =>
                         {
                             options.CallbackPath = new PathString("/signin-grandid-samedevice");
