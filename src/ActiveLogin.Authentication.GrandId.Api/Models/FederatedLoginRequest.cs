@@ -1,13 +1,13 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class AuthRequest
+    public class FederatedLoginRequest
     {
-        public AuthRequest(string authenticateServiceKey, string callbackUrl)
+        public FederatedLoginRequest(string authenticateServiceKey, string callbackUrl)
             : this(authenticateServiceKey, callbackUrl, null)
         {
         }
 
-        public AuthRequest(string authenticateServiceKey, string callbackUrl, string personalIdentityNumber)
+        public FederatedLoginRequest(string authenticateServiceKey, string callbackUrl, string personalIdentityNumber)
         {
             AuthenticateServiceKey = authenticateServiceKey;
             CallbackUrl = callbackUrl;

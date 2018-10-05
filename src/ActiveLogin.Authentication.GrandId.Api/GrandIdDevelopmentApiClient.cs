@@ -14,7 +14,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly string _surname;
         private readonly string _personalIdentityNumber;
 
-        private readonly Dictionary<string, AuthResponse> _auths = new Dictionary<string, AuthResponse>();
+        private readonly Dictionary<string, FederatedLoginResponse> _auths = new Dictionary<string, FederatedLoginResponse>();
 
         public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
         {
@@ -31,12 +31,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _personalIdentityNumber = personalIdentityNumber;
         }
 
-        public async Task<AuthResponse> FederatedLoginAsync(AuthRequest request)
+        public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString();
-            var response = new AuthResponse
+            var response = new FederatedLoginResponse
             {
                 SessionId = sessionId,
                 RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"

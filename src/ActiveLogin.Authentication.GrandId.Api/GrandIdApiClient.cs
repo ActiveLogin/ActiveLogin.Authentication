@@ -34,7 +34,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// Request a redirectUrl to be used for authentication against GrandId
         /// </summary>
         /// <returns>If request is successfull returns a sessionId and a redirectUrl. </returns>
-        public async Task<AuthResponse> FederatedLoginAsync(AuthRequest request)
+        public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
         {
             var queryStringParams = new Dictionary<string, string>
             {
@@ -50,13 +50,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var url = GetUrl("FederatedLogin", queryStringParams);
 
-            var fullResponse = await _httpClient.GetAsync<AuthFullResponse>(url, _jsonSerializer);
+            var fullResponse = await _httpClient.GetAsync<FederatedLoginFullResponse>(url, _jsonSerializer);
             if (fullResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
             }
 
-            return new AuthResponse(fullResponse);
+            return new FederatedLoginResponse(fullResponse);
         }
 
         /// <summary>

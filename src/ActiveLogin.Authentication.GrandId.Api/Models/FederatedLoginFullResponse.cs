@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class AuthFullResponse
+    public class FederatedLoginFullResponse
     {
         [DataMember(Name = "redirectUrl")]
         public string RedirectUrl { get; set; }

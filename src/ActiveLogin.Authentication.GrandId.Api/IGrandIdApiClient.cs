@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// Initiates an authentication chain. Use this method to retrieve the url to redirect the user to.
         /// </summary>
         /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
-        Task<AuthResponse> FederatedLoginAsync(AuthRequest request);
+        Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request);
 
         /// <summary>
         /// Fetches the currents Session Data for a sessionId.

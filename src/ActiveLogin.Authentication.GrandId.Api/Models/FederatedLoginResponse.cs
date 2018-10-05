@@ -1,13 +1,13 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class AuthResponse
+    public class FederatedLoginResponse
     {
-        public AuthResponse()
+        public FederatedLoginResponse()
         {
             
         }
 
-        public AuthResponse(AuthFullResponse fullResponse)
+        public FederatedLoginResponse(FederatedLoginFullResponse fullResponse)
         {
             RedirectUrl = fullResponse.RedirectUrl;
             SessionId = fullResponse.SessionId;
