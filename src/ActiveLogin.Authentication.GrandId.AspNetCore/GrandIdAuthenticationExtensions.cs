@@ -10,17 +10,15 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     {
         public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder)
         {
-            AddGrandIdServices(builder.Services);
-
             return builder.AddGrandId(grandId =>
             {
                 grandId
                     .UseDevelopmentEnvironment("GrandID", "Development")
-                    .AddScheme("grandid-dev", "GrandID - Dev");
+                    .AddScheme("grandid-dev", "GrandID - Dev", options => {});
             });
         }
 
-        public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<GrandIdAuthenticationBuilder> grandId)
+        public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdAuthenticationBuilder> grandId)
         {
             AddGrandIdServices(builder.Services);
 

@@ -66,21 +66,9 @@ namespace IdentityServerSample
                     }
 
                     builder
-                        .AddScheme("grandid-samedevice", "GrandID - SameDevice", options =>
-                        {
-                            options.CallbackPath = new PathString("/signin-grandid-samedevice");
-                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
-                        })
-                        .AddScheme("grandid-otherdevice", "GrandID - OtherDevice", options =>
-                        {
-                            options.CallbackPath = new PathString("/signin-grandid-otherdevice");
-                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
-                        })
-                        .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
-                        {
-                            options.CallbackPath = new PathString("/signin-grandid-choosedevice");
-                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-                        });
+                        .AddSameDevice("GrandID - SameDevice", Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey"))
+                        .AddOtherDevice("GrandID - OtherDevice", Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey"))
+                        .AddChooseDevice("GrandID - ChooseDevice", Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey"));
                 });
 
             // Sample of using BankID through GrandID (Svensk E-identitet) with minimum configuration
@@ -89,11 +77,7 @@ namespace IdentityServerSample
             //    {
             //        builder
             //            .UseProdEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            //            .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
-            //            {
-            //                options.CallbackPath = new PathString("/signin-grandid-choosedevice");
-            //                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-            //            });
+            //            .AddChooseDevice("GrandID - ChooseDevice", Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey"));
             //    });
 
             // Sample of using BankID natively

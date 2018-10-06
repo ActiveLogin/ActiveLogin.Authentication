@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdAuthenticationBuilder
+    public class GrandIdAuthenticationBuilder : IGrandIdAuthenticationBuilder
     {
         public AuthenticationBuilder AuthenticationBuilder { get; }
 
