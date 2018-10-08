@@ -22,6 +22,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static IGrandIdAuthenticationBuilder UseTestEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
         {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new ArgumentException($"The '{nameof(apiKey)}' must be provided.'", nameof(apiKey));
+            }
+
             return builder.UseEnvironment(configuration =>
             {
                 configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
@@ -31,6 +36,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static IGrandIdAuthenticationBuilder UseProdEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
         {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new ArgumentException($"The '{nameof(apiKey)}' must be provided.'", nameof(apiKey));
+            }
+
             return builder.UseEnvironment(configuration =>
             {
                 configuration.ApiBaseUrl = GrandIdUrls.ProdApiBaseUrl;
@@ -48,6 +58,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname)
         {
             builder.AuthenticationBuilder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname));
+            builder.AuthenticationBuilder.Services.PostConfigureAll<GrandIdAuthenticationOptions>(options =>
+            {
+                if (string.IsNullOrEmpty(options.AuthenticateServiceKey))
+                {
+                    options.AuthenticateServiceKey = "DEVELOPMENT";
+                }
+            });
 
             return builder;
         }
