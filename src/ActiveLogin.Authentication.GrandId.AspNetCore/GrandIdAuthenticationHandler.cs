@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    //TODO: Alot code here could be shared with the BankId implementation
     public class GrandIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdAuthenticationOptions>
     {
         private readonly ILogger<GrandIdAuthenticationHandler> _logger;
