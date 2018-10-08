@@ -6,12 +6,15 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     public class GrandIdAuthenticationDefaults
     {
         public const string SameDeviceAuthenticationScheme = "grandid-samedevice";
+        public const string SameDeviceDisplayName = "BankID (Denna enhet)";
         public static readonly PathString SameDeviceCallpackPath = new PathString("/signin-grandid-samedevice");
 
         public const string OtherDeviceAuthenticationScheme = "grandid-otherdevice";
+        public const string OtherDeviceDisplayName = "BankID (Annan enhet)";
         public static readonly PathString OtherDeviceCallpackPath = new PathString("/signin-grandid-otherdevice");
 
         public const string ChooseDeviceAuthenticationScheme = "grandid-choosedevice";
+        public const string ChooseDeviceDisplayName = "BankID";
         public static readonly PathString ChooseDeviceCallpackPath = new PathString("/signin-grandid-choosedevice");
 
         public const string IdentityProviderName = "GrandId";
