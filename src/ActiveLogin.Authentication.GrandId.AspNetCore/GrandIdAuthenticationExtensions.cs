@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -14,7 +15,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             {
                 grandId
                     .UseDevelopmentEnvironment("GrandID", "Development")
-                    .AddScheme("grandid-dev", "GrandID - Dev", options => {});
+                    .AddScheme("grandid-dev", "GrandID - Dev", new PathString("/signin-grandid-development"),  options => {});
             });
         }
 

@@ -19,8 +19,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             options.DataProtectionProvider = options.DataProtectionProvider ?? _dp;
 
-            //TODO: Validate apiKeys
-
             if (options.StateDataFormat == null)
             {
                 var dataProtector = options.DataProtectionProvider.CreateProtector(

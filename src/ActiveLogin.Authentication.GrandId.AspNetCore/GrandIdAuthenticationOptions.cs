@@ -18,11 +18,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             IsEssential = true
         };
 
-        public GrandIdAuthenticationOptions()
-        {
-            CallbackPath = new PathString("/signin-grandid");
-        }
-
+        /// <summary>
+        /// AuthenticateServiceKey obtained from GrandID (Svensk E-identitet).
+        /// </summary>
         public string AuthenticateServiceKey { get; set; }
 
         public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
@@ -42,6 +40,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             get => _stateCookieBuilder;
             set => _stateCookieBuilder = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+
+            if (string.IsNullOrWhiteSpace(AuthenticateServiceKey))
+            {
+                throw new ArgumentException($"The '{nameof(AuthenticateServiceKey)}' must be provided.'", nameof(AuthenticateServiceKey));
+            }
         }
     }
 }
