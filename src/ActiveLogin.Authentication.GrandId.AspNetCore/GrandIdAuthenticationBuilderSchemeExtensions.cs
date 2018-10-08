@@ -33,20 +33,20 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
 
         public static IGrandIdAuthenticationBuilder AddOtherDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddSameDevice(builder, GrandIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.OtherDeviceDisplayName, configureOptions);
+            => AddOtherDevice(builder, GrandIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.OtherDeviceDisplayName, configureOptions);
 
         public static IGrandIdAuthenticationBuilder AddOtherDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddSameDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.OtherDeviceDisplayName, configureOptions);
+            => AddOtherDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.OtherDeviceDisplayName, configureOptions);
 
         public static IGrandIdAuthenticationBuilder AddOtherDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdAuthenticationOptions> configureOptions)
             => AddScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.OtherDeviceCallpackPath, configureOptions);
 
 
         public static IGrandIdAuthenticationBuilder AddChooseDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddSameDevice(builder, GrandIdAuthenticationDefaults.ChooseDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.ChooseDeviceDisplayName, configureOptions);
+            => AddChooseDevice(builder, GrandIdAuthenticationDefaults.ChooseDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.ChooseDeviceDisplayName, configureOptions);
 
         public static IGrandIdAuthenticationBuilder AddChooseDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddSameDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.ChooseDeviceDisplayName, configureOptions);
+            => AddChooseDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.ChooseDeviceDisplayName, configureOptions);
 
         public static IGrandIdAuthenticationBuilder AddChooseDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdAuthenticationOptions> configureOptions)
             => AddScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.ChooseDeviceCallpackPath, configureOptions);
