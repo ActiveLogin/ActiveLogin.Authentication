@@ -3,18 +3,17 @@
 @{
     ViewData["Title"] = "Choose provider";
 }
-
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
     @if (Model.ExternalProviders.Any())
     {
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-4 col-sm-6">
             <ul class="list-inline">
                 @foreach (var provider in Model.ExternalProviders)
                 {
                     <li class="mb-1">
-                        <a class="btn btn-info"
+                        <a class="btn btn-info btn-block"
                            asp-action="ExternalLogin"
                            asp-route-provider="@provider.AuthenticationScheme"
                            asp-route-returnUrl="@Model.ReturnUrl">
