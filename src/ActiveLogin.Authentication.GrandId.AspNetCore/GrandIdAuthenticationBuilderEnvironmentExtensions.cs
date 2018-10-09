@@ -20,6 +20,12 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return builder;
         }
 
+        /// <summary>
+        /// Configures the GrandID client to use the test endpoint of GrandID REST API.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="apiKey">The apiKey obtained from GrandID (Svensk E-identitet).</param>
+        /// <returns></returns>
         public static IGrandIdAuthenticationBuilder UseTestEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
         {
             if (string.IsNullOrEmpty(apiKey))
@@ -34,6 +40,12 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             });
         }
 
+        /// <summary>
+        /// Configures the GrandID client to use the production endpoint of GrandID REST API.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="apiKey">The apiKey obtained from GrandID (Svensk E-identitet).</param>
+        /// <returns></returns>
         public static IGrandIdAuthenticationBuilder UseProdEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
         {
             if (string.IsNullOrEmpty(apiKey))
@@ -48,16 +60,24 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             });
         }
 
+        /// <summary>
+        /// Configures the GrandID client to an in memory implementation for development and/or test purposes.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder)
-        {
-            builder.AuthenticationBuilder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient());
-
-            return builder;
-        }
+            => UseDevelopmentEnvironment(builder, x => new GrandIdDevelopmentApiClient());
 
         public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname)
+            => UseDevelopmentEnvironment(builder, x => new GrandIdDevelopmentApiClient(givenName, surname));
+
+        public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
+            => UseDevelopmentEnvironment(builder, x => new GrandIdDevelopmentApiClient(givenName, surname, personalIdentityNumber));
+            
+
+        private static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {
-            builder.AuthenticationBuilder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname));
+            builder.AuthenticationBuilder.Services.AddSingleton(grandIdDevelopmentApiClient);
             builder.AuthenticationBuilder.Services.PostConfigureAll<GrandIdAuthenticationOptions>(options =>
             {
                 if (string.IsNullOrEmpty(options.AuthenticateServiceKey))
@@ -65,13 +85,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                     options.AuthenticateServiceKey = "DEVELOPMENT";
                 }
             });
-
-            return builder;
-        }
-
-        public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
-        {
-            builder.AuthenticationBuilder.Services.AddSingleton<IGrandIdApiClient>(x => new GrandIdDevelopmentApiClient(givenName, surname, personalIdentityNumber));
 
             return builder;
         }
