@@ -46,7 +46,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         /// <param name="builder"></param>
         /// <param name="apiKey">The apiKey obtained from GrandID (Svensk E-identitet).</param>
         /// <returns></returns>
-        public static IGrandIdAuthenticationBuilder UseProdEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
+        public static IGrandIdAuthenticationBuilder UseProductionEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
         {
             if (string.IsNullOrEmpty(apiKey))
             {
@@ -55,7 +55,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             return builder.UseEnvironment(configuration =>
             {
-                configuration.ApiBaseUrl = GrandIdUrls.ProdApiBaseUrl;
+                configuration.ApiBaseUrl = GrandIdUrls.ProductionApiBaseUrl;
                 configuration.ApiKey = apiKey;
             });
         }

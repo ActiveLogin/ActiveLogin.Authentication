@@ -5,7 +5,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public class GrandIdEnvironmentConfiguration : IGrandIdEnvironmentConfiguration
     {
-        public Uri ApiBaseUrl { get; set; } = GrandIdUrls.ProdApiBaseUrl;
+        public Uri ApiBaseUrl { get; set; } = GrandIdUrls.ProductionApiBaseUrl;
         public string ApiKey { get; set; }
     }
 }

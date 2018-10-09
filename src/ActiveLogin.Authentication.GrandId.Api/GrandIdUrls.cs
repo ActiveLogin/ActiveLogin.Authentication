@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <summary>
         /// Base url for production API.
         /// </summary>
-        public static readonly Uri ProdApiBaseUrl = new Uri("https://client.grandid.com/json1.1/");
+        public static readonly Uri ProductionApiBaseUrl = new Uri("https://client.grandid.com/json1.1/");
 
         /// <summary>
         /// Base url for test API.

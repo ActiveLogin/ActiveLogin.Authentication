@@ -135,21 +135,13 @@ The authentication part in your `Startup.cs` should look something like this:
 
 ```c#
 services.AddAuthentication()
-    .AddGrandId(builder =>
-    {
-        builder
-            .UseDevelopmentEnvironment("Alice", "Smith")
-            .AddScheme("grandid-samedevice", "GrandID - SameDevice", options =>
-            {
-                options.CallbackPath = new PathString("/signin-grandid-samedevice");
-                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
-            })
-            .AddScheme("grandid-otherdevice", "GrandID - OtherDevice", options =>
-            {
-                options.CallbackPath = new PathString("/signin-grandid-otherdevice");
-                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
-            });
-    });
+        .AddGrandId(builder =>
+        {
+            builder
+                .UseDevelopmentEnvironment()
+                .AddSameDevice(options => {})
+                .AddOtherDevice(options => {});
+        });
 ```
 
 ##### 2.1.2 Try it out with Bank ID test or prod environment
@@ -170,18 +162,16 @@ services.AddAuthentication()
         }
         else
         {
-            builder.UseProdEnvironment(apiKey);
+            builder.UseProductionEnvironment(apiKey);
         }
 
         builder
-            .AddScheme("grandid-samedevice", "GrandID - SameDevice", options =>
+            .AddSameDevice(options =>
             {
-                options.CallbackPath = new PathString("/signin-grandid-samedevice");
                 options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
             })
-            .AddScheme("grandid-otherdevice", "GrandID - OtherDevice", options =>
+            .AddOtherDevice(options =>
             {
-                options.CallbackPath = new PathString("/signin-grandid-otherdevice");
                 options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
             });
     });
@@ -212,13 +202,12 @@ services.AddAuthentication()
         }
         else
         {
-            builder.UseProdEnvironment(apiKey);
+            builder.UseProductionEnvironment(apiKey);
         }
 
         builder
-            .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
+			.AddChooseDevice(options =>
             {
-                options.CallbackPath = new PathString("/signin-grandid-choosedevice");
                 options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
             });
     });
@@ -231,10 +220,9 @@ services.AddAuthentication()
     .AddGrandId(builder =>
     {
         builder
-            .UseProdEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddScheme("grandid-choosedevice", "GrandID - ChooseDevice", options =>
+            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+			.AddChooseDevice(options =>
             {
-                options.CallbackPath = new PathString("/signin-grandid-choosedevice");
                 options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
             });
     });

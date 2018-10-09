@@ -61,7 +61,7 @@ namespace IdentityServerSample
                         }
                         else
                         {
-                            builder.UseProdEnvironment(apiKey);
+                            builder.UseProductionEnvironment(apiKey);
                         }
                     }
 
@@ -116,7 +116,7 @@ namespace IdentityServerSample
             //    .AddGrandId(builder =>
             //    {
             //        builder
-            //            .UseProdEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+            //            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
             //            .AddChooseDevice(options =>
             //            {
             //                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");

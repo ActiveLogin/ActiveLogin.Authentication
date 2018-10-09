@@ -21,7 +21,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             AddHttpClient(AuthenticationBuilder.Services, _httpClientConfigurators, _httpClientHandlerConfigurators);
 
-            ConfigureHttpClient(httpClient => httpClient.BaseAddress = GrandIdUrls.ProdApiBaseUrl);
+            ConfigureHttpClient(httpClient => httpClient.BaseAddress = GrandIdUrls.ProductionApiBaseUrl);
             ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);
         }
 
