@@ -1,6 +1,5 @@
 ﻿using System;
 using ActiveLogin.Authentication.BankId.Api;
-using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -58,7 +57,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private static IBankIdAuthenticationBuilder AddBankIdApiClient(this IBankIdAuthenticationBuilder builder)
         {
-            builder.AuthenticationBuilder.Services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
             builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdApiClient, BankIdApiClient>();
 
             return builder;

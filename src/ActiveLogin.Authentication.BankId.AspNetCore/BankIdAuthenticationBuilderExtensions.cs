@@ -6,6 +6,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
+using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -13,9 +14,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public static class BankIdAuthenticationBuilderExtensions
     {
-        public static IBankIdAuthenticationBuilder AddDefaultServices(this IBankIdAuthenticationBuilder builder)
+        internal static IBankIdAuthenticationBuilder AddDefaultServices(this IBankIdAuthenticationBuilder builder)
         {
             var services = builder.AuthenticationBuilder.Services;
+
+            services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
 
             services.TryAddSingleton<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
             services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();

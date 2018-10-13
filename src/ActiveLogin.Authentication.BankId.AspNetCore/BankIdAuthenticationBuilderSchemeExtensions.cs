@@ -22,6 +22,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
+        public static IBankIdAuthenticationBuilder AddCustom(this IBankIdAuthenticationBuilder builder)
+            => AddCustom(builder, BankIdAuthenticationDefaults.AuthenticationScheme, BankIdAuthenticationDefaults.DisplayName, options => { });
+
         public static IBankIdAuthenticationBuilder AddCustom(this IBankIdAuthenticationBuilder builder, Action<BankIdAuthenticationOptions> configureOptions)
             => AddCustom(builder, BankIdAuthenticationDefaults.AuthenticationScheme, BankIdAuthenticationDefaults.DisplayName, configureOptions);
 

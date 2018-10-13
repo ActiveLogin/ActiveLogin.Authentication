@@ -43,97 +43,50 @@ namespace IdentityServerSample
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
-            // Sample of using BankID through GrandID (Svensk E-identitet) with all configurations available
+            // Sample of using BankID through GrandID (Svensk E-identitet) with in memory dev environment
             services.AddAuthentication()
-                .AddGrandId(builder =>
-                {
-                    if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentApi", false))
+                    .AddGrandId(builder =>
                     {
-                        builder.UseDevelopmentEnvironment("Alice", "Smith");
-                    }
-                    else
-                    {
-                        var apiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
-                        {
-                            builder.UseTestEnvironment(apiKey);
-                        }
-                        else
-                        {
-                            builder.UseProductionEnvironment(apiKey);
-                        }
-                    }
+                        builder
+                            .UseDevelopmentEnvironment("Alice", "Smith")
+                            .AddSameDevice(options => { })
+                            .AddOtherDevice(options => { });
+                    });
 
-                    // Set options (with AuthenticateServiceKey)
-                    builder
-                        .AddSameDevice(options =>
-                        {
-                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
-                        })
-                        .AddOtherDevice(options =>
-                        {
-                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
-                        })
-                        .AddChooseDevice(options =>
-                        {
-                            options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-                        });
-
-                    //// Set AuthenticationScheme and options (with AuthenticateServiceKey)
-                    //builder
-                    //    .AddSameDevice("grandid-samedevice-custom", options =>
-                    //    {
-                    //        options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
-                    //    })
-                    //    .AddOtherDevice("grandid-otherdevice-custom", options =>
-                    //    {
-                    //        options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
-                    //    })
-                    //    .AddChooseDevice("grandid-choosedevice-custom", options =>
-                    //    {
-                    //        options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-                    //    });
-
-                    //// Set AuthenticationScheme, DisplayName and options (with AuthenticateServiceKey)
-                    //builder
-                    //    .AddSameDevice(GrandIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "GrandID - SameDevice", options =>
-                    //    {
-                    //        options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
-                    //    })
-                    //    .AddOtherDevice(GrandIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "GrandID - OtherDevice", options =>
-                    //    {
-                    //        options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
-                    //    })
-                    //    .AddChooseDevice(GrandIdAuthenticationDefaults.ChooseDeviceAuthenticationScheme, "GrandID - ChooseDevice", options =>
-                    //    {
-                    //        options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-                    //    });
-                });
-
-            // Sample of using BankID through GrandID (Svensk E-identitet) with minimum configuration
+            // Sample of using BankID through GrandID (Svensk E-identitet) with production environment
             //services.AddAuthentication()
-            //    .AddGrandId(builder =>
-            //    {
-            //        builder
-            //            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            //            .AddChooseDevice(options =>
-            //            {
-            //                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-            //            });
-            //    });
+            //        .AddGrandId(builder =>
+            //        {
+            //            builder
+            //                .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+            //                .AddChooseDevice(options =>
+            //                {
+            //                    options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+            //                });
+            //        });
 
-            // Sample of using BankID natively
+            // Sample of using BankID with in memory dev environment
             services.AddAuthentication()
-                .AddBankId(builder => {
-                    builder
-                        .UseProductionEnvironment()
-                        .UseBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                        .UseBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-                        .AddCustom("CustomAuthScheme", "CustomDisplayName", options =>
-                        {
-                            // ...
-                        });
-                });
+                    .AddBankId(builder =>
+                    {
+                        builder
+                            .UseDevelopmentEnvironment("Alice", "Smith")
+                            .AddCustom();
+                    });
+
+            // Sample of using BankID with production environment
+            //services.AddAuthentication()
+            //        .AddBankId(builder =>
+            //        {
+            //            builder
+            //                .UseProductionEnvironment()
+            //                .UseBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            //                .UseBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+            //                .AddCustom("CustomAuthScheme", "CustomDisplayName", options =>
+            //                {
+            //                    // ...
+            //                });
+            //        });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

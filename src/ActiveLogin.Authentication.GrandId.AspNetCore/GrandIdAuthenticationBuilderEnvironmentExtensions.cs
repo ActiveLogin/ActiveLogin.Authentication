@@ -1,5 +1,4 @@
 ﻿using System;
-using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -93,7 +92,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private static IGrandIdAuthenticationBuilder AddGrandIdApiClient(this IGrandIdAuthenticationBuilder builder, string apiKey)
         {
-            builder.AuthenticationBuilder.Services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
             builder.AuthenticationBuilder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey));
             builder.AuthenticationBuilder.Services.TryAddTransient<IGrandIdApiClient, GrandIdApiClient>();
 

@@ -1,9 +1,14 @@
-﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore
+﻿using ActiveLogin.Authentication.Common.Serialization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public static class GrandIdAuthenticationBuilderExtensions
     {
-        public static IGrandIdAuthenticationBuilder AddDefaultServices(this IGrandIdAuthenticationBuilder builder)
+        internal static IGrandIdAuthenticationBuilder AddDefaultServices(this IGrandIdAuthenticationBuilder builder)
         {
+            builder.AuthenticationBuilder.Services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
+
             return builder;
         }
     }
