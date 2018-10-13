@@ -80,7 +80,7 @@ namespace IdentityServerSample
             //                .UseProductionEnvironment()
             //                .UseBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             //                .UseBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            //                .AddCustom("CustomAuthScheme", "CustomDisplayName", options =>
+            //                .AddCustom(options =>
             //                {
             //                    // ...
             //                });
