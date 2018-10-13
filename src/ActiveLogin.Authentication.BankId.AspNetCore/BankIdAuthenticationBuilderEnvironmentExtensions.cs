@@ -44,7 +44,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder)
         {
-            return builder.UseDevelopmentEnvironment("GivenName", "Surname");
+            builder.AuthenticationBuilder.Services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient());
+
+            return builder;
         }
 
         public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname)
