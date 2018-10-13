@@ -21,18 +21,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdAuthenticationBuilder> grandId)
         {
-            AddGrandIdServices(builder.Services);
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());
 
             var grandIdAuthenticationBuilder = new GrandIdAuthenticationBuilder(builder);
             grandIdAuthenticationBuilder.AddDefaultServices();
             grandId(grandIdAuthenticationBuilder);
 
             return builder;
-        }
-
-        private static void AddGrandIdServices(IServiceCollection services)
-        {
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());
         }
     }
 }

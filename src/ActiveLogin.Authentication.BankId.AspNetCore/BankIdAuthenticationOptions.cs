@@ -18,11 +18,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             IsEssential = true
         };
 
-        public BankIdAuthenticationOptions()
-        {
-            CallbackPath = new PathString("/signin-bankid");
-        }
-
         public PathString BankIdLoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
         public TimeSpan? TokenExpiresIn { get; set; } = BankIdAuthenticationDefaults.MaximumSessionLifespan;
 

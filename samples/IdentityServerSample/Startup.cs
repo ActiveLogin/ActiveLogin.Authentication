@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
@@ -125,22 +124,16 @@ namespace IdentityServerSample
 
             // Sample of using BankID natively
             services.AddAuthentication()
-                    .AddBankId()
-                        .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                        .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-                        .AddBankIdEnvironmentConfiguration(configuration =>
+                .AddBankId(builder => {
+                    builder
+                        .UseProductionEnvironment()
+                        .UseBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+                        .UseBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+                        .AddCustom("CustomAuthScheme", "CustomDisplayName", options =>
                         {
-                            if (Configuration.GetValue("ActiveLogin:BankId:UseTestApiEndpoint", false))
-                            {
-                                configuration.ApiBaseUrl = BankIdUrls.TestApiBaseUrl;
-                            }
+                            // ...
                         });
-
-            // Development BankID API
-            if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentApi", false))
-            {
-                services.AddBankIdDevelopmentEnvironment();
-            }
+                });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
