@@ -67,24 +67,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        private GrandIdState GetStateFromCookie()
-        {
-            var protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState))
-            {
-                return null;
-            }
-
-            var state = Options.StateDataFormat.Unprotect(protectedState);
-            return state;
-        }
-
-        private void DeleteStateCookie()
-        {
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
-        }
-
         private AuthenticationTicket GetAuthenticationTicket(SessionStateResponse loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
@@ -191,6 +173,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
+        private string GetAbsoluteUrl(string returnUrl)
+        {
+            var absoluteUri = string.Concat(
+                Request.Scheme,
+                "://",
+                Request.Host.ToUriComponent(),
+                Request.PathBase.ToUriComponent());
+            return absoluteUri + returnUrl;
+        }
+
         private void AppendStateCookie(AuthenticationProperties properties)
         {
             var state = new GrandIdState()
@@ -203,14 +195,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
         }
 
-        private string GetAbsoluteUrl(string returnUrl)
+        private GrandIdState GetStateFromCookie()
         {
-            var absoluteUri = string.Concat(
-                Request.Scheme,
-                "://",
-                Request.Host.ToUriComponent(),
-                Request.PathBase.ToUriComponent());
-            return absoluteUri + returnUrl;
+            var protectedState = Request.Cookies[Options.StateCookie.Name];
+            if (string.IsNullOrEmpty(protectedState))
+            {
+                return null;
+            }
+
+            var state = Options.StateDataFormat.Unprotect(protectedState);
+            return state;
+        }
+
+        private void DeleteStateCookie()
+        {
+            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }
     }
 }

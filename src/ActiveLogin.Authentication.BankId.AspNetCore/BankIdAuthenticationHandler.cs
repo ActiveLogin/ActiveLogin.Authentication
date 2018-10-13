@@ -60,24 +60,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return Task.FromResult(HandleRequestResult.Success(ticket));
         }
 
-        private BankIdState GetStateFromCookie()
-        {
-            var protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState))
-            {
-                return null;
-            }
-
-            var state = Options.StateDataFormat.Unprotect(protectedState);
-            return state;
-        }
-
-        private void DeleteStateCookie()
-        {
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
-        }
-
         private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
@@ -176,6 +158,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return Task.CompletedTask;
         }
 
+        private string GetLoginUrl()
+        {
+            return $"{Options.BankIdLoginPath}?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}";
+        }
+
         private void AppendStateCookie(AuthenticationProperties properties)
         {
             var state = new BankIdState()
@@ -187,9 +174,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             Response.Cookies.Append(Options.StateCookie.Name, Options.StateDataFormat.Protect(state), cookieOptions);
         }
 
-        private string GetLoginUrl()
+        private BankIdState GetStateFromCookie()
         {
-            return $"{Options.BankIdLoginPath}?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}";
+            var protectedState = Request.Cookies[Options.StateCookie.Name];
+            if (string.IsNullOrEmpty(protectedState))
+            {
+                return null;
+            }
+
+            var state = Options.StateDataFormat.Unprotect(protectedState);
+            return state;
+        }
+
+        private void DeleteStateCookie()
+        {
+            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }
     }
 }
