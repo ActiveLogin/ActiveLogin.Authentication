@@ -100,7 +100,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             if (expiresUtc.HasValue)
             {
-                claims.Add(new Claim(BankIdClaimTypes.Expires, expiresUtc.Value.ToUnixTimeSeconds().ToString("D")));
+                claims.Add(new Claim(BankIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
             }
 
             if (Options.IssueAuthenticationMethodClaim)
@@ -146,7 +146,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
-            var state = new BankIdState()
+            var state = new BankIdState
             {
                 AuthenticationProperties = properties
             };

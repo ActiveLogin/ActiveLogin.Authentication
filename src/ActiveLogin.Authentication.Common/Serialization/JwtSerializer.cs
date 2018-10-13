@@ -32,5 +32,10 @@ namespace ActiveLogin.Authentication.Common
         {
             return birthdate.Date.ToString("yyyy-MM-dd");
         }
+
+        public static string GetExpires(DateTimeOffset expiresUtc)
+        {
+            return expiresUtc.Date.ToString("yyyy-MM-dd");
+        }
     }
 }

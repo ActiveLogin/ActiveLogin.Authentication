@@ -47,7 +47,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var sessionId = Request.Query["grandidsession"];
             if (string.IsNullOrEmpty(sessionId))
             {
-                return HandleRequestResult.Fail("Missing sessionId.");
+                return HandleRequestResult.Fail("Missing grandidsession from GrandID.");
             }
 
             try
@@ -64,7 +64,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             {
                 _logger.GrandIdGetSessionFailure(sessionId, ex);
 
-                return HandleRequestResult.Fail("Failed to fetch session");
+                return HandleRequestResult.Fail("Failed to get session from GrandID.");
             }
         }
 
@@ -107,7 +107,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             if (expiresUtc.HasValue)
             {
-                claims.Add(new Claim(GrandIdClaimTypes.Expires, expiresUtc.Value.ToUnixTimeSeconds().ToString("D")));
+                claims.Add(new Claim(GrandIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
             }
 
             if (Options.IssueAuthenticationMethodClaim)
@@ -156,17 +156,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private string GetAbsoluteUrl(string returnUrl)
         {
-            var absoluteUri = string.Concat(
-                Request.Scheme,
-                "://",
-                Request.Host.ToUriComponent(),
-                Request.PathBase.ToUriComponent());
+            var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
             return absoluteUri + returnUrl;
         }
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
-            var state = new GrandIdState()
+            var state = new GrandIdState
             {
                 AuthenticationProperties = properties
             };
