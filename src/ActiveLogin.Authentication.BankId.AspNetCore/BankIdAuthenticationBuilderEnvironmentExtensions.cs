@@ -12,11 +12,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             var configuration = new BankIdEnvironmentConfiguration();
             configureBankIdEnvironment(configuration);
-
             builder.ConfigureBankIdHttpClient(httpClient =>
             {
                 httpClient.BaseAddress = configuration.ApiBaseUrl;
             });
+
+            builder.AddBankIdApiClient();
 
             return builder;
         }
@@ -53,7 +54,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
-        private static IBankIdAuthenticationBuilder AddBankIdApiClient(this IBankIdAuthenticationBuilder builder, string apiKey)
+        private static IBankIdAuthenticationBuilder AddBankIdApiClient(this IBankIdAuthenticationBuilder builder)
         {
             builder.AuthenticationBuilder.Services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
             builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdApiClient, BankIdApiClient>();
