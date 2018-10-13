@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.Common;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -114,8 +115,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtGender = GetJwtGender(personalIdentityNumber.Gender);
+                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.Gender);
                 if (!string.IsNullOrEmpty(jwtGender))
                 {
                     claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
@@ -124,28 +124,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueBirthdateClaim)
             {
-                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtBirthdate = GetJwtBirthdate(personalIdentityNumber.DateOfBirth);
+                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.DateOfBirth);
                 claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtBirthdate));
             }
-        }
-
-        private static string GetJwtGender(SwedishGender gender)
-        {
-            switch (gender)
-            {
-                case SwedishGender.Female:
-                    return "female";
-                case SwedishGender.Male:
-                    return "male";
-            }
-
-            return string.Empty;
-        }
-
-        private static string GetJwtBirthdate(DateTime dateOfBirth)
-        {
-            return dateOfBirth.Date.ToString("yyyy-MM-dd");
         }
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
@@ -170,8 +151,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 AuthenticationProperties = properties
             };
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            var cookieValue = Options.StateDataFormat.Protect(state);
 
-            Response.Cookies.Append(Options.StateCookie.Name, Options.StateDataFormat.Protect(state), cookieOptions);
+            Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
         }
 
         private BankIdState GetStateFromCookie()

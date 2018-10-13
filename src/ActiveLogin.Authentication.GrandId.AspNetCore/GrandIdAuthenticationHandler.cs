@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.Common;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
@@ -121,8 +122,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtGender = GetJwtGender(personalIdentityNumber.Gender);
+                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.Gender);
                 if (!string.IsNullOrEmpty(jwtGender))
                 {
                     claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
@@ -131,28 +131,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (Options.IssueBirthdateClaim)
             {
-                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtBirthdate = GetJwtBirthdate(personalIdentityNumber.DateOfBirth);
+                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.DateOfBirth);
                 claims.Add(new Claim(GrandIdClaimTypes.Birthdate, jwtBirthdate));
             }
-        }
-
-        private static string GetJwtGender(SwedishGender gender)
-        {
-            switch (gender)
-            {
-                case SwedishGender.Female:
-                    return "female";
-                case SwedishGender.Male:
-                    return "male";
-            }
-
-            return string.Empty;
-        }
-
-        private static string GetJwtBirthdate(DateTime dateOfBirth)
-        {
-            return dateOfBirth.Date.ToString("yyyy-MM-dd");
         }
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
