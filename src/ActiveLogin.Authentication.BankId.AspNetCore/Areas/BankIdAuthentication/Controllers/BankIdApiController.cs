@@ -52,7 +52,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Initialize")]
         public async Task<ActionResult<BankIdLoginApiInitializeResponse>> InitializeAsync(BankIdLoginApiInitializeRequest request)
         {
-            var endUserIp = HttpContext.Connection.RemoteIpAddress.ToString();
+            var endUserIp = GetEndUserIp();
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(request.PersonalIdentityNumber);
 
             AuthResponse authResponse;
@@ -82,6 +82,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             });
         }
 
+        private string GetEndUserIp()
+        {
+            return HttpContext.Connection.RemoteIpAddress.ToString();
+        }
+
         [ValidateAntiForgeryToken]
         [HttpPost("Status")]
         public async Task<ActionResult> StatusAsync(BankIdLoginApiStatusRequest request)
@@ -103,26 +108,41 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (collectResponse.Status == CollectStatus.Pending)
             {
-                _logger.BankIdCollectPending(collectResponse.OrderRef, collectResponse.HintCode);
-                return Ok(BankIdLoginApiStatusResponse.Pending(statusMessage));
+                return CollectPending(collectResponse, statusMessage);
             }
 
             if (collectResponse.Status == CollectStatus.Complete)
             {
-                _logger.BankIdCollectCompleted(collectResponse.OrderRef, collectResponse.CompletionData);
-                await _bankIdResultStore.StoreCollectCompletedCompletionData(collectResponse.OrderRef, collectResponse.CompletionData);
-
-                var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
-                if (!Url.IsLocalUrl(returnUri))
-                {
-                    throw new Exception(BankIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
-                }
-
-                return Ok(BankIdLoginApiStatusResponse.Finished(returnUri));
+                return await CollectComplete(request, collectResponse);
             }
 
+            return CollectFailure(collectResponse, statusMessage);
+        }
+
+        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage)
+        {
             _logger.BankIdCollectFailure(collectResponse.OrderRef, collectResponse.HintCode);
             return BadRequest(new BankIdLoginApiErrorResponse(statusMessage));
+        }
+
+        private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse)
+        {
+            _logger.BankIdCollectCompleted(collectResponse.OrderRef, collectResponse.CompletionData);
+            await _bankIdResultStore.StoreCollectCompletedCompletionData(collectResponse.OrderRef, collectResponse.CompletionData);
+
+            var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
+            if (!Url.IsLocalUrl(returnUri))
+            {
+                throw new Exception(BankIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
+            }
+
+            return Ok(BankIdLoginApiStatusResponse.Finished(returnUri));
+        }
+
+        private ActionResult CollectPending(CollectResponse collectResponse, string statusMessage)
+        {
+            _logger.BankIdCollectPending(collectResponse.OrderRef, collectResponse.HintCode);
+            return Ok(BankIdLoginApiStatusResponse.Pending(statusMessage));
         }
 
         private string GetStatusMessage(CollectResponse collectResponse)

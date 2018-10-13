@@ -36,8 +36,7 @@
             show(formSubmitButtonSpinnerElement);
             hide(formSubmitButtonTextElement);
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
-                'personalIdentityNumber': personalIdentityNumber,
-                'returnUrl': returnUrl
+                'personalIdentityNumber': personalIdentityNumber
             })
                 .then(function (data) {
                     if (!!data.PersonalIdentityNumber) {
