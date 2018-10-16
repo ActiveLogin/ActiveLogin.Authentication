@@ -194,18 +194,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private static string AppendQueryString(string url, string queryString)
         {
-            var fullUrl = url;
-            if (!fullUrl.Contains("?"))
+            if (url.Contains("?"))
             {
-                fullUrl += '?';
+                return $"&{queryString}";
             }
-            else
-            {
-                fullUrl += '&';
-            }
-            fullUrl += queryString;
 
-            return fullUrl;
+            return $"?{queryString}";
         }
     }
 }
