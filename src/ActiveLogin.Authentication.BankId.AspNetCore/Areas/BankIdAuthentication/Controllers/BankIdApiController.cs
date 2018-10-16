@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
@@ -55,22 +56,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Initialize")]
         public async Task<ActionResult<BankIdLoginApiInitializeResponse>> InitializeAsync(BankIdLoginApiInitializeRequest request)
         {
-            var endUserIp = GetEndUserIp();
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(request.PersonalIdentityNumber);
             var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
             AuthResponse authResponse;
             try
             {
-                var authRequest = new AuthRequest(endUserIp)
-                {
-                    PersonalIdentityNumber = personalIdentityNumber.ToLongString()
-                };
-                if (!string.IsNullOrEmpty(loginOptions.CertificatePolicies))
-                {
-                    authRequest.Requirement.CertificatePolicies = loginOptions.CertificatePolicies;
-                }
-
+                var authRequest = GetAuthRequest(personalIdentityNumber, loginOptions);
                 authResponse = await _bankIdApiClient.AuthAsync(authRequest);
             }
             catch (BankIdApiException bankIdApiException)
@@ -90,6 +82,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             {
                 OrderRef = protectedOrderRef
             });
+        }
+
+        private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber personalIdentityNumber, BankIdLoginOptions loginOptions)
+        {
+            var endUserIp = GetEndUserIp();
+            var authRequest = new AuthRequest(endUserIp)
+            {
+                PersonalIdentityNumber = personalIdentityNumber.ToLongString()
+            };
+            if (!string.IsNullOrEmpty(loginOptions.CertificatePolicies))
+            {
+                authRequest.Requirement.CertificatePolicies = loginOptions.CertificatePolicies;
+            }
+
+            return authRequest;
         }
 
         private string GetEndUserIp()
@@ -158,7 +165,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private string GetStatusMessage(CollectResponse collectResponse)
         {
-            //TODO: Set these to correct values, might be provided from option / depending on what requirements are set
+            //TODO: Set these to correct values: maybe device detection in combinatio with properties from LoginOptions
             var authPersonalIdentityNumberProvided = true;
             var accessedFromMobileDevice = true;
 
