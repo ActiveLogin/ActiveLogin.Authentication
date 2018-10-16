@@ -1,28 +1,30 @@
 ﻿using System.IO;
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
-    public class BankIdOrderRefSerializer : IDataSerializer<BankIdOrderRef>
+    public class BankIdLoginOptionsSerializer : IDataSerializer<BankIdLoginOptions>
     {
         private const int FormatVersion = 1;
 
-        public byte[] Serialize(BankIdOrderRef model)
+        public byte[] Serialize(BankIdLoginOptions model)
         {
             using (var memory = new MemoryStream())
             {
                 using (var writer = new BinaryWriter(memory))
                 {
                     writer.Write(FormatVersion);
-                    writer.Write(model.OrderRef);
+
+                    writer.Write(model.CertificatePolicies);
+
                     writer.Flush();
                     return memory.ToArray();
                 }
             }
         }
 
-        public BankIdOrderRef Deserialize(byte[] data)
+        public BankIdLoginOptions Deserialize(byte[] data)
         {
             using (var memory = new MemoryStream(data))
             {
@@ -33,7 +35,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                         return null;
                     }
 
-                    return new BankIdOrderRef(reader.ReadString());
+                    return new BankIdLoginOptions
+                    {
+                        CertificatePolicies = reader.ReadString()
+                    };
                 }
             }
         }

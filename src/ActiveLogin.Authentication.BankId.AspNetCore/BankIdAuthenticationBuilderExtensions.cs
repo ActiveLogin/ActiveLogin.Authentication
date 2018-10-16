@@ -21,6 +21,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
 
             services.TryAddSingleton<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
+            services.TryAddSingleton<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
             services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
 
             services.TryAddSingleton<IBankIdUserMessage, BankIdRecommendedUserMessage>();

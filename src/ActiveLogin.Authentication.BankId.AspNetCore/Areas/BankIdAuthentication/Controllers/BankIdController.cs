@@ -20,7 +20,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
         }
     
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login(string returnUrl, string loginOptions)
         {
             if (!Url.IsLocalUrl(returnUrl))
             {
@@ -31,6 +31,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return View(new BankIdLoginViewModel
             {
                 ReturnUrl = returnUrl,
+                LoginOptions = loginOptions,
                 AntiXsrfRequestToken = antiforgeryTokens.RequestToken,
                 LoginScriptOptions = new BankIdLoginScriptOptions()
                 {

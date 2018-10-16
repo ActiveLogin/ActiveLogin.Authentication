@@ -3,6 +3,7 @@
     public class BankIdLoginViewModel
     {
         public string ReturnUrl { get; set; }
+        public string LoginOptions { get; set; }
         public BankIdLoginScriptOptions LoginScriptOptions { get; set; }
         public string AntiXsrfRequestToken { get; set; }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.Common;
@@ -16,6 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     public class BankIdAuthenticationHandler : RemoteAuthenticationHandler<BankIdAuthenticationOptions>
     {
         private readonly ILogger<BankIdAuthenticationHandler> _logger;
+        private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
 
         public BankIdAuthenticationHandler(
@@ -24,10 +26,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             UrlEncoder encoder,
             ISystemClock clock,
             ILogger<BankIdAuthenticationHandler> logger,
+            IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector)
             : base(options, loggerFactory, encoder, clock)
         {
             _logger = logger;
+            _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
         }
 
@@ -133,15 +137,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             AppendStateCookie(properties);
 
-            var loginUrl = GetLoginUrl();
+            var loginOptions = new BankIdLoginOptions
+            {
+                CertificatePolicies = Options.BankIdCertificatePolicies
+            };
+            var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
         }
 
-        private string GetLoginUrl()
+        private string GetLoginUrl(BankIdLoginOptions loginOptions)
         {
-            return $"{Options.BankIdLoginPath}?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}";
+            return $"{Options.BankIdLoginPath}" +
+                   $"?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}" +
+                   $"&loginOptions={UrlEncoder.Encode(_loginOptionsProtector.Protect(loginOptions))}";
         }
 
         private void AppendStateCookie(AuthenticationProperties properties)

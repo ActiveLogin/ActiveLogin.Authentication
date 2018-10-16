@@ -25,6 +25,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdApiClient _bankIdApiClient;
         private readonly IBankIdOrderRefProtector _orderRefProtector;
+        private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdResultStore _bankIdResultStore;
 
@@ -35,6 +36,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
             IBankIdApiClient bankIdApiClient,
             IBankIdOrderRefProtector orderRefProtector,
+            IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
             IBankIdResultStore bankIdResultStore)
         {
@@ -44,6 +46,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
             _bankIdApiClient = bankIdApiClient;
             _orderRefProtector = orderRefProtector;
+            _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
             _bankIdResultStore = bankIdResultStore;
         }
@@ -54,11 +57,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var endUserIp = GetEndUserIp();
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(request.PersonalIdentityNumber);
+            var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
             AuthResponse authResponse;
             try
             {
-                authResponse = await _bankIdApiClient.AuthAsync(endUserIp, personalIdentityNumber.ToLongString());
+                var authRequest = new AuthRequest(endUserIp)
+                {
+                    PersonalIdentityNumber = personalIdentityNumber.ToLongString()
+                };
+                if (!string.IsNullOrEmpty(loginOptions.CertificatePolicies))
+                {
+                    authRequest.Requirement.CertificatePolicies = loginOptions.CertificatePolicies;
+                }
+
+                authResponse = await _bankIdApiClient.AuthAsync(authRequest);
             }
             catch (BankIdApiException bankIdApiException)
             {
@@ -69,10 +82,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             var orderRef = authResponse.OrderRef;
-            var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef()
-            {
-                OrderRef = orderRef
-            });
+            var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(orderRef));
 
             _logger.BankIdAuthSuccess(personalIdentityNumber, orderRef);
 
@@ -92,6 +102,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         public async Task<ActionResult> StatusAsync(BankIdLoginApiStatusRequest request)
         {
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
+
             CollectResponse collectResponse;
             try
             {

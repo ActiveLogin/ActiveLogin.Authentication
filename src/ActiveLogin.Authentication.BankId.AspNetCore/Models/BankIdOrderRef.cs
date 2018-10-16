@@ -2,6 +2,11 @@
 {
     public class BankIdOrderRef
     {
-        public string OrderRef { get; set; }
+        public BankIdOrderRef(string orderRef)
+        {
+            OrderRef = orderRef;
+        }
+
+        public string OrderRef { get; }
     }
 }

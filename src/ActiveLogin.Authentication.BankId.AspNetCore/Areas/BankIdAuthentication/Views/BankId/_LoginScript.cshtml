@@ -24,19 +24,21 @@
 
             var requestVerificationTokenElement = this.querySelector('[name="RequestVerificationToken"]');
             var returnUrlElement = this.querySelector('[name="ReturnUrl"]');
+            var loginOptionsElement = this.querySelector('[name="LoginOptions"]');
             var personalIdentityNumberElement = this.querySelector('[name="PersonalIdentityNumber"]');
 
-            initialize(requestVerificationTokenElement.value, returnUrlElement.value, personalIdentityNumberElement.value, personalIdentityNumberElement);
+            initialize(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, personalIdentityNumberElement.value, personalIdentityNumberElement);
         });
 
         // BankID
 
-        function initialize(requestVerificationToken, returnUrl, personalIdentityNumber, personalIdentityNumberElement) {
+        function initialize(requestVerificationToken, returnUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
             formFieldsetElement.disabled = true;
             show(formSubmitButtonSpinnerElement);
             hide(formSubmitButtonTextElement);
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
-                'personalIdentityNumber': personalIdentityNumber
+                'personalIdentityNumber': personalIdentityNumber,
+                'loginOptions': loginOptions
             })
                 .then(function (data) {
                     if (!!data.PersonalIdentityNumber) {
@@ -45,7 +47,7 @@
                     } else {
                         hide(formElement);
                         showStatus(options.initialStatusMessage, 'info', true);
-                        checkStatus(requestVerificationToken, returnUrl, data.orderRef);
+                        checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
                     }
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
@@ -57,11 +59,12 @@
                 });
         }
 
-        function checkStatus(requestVerificationToken, returnUrl, orderRef) {
+        function checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef) {
             postJson(options.bankIdStatusApiUrl, requestVerificationToken,
                 {
                     'orderRef': orderRef,
-                    'returnUrl': returnUrl
+                    'returnUrl': returnUrl,
+                    'loginOptions': loginOptions
                 })
                 .then(function (data) {
                     if (data.isFinished) {
@@ -69,7 +72,7 @@
                     } else {
                         showStatus(data.statusMessage, 'info', true);
                         setTimeout(function () {
-                            checkStatus(requestVerificationToken, returnUrl, orderRef);
+                            checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
                         }, options.refreshIntervalMs);
                     }
                 }).catch(function (error) {

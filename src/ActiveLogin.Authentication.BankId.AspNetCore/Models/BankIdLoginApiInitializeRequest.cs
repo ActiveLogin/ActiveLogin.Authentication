@@ -6,5 +6,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
     {
         [SwedishPersonalIdentityNumber]
         public string PersonalIdentityNumber { get; set; }
+        public string LoginOptions { get; set; }
     }
 }

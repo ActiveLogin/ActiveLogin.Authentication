@@ -63,6 +63,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// Requirements on how the auth or sign order must be performed.
         /// </summary>
         [DataMember(Name = "requirement", EmitDefaultValue = false)]
-        public Requirement Requirement { get; set; }
+        public Requirement Requirement { get; set; } = new Requirement();
     }
 }

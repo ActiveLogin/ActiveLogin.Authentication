@@ -18,6 +18,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             IsEssential = true
         };
 
+        public string BankIdCertificatePolicies { get; set; } = string.Empty;
+
         public PathString BankIdLoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
         public TimeSpan? TokenExpiresIn { get; set; } = BankIdAuthenticationDefaults.MaximumSessionLifespan;
 
