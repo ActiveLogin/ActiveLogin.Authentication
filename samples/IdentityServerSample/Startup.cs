@@ -69,10 +69,21 @@ namespace IdentityServerSample
                     {
                         builder
                             .UseDevelopmentEnvironment("Alice", "Smith")
-                            .AddCustom(options =>
+                            .AddCustom("bankid-samedevice", "BankID (Same device)", options =>
                             {
+                                options.CallbackPath = new PathString("/signin-bankid-samedevice");
+
+                                options.BankIdAutoLaunch = true;
                                 options.BankIdAllowChangingPersonalIdentityNumber = false;
-                                options.BankIdCertificatePolicies = "BankIdCertificatePolicies";
+                                options.BankIdCertificatePolicies = "";
+                            })
+                            .AddCustom("bankid-otherdevice", "BankID (Other device)", options =>
+                            {
+                                options.CallbackPath = new PathString("/signin-bankid-otherdevice");
+
+                                options.BankIdAutoLaunch = false;
+                                options.BankIdAllowChangingPersonalIdentityNumber = true;
+                                options.BankIdCertificatePolicies = "";
                             });
                     });
 

@@ -140,7 +140,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginOptions = new BankIdLoginOptions(
                 Options.BankIdCertificatePolicies,
                 null, 
-                Options.BankIdAllowChangingPersonalIdentityNumber
+                Options.BankIdAllowChangingPersonalIdentityNumber,
+                Options.BankIdAutoLaunch
             );
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);

@@ -20,6 +20,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     writer.Write(model.CertificatePolicies);
                     writer.Write(model.PersonalIdentityNumber?.ToLongString() ?? string.Empty);
                     writer.Write(model.AllowChangingPersonalIdentityNumber);
+                    writer.Write(model.AutoLaunch);
 
                     writer.Flush();
                     return memory.ToArray();
@@ -42,11 +43,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     var personalIdentityNumberString = reader.ReadString();
                     var personalIdentityNumber = string.IsNullOrEmpty(personalIdentityNumberString) ? null : SwedishPersonalIdentityNumber.Parse(personalIdentityNumberString);
                     var allowChangingPersonalIdentityNumber = reader.ReadBoolean();
+                    var autoLaunch = reader.ReadBoolean();
 
                     return new BankIdLoginOptions(
                         certificatePolicies,
                         personalIdentityNumber,
-                        allowChangingPersonalIdentityNumber
+                        allowChangingPersonalIdentityNumber,
+                        autoLaunch
                     );
                 }
             }

@@ -83,7 +83,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             return new AuthResponse
             {
-                OrderRef = orderRef
+                OrderRef = orderRef,
+                AutoStartToken = Guid.NewGuid().ToString()
             };
         }
 

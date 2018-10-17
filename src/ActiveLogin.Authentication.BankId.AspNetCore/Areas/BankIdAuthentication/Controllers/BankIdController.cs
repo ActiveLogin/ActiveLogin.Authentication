@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _loginOptionsProtector = loginOptionsProtector;
         }
     
-        public ActionResult Login(string returnUrl, string loginOptions)
+        public ActionResult Login(string returnUrl, string loginOptions, string orderRef)
         {
             if (!Url.IsLocalUrl(returnUrl))
             {
@@ -36,12 +36,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
             var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
-            return View(new BankIdLoginViewModel
+
+            var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens, orderRef);
+            return View(viewModel);
+        }
+        
+        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens, string orderRef = null)
+        {
+            return new BankIdLoginViewModel
             {
                 ReturnUrl = returnUrl,
 
                 AutoLogin = unprotectedLoginOptions.IsAutoLogin(),
                 PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.ToLongString() ?? string.Empty,
+                OrderRef = orderRef,
 
                 LoginOptions = loginOptions,
                 UnprotectedLoginOptions = unprotectedLoginOptions,
@@ -57,7 +65,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                     BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.InitializeAsync), "BankIdApi"),
                     BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.StatusAsync), "BankIdApi")
                 }
-            });
+            };
         }
     }
 }

@@ -12,6 +12,8 @@
 
         var formElement = document.querySelector('#bankIdLoginForm');
         var formFieldsetElement = formElement.querySelector('fieldset');
+        var orderRefElement = formElement.querySelector('[name="OrderRef"]');
+        var orderRef = orderRefElement.value;
         var autoLoginElement = formElement.querySelector('[name="AutoLogin"]');
         var autoLogin = autoLoginElement.value === 'true';
 
@@ -25,7 +27,9 @@
 
         // Events
 
-        if (autoLogin) {
+        if (orderRef) {
+            showOrderRefStatus(orderRef);
+        } else if (autoLogin) {
             document.addEventListener('DOMContentLoaded', function() {
                 login();
             });
@@ -38,6 +42,17 @@
         }
 
         // Boot
+
+        function showOrderRefStatus(orderRef) {
+            var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
+            var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
+            var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
+
+            hide(formElement);
+            showStatus(options.initialStatusMessage, 'info', true);
+
+            checkStatus(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, orderRef);
+        }
 
         function login() {
             var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
@@ -57,10 +72,13 @@
             hide(formSubmitButtonTextElement);
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
+                'returnUrl': returnUrl,
                 'loginOptions': loginOptions
             })
                 .then(function (data) {
-                    if (!!data["PersonalIdentityNumber"]) {
+                    if (data.isAutoLaunch) {
+                        document.location = data.redirectUri;
+                    } else if (!!data["PersonalIdentityNumber"]) {
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
                     } else {

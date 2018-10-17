@@ -20,6 +20,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public string BankIdCertificatePolicies { get; set; } = string.Empty;
         public bool BankIdAllowChangingPersonalIdentityNumber { get; set; } = true;
+        public bool BankIdAutoLaunch { get; set; } = false;
 
         public PathString BankIdLoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
         public TimeSpan? TokenExpiresIn { get; set; } = BankIdAuthenticationDefaults.MaximumSessionLifespan;

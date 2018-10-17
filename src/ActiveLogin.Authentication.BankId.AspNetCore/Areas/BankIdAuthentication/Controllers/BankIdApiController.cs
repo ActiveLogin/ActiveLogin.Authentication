@@ -25,6 +25,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdUserMessage _bankIdUserMessage;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
+        private readonly IBankIdLauncher _bankIdLauncher;
         private readonly IBankIdApiClient _bankIdApiClient;
         private readonly IBankIdOrderRefProtector _orderRefProtector;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
@@ -37,6 +38,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdUserMessage bankIdUserMessage,
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
             IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
+            IBankIdLauncher bankIdLauncher,
             IBankIdApiClient bankIdApiClient,
             IBankIdOrderRefProtector orderRefProtector,
             IBankIdLoginOptionsProtector loginOptionsProtector,
@@ -48,6 +50,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _bankIdUserMessage = bankIdUserMessage;
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
             _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+            _bankIdLauncher = bankIdLauncher;
             _bankIdApiClient = bankIdApiClient;
             _orderRefProtector = orderRefProtector;
             _loginOptionsProtector = loginOptionsProtector;
@@ -96,7 +99,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             _logger.BankIdAuthSuccess(personalIdentityNumber, orderRef);
 
-            return Ok(new BankIdLoginApiInitializeResponse(protectedOrderRef));
+            if (unprotectedLoginOptions.AutoLaunch)
+            {
+                var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse);
+                return Ok(BankIdLoginApiInitializeResponse.AutoLaunch(bankIdRedirectUri));
+            }
+
+            return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
 
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber personalIdentityNumber, BankIdLoginOptions loginOptions)
@@ -111,6 +120,27 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private string GetEndUserIp()
         {
             return HttpContext.Connection.RemoteIpAddress.ToString();
+        }
+
+        private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, string protectedOrderRef, AuthResponse authResponse)
+        {
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
+            var returnRedirectUri = GetAbsoluteUrl(Url.Action(nameof(BankIdController.Login), "BankId", new
+            {
+                orderRef = protectedOrderRef,
+                returnUrl = request.ReturnUrl,
+                loginOptions = request.LoginOptions
+            }));
+            var launchUrlRequest = new LaunchUrlRequest(returnRedirectUri, authResponse.AutoStartToken);
+            var bankIdRedirectUri = _bankIdLauncher.GetLaunchUrl(detectedDevice, launchUrlRequest);
+
+            return bankIdRedirectUri;
+        }
+
+        private string GetAbsoluteUrl(string returnUrl)
+        {
+            var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
+            return absoluteUri + returnUrl;
         }
 
         [ValidateAntiForgeryToken]

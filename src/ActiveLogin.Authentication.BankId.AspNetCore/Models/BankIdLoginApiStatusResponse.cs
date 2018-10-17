@@ -9,10 +9,11 @@
             RedirectUri = redirectUri;
         }
 
-        public bool IsFinished { get; }
 
+        public bool IsFinished { get; }
         public string StatusMessage { get; }
         public string RedirectUri { get; }
+
 
         public static BankIdLoginApiStatusResponse Finished(string redirectUri)
         {

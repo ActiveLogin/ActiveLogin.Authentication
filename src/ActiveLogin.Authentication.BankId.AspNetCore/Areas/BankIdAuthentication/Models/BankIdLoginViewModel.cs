@@ -9,6 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         public bool AutoLogin { get; set; }
         public string PersonalIdentityNumber { get; set; }
+        public string OrderRef { get; set; }
 
         public string LoginOptions { get; set; }
         public BankIdLoginOptions UnprotectedLoginOptions { get; set; }
