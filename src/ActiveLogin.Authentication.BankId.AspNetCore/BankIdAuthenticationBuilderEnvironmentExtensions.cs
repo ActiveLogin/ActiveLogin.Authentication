@@ -16,7 +16,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 httpClient.BaseAddress = configuration.ApiBaseUrl;
             });
 
-            builder.AddBankIdApiClient();
+            builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdApiClient, BankIdApiClient>();
+            builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, BankIdLauncher>();
 
             return builder;
         }
@@ -44,6 +45,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder)
         {
             builder.AuthenticationBuilder.Services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient());
+            AddDevelopmentServices(builder.AuthenticationBuilder.Services);
 
             return builder;
         }
@@ -51,15 +53,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname)
         {
             builder.AuthenticationBuilder.Services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient(givenName, surname));
+            AddDevelopmentServices(builder.AuthenticationBuilder.Services);
 
             return builder;
         }
 
-        private static IBankIdAuthenticationBuilder AddBankIdApiClient(this IBankIdAuthenticationBuilder builder)
+        private static void AddDevelopmentServices(IServiceCollection services)
         {
-            builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdApiClient, BankIdApiClient>();
-
-            return builder;
+            services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();
         }
     }
 }
