@@ -45,9 +45,13 @@ The authentication part in your `Startup.cs` should look something like this:
 
 ```c#
 services.AddAuthentication()
-        .AddBankId();
-
-services.AddBankIdDevelopmentEnvironment();
+        .AddBankId(builder =>
+    {
+        builder
+            .UseDevelopmentEnvironment("Alice", "Smith")
+            .AddSameDevice()
+            .AddOtherDevice();
+    });
 ```
 
 ##### 2.1.2 Try it out with Bank ID test environment
