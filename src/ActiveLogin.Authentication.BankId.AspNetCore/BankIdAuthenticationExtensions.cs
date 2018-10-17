@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -15,7 +14,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             {
                 bankId
                     .UseDevelopmentEnvironment("BankID", "Development")
-                    .AddScheme("bankid-dev", "BankID - Dev", new PathString("/signin-bankid-development"), options => { });
+                    .AddSameDevice()
+                    .AddOtherDevice();
             });
         }
 

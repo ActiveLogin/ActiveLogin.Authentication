@@ -1,21 +1,10 @@
 ﻿using System;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public static class BankIdAuthenticationBuilderSchemeExtensions
     {
-        internal static IBankIdAuthenticationBuilder AddScheme(this IBankIdAuthenticationBuilder builder, string authenticationScheme, string displayName, PathString callpackPath, Action<BankIdAuthenticationOptions> configureOptions)
-        {
-            builder.AddScheme(authenticationScheme, displayName, configureOptions, options =>
-                {
-                    options.CallbackPath = callpackPath;
-                });
-
-            return builder;
-        }
-
         internal static IBankIdAuthenticationBuilder AddScheme(this IBankIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthenticationOptions> configureOptions, Action<BankIdAuthenticationOptions> defaultConfigureOptions)
         {
             builder.AuthenticationBuilder.Services.Configure(authenticationScheme, defaultConfigureOptions);
@@ -40,8 +29,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             => AddCustom(builder, authenticationScheme, BankIdAuthenticationDefaults.CustomDisplayName, configureOptions);
 
         public static IBankIdAuthenticationBuilder AddCustom(this IBankIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthenticationOptions> configureOptions)
-            => AddScheme(builder, authenticationScheme, displayName, BankIdAuthenticationDefaults.CustomCallpackPath, configureOptions);
-
+            => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
+            {
+                options.CallbackPath = BankIdAuthenticationDefaults.CustomCallpackPath;
+            });
 
 
         public static IBankIdAuthenticationBuilder AddSameDevice(this IBankIdAuthenticationBuilder builder)
