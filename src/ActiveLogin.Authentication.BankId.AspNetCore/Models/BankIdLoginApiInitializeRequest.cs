@@ -1,11 +1,12 @@
-﻿using ActiveLogin.Identity.Swedish.AspNetCore.Validation;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
 {
     public class BankIdLoginApiInitializeRequest
     {
-        [SwedishPersonalIdentityNumber]
         public string PersonalIdentityNumber { get; set; }
+
+        [Required]
         public string LoginOptions { get; set; }
     }
 }

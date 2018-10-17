@@ -1,4 +1,6 @@
-﻿<div class="alert alert-info" id="bankIdLoginStatus" style="display: none;">
+﻿@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+
+<div class="alert alert-primary" id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
     <i class="fa fa-spinner fa-3x fa-spin fa-pulse status-spinner mb-4"></i>
-    <div class="status-message"></div>
+    <div class="status-message">@Model.LoginScriptOptions.InitialStatusMessage</div>
 </div>

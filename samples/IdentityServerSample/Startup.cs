@@ -42,14 +42,14 @@ namespace IdentityServerSample
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
             // Sample of using BankID through GrandID (Svensk E-identitet) with in memory dev environment
-            services.AddAuthentication()
-                    .AddGrandId(builder =>
-                    {
-                        builder
-                            .UseDevelopmentEnvironment("Alice", "Smith")
-                            .AddSameDevice(options => { })
-                            .AddOtherDevice(options => { });
-                    });
+            //services.AddAuthentication()
+            //        .AddGrandId(builder =>
+            //        {
+            //            builder
+            //                .UseDevelopmentEnvironment("Alice", "Smith")
+            //                .AddSameDevice(options => { })
+            //                .AddOtherDevice(options => { });
+            //        });
 
             // Sample of using BankID through GrandID (Svensk E-identitet) with production environment
             //services.AddAuthentication()
@@ -69,7 +69,11 @@ namespace IdentityServerSample
                     {
                         builder
                             .UseDevelopmentEnvironment("Alice", "Smith")
-                            .AddCustom();
+                            .AddCustom(options =>
+                            {
+                                options.BankIdAllowChangingPersonalIdentityNumber = false;
+                                options.BankIdCertificatePolicies = "BankIdCertificatePolicies";
+                            });
                     });
 
             // Sample of using BankID with production environment

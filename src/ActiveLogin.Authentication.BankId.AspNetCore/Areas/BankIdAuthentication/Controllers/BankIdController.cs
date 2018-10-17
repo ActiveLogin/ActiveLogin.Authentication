@@ -1,7 +1,8 @@
 ﻿using System;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         private readonly IAntiforgery _antiforgery;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
+        private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
 
-        public BankIdController(IAntiforgery antiforgery, IBankIdUserMessageLocalizer bankIdUserMessageLocalizer)
+        public BankIdController(
+            IAntiforgery antiforgery,
+            IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+            IBankIdLoginOptionsProtector loginOptionsProtector)
         {
             _antiforgery = antiforgery;
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
+            _loginOptionsProtector = loginOptionsProtector;
         }
     
         public ActionResult Login(string returnUrl, string loginOptions)
@@ -28,13 +34,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 throw new Exception(BankIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
             }
 
+            var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
             var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
             return View(new BankIdLoginViewModel
             {
                 ReturnUrl = returnUrl,
+
+                AutoLogin = unprotectedLoginOptions.IsAutoLogin(),
+                PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.ToLongString() ?? string.Empty,
+
                 LoginOptions = loginOptions,
+                UnprotectedLoginOptions = unprotectedLoginOptions,
+
                 AntiXsrfRequestToken = antiforgeryTokens.RequestToken,
-                LoginScriptOptions = new BankIdLoginScriptOptions()
+                LoginScriptOptions = new BankIdLoginScriptOptions
                 {
                     RefreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs,
 

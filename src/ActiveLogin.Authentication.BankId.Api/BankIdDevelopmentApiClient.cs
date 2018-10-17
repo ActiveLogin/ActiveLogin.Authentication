@@ -24,6 +24,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         private readonly string _givenName;
         private readonly string _surname;
         private readonly string _name;
+        private readonly string _personalIdentityNumber;
         private readonly List<KeyValuePair<CollectStatus, CollectHintCode>> _statusesToReturn;
 
         private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
@@ -35,30 +36,31 @@ namespace ActiveLogin.Authentication.BankId.Api
         }
 
         public BankIdDevelopmentApiClient(List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
-            : this("GivenName", "Surname", "Name", statusesToReturn)
+            : this("GivenName", "Surname", "199908072391", statusesToReturn)
         {
         }
 
         public BankIdDevelopmentApiClient(string givenName, string surname)
-            : this(givenName, surname, $"{givenName} {surname}")
+            : this(givenName, surname, "199908072391")
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
-            : this(givenName, surname, $"{givenName} {surname}", statusesToReturn)
+        public BankIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber)
+            : this(givenName, surname, personalIdentityNumber, DefaultStatusesToReturn)
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname, string name)
-            : this(givenName, surname, name, DefaultStatusesToReturn)
+        public BankIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
+            : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, statusesToReturn)
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname, string name, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
+        public BankIdDevelopmentApiClient(string givenName, string surname, string name, string personalIdentityNumber, List<KeyValuePair<CollectStatus, CollectHintCode>> statusesToReturn)
         {
             _givenName = givenName;
             _surname = surname;
             _name = name;
+            _personalIdentityNumber = personalIdentityNumber;
             _statusesToReturn = statusesToReturn;
         }
 
@@ -72,10 +74,11 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            await EnsureNoExistingAuth(request).ConfigureAwait(false);
+            var personalIdentityNumber = GetPersonalIdentityNumber(request);
+            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
 
             var orderRef = Guid.NewGuid().ToString();
-            var auth = new Auth(orderRef, request.PersonalIdentityNumber);
+            var auth = new Auth(orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
             return new AuthResponse
@@ -84,11 +87,21 @@ namespace ActiveLogin.Authentication.BankId.Api
             };
         }
 
-        private async Task EnsureNoExistingAuth(AuthRequest request)
+        private string GetPersonalIdentityNumber(AuthRequest request)
         {
-            if (_auths.Any(x => x.Value.PersonalIdentityNumber == request.PersonalIdentityNumber))
+            if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
             {
-                var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == request.PersonalIdentityNumber).Key;
+                return request.PersonalIdentityNumber;
+            }
+
+            return _personalIdentityNumber;
+        }
+
+        private async Task EnsureNoExistingAuth(string personalIdentityNumber)
+        {
+            if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
+            {
+                var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
                 await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
                 throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
             }

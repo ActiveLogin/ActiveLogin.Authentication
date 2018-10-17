@@ -137,10 +137,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             AppendStateCookie(properties);
 
-            var loginOptions = new BankIdLoginOptions
-            {
-                CertificatePolicies = Options.BankIdCertificatePolicies
-            };
+            var loginOptions = new BankIdLoginOptions(
+                Options.BankIdCertificatePolicies,
+                null, 
+                Options.BankIdAllowChangingPersonalIdentityNumber
+            );
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 

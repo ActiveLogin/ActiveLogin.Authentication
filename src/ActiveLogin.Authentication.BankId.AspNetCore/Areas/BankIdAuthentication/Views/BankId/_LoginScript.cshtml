@@ -1,5 +1,4 @@
-﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
-@using ActiveLogin.Authentication.Common.Serialization
+﻿@using ActiveLogin.Authentication.Common.Serialization
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IJsonSerializer JsonSerializer
 
@@ -12,23 +11,43 @@
         var statusMessageElement = statusElement.querySelector('.status-message');
 
         var formElement = document.querySelector('#bankIdLoginForm');
-        var formSubmitButtonElement = formElement.querySelector('button[type="submit"]');
-        var formSubmitButtonTextElement = formSubmitButtonElement.querySelector('.submit-text');
-        var formSubmitButtonSpinnerElement = formSubmitButtonElement.querySelector('.status-spinner');
         var formFieldsetElement = formElement.querySelector('fieldset');
+        var autoLoginElement = formElement.querySelector('[name="AutoLogin"]');
+        var autoLogin = autoLoginElement.value === 'true';
+
+        var formSubmitButtonElement = formElement.querySelector('button[type="submit"]');
+        var formSubmitButtonTextElement = null;
+        var formSubmitButtonSpinnerElement = null;
+        if (formSubmitButtonElement) {
+            formSubmitButtonTextElement = formSubmitButtonElement.querySelector('.submit-text');
+            formSubmitButtonSpinnerElement = formSubmitButtonElement.querySelector('.status-spinner');
+        }
 
         // Events
 
-        formElement.addEventListener('submit', function (event) {
-            event.preventDefault();
+        if (autoLogin) {
+            document.addEventListener('DOMContentLoaded', function() {
+                login();
+            });
+        } else {
+            formElement.addEventListener('submit', function (event) {
+                event.preventDefault();
 
-            var requestVerificationTokenElement = this.querySelector('[name="RequestVerificationToken"]');
-            var returnUrlElement = this.querySelector('[name="ReturnUrl"]');
-            var loginOptionsElement = this.querySelector('[name="LoginOptions"]');
-            var personalIdentityNumberElement = this.querySelector('[name="PersonalIdentityNumber"]');
+                login();
+            });
+        }
 
-            initialize(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, personalIdentityNumberElement.value, personalIdentityNumberElement);
-        });
+        // Boot
+
+        function login() {
+            var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
+            var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
+            var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
+            var personalIdentityNumberElement = formElement.querySelector('[name="PersonalIdentityNumber"]');
+            var personalIdentityNumber = !!personalIdentityNumberElement ? personalIdentityNumberElement.value : '';
+
+            initialize(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, personalIdentityNumber, personalIdentityNumberElement);
+        }
 
         // BankID
 
@@ -41,7 +60,7 @@
                 'loginOptions': loginOptions
             })
                 .then(function (data) {
-                    if (!!data.PersonalIdentityNumber) {
+                    if (!!data["PersonalIdentityNumber"]) {
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
                     } else {
@@ -130,21 +149,29 @@
         }
 
         function show(element, display) {
+            if (!element) {
+                return;
+            }
+
             element.style.display = display || 'block';
         }
 
         function hide(element) {
+            if (!element) {
+                return;
+            }
+
             element.style.display = 'none';
         }
 
         function setInvalidUntilChange(element) {
-            if (!element.classList) {
+            if (!element || !element.classList) {
                 return;
             }
 
             element.classList.add('is-invalid');
             element.addEventListener('input', removeInvalid);
-            
+
             function removeInvalid() {
                 element.removeEventListener('input', removeInvalid);
                 element.classList.remove('is-invalid');
