@@ -26,6 +26,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
 
             services.TryAddSingleton<IBankIdUserMessage, BankIdRecommendedUserMessage>();
+            services.TryAddSingleton<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
             services.TryAddTransient<IBankIdResultStore, BankIdResultTraceLoggerStore>();
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
