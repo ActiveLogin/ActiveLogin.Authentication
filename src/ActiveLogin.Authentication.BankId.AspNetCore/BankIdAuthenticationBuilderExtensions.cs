@@ -38,7 +38,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseBankIdClientCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureClientCertificate)
+        public static IBankIdAuthenticationBuilder UseClientCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureClientCertificate)
         {
             builder.ConfigureBankIdHttpClientHandler(httpClientHandler =>
             {
@@ -50,7 +50,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseBankIdRootCaCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
+        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
         {
             builder.ConfigureBankIdHttpClientHandler(httpClientHandler =>
             {
@@ -62,9 +62,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseBankIdRootCaCertificate(this IBankIdAuthenticationBuilder builder, string certificateFilePath)
+        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, string certificateFilePath)
         {
-            builder.UseBankIdRootCaCertificate(() => new X509Certificate2(certificateFilePath));
+            builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
 
             return builder;
         }

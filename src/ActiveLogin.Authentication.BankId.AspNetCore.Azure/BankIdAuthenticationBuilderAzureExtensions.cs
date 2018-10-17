@@ -23,7 +23,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 
         public static IBankIdAuthenticationBuilder UseBankIdClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder)
         {
-            builder.UseBankIdClientCertificate(() =>
+            builder.UseClientCertificate(() =>
             {
                 var options = builder.AuthenticationBuilder.Services.BuildServiceProvider().GetService<IOptions<ClientCertificateFromAzureKeyVaultOptions>>();
                 using (var keyVaultCertificateClient = new AzureKeyVaultCertificateClient(options.Value.AzureAdClientId, options.Value.AzureAdClientSecret))

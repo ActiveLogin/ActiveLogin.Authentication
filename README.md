@@ -65,9 +65,14 @@ To start using a real implementation of BankID, there are a few steps to do. The
 
 ```c#
 services.AddAuthentication()
-        .AddBankId()
-            .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-            .AddBankIdTestEnvironment();
+        .AddBankId(builder =>
+    {
+        builder
+            .UseTestEnvironment()
+            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            .AddSameDevice()
+            .AddOtherDevice();
+    });
 ```
 
 6. Add the following configuration values. The AD client should have access to the KeyVault certificate specified in `AzureKeyVaultSecretIdentifier`.
@@ -91,10 +96,10 @@ services.AddAuthentication()
   <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
 </Content>
 ```
-10. Right after `.AddBankIdClientCertificateFromAzureKeyVault(..)`, add the following line:
+10. Right after `.UseClientCertificateFromAzureKeyVault(..)`, add the following line:
 
 ```c#
-.AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+.UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
 ```
 
  11. Add the following configuration values. The `FilePath` should point to the certificate you just added, for example:
@@ -118,9 +123,15 @@ To use BankID production environment, the procedure is the same as for test, but
 
 ```c#
 services.AddAuthentication()
-    .AddBankId()
-        .AddBankIdClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-        .AddBankIdRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+        .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+            .AddSameDevice()
+            .AddOtherDevice();
+    });
 ```
 
 5. Enjoy BankID in your application :)
