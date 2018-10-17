@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
-    public class BankIdStateSerializer : IDataSerializer<BankIdState>
+    internal class BankIdStateSerializer : IDataSerializer<BankIdState>
     {
         private const int FormatVersion = 1;
 
@@ -34,15 +34,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     }
 
                     var authenticationProperties = PropertiesSerializer.Default.Read(reader);
-                    if (authenticationProperties == null)
-                    {
-                        return null;
-                    }
 
-                    return new BankIdState
-                    {
-                        AuthenticationProperties = authenticationProperties
-                    };
+                    return new BankIdState(authenticationProperties);
                 }
             }
         }

@@ -162,10 +162,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
-            var state = new GrandIdState
-            {
-                AuthenticationProperties = properties
-            };
+            var state = new GrandIdState(properties);
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
             var cookieValue = Options.StateDataFormat.Protect(state);
 

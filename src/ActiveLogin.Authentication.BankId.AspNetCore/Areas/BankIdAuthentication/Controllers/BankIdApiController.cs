@@ -9,6 +9,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Resources;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -78,23 +79,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             _logger.BankIdAuthSuccess(personalIdentityNumber, orderRef);
 
-            return Ok(new BankIdLoginApiInitializeResponse
-            {
-                OrderRef = protectedOrderRef
-            });
+            return Ok(new BankIdLoginApiInitializeResponse(protectedOrderRef));
         }
 
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = GetEndUserIp();
-            var authRequest = new AuthRequest(endUserIp)
-            {
-                PersonalIdentityNumber = personalIdentityNumber.ToLongString()
-            };
-            if (!string.IsNullOrEmpty(loginOptions.CertificatePolicies))
-            {
-                authRequest.Requirement.CertificatePolicies = loginOptions.CertificatePolicies;
-            }
+            var authRequestRequirement = new Requirement(loginOptions.CertificatePolicies);
+            var authRequest = new AuthRequest(endUserIp, personalIdentityNumber.ToLongString(), authRequestRequirement);
 
             return authRequest;
         }
@@ -194,12 +186,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private static string AppendQueryString(string url, string queryString)
         {
-            if (url.Contains("?"))
-            {
-                return $"&{queryString}";
-            }
-
-            return $"?{queryString}";
+            var delimiter = url.Contains("?") ? "&" : "?";
+            return $"{url}{delimiter}{queryString}";
         }
     }
 }

@@ -2,6 +2,11 @@
 {
     public class BankIdLoginApiInitializeResponse
     {
-        public string OrderRef { get; set; }
+        public BankIdLoginApiInitializeResponse(string orderRef)
+        {
+            OrderRef = orderRef;
+        }
+
+        public string OrderRef { get; }
     }
 }

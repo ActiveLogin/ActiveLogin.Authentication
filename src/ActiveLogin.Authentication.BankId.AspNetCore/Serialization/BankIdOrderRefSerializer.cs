@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
-    public class BankIdOrderRefSerializer : IDataSerializer<BankIdOrderRef>
+    internal class BankIdOrderRefSerializer : IDataSerializer<BankIdOrderRef>
     {
         private const int FormatVersion = 1;
 

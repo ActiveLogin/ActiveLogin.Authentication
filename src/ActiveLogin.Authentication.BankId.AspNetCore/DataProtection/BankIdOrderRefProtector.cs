@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
 {
-    public class BankIdOrderRefProtector : IBankIdOrderRefProtector
+    internal class BankIdOrderRefProtector : IBankIdOrderRefProtector
     {
         private readonly ISecureDataFormat<BankIdOrderRef> _secureDataFormat;
 

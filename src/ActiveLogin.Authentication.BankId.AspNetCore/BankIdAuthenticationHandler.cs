@@ -156,10 +156,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
-            var state = new BankIdState
-            {
-                AuthenticationProperties = properties
-            };
+            var state = new BankIdState(properties);
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
             var cookieValue = Options.StateDataFormat.Protect(state);
 

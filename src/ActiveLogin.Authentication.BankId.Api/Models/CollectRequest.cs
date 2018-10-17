@@ -23,6 +23,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The OrderRef returned from auth or sign.
         /// </summary>
         [DataMember(Name = "orderRef")]
-        public string OrderRef { get; set; }
+        public string OrderRef { get; }
     }
 }

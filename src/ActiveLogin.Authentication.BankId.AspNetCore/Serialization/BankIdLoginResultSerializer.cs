@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
-    public class BankIdLoginResultSerializer : IDataSerializer<BankIdLoginResult>
+    internal class BankIdLoginResultSerializer : IDataSerializer<BankIdLoginResult>
     {
         private const int FormatVersion = 1;
 
@@ -41,16 +41,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                         return null;
                     }
 
-                    return new BankIdLoginResult
-                    {
-                        IsSuccessful = reader.ReadBoolean(),
-
-                        PersonalIdentityNumber = reader.ReadString(),
-
-                        Name = reader.ReadString(),
-                        GivenName = reader.ReadString(),
-                        Surname = reader.ReadString()
-                    };
+                    return new BankIdLoginResult(
+                        reader.ReadBoolean(),
+                        reader.ReadString(),
+                        reader.ReadString(),
+                        reader.ReadString(),
+                        reader.ReadString()
+                    );
                 }
             }
         }
