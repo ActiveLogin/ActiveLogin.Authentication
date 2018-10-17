@@ -66,26 +66,12 @@ namespace IdentityServerSample
             // Sample of using BankID with in memory dev environment
             services.AddAuthentication()
                     .AddBankId(builder =>
-                    {
-                        builder
-                            .UseDevelopmentEnvironment("Alice", "Smith")
-                            .AddCustom("bankid-samedevice", "BankID (Same device)", options =>
-                            {
-                                options.CallbackPath = new PathString("/signin-bankid-samedevice");
-
-                                options.BankIdAutoLaunch = true;
-                                options.BankIdAllowChangingPersonalIdentityNumber = false;
-                                options.BankIdCertificatePolicies = "";
-                            })
-                            .AddCustom("bankid-otherdevice", "BankID (Other device)", options =>
-                            {
-                                options.CallbackPath = new PathString("/signin-bankid-otherdevice");
-
-                                options.BankIdAutoLaunch = false;
-                                options.BankIdAllowChangingPersonalIdentityNumber = true;
-                                options.BankIdCertificatePolicies = "";
-                            });
-                    });
+                {
+                    builder
+                        .UseDevelopmentEnvironment("Alice", "Smith")
+                        .AddSameDevice()
+                        .AddOtherDevice();
+                });
 
             // Sample of using BankID with production environment
             //services.AddAuthentication()
