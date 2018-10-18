@@ -7,21 +7,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 {
     public static class BankIdAuthenticationBuilderAzureExtensions
     {
-        public static IBankIdAuthenticationBuilder UseBankIdClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, IConfigurationSection configurationSection)
+        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, IConfigurationSection configurationSection)
         {
             builder.AuthenticationBuilder.Services.Configure<ClientCertificateFromAzureKeyVaultOptions>(configurationSection.Bind);
 
-            return UseBankIdClientCertificateFromAzureKeyVault(builder);
+            return UseClientCertificateFromAzureKeyVault(builder);
         }
 
-        public static IBankIdAuthenticationBuilder UseBankIdClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
+        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
         {
             builder.AuthenticationBuilder.Services.Configure(configureOptions);
 
-            return UseBankIdClientCertificateFromAzureKeyVault(builder);
+            return UseClientCertificateFromAzureKeyVault(builder);
         }
 
-        public static IBankIdAuthenticationBuilder UseBankIdClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder)
+        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder)
         {
             builder.UseClientCertificate(() =>
             {

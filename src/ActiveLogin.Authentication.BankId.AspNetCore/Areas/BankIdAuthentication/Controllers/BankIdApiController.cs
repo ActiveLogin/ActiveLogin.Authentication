@@ -111,7 +111,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = GetEndUserIp();
-            var authRequestRequirement = new Requirement(loginOptions.CertificatePolicies);
+            var certificatePolicies = string.IsNullOrEmpty(loginOptions.CertificatePolicies) ? null : loginOptions.CertificatePolicies;
+            var authRequestRequirement = new Requirement(certificatePolicies);
             var personalIdentityNumberString = personalIdentityNumber?.ToLongString() ?? string.Empty;
 
             return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement);

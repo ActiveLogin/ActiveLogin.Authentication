@@ -36,7 +36,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The oid in certificate policies in the user certificate. List of String.
         /// </summary>
         [DataMember(Name = "certificatePolicies", EmitDefaultValue = false)]
-        public string CertificatePolicies { get; }
+        public string CertificatePolicies { get; set; }
 
         /// <summary>
         /// If set to true, the client must have been started using the AutoStartToken.
@@ -45,7 +45,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If set to false, the client does not need to be started using the autoStartToken.
         /// </summary>
         [DataMember(Name = "autoStartTokenRequired", EmitDefaultValue = false)]
-        public bool? AutoStartTokenRequired { get; }
+        public bool? AutoStartTokenRequired { get; set; }
 
         /// <summary>
         /// Users of iOS and Android devices may use fingerprint for authentication and signing if the device supports it and the user configured the device to use it.
@@ -55,6 +55,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If set to false, the users are not allowed to use fingerprint.
         /// </summary>
         [DataMember(Name = "allowFingerprint", EmitDefaultValue = false)]
-        public bool? AllowFingerprint { get; }
+        public bool? AllowFingerprint { get; set; }
     }
 }
