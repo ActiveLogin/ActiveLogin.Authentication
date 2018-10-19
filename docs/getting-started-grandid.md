@@ -2,12 +2,13 @@
 
 ## Preparation
 
+1. Read through the [GrandID documentation](http://www2.e-identitet.se/index.php?page=api-2). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
 1. [Get in touch with Svensk E-identitet](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/) to receive keys, you need these:
     * `ApiKey`
     * `SameDeviceServiceKey` (BankID same device)
     * `OtherDeviceServiceKey` (BankID other device)
     * `ChooseDeviceServiceKey` (BankID with device choice)
-2. Add them to your config, for example:
+1. Add them to your config, for example:
 
 ```json
 {
