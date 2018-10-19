@@ -1,4 +1,5 @@
 ﻿using System;
+using ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

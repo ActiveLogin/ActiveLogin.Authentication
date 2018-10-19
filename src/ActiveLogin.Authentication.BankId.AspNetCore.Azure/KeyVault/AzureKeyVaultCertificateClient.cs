@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
 {
     internal class AzureKeyVaultCertificateClient : IDisposable
     {
