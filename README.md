@@ -31,7 +31,7 @@ dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
 
 It is expected that you have a basic understanding of how ASP.NET Core, ASP.NET Core MVC and ASP.NET Core Authentication works before getting started.
 
-If this is your first external authentication provider, create or configure your `AccountController.cs` to support showing available AutehticationProviders as well as handling external logins. An example is [provided in IdentityServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/master/samples/IdentityServerSample/Controllers/AccountController.cs).
+If this is your first external authentication provider, create or configure your `AccountController.cs` to support showing available AuthenticationProviders as well as handling external logins. An example is [provided in IdentityServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/master/samples/IdentityServerSample/Controllers/AccountController.cs).
 
 There are providers for both [native BankID](https://www.bankid.com/bankid-i-dina-tjanster/sa-kommer-du-igang) as well as through [GrandID (Svensk E-identitet)](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/), examples of them both will follow.
 
@@ -92,6 +92,7 @@ services.AddAuthentication()
 7. The root CA-certificate specified in _BankID Relying Party Guidelines_ needs to be trusted at the computer where the app will run.
 8. If running in Azure App Service, where trusting custom certificates is not supported, there are extensions to handle that scenario.
 9. Instead of trusting the certificate, place it in your web project and make sure `CopyToOutputDirectory` is set to `Always`:
+
 ```xml
 <Content Include="Certificates\BankIdRootCertificate-Test.crt">	
   <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
@@ -100,6 +101,7 @@ services.AddAuthentication()
   <CopyToOutputDirectory>Always</CopyToOutputDirectory>	
 </Content>
 ```
+
 10. Right after `.UseClientCertificateFromAzureKeyVault(..)`, add the following line:
 
 ```c#
@@ -121,7 +123,7 @@ services.AddAuthentication()
 To use BankID production environment, the procedure is the same as for test, but the API url and the certificates are different.
 
 1. Start by [contacting a reseller](https://www.bankid.com/kontakt/foeretag/saeljare) to get your very own client certificate. This will probably take a few business days to get sorted.
-2. Repeat the process above by uploading the certifdicate to KeyVault and reconfigure your app to use the production certificate.
+2. Repeat the process above by uploading the certificate to KeyVault and reconfigure your app to use the production certificate.
 3. Change your application to trust the root CA-certificate. for production instead of test, this certificate can also be found in the file _BankID Relying Party Guidelines_ [available for download here](https://www.bankid.com/bankid-i-dina-tjanster/rp-info).
 4. The final Startup.cs should look something like this:
 
@@ -173,7 +175,7 @@ services.AddAuthentication()
 
 To start using a real implementation of BankID through GrandID, there are a few steps to do.
 
-1. [Get in touch with Svensk E-identitet](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/) to recevie test and/or production keys.
+1. [Get in touch with Svensk E-identitet](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/) to receive test and/or production keys.
 2. Add the following to you `Startup.cs`:
 
 ```c#
@@ -181,7 +183,6 @@ services.AddAuthentication()
     .AddGrandId(builder =>
     {
         builder
-			//.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
 			.UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
             .AddSameDevice(options =>
             {
@@ -223,7 +224,7 @@ services.AddAuthentication()
 
 ### 3. Browse tests and samples
 
-For more usecases, samples and inspiration; feel free to browse our unit tests and samples:
+For more use cases, samples and inspiration; feel free to browse our unit tests and samples:
 
 * [IdentityServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServerSample)
 * [MvcClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/MvcClientSample)
@@ -254,7 +255,7 @@ Yes! The UI is bundled into the package as a Razor Class Library, a technique th
 
 ### Can the messages be localized?
 
-The messages are already localized to English and Swedish using the official recomended texts. To select what texts are beeing used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-2.1#localization-middleware).
+The messages are already localized to English and Swedish using the official recommended texts. To select what texts that are used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-2.1#localization-middleware).
 
 ## ActiveLogin
 
