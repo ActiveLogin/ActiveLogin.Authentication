@@ -8,17 +8,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public static class GrandIdAuthenticationExtensions
     {
-        public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder)
-        {
-            return builder.AddGrandId(grandId =>
-            {
-                grandId
-                    .UseDevelopmentEnvironment()
-                    .AddSameDevice(options => { })
-                    .AddOtherDevice(options => { });
-            });
-        }
-
         public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdAuthenticationBuilder> grandId)
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());

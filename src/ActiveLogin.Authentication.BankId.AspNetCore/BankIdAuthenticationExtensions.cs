@@ -8,17 +8,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public static class BankIdAuthenticationExtensions
     {
-        public static AuthenticationBuilder AddBankId(this AuthenticationBuilder builder)
-        {
-            return builder.AddBankId(bankId =>
-            {
-                bankId
-                    .UseDevelopmentEnvironment()
-                    .AddSameDevice(options => { })
-                    .AddOtherDevice(options => { });
-            });
-        }
-
         public static AuthenticationBuilder AddBankId(this AuthenticationBuilder builder, Action<IBankIdAuthenticationBuilder> bankId)
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<BankIdAuthenticationOptions>, BankIdAuthenticationPostConfigureOptions>());
