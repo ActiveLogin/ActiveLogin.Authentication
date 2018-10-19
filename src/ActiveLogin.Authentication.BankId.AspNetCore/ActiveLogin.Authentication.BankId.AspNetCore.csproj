@@ -46,8 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" PrivateAssets="All" />
     <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
-    <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" />
   </ItemGroup>
   
   <ItemGroup>
