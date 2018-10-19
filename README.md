@@ -111,11 +111,11 @@ services
             .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
             .AddSameDevice(options =>
             {
-                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
+                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
             })
             .AddOtherDevice(options =>
             {
-                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
             });
     });
 ```
@@ -149,7 +149,7 @@ Yes! They are available here. Please note that MvcClientSample uses IdentityServ
 
 ## ActiveLogin
 
-_Integrating your systems with market leading authentication services._
+_Integrating your systems with market leading authentication services.
 
 ActiveLogin is an Open Source project built on .NET Standard that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
