@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.Common;
+using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;

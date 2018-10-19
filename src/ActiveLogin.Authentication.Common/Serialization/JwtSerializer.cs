@@ -1,7 +1,7 @@
 ﻿using System;
 using ActiveLogin.Identity.Swedish;
 
-namespace ActiveLogin.Authentication.Common
+namespace ActiveLogin.Authentication.Common.Serialization
 {
     public static class JwtSerializer
     {
