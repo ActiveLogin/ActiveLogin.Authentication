@@ -19,21 +19,11 @@
 }
 ```
 
-## Samples
+## Environments
 
 ### Development environment
 
 For trying out quickly (without the need of keys) you can use an in-memory implementation of the API by using `.UseDevelopmentEnvironment()`. This could also bee good when writing tests.
-
-### Development environment predefined set of schemas
-
-This is the simplest setup that will use the development environment and add the `SameDevice` and `OtherDevice` schemas.
-
-```c#
-services
-    .AddAuthentication()
-    .AddGrandId();
-```
 
 ### Development environment with no config
 
@@ -65,11 +55,35 @@ services
     });
 ```
 
-## Test or production environment
+### Production environment
 
 This will use the real REST API for GrandID, connecting to either the Test or Production environment. It requires you to have the API keys described under _Preparation_ above.
 
+```c#
+services.AddAuthentication()
+        .AddGrandId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            ...
+    });
+```
+
+### Test environment
+
 These samples uses the production environment, to use the test environment, simply swap `.UseProductionEnvironment()` with `.UseTestEnvironment()`.
+
+```c#
+services.AddAuthentication()
+        .AddGrandId(builder =>
+    {
+        builder
+            .UseTestEnvironment()
+            ...
+    });
+```
+
+## Samples
 
 ### Using schemes for same device and other device
 
@@ -96,7 +110,7 @@ services
 
 ### Using schemas for choose device
 
-This option will display a UI at GranID where the user can choose between same or other device.
+This option will display a UI at GrandID where the user can choose between same or other device.
 
 ```c#
 services
@@ -109,5 +123,21 @@ services
             {
                 options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
             });
+    });
+```
+
+### Customizing schemas
+
+By default, `Add*Device` will use predefined schemas and display names, but they can be changed.
+
+```c#
+services
+    .AddAuthentication()
+    .AddGrandId(builder =>
+    {
+        builder
+            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+            .AddSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
+            .AddOtherDevice(GrandIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });
 ```

@@ -80,7 +80,7 @@ services
 To authenticate using a real BankID you need to receive a certificate or API-keys, depending on what solution you choose. The details are described in these documents:
 
 * [Getting started with BankID in Test and Production](docs/getting-started-bankid.md)
-* [Getting started with GranID in Test and Production](docs/getting-started-grandid.md)
+* [Getting started with GrandID in Test and Production](docs/getting-started-grandid.md)
 
 Samples on how to use them in production are:
 
