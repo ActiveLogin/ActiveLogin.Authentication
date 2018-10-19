@@ -43,24 +43,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         }
 
         public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder)
-        {
-            builder.AuthenticationBuilder.Services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient());
-            AddDevelopmentServices(builder.AuthenticationBuilder.Services);
-
-            return builder;
-        }
+            => UseDevelopmentEnvironment(builder, x => new BankIdDevelopmentApiClient());
 
         public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname)
+            => UseDevelopmentEnvironment(builder, x => new BankIdDevelopmentApiClient(givenName, surname));
+
+        public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
+            => UseDevelopmentEnvironment(builder, x => new BankIdDevelopmentApiClient(givenName, surname, personalIdentityNumber));
+
+        private static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
         {
-            builder.AuthenticationBuilder.Services.AddSingleton<IBankIdApiClient>(x => new BankIdDevelopmentApiClient(givenName, surname));
-            AddDevelopmentServices(builder.AuthenticationBuilder.Services);
+            builder.AuthenticationBuilder.Services.AddSingleton(bankIdDevelopmentApiClient);
+            builder.AuthenticationBuilder.Services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();
 
             return builder;
-        }
-
-        private static void AddDevelopmentServices(IServiceCollection services)
-        {
-            services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();
         }
     }
 }
