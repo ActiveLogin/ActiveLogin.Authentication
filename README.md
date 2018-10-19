@@ -25,16 +25,16 @@ First of all, you need to decide if you want to use [native BankID](https://www.
 
 ActiveLogin.Authentication is distributed as [packages on NuGet](https://www.nuget.org/profiles/ActiveLogin), install using the tool of your choice, for example _dotnet cli_.
 
-*BankID*
+#### BankID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
+dotnet add package [ActiveLogin.Authentication.BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore)
 ```
 
-*GrandID*
+#### GrandID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore
+dotnet add package [ActiveLogin.Authentication.GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore)
 ```
 
 ### 2. Prepare your project
@@ -47,7 +47,7 @@ The authentication modules for BankID and GrandID are registered in `ConfigureSe
 
 Both BankID and GrandID requires you to receive either certificates or API-keys, but to get started and try it out the experience there are development environment options available that uses an in-memory implementation.
 
-*BankID*
+#### BankID
 
 ```c#
 services
@@ -61,7 +61,7 @@ services
     });
 ```
 
-*GrandID*
+#### GrandID
 
 ```c#
 services
@@ -84,7 +84,7 @@ To authenticate using a real BankID you need to receive a certificate or API-key
 
 Samples on how to use them in production are:
 
-*[BankID](docs/getting-started-bankid.md)*
+#### [BankID](docs/getting-started-bankid.md)
 
 ```c#
 services
@@ -100,7 +100,7 @@ services
     });
 ```
 
-*[GrandID](docs/getting-started-grandid.md)*
+#### [GrandID](docs/getting-started-grandid.md)
 
 ```c#
 services
@@ -138,7 +138,7 @@ The samples are configured to run in development mode (no BankID certificates or
 The easiest way to try the sample out is to:
 
 1. Configure the solution to use _Multiple startup projects_, and set it to start both _IdentityServerSample_ and _MvcClientSample_
-2. Press F5
+1. Press F5
 
 ### Can I try out a live demo of the samples?
 
