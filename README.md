@@ -28,13 +28,13 @@ ActiveLogin.Authentication is distributed as [packages on NuGet](https://www.nug
 #### BankID
 
 ```powershell
-dotnet add package [ActiveLogin.Authentication.BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore)
+dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
 ```
 
 #### GrandID
 
 ```powershell
-dotnet add package [ActiveLogin.Authentication.GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore)
+dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore
 ```
 
 ### 2. Prepare your project
