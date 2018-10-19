@@ -14,6 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActiveLogin.Identity.Swedish.AspNetCore" Version="0.3.2" />
+    <PackageReference Include="ActiveLogin.Identity.Swedish" Version="1.0.0-alpha-1" />
   </ItemGroup>
 </Project>
