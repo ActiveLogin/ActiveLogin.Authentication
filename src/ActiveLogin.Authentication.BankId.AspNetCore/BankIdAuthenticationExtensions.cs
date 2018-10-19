@@ -13,9 +13,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder.AddBankId(bankId =>
             {
                 bankId
-                    .UseDevelopmentEnvironment("BankID", "Development")
-                    .AddSameDevice()
-                    .AddOtherDevice();
+                    .UseDevelopmentEnvironment()
+                    .AddSameDevice(options => { })
+                    .AddOtherDevice(options => { });
             });
         }
 

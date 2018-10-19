@@ -13,7 +13,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return builder.AddGrandId(grandId =>
             {
                 grandId
-                    .UseDevelopmentEnvironment("GrandID", "Development")
+                    .UseDevelopmentEnvironment()
                     .AddSameDevice(options => { })
                     .AddOtherDevice(options => { });
             });

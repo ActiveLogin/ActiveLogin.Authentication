@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.Common;
@@ -141,7 +140,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdCertificatePolicies,
                 null, 
                 Options.BankIdAllowChangingPersonalIdentityNumber,
-                Options.BankIdAutoLaunch
+                Options.BankIdAutoLaunch,
+                Options.BankIdAllowBiometric
             );
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
@@ -151,7 +151,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private string GetLoginUrl(BankIdLoginOptions loginOptions)
         {
-            return $"{Options.BankIdLoginPath}" +
+            return $"{Options.LoginPath}" +
                    $"?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}" +
                    $"&loginOptions={UrlEncoder.Encode(_loginOptionsProtector.Protect(loginOptions))}";
         }

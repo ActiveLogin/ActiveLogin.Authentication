@@ -52,7 +52,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             try
             {
-                var sessionResult = await _grandIdApiClient.GetSessionAsync(Options.AuthenticateServiceKey, sessionId);
+                var sessionResult = await _grandIdApiClient.GetSessionAsync(Options.GrandIdAuthenticateServiceKey, sessionId);
 
                 var properties = state.AuthenticationProperties;
                 var ticket = GetAuthenticationTicket(sessionResult, properties);
@@ -143,13 +143,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
             try
             {
-                var response = await _grandIdApiClient.FederatedLoginAsync(Options.AuthenticateServiceKey, absoluteReturnUrl);
-                _logger.GrandIdAuthSuccess(Options.AuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
+                var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl);
+                _logger.GrandIdAuthSuccess(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
                 Response.Redirect(response.RedirectUrl);
             }
             catch (Exception ex)
             {
-                _logger.GrandIdAuthFailure(Options.AuthenticateServiceKey, absoluteReturnUrl, ex);
+                _logger.GrandIdAuthFailure(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
                 throw;
             }
         }

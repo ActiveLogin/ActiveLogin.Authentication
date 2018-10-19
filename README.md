@@ -48,9 +48,9 @@ services.AddAuthentication()
         .AddBankId(builder =>
     {
         builder
-            .UseDevelopmentEnvironment("Alice", "Smith")
-            .AddSameDevice()
-            .AddOtherDevice();
+            .UseDevelopmentEnvironment()
+            .AddSameDevice(options => { })
+            .AddOtherDevice(options => { });
     });
 ```
 
@@ -74,8 +74,8 @@ services.AddAuthentication()
         builder
             .UseTestEnvironment()
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-            .AddSameDevice()
-            .AddOtherDevice();
+            .AddSameDevice(options => { })
+            .AddOtherDevice(options => { });
     });
 ```
 
@@ -133,12 +133,22 @@ services.AddAuthentication()
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            .AddSameDevice()
-            .AddOtherDevice();
+            .AddSameDevice(options => { })
+            .AddOtherDevice(options => { });
     });
 ```
 
-5. Enjoy BankID in your application :)
+5. BankId options allows you to set and override some options such as these:
+
+```c#
+.AddOtherDevice(options =>
+{
+    options.BankIdAllowBiometric = false;
+    options.BankIdCertificatePolicies = new List<string> { "1.2.752.78.1.1" };
+});
+```
+
+6. Enjoy BankID in your application :)
 
 #### 2.2 Using BankID through GrandID (Svensk E-identitet)
 
@@ -154,8 +164,8 @@ services.AddAuthentication()
         {
             builder
                 .UseDevelopmentEnvironment()
-                .AddSameDevice(options => {})
-                .AddOtherDevice(options => {});
+                .AddSameDevice(options => { })
+                .AddOtherDevice(options => { });
         });
 ```
 
@@ -170,17 +180,9 @@ To start using a real implementation of BankID through GrandID, there are a few 
 services.AddAuthentication()
     .AddGrandId(builder =>
     {
-        var apiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
-        {
-            builder.UseTestEnvironment(apiKey);
-        }
-        else
-        {
-            builder.UseProductionEnvironment(apiKey);
-        }
-
         builder
+			//.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+			.UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
             .AddSameDevice(options =>
             {
                 options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
@@ -210,32 +212,8 @@ services.AddAuthentication()
 services.AddAuthentication()
     .AddGrandId(builder =>
     {
-        var apiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestApiEndpoint", false))
-        {
-            builder.UseTestEnvironment(apiKey);
-        }
-        else
-        {
-            builder.UseProductionEnvironment(apiKey);
-        }
-
         builder
-			.AddChooseDevice(options =>
-            {
-                options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-            });
-    });
-```
-
-6. And if you always aim for using the production environment, you can simplify it as this:
-
-```c#
-services.AddAuthentication()
-    .AddGrandId(builder =>
-    {
-        builder
-            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+			.UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
 			.AddChooseDevice(options =>
             {
                 options.AuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");

@@ -21,7 +21,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         /// <summary>
         /// AuthenticateServiceKey obtained from GrandID (Svensk E-identitet).
         /// </summary>
-        public string AuthenticateServiceKey { get; set; }
+        public string GrandIdAuthenticateServiceKey { get; set; }
 
         public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
 
@@ -46,9 +46,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             base.Validate();
 
-            if (string.IsNullOrWhiteSpace(AuthenticateServiceKey))
+            if (string.IsNullOrWhiteSpace(GrandIdAuthenticateServiceKey))
             {
-                throw new ArgumentException($"The '{nameof(AuthenticateServiceKey)}' must be provided.'", nameof(AuthenticateServiceKey));
+                throw new ArgumentException($"The '{nameof(GrandIdAuthenticateServiceKey)}' must be provided.'", nameof(GrandIdAuthenticateServiceKey));
             }
         }
     }
