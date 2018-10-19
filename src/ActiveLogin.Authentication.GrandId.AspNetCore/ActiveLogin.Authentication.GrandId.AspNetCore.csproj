@@ -13,10 +13,10 @@
     <VersionSuffix>alpha-3</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-    <Description>ASP.NET Core middleware that enables an application to support Svensk e-handels GrandID's native authentication workflow.</Description>
-    <PackageTags>GrandId;swedish;sweden;aspnetcore;authentication</PackageTags>
+    <Description>ASP.NET Core authentication module that enables an application to support GrandID's (Svensk E-identitet) authentication workflow.</Description>
+    <PackageTags>grandid;bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
-    <Authors>Martin Sjölander;Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+    <Authors>Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
     <Copyright>Copyright © ActiveLogin</Copyright>
 
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>

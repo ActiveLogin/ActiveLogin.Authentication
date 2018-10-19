@@ -13,10 +13,10 @@
     <VersionSuffix>alpha-3</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-    <Description>API client that enables an application to call Swedish BankID's (svenskt BankIDs) REST API in .NET.</Description>
-    <PackageTags>GrandId;swedish;sweden;rest;api;client</PackageTags>
+    <Description>API client that enables an application to call GrandID's (Svensk E-identitet) REST API in .NET.</Description>
+    <PackageTags>grandid;bankid;swedish;sweden;apiclient;netstandard</PackageTags>
 
-    <Authors>Martin Sjölander;Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+    <Authors>Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
     <Copyright>Copyright © ActiveLogin</Copyright>
 
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>

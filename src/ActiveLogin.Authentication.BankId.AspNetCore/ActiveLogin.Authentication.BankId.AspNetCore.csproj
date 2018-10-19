@@ -14,7 +14,7 @@
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <Description>ASP.NET Core middleware that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
-    <PackageTags>bankid;swedish;sweden;aspnetcore;authentication</PackageTags>
+    <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
     <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
     <Copyright>Copyright © ActiveLogin</Copyright>
