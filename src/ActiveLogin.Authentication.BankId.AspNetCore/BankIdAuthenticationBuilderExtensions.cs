@@ -18,14 +18,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             var services = builder.AuthenticationBuilder.Services;
 
-            services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
+            services.TryAddTransient<IJsonSerializer, SystemRuntimeJsonSerializer>();
 
-            services.TryAddSingleton<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
-            services.TryAddSingleton<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
-            services.TryAddSingleton<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+            services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
+            services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
+            services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
 
-            services.TryAddSingleton<IBankIdUserMessage, BankIdRecommendedUserMessage>();
-            services.TryAddSingleton<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
+            services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
+            services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
             services.TryAddTransient<IBankIdResultStore, BankIdResultTraceLoggerStore>();
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();

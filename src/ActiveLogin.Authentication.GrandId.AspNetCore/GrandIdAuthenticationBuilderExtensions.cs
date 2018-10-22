@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     {
         internal static IGrandIdAuthenticationBuilder AddDefaultServices(this IGrandIdAuthenticationBuilder builder)
         {
-            builder.AuthenticationBuilder.Services.TryAddSingleton<IJsonSerializer, SystemRuntimeJsonSerializer>();
+            builder.AuthenticationBuilder.Services.TryAddTransient<IJsonSerializer, SystemRuntimeJsonSerializer>();
 
             return builder;
         }
