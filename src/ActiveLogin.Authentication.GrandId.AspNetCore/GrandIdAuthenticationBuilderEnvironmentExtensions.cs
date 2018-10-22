@@ -78,7 +78,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {
-            builder.AuthenticationBuilder.Services.AddSingleton(grandIdDevelopmentApiClient);
+            builder.AuthenticationBuilder.Services.TryAddSingleton(grandIdDevelopmentApiClient);
             builder.AuthenticationBuilder.Services.PostConfigureAll<GrandIdAuthenticationOptions>(options =>
             {
                 if (string.IsNullOrEmpty(options.GrandIdAuthenticateServiceKey))
