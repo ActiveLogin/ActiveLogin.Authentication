@@ -177,6 +177,24 @@ services
     });
 ```
 
+### Custom schema
+
+If you want to roll your own, complete custom config, that can be done using `.AddCustom()`.
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            ...
+            .AddCustom(options => {
+                options.BankIdAutoLaunch = true;
+                options.BankIdAllowChangingPersonalIdentityNumber = false;
+			});
+    });
+```
+
 ### Customizing BankID
 
 BankId options allows you to set and override some options such as these.
