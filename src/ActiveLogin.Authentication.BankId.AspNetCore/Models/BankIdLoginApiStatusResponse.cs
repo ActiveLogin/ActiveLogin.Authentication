@@ -2,28 +2,27 @@
 {
     public class BankIdLoginApiStatusResponse
     {
-        public bool IsFinished { get; set; }
+        private BankIdLoginApiStatusResponse(bool isFinished, string statusMessage, string redirectUri)
+        {
+            IsFinished = isFinished;
+            StatusMessage = statusMessage;
+            RedirectUri = redirectUri;
+        }
 
-        public string StatusMessage { get; set; }
-        public string RedirectUri { get; set; }
+
+        public bool IsFinished { get; }
+        public string StatusMessage { get; }
+        public string RedirectUri { get; }
+
 
         public static BankIdLoginApiStatusResponse Finished(string redirectUri)
         {
-            return new BankIdLoginApiStatusResponse
-            {
-                IsFinished = true,
-                RedirectUri = redirectUri
-            };
+            return new BankIdLoginApiStatusResponse(true, null, redirectUri);
         }
 
         public static BankIdLoginApiStatusResponse Pending(string statusMessage)
         {
-            return new BankIdLoginApiStatusResponse
-            {
-                IsFinished = false,
-
-                StatusMessage = statusMessage
-            };
+            return new BankIdLoginApiStatusResponse(false, statusMessage, null);
         }
     }
 }

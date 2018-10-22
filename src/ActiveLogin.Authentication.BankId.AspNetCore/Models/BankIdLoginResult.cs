@@ -2,34 +2,31 @@
 {
     public class BankIdLoginResult
     {
-        public bool IsSuccessful { get; set; }
+        public BankIdLoginResult(bool isSuccessful, string personalIdentityNumber, string name, string givenName, string surname)
+        {
+            IsSuccessful = isSuccessful;
+            PersonalIdentityNumber = personalIdentityNumber;
+            Name = name;
+            GivenName = givenName;
+            Surname = surname;
+        }
 
-        public string PersonalIdentityNumber { get; set; }
+        public bool IsSuccessful { get; }
 
-        public string Name { get; set; }
-        public string GivenName { get; set; }
-        public string Surname { get; set; }
+        public string PersonalIdentityNumber { get; }
+
+        public string Name { get; }
+        public string GivenName { get; }
+        public string Surname { get; }
 
         public static BankIdLoginResult Success(string personalIdentityNumber, string name, string givenName, string surname)
         {
-            return new BankIdLoginResult
-            {
-                IsSuccessful = true,
-
-                PersonalIdentityNumber = personalIdentityNumber,
-
-                Name = name,
-                GivenName = givenName,
-                Surname = surname
-            };
+            return new BankIdLoginResult(true, personalIdentityNumber, name, givenName, surname);
         }
 
         public static BankIdLoginResult Fail()
         {
-            return new BankIdLoginResult
-            {
-                IsSuccessful = false
-            };
+            return new BankIdLoginResult(false, null, null, null, null);
         }
     }
 }

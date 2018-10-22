@@ -1,6 +1,7 @@
 ﻿using System;
 using ActiveLogin.Authentication.GrandId.Api;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
@@ -77,14 +78,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {
-            builder.AuthenticationBuilder.Services.AddSingleton(grandIdDevelopmentApiClient);
+            builder.AuthenticationBuilder.Services.TryAddSingleton(grandIdDevelopmentApiClient);
             builder.AuthenticationBuilder.Services.PostConfigureAll<GrandIdAuthenticationOptions>(options =>
             {
-                if (string.IsNullOrEmpty(options.AuthenticateServiceKey))
+                if (string.IsNullOrEmpty(options.GrandIdAuthenticateServiceKey))
                 {
-                    options.AuthenticateServiceKey = "DEVELOPMENT";
+                    options.GrandIdAuthenticateServiceKey = "DEVELOPMENT";
                 }
             });
+
+            return builder;
+        }
+
+        private static IGrandIdAuthenticationBuilder AddGrandIdApiClient(this IGrandIdAuthenticationBuilder builder, string apiKey)
+        {
+            builder.AuthenticationBuilder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey));
+            builder.AuthenticationBuilder.Services.TryAddTransient<IGrandIdApiClient, GrandIdApiClient>();
 
             return builder;
         }

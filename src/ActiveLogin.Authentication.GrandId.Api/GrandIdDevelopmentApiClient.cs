@@ -13,6 +13,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly string _givenName;
         private readonly string _surname;
         private readonly string _personalIdentityNumber;
+        private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         private readonly Dictionary<string, FederatedLoginResponse> _federatedLogins = new Dictionary<string, FederatedLoginResponse>();
         private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
@@ -30,6 +31,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _givenName = givenName;
             _surname = surname;
             _personalIdentityNumber = personalIdentityNumber;
+        }
+
+        public TimeSpan Delay
+        {
+            get => _delay;
+            set => _delay = value < TimeSpan.Zero ? TimeSpan.Zero : value;
         }
 
         public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
@@ -121,9 +128,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
             };
         }
 
-        private static async Task SimulateResponseDelay()
+        private async Task SimulateResponseDelay()
         {
-            await Task.Delay(250).ConfigureAwait(false);
+            await Task.Delay(Delay).ConfigureAwait(false);
         }
     }
 }

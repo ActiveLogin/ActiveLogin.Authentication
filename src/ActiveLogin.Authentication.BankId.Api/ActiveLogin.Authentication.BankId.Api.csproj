@@ -10,11 +10,11 @@
     <PackageId>ActiveLogin.Authentication.BankId.Api</PackageId>
 
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>alpha-1</VersionSuffix>
+    <VersionSuffix>alpha-3</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <Description>API client that enables an application to call Swedish BankID's (svenskt BankIDs) REST API in .NET.</Description>
-    <PackageTags>bankid;swedish;sweden;rest;api;client</PackageTags>
+    <PackageTags>bankid;swedish;sweden;apiclient;netstandard</PackageTags>
 
     <Authors>Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
     <Copyright>Copyright © ActiveLogin</Copyright>

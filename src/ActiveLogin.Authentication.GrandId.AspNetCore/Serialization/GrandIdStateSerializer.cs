@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
 {
-    public class GrandIdStateSerializer : IDataSerializer<GrandIdState>
+    internal class GrandIdStateSerializer : IDataSerializer<GrandIdState>
     {
         private const int FormatVersion = 1;
 
@@ -34,15 +34,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
                     }
 
                     var authenticationProperties = PropertiesSerializer.Default.Read(reader);
-                    if (authenticationProperties == null)
-                    {
-                        return null;
-                    }
 
-                    return new GrandIdState
-                    {
-                        AuthenticationProperties = authenticationProperties
-                    };
+                    return new GrandIdState(authenticationProperties);
                 }
             }
         }

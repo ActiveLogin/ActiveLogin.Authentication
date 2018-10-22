@@ -1,5 +1,4 @@
-﻿@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
-@using ActiveLogin.Authentication.Common.Serialization
+﻿@using ActiveLogin.Authentication.Common.Serialization
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IJsonSerializer JsonSerializer
 
@@ -12,41 +11,80 @@
         var statusMessageElement = statusElement.querySelector('.status-message');
 
         var formElement = document.querySelector('#bankIdLoginForm');
-        var formSubmitButtonElement = formElement.querySelector('button[type="submit"]');
-        var formSubmitButtonTextElement = formSubmitButtonElement.querySelector('.submit-text');
-        var formSubmitButtonSpinnerElement = formSubmitButtonElement.querySelector('.status-spinner');
         var formFieldsetElement = formElement.querySelector('fieldset');
+        var orderRefElement = formElement.querySelector('[name="OrderRef"]');
+        var orderRef = orderRefElement.value;
+        var autoLoginElement = formElement.querySelector('[name="AutoLogin"]');
+        var autoLogin = autoLoginElement.value === 'true';
+
+        var formSubmitButtonElement = formElement.querySelector('button[type="submit"]');
+        var formSubmitButtonTextElement = null;
+        var formSubmitButtonSpinnerElement = null;
+        if (formSubmitButtonElement) {
+            formSubmitButtonTextElement = formSubmitButtonElement.querySelector('.submit-text');
+            formSubmitButtonSpinnerElement = formSubmitButtonElement.querySelector('.status-spinner');
+        }
 
         // Events
 
-        formElement.addEventListener('submit', function (event) {
-            event.preventDefault();
+        if (orderRef) {
+            showOrderRefStatus(orderRef);
+        } else if (autoLogin) {
+            document.addEventListener('DOMContentLoaded', function() {
+                login();
+            });
+        } else {
+            formElement.addEventListener('submit', function (event) {
+                event.preventDefault();
 
-            var requestVerificationTokenElement = this.querySelector('[name="RequestVerificationToken"]');
-            var returnUrlElement = this.querySelector('[name="ReturnUrl"]');
-            var personalIdentityNumberElement = this.querySelector('[name="PersonalIdentityNumber"]');
+                login();
+            });
+        }
 
-            initialize(requestVerificationTokenElement.value, returnUrlElement.value, personalIdentityNumberElement.value, personalIdentityNumberElement);
-        });
+        // Boot
+
+        function showOrderRefStatus(orderRef) {
+            var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
+            var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
+            var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
+
+            hide(formElement);
+            showStatus(options.initialStatusMessage, 'info', true);
+
+            checkStatus(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, orderRef);
+        }
+
+        function login() {
+            var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
+            var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
+            var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
+            var personalIdentityNumberElement = formElement.querySelector('[name="PersonalIdentityNumber"]');
+            var personalIdentityNumber = !!personalIdentityNumberElement ? personalIdentityNumberElement.value : '';
+
+            initialize(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, personalIdentityNumber, personalIdentityNumberElement);
+        }
 
         // BankID
 
-        function initialize(requestVerificationToken, returnUrl, personalIdentityNumber, personalIdentityNumberElement) {
+        function initialize(requestVerificationToken, returnUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
             formFieldsetElement.disabled = true;
             show(formSubmitButtonSpinnerElement);
             hide(formSubmitButtonTextElement);
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
-                'returnUrl': returnUrl
+                'returnUrl': returnUrl,
+                'loginOptions': loginOptions
             })
                 .then(function (data) {
-                    if (!!data.PersonalIdentityNumber) {
+                    if (data.isAutoLaunch) {
+                        document.location = data.redirectUri;
+                    } else if (!!data["PersonalIdentityNumber"]) {
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
                     } else {
                         hide(formElement);
                         showStatus(options.initialStatusMessage, 'info', true);
-                        checkStatus(requestVerificationToken, returnUrl, data.orderRef);
+                        checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
                     }
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
@@ -58,11 +96,12 @@
                 });
         }
 
-        function checkStatus(requestVerificationToken, returnUrl, orderRef) {
+        function checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef) {
             postJson(options.bankIdStatusApiUrl, requestVerificationToken,
                 {
                     'orderRef': orderRef,
-                    'returnUrl': returnUrl
+                    'returnUrl': returnUrl,
+                    'loginOptions': loginOptions
                 })
                 .then(function (data) {
                     if (data.isFinished) {
@@ -70,7 +109,7 @@
                     } else {
                         showStatus(data.statusMessage, 'info', true);
                         setTimeout(function () {
-                            checkStatus(requestVerificationToken, returnUrl, orderRef);
+                            checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
                         }, options.refreshIntervalMs);
                     }
                 }).catch(function (error) {
@@ -128,21 +167,29 @@
         }
 
         function show(element, display) {
+            if (!element) {
+                return;
+            }
+
             element.style.display = display || 'block';
         }
 
         function hide(element) {
+            if (!element) {
+                return;
+            }
+
             element.style.display = 'none';
         }
 
         function setInvalidUntilChange(element) {
-            if (!element.classList) {
+            if (!element || !element.classList) {
                 return;
             }
 
             element.classList.add('is-invalid');
             element.addEventListener('input', removeInvalid);
-            
+
             function removeInvalid() {
                 element.removeEventListener('input', removeInvalid);
                 element.classList.remove('is-invalid');

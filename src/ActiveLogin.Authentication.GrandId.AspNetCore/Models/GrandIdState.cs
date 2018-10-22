@@ -4,6 +4,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Models
 {
     public class GrandIdState
     {
-        public AuthenticationProperties AuthenticationProperties { get; set; }
+        public GrandIdState(AuthenticationProperties authenticationProperties)
+        {
+            AuthenticationProperties = authenticationProperties;
+        }
+
+        public AuthenticationProperties AuthenticationProperties { get; }
     }
 }

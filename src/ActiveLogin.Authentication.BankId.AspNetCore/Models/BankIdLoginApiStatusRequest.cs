@@ -7,5 +7,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
         [Required]
         public string OrderRef { get; set; }
         public string ReturnUrl { get; set; }
+        public string LoginOptions { get; set; }
     }
 }
