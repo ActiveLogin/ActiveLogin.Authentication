@@ -1,0 +1,239 @@
+# Getting started with BankID
+
+## Preparation
+
+BankID requires you to use a client certificate and trust a specific root CA-certificate.
+
+1. Read through the [BankID Relying Party Guidelines](https://www.bankid.com/bankid-i-dina-tjanster/rp-info). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
+1. Download the SSL certificate for test ([FPTestcert2.pfx](https://www.bankid.com/bankid-i-dina-tjanster/rp-info)).
+1. Contact a [reseller](https://www.bankid.com/kontakt/foeretag/saeljare) to get your very own client certificate for production. This will probably take a few business days to get sorted. Please ask for "Direktupphandlad BankID" as they otherwise might refer you to GrandID.
+1. The root CA-certificates specified in _BankID Relying Party Guidelines_ (#7 for Production and #8 for Test environment) needs to be trusted at the computer where the app will run. Save those certificates as `BankIdRootCertificate-Prod.crt` and `BankIdRootCertificate-Test.crt`.
+    1. If running in Azure App Service, where trusting custom certificates is not supported, there are extensions to handle that scenario. Instead of trusting the certificate, place it in your web project and make sure `CopyToOutputDirectory` is set to `Always`.
+    1. Add the following configuration values. The `FilePath` should point to the certificate you just added, for example:
+
+```json
+{
+  "ActiveLogin:BankId:CaCertificate:FilePath": "Certificates\\BankIdRootCertificate-[Test or Prod].crt"
+}
+```
+
+### Storing certificates in Azure
+
+These are only necessary if you plan to store your certificates in Azure KeyVault (recommended) and use the extension for easy integration with BankID.
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fgithub.com%2FActiveLogin%2FActiveLogin.Authentication%2Ftree%2Fmaster%2Fsamples%2FAzureProvisioningSample%2FActiveLogin.json)
+
+1. Deploy Azure KeyVault to yur subscription, the ARM-template available in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample) contains a KeyVault, so preferably you deploy that.
+1. [Import the certificates](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate) to your Azure Key Vault.
+1. Add your KeyVault setup to your config. The AD client should have access to the KeyVault certificate specified in `AzureKeyVaultSecretIdentifier`.
+
+```json
+{
+  "ActiveLogin:BankId:ClientCertificate:AzureAdClientId": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier": "TODO-ADD-YOUR-VALUE"
+}
+```
+
+## Environments
+
+### Development environment
+
+For trying out quickly (without the need of certificates) you can use an in-memory implementation of the API by using `.UseDevelopmentEnvironment()`. This could also bee good when writing tests.
+
+### Development environment with no config
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            .UseDevelopmentEnvironment()
+            .AddSameDevice()
+            .AddOtherDevice();
+    });
+```
+
+### Development environment with custom person info
+
+The faked name and personal identity number can also be customized like this.
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            .UseDevelopmentEnvironment("Alice", "Smith", "199908072391")
+            .AddSameDevice()
+            .AddOtherDevice();
+    });
+```
+
+### Production environment
+
+This will use the real REST API for BankID, connecting to either the Test or Production environment. It requires you to have the certificates described under _Preparation_ above.
+
+```c#
+services.AddAuthentication()
+        .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            ...
+    });
+```
+
+### Test
+
+These samples uses the production environment, to use the test environment, simply swap `.UseProductionEnvironment()` with `.UseTestEnvironment()`. You will also have to use a different client and root certificate, see info under _Preparation_ above.
+
+```c#
+services.AddAuthentication()
+        .AddBankId(builder =>
+    {
+        builder
+            .UseTestEnvironment()
+            ...
+    });
+```
+
+## Samples
+
+### Using client certificate from Azure KeyVault
+
+```c#
+services.AddAuthentication()
+        .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            ...
+    });
+```
+
+### Using client certificate from custom source
+
+```c#
+services.AddAuthentication()
+        .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            .UseClientCertificate(() => new X509Certificate2( ... ))
+            ...
+    });
+```
+
+### Using root ca certificate
+
+BankID uses a self signed root ca certificate that you need to trust. This is not possible in all scenarios, like in Azure App Service. To solve this there is an extension available to trust a custom root certificate using code. It can be used like this.
+
+```c#
+services.AddAuthentication()
+        .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+            ...
+    });
+```
+
+### Adding schemas
+
+* *Same device*: Launches the BankID app on the same device, no need to enter any personal identity number.
+* *Other device*: You enter your personal identity number and can manually launch the app on your smartphone.
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            ...
+            .AddSameDevice()
+            .AddOtherDevice();
+    });
+```
+
+### Customizing schemas
+
+By default, `Add*Device` will use predefined schemas and display names, but they can be changed.
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            ...
+            .AddSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
+            .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
+    });
+```
+
+### Custom schema
+
+If you want to roll your own, complete custom config, that can be done using `.AddCustom()`.
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            ...
+            .AddCustom(options => {
+                options.BankIdAutoLaunch = true;
+                options.BankIdAllowChangingPersonalIdentityNumber = false;
+			});
+    });
+```
+
+### Customizing BankID
+
+BankId options allows you to set and override some options such as these.
+
+```c#
+.AddOtherDevice(options =>
+{
+    // If the user can use biometric identification such as fingerprint or face recognition
+    options.BankIdAllowBiometric = false;
+
+    // Limit possible login methods to, for example, only allow BankID on smartcard. See technical docs for list of policies.
+    options.BankIdCertificatePolicies = new List<string> { "1.2.752.78.1.1" };
+});
+```
+
+### Full sample for production
+
+Finally, a full sample on how to use BankID in production with client certificate from Azure KeyVault and trusting a custom root certificate.
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            .UseProductionEnvironment()
+            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+            .AddSameDevice(options => { })
+            .AddOtherDevice(options => { });
+    });
+```
+
+## FAQ
+
+### Can the UI be customized?
+
+Yes! The UI is bundled into the package as a Razor Class Library, a technique that allows to [override the parts you want to customize](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-2.1&tabs=visual-studio#override-views-partial-views-and-pages). The Views and Controllers that can be customized can be found in the [GitHub repo](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore/Areas/BankIdAuthentication).
+
+### Can the messages be localized?
+
+The messages are already localized to English and Swedish using the official recommended texts. To select what texts that are used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-2.1#localization-middleware).

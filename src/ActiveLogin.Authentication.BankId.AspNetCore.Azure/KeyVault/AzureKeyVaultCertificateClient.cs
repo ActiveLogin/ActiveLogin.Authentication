@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
 {
-    public class AzureKeyVaultCertificateClient : IDisposable
+    internal class AzureKeyVaultCertificateClient : IDisposable
     {
         private const string CertificateContentType = "application/x-pkcs12";
 

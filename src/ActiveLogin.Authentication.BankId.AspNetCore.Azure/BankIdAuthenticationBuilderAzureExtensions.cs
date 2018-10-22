@@ -1,4 +1,5 @@
 ﻿using System;
+using ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -7,23 +8,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 {
     public static class BankIdAuthenticationBuilderAzureExtensions
     {
-        public static BankIdAuthenticationBuilder AddBankIdClientCertificateFromAzureKeyVault(this BankIdAuthenticationBuilder builder, IConfigurationSection configurationSection)
+        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, IConfigurationSection configurationSection)
         {
             builder.AuthenticationBuilder.Services.Configure<ClientCertificateFromAzureKeyVaultOptions>(configurationSection.Bind);
 
-            return AddBankIdClientCertificateFromAzureKeyVault(builder);
+            return UseClientCertificateFromAzureKeyVault(builder);
         }
 
-        public static BankIdAuthenticationBuilder AddBankIdClientCertificateFromAzureKeyVault(this BankIdAuthenticationBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
+        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
         {
             builder.AuthenticationBuilder.Services.Configure(configureOptions);
 
-            return AddBankIdClientCertificateFromAzureKeyVault(builder);
+            return UseClientCertificateFromAzureKeyVault(builder);
         }
 
-        public static BankIdAuthenticationBuilder AddBankIdClientCertificateFromAzureKeyVault(this BankIdAuthenticationBuilder builder)
+        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder)
         {
-            builder.AddBankIdClientCertificate(() =>
+            builder.UseClientCertificate(() =>
             {
                 var options = builder.AuthenticationBuilder.Services.BuildServiceProvider().GetService<IOptions<ClientCertificateFromAzureKeyVaultOptions>>();
                 using (var keyVaultCertificateClient = new AzureKeyVaultCertificateClient(options.Value.AzureAdClientId, options.Value.AzureAdClientSecret))

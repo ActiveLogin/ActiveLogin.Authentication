@@ -33,7 +33,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             {
                 try
                 {
-                    return jsonSerializer.Deserialize<Error>(await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
+                    var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return jsonSerializer.Deserialize<Error>(content);
                 }
                 catch (Exception)
                 {

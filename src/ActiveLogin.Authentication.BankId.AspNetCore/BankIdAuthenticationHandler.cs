@@ -5,6 +5,8 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.Common;
+using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -15,6 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     public class BankIdAuthenticationHandler : RemoteAuthenticationHandler<BankIdAuthenticationOptions>
     {
         private readonly ILogger<BankIdAuthenticationHandler> _logger;
+        private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
 
         public BankIdAuthenticationHandler(
@@ -23,10 +26,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             UrlEncoder encoder,
             ISystemClock clock,
             ILogger<BankIdAuthenticationHandler> logger,
+            IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector)
             : base(options, loggerFactory, encoder, clock)
         {
             _logger = logger;
+            _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
         }
 
@@ -58,24 +63,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             _logger.BankIdAuthenticationTicketCreated(loginResult.PersonalIdentityNumber);
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
-        }
-
-        private BankIdState GetStateFromCookie()
-        {
-            var protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState))
-            {
-                return null;
-            }
-
-            var state = Options.StateDataFormat.Unprotect(protectedState);
-            return state;
-        }
-
-        private void DeleteStateCookie()
-        {
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }
 
         private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
@@ -117,7 +104,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             if (expiresUtc.HasValue)
             {
-                claims.Add(new Claim(BankIdClaimTypes.Expires, expiresUtc.Value.ToUnixTimeSeconds().ToString("D")));
+                claims.Add(new Claim(BankIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
             }
 
             if (Options.IssueAuthenticationMethodClaim)
@@ -132,8 +119,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtGender = GetJwtGender(personalIdentityNumber.Gender);
+                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.Gender);
                 if (!string.IsNullOrEmpty(jwtGender))
                 {
                     claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
@@ -142,54 +128,60 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueBirthdateClaim)
             {
-                // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-                var jwtBirthdate = GetJwtBirthdate(personalIdentityNumber.DateOfBirth);
+                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.DateOfBirth);
                 claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtBirthdate));
             }
-        }
-
-        private static string GetJwtGender(SwedishGender gender)
-        {
-            switch (gender)
-            {
-                case SwedishGender.Female:
-                    return "female";
-                case SwedishGender.Male:
-                    return "male";
-            }
-
-            return string.Empty;
-        }
-
-        private static string GetJwtBirthdate(DateTime dateOfBirth)
-        {
-            return dateOfBirth.Date.ToString("yyyy-MM-dd");
         }
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             AppendStateCookie(properties);
 
-            var loginUrl = GetLoginUrl();
+            var loginOptions = new BankIdLoginOptions(
+                Options.BankIdCertificatePolicies,
+                null, 
+                Options.BankIdAllowChangingPersonalIdentityNumber,
+                Options.BankIdAutoLaunch,
+                Options.BankIdAllowBiometric
+            );
+            var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
         }
 
-        private void AppendStateCookie(AuthenticationProperties properties)
+        private string GetLoginUrl(BankIdLoginOptions loginOptions)
         {
-            var state = new BankIdState()
-            {
-                AuthenticationProperties = properties
-            };
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-
-            Response.Cookies.Append(Options.StateCookie.Name, Options.StateDataFormat.Protect(state), cookieOptions);
+            return $"{Options.LoginPath}" +
+                   $"?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}" +
+                   $"&loginOptions={UrlEncoder.Encode(_loginOptionsProtector.Protect(loginOptions))}";
         }
 
-        private string GetLoginUrl()
+        private void AppendStateCookie(AuthenticationProperties properties)
         {
-            return $"{Options.BankIdLoginPath}?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}";
+            var state = new BankIdState(properties);
+            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            var cookieValue = Options.StateDataFormat.Protect(state);
+
+            Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
+        }
+
+        private BankIdState GetStateFromCookie()
+        {
+            var protectedState = Request.Cookies[Options.StateCookie.Name];
+            if (string.IsNullOrEmpty(protectedState))
+            {
+                return null;
+            }
+
+            var state = Options.StateDataFormat.Unprotect(protectedState);
+            return state;
+        }
+
+        private void DeleteStateCookie()
+        {
+            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }
     }
 }

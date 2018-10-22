@@ -9,22 +9,20 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdAuthenticationBuilder
+    public class BankIdAuthenticationBuilder : IBankIdAuthenticationBuilder
     {
         public AuthenticationBuilder AuthenticationBuilder { get; }
-        public string Name { get; }
 
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
         private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators = new List<Action<HttpClientHandler>>();
 
-        public BankIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder, string name)
+        public BankIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder)
         {
             AuthenticationBuilder = authenticationBuilder;
-            Name = name;
 
             var services = AuthenticationBuilder.Services;
 
-            AddBankIdHttpClient(services, Name, _httpClientConfigurators, _httpClientHandlerConfigurators);
+            AddBankIdHttpClient(services, _httpClientConfigurators, _httpClientHandlerConfigurators);
 
             ConfigureBankIdHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProdApiBaseUrl);
             ConfigureBankIdHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);
@@ -42,9 +40,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
         }
             
-        private static void AddBankIdHttpClient(IServiceCollection services, string name, List<Action<HttpClient>> httpClientConfigurators, List<Action<HttpClientHandler>> httpClientHandlerConfigurators)
+        private static void AddBankIdHttpClient(IServiceCollection services, List<Action<HttpClient>> httpClientConfigurators, List<Action<HttpClientHandler>> httpClientHandlerConfigurators)
         {
-            services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(name, httpClient =>
+            services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
                 {
                     httpClientConfigurators.ForEach(configurator => configurator(httpClient));
                 })
@@ -54,8 +52,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                     httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
                     return httpClientHandler;
                 });
-
-            services.TryAddTransient<IBankIdApiClient, BankIdApiClient>();
         }
     }
 }

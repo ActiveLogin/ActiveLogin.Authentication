@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
 {
-    public class BankIdLoginResultProtector : IBankIdLoginResultProtector
+    internal class BankIdLoginResultProtector : IBankIdLoginResultProtector
     {
         private readonly ISecureDataFormat<BankIdLoginResult> _secureDataFormat;
 
