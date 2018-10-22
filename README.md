@@ -56,8 +56,8 @@ services
     {
         builder
             .UseDevelopmentEnvironment()
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddSameDevice()
+            .AddOtherDevice();
     });
 ```
 
@@ -95,8 +95,8 @@ services
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddSameDevice()
+            .AddOtherDevice();
     });
 ```
 

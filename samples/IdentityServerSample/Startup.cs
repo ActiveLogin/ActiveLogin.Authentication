@@ -43,6 +43,29 @@ namespace IdentityServerSample
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
+            // Sample of using BankID with in memory dev environment
+            //services.AddAuthentication()
+            //        .AddBankId(builder =>
+            //    {
+            //        builder
+            //            .UseDevelopmentEnvironment()
+            //            .AddSameDevice()
+            //            .AddOtherDevice();
+            //    });
+
+            // Sample of using BankID with production environment
+            //services.AddAuthentication()
+            //        .AddBankId(builder =>
+            //        {
+            //            builder
+            //                .UseProductionEnvironment()
+            //                .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            //                .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+            //                .AddSameDevice()
+            //                .AddOtherDevice();
+            //        });
+
+
             // Sample of using BankID through GrandID (Svensk E-identitet) with in memory dev environment
             //services.AddAuthentication()
             //        .AddGrandId(builder =>
@@ -63,28 +86,6 @@ namespace IdentityServerSample
             //                {
             //                    options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
             //                });
-            //        });
-
-            // Sample of using BankID with in memory dev environment
-            //services.AddAuthentication()
-            //        .AddBankId(builder =>
-            //    {
-            //        builder
-            //            .UseDevelopmentEnvironment()
-            //            .AddSameDevice(options => { })
-            //            .AddOtherDevice(options => { });
-            //    });
-
-            // Sample of using BankID with production environment
-            //services.AddAuthentication()
-            //        .AddBankId(builder =>
-            //        {
-            //            builder
-            //                .UseProductionEnvironment()
-            //                .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-            //                .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            //                .AddSameDevice(options => { })
-            //                .AddOtherDevice(options => { });
             //        });
 
             // Full sample with both BankID and GrandID with custom display name and multiple environment support

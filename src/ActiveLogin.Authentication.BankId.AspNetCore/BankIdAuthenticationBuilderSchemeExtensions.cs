@@ -32,6 +32,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             });
 
 
+        public static IBankIdAuthenticationBuilder AddSameDevice(this IBankIdAuthenticationBuilder builder)
+            => AddSameDevice(builder, BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, BankIdAuthenticationDefaults.SameDeviceDisplayName, options => { });
+
         public static IBankIdAuthenticationBuilder AddSameDevice(this IBankIdAuthenticationBuilder builder, Action<BankIdAuthenticationOptions> configureOptions)
             => AddSameDevice(builder, BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, BankIdAuthenticationDefaults.SameDeviceDisplayName, configureOptions);
 
@@ -46,6 +49,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                     options.BankIdAllowChangingPersonalIdentityNumber = false;
                 });
 
+
+        public static IBankIdAuthenticationBuilder AddOtherDevice(this IBankIdAuthenticationBuilder builder)
+            => AddOtherDevice(builder, BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, BankIdAuthenticationDefaults.OtherDeviceDisplayName, options => { });
 
         public static IBankIdAuthenticationBuilder AddOtherDevice(this IBankIdAuthenticationBuilder builder, Action<BankIdAuthenticationOptions> configureOptions)
             => AddOtherDevice(builder, BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, BankIdAuthenticationDefaults.OtherDeviceDisplayName, configureOptions);

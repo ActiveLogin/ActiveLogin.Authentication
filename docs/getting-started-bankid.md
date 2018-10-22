@@ -50,8 +50,8 @@ services
     {
         builder
             .UseDevelopmentEnvironment()
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddSameDevice()
+            .AddOtherDevice();
     });
 ```
 
@@ -66,8 +66,8 @@ services
     {
         builder
             .UseDevelopmentEnvironment("Alice", "Smith", "199908072391")
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddSameDevice()
+            .AddOtherDevice();
     });
 ```
 
@@ -155,8 +155,8 @@ services
         builder
             .UseProductionEnvironment()
             ...
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddSameDevice()
+            .AddOtherDevice();
     });
 ```
 
