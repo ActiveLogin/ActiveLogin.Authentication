@@ -5,7 +5,6 @@ using System.Security.Authentication;
 using ActiveLogin.Authentication.BankId.Api;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
@@ -20,10 +19,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             AuthenticationBuilder = authenticationBuilder;
 
-            var services = AuthenticationBuilder.Services;
-
-            AddBankIdHttpClient(services, _httpClientConfigurators, _httpClientHandlerConfigurators);
-
             ConfigureBankIdHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProdApiBaseUrl);
             ConfigureBankIdHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);
         }
@@ -37,17 +32,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
         }
-            
-        private static void AddBankIdHttpClient(IServiceCollection services, List<Action<HttpClient>> httpClientConfigurators, List<Action<HttpClientHandler>> httpClientHandlerConfigurators)
+
+        public void EnableBankIdHttpClient()
         {
-            services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
+            AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
                 {
-                    httpClientConfigurators.ForEach(configurator => configurator(httpClient));
+                    _httpClientConfigurators.ForEach(configurator => configurator(httpClient));
                 })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
                     var httpClientHandler = new HttpClientHandler();
-                    httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
+                    _httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
                     return httpClientHandler;
                 });
         }

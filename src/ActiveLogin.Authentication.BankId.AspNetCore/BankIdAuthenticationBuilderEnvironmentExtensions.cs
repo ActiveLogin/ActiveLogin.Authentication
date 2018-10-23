@@ -1,6 +1,5 @@
 ﻿using System;
 using ActiveLogin.Authentication.BankId.Api;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
@@ -11,6 +10,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             var configuration = new BankIdEnvironmentConfiguration();
             configureBankIdEnvironment(configuration);
+
+            builder.EnableBankIdHttpClient();
             builder.ConfigureBankIdHttpClient(httpClient =>
             {
                 httpClient.BaseAddress = configuration.ApiBaseUrl;
