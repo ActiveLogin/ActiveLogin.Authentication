@@ -40,7 +40,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static IBankIdAuthenticationBuilder UseClientCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureClientCertificate)
         {
-            builder.ConfigureBankIdHttpClientHandler(httpClientHandler =>
+            builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
                 var clientCertificate = configureClientCertificate();
                 httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
@@ -52,7 +52,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
         {
-            builder.ConfigureBankIdHttpClientHandler(httpClientHandler =>
+            builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
                 var rootCaCertificate = configureRootCaCertificate();
                 var validator = new X509CertificateChainValidator(rootCaCertificate);

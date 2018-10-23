@@ -11,8 +11,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var configuration = new BankIdEnvironmentConfiguration();
             configureBankIdEnvironment(configuration);
 
-            builder.EnableBankIdHttpClient();
-            builder.ConfigureBankIdHttpClient(httpClient =>
+            builder.EnableHttpClient();
+            builder.ConfigureHttpClient(httpClient =>
             {
                 httpClient.BaseAddress = configuration.ApiBaseUrl;
             });
