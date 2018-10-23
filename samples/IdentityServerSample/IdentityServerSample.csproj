@@ -39,4 +39,13 @@
     <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.AspNetCore\ActiveLogin.Authentication.GrandId.AspNetCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Certificates\BankIdRootCertificate-Prod.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificates\BankIdRootCertificate-Test.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
