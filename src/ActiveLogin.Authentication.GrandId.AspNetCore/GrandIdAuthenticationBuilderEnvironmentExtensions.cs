@@ -11,6 +11,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             var configuration = new GrandIdEnvironmentConfiguration();
             configureGrandIdEnvironment(configuration);
+
+            builder.EnableHttpClient();
             builder.ConfigureHttpClient(httpClient =>
             {
                 httpClient.BaseAddress = configuration.ApiBaseUrl;
