@@ -149,7 +149,7 @@ Yes! They are available here. Please note that MvcClientSample uses IdentityServ
 
 ## ActiveLogin
 
-_Integrating your systems with market leading authentication services.
+_Integrating your systems with market leading authentication services._
 
 ActiveLogin is an Open Source project built on .NET Standard that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
