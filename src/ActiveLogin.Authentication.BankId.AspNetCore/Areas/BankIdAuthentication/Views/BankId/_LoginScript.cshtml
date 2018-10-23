@@ -83,7 +83,7 @@
                         formFieldsetElement.disabled = false;
                     } else {
                         hide(formElement);
-                        showStatus(options.initialStatusMessage, 'info', true);
+                        showStatus(options.initialStatusMessage, 'light', true);
                         checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
                     }
                     show(formSubmitButtonTextElement);
@@ -107,7 +107,7 @@
                     if (data.isFinished) {
                         document.location = data.redirectUri;
                     } else {
-                        showStatus(data.statusMessage, 'info', true);
+                        showStatus(data.statusMessage, 'light', true);
                         setTimeout(function () {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
                         }, options.refreshIntervalMs);
@@ -148,11 +148,12 @@
         }
 
         function showStatus(status, type, spinner) {
-            if (type === 'info') {
-                type = 'primary';
+            var textClass = 'text-white';
+            if (type === 'light') {
+                textClass = '';
             }
 
-            statusElement.className = 'alert alert-' + type;
+            statusElement.className = 'card bg-' + type + ' ' + textClass;
             statusMessageElement.innerText = status;
             setVisibility(statusSpinnerElement, spinner, 'inline-block');
             show(statusElement);

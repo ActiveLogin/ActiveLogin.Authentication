@@ -29,7 +29,6 @@
   <ItemGroup>
     <Folder Include="Certificates\" />
     <Folder Include="Views\Account\" />
-    <Folder Include="wwwroot\static\icons\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,9 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\Shared\_LayoutDefault.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
     <Content Update="Views\Shared\_LayoutMaster.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

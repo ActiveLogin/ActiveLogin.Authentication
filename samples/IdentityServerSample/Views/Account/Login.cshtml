@@ -1,48 +1,48 @@
 ﻿@using IdentityServerSample.Models
 @model IdentityServerSample.Models.AccountLoginViewModel
 @{
-    Layout = "_LayoutMaster";
+    Layout = "_Layout";
 }
 @{
-    ViewData["Title"] = "Log in using";
+    ViewData["Title"] = "Active Login Demo";
 }
 
-<div class="container">
-    @if (Model.ExternalProviders.Any())
-    {
-        <div class="choose-auth-provider">
-            <h1 class=" mb-3 font-weight-normal">@ViewData["Title"]</h1>
+@if (Model.ExternalProviders.Any())
+{
+    <div class="choose-auth-provider">
+        <img src="~/static/graphics/active-login-logo-fingerprint.svg" alt="Active Login" class="choose-auth-provider-logo" />
 
-            <ul class="list-inline">
-                @foreach (var provider in Model.ExternalProviders)
-                {
-                    <li class="mb-1">
-                        <a class="btn btn-primary btn-block"
-                           asp-action="ExternalLogin"
-                           asp-route-provider="@provider.AuthenticationScheme"
-                           asp-route-returnUrl="@Model.ReturnUrl">
-                            @provider.DisplayName
-                        </a>
-                    </li>
-                }
-            </ul>
-        </div>
-    }
+        <h1 class=" mb-5 mt-2 font-weight-normal">@ViewData["Title"]</h1>
 
-    @if (!Model.ExternalProviders.Any())
-    {
-        <div class="alert alert-warning">
-            <strong>Invalid login request</strong>
-            There are no login schemes configured for this client.
-        </div>
-    }
-</div>
+        <ul class="list-inline">
+            @foreach (var provider in Model.ExternalProviders)
+            {
+                <li class="mb-1">
+                    <a class="btn btn-dark btn-block"
+                       asp-action="ExternalLogin"
+                       asp-route-provider="@provider.AuthenticationScheme"
+                       asp-route-returnUrl="@Model.ReturnUrl">
+                        @provider.DisplayName
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@if (!Model.ExternalProviders.Any())
+{
+    <div class="alert alert-warning">
+        <strong>Invalid login request</strong>
+        There are no login schemes configured for this client.
+    </div>
+}
 
 @section Styles {
     <style type="text/css">
         .choose-auth-provider {
             width: 100%;
-            max-width: 380px;
+            max-width: 320px;
             margin: 0 auto;
             text-align: center;
             position: absolute;
