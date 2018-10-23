@@ -10,5 +10,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         void ConfigureHttpClient(Action<HttpClient> configureHttpClient);
         void ConfigureHttpClientHandler(Action<HttpClientHandler> configureHttpClientHandler);
+        void EnableHttpClient();
     }
 }

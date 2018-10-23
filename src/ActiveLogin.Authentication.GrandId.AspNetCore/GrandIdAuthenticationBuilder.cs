@@ -19,8 +19,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             AuthenticationBuilder = authenticationBuilder;
 
-            AddHttpClient(AuthenticationBuilder.Services, _httpClientConfigurators, _httpClientHandlerConfigurators);
-
             ConfigureHttpClient(httpClient => httpClient.BaseAddress = GrandIdUrls.ProductionApiBaseUrl);
             ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);
         }
@@ -35,16 +33,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
         }
 
-        private static void AddHttpClient(IServiceCollection services, List<Action<HttpClient>> httpClientConfigurators, List<Action<HttpClientHandler>> httpClientHandlerConfigurators)
+        public void EnableHttpClient()
         {
-            services.AddHttpClient<IGrandIdApiClient, GrandIdApiClient>(httpClient =>
+            AuthenticationBuilder.Services.AddHttpClient<IGrandIdApiClient, GrandIdApiClient>(httpClient =>
                 {
-                    httpClientConfigurators.ForEach(configurator => configurator(httpClient));
+                    _httpClientConfigurators.ForEach(configurator => configurator(httpClient));
                 })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
                     var httpClientHandler = new HttpClientHandler();
-                    httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
+                    _httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
                     return httpClientHandler;
                 });
         }
