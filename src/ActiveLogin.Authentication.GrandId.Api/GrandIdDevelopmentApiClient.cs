@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         private readonly string _givenName;
         private readonly string _surname;
-        private readonly string _personalIdentityNumber;
+        private string _personalIdentityNumber;
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         private readonly Dictionary<string, FederatedLoginResponse> _federatedLogins = new Dictionary<string, FederatedLoginResponse>();
@@ -42,6 +42,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
         public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
+            {
+                _personalIdentityNumber = request.PersonalIdentityNumber;
+            }
 
             var sessionId = Guid.NewGuid().ToString();
             var response = new FederatedLoginResponse
