@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.Common;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
@@ -88,9 +88,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             {
                 new Claim(BankIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
 
-                new Claim(BankIdClaimTypes.Name, loginResult.Name),
-                new Claim(BankIdClaimTypes.FamilyName, loginResult.Surname),
-                new Claim(BankIdClaimTypes.GivenName, loginResult.GivenName),
+                new Claim(BankIdClaimTypes.Name, NormalizeName(loginResult.Name)),
+                new Claim(BankIdClaimTypes.FamilyName, NormalizeName(loginResult.Surname)),
+                new Claim(BankIdClaimTypes.GivenName, NormalizeName(loginResult.GivenName)),
 
                 new Claim(BankIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
             };
@@ -98,6 +98,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);
 
             return claims;
+        }
+
+        private string NormalizeName(string name)
+        {
+            return Options.NormalizeNames ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) : name;
         }
 
         private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
