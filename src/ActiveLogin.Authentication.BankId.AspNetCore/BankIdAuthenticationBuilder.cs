@@ -30,13 +30,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public void ConfigureBankIdHttpClient(Action<HttpClient> configureHttpClient)
         {
-            AuthenticationBuilder.Services.TryAddTransient<BankIdApiClient>();
             _httpClientConfigurators.Add(configureHttpClient);
         }
 
         public void ConfigureBankIdHttpClientHandler(Action<HttpClientHandler> configureHttpClientHandler)
         {
-            AuthenticationBuilder.Services.TryAddTransient<BankIdApiClient>();
             _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
         }
             
