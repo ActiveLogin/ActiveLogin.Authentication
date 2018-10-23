@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "_LayoutMaster";
+}
+
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ActiveLogin - IdentityServerSample</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form method="post" asp-area="" asp-controller="Account" asp-action="Logout">
+                <input type="submit" value="Logout" class="btn btn-primary" />
+            </form>
+        }
+    </div>
+</nav>
+
+<div class="container">
+    @RenderBody()
+</div>
+
+@section Scripts
+{
+    @RenderSection("Scripts", false)
+}
+
+@section Styles
+{
+    @RenderSection("Styles", false)
+}
