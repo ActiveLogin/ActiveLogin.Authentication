@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="Certificates\" />
     <Folder Include="Views\Account\" />
+    <Folder Include="wwwroot\static\icons\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -152,7 +152,10 @@ namespace IdentityServerSample
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                
+            });
             app.UseCookiePolicy();
             app.UseIdentityServer();
 
