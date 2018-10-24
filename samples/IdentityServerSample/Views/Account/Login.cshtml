@@ -1,10 +1,9 @@
-﻿@using IdentityServerSample.Models
-@model IdentityServerSample.Models.AccountLoginViewModel
+﻿@model IdentityServerSample.Models.AccountLoginViewModel
 @{
     Layout = "_Layout";
 }
 @{
-    ViewData["Title"] = "Active Login Demo";
+    ViewData["Title"] = "Demo";
 }
 
 @if (Model.ExternalProviders.Any())
@@ -12,7 +11,7 @@
     <div class="choose-auth-provider">
         <img src="~/static/graphics/active-login-logo-fingerprint.svg" alt="Active Login" class="choose-auth-provider-logo" />
 
-        <h1 class=" mb-5 mt-2 font-weight-normal">@ViewData["Title"]</h1>
+        <h1 class=" mb-5 mt-2 font-weight-normal">Active Login</h1>
 
         <ul class="list-inline">
             @foreach (var provider in Model.ExternalProviders)
@@ -53,6 +52,11 @@
 
             .choose-auth-provider a {
                 text-align: center;
+            }
+
+            .choose-auth-provider .choose-auth-provider-logo {
+                width: 133px;
+                height: 133px;
             }
     </style>
 }
