@@ -184,7 +184,7 @@
     <value>Logga in</value>
   </data>
   <data name="SignIn_Header" xml:space="preserve">
-    <value>Logga in</value>
+    <value>BankID</value>
   </data>
   <data name="SingIn_Title" xml:space="preserve">
     <value>Logga in med BankID</value>

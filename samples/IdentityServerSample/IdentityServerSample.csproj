@@ -40,6 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Shared\_LayoutMaster.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <None Update="Certificates\BankIdRootCertificate-Prod.crt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

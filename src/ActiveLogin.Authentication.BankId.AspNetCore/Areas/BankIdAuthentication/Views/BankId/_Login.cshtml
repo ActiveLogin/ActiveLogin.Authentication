@@ -3,7 +3,10 @@
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
 
 <div class="bankid-login">
-    <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>
+    @if (!string.IsNullOrEmpty(Localizer["SignIn_Header"]))
+    {
+        <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>
+    }
 
     <partial name="_LoginStatus" model="Model" />
     <partial name="_LoginForm" model="Model" />

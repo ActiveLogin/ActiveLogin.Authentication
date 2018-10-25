@@ -260,7 +260,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in.
+        ///   Looks up a localized string similar to BankID.
         /// </summary>
         internal static string SignIn_Header {
             get {
