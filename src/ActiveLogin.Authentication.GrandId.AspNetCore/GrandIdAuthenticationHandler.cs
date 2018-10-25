@@ -142,12 +142,10 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             AppendStateCookie(properties);
 
             var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
-            properties.Items.TryGetValue(
-                GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber,
-                out var swedishPersonalIdentityNumber);
+            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
             try
             {
-                var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber);
+                var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
                 _logger.GrandIdAuthSuccess(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
                 Response.Redirect(response.RedirectUrl);
             }
@@ -156,6 +154,19 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 _logger.GrandIdAuthFailure(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
                 throw;
             }
+        }
+
+        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        {
+            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
+            {
+                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+                {
+                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                }
+            }
+
+            return null;
         }
 
         private string GetAbsoluteUrl(string returnUrl)

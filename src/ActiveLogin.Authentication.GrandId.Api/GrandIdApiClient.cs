@@ -34,14 +34,15 @@ namespace ActiveLogin.Authentication.GrandId.Api
             var queryStringParams = new Dictionary<string, string>
             {
                 { "apiKey", _apiKey },
-                { "authenticateServiceKey", request.AuthenticateServiceKey },
-                { "callbackUrl", request.CallbackUrl }
+                { "authenticateServiceKey", request.AuthenticateServiceKey }
             };
 
             if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
             {
                 queryStringParams.Add("pnr", request.PersonalIdentityNumber);
             }
+
+            queryStringParams.Add("callbackUrl", request.CallbackUrl);
 
             var url = GetUrl("FederatedLogin", queryStringParams);
 

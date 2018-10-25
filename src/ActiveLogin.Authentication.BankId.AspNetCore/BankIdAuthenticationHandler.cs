@@ -139,10 +139,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             var loginOptions = new BankIdLoginOptions(
                 Options.BankIdCertificatePolicies,
-                properties.Items.TryGetValue(
-                    BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber)
-                    ? SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber)
-                    : null,
+                GetSwedishPersonalIdentityNumber(properties),
                 Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdAutoLaunch,
                 Options.BankIdAllowBiometric
@@ -151,6 +148,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
+        }
+
+        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        {
+            if (properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
+            {
+                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+                {
+                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                }
+            }
+
+            return null;
         }
 
         private string GetLoginUrl(BankIdLoginOptions loginOptions)

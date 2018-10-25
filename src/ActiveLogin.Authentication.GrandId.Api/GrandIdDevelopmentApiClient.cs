@@ -12,10 +12,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         private readonly string _givenName;
         private readonly string _surname;
-        private string _personalIdentityNumber;
+        private readonly string _personalIdentityNumber;
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
-        private readonly Dictionary<string, FederatedLoginResponse> _federatedLogins = new Dictionary<string, FederatedLoginResponse>();
+        private readonly Dictionary<string, ExtendedFederatedLoginResponse> _federatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
         private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
 
         public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
@@ -43,18 +43,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
-            {
-                _personalIdentityNumber = request.PersonalIdentityNumber;
-            }
-
             var sessionId = Guid.NewGuid().ToString();
             var response = new FederatedLoginResponse
             {
                 SessionId = sessionId,
                 RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"
             };
-            _federatedLogins.Add(sessionId, response);
+            var extendedResponse = new ExtendedFederatedLoginResponse(response, request.PersonalIdentityNumber);
+            _federatedLogins.Add(sessionId, extendedResponse);
             return response;
         }
 
@@ -91,10 +87,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var auth = _federatedLogins[request.SessionId];
             _federatedLogins.Remove(request.SessionId);
+
+            var personalIdentityNumber = !string.IsNullOrEmpty(auth.PersonalIdentityNumber) ? auth.PersonalIdentityNumber : _personalIdentityNumber;
             var response = new SessionStateResponse
             {
-                SessionId = auth.SessionId,
-                UserAttributes = GetUserAttributes(_personalIdentityNumber)
+                SessionId = auth.FederatedLoginResponse.SessionId,
+                UserAttributes = GetUserAttributes(personalIdentityNumber)
             };
 
             return response;
@@ -136,6 +134,18 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private async Task SimulateResponseDelay()
         {
             await Task.Delay(Delay).ConfigureAwait(false);
+        }
+
+        private class ExtendedFederatedLoginResponse
+        {
+            public ExtendedFederatedLoginResponse(FederatedLoginResponse federatedLoginResponse, string personalIdentityNumber)
+            {
+                FederatedLoginResponse = federatedLoginResponse;
+                PersonalIdentityNumber = personalIdentityNumber;
+            }
+
+            public FederatedLoginResponse FederatedLoginResponse { get; }
+            public string PersonalIdentityNumber { get; }
         }
     }
 }
