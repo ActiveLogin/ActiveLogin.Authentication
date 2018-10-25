@@ -51,7 +51,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public bool IssueGenderClaim { get; set; } = true;
         public bool IssueBirthdateClaim { get; set; } = true;
 
-        public bool NormalizeNames { get; set; }
+        public bool NormalizePersonNameCapitalization { get; set; }
 
         public ISecureDataFormat<BankIdState> StateDataFormat { get; set; }
 

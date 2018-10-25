@@ -42,6 +42,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             set => _stateCookieBuilder = value ?? throw new ArgumentNullException(nameof(value));
         }
 
+        public bool NormalizePersonNameCapitalization { get; set; }
+
         public override void Validate()
         {
             base.Validate();

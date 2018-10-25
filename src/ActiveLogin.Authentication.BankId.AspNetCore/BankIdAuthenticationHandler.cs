@@ -102,7 +102,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private string NormalizeName(string name)
         {
-            return Options.NormalizeNames ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) : name;
+            return Options.NormalizePersonNameCapitalization ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) : name;
         }
 
         private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)

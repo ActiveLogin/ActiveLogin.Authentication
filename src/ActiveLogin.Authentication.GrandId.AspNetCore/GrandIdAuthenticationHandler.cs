@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -92,9 +93,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             {
                 new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
 
-                new Claim(GrandIdClaimTypes.Name, loginResult.UserAttributes.Name),
-                new Claim(GrandIdClaimTypes.FamilyName, loginResult.UserAttributes.Surname),
-                new Claim(GrandIdClaimTypes.GivenName, loginResult.UserAttributes.GivenName),
+                new Claim(GrandIdClaimTypes.Name, NormalizeName(loginResult.UserAttributes.Name)),
+                new Claim(GrandIdClaimTypes.FamilyName, NormalizeName(loginResult.UserAttributes.Surname)),
+                new Claim(GrandIdClaimTypes.GivenName, NormalizeName(loginResult.UserAttributes.GivenName)),
 
                 new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
             };
@@ -102,6 +103,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);
 
             return claims;
+        }
+
+        private string NormalizeName(string name)
+        {
+            return Options.NormalizePersonNameCapitalization ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) : name;
         }
 
         private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
