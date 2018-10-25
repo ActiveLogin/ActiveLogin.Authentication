@@ -140,7 +140,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginOptions = new BankIdLoginOptions(
                 Options.BankIdCertificatePolicies,
                 properties.Items.TryGetValue(
-                    AuthenticationPropertiesConstants.Items.SwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber)
+                    BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber)
                     ? SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber)
                     : null,
                 Options.BankIdAllowChangingPersonalIdentityNumber,

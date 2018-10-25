@@ -142,7 +142,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             AppendStateCookie(properties);
 
             var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
-            properties.Items.TryGetValue(AuthenticationPropertiesConstants.Items.SwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber);
+            properties.Items.TryGetValue(
+                GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber,
+                out var swedishPersonalIdentityNumber);
             try
             {
                 var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber);
