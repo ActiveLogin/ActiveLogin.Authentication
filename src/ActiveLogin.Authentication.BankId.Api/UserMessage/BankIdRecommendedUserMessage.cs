@@ -11,7 +11,8 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             new CollectResponseMapping(MessageShortName.RFA1, CollectStatus.Pending, CollectHintCode.NoClient, authPersonalIdentityNumberProvided: true),
             new CollectResponseMapping(MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.NoClient, authPersonalIdentityNumberProvided: false),
 
-            new CollectResponseMapping(MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient),
+            new CollectResponseMapping(MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true),
+            new CollectResponseMapping(MessageShortName.RFA13, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: false),
 
             new CollectResponseMapping(MessageShortName.RFA9, CollectStatus.Pending, CollectHintCode.UserSign),
             new CollectResponseMapping(MessageShortName.RFA14A, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: true, accessedFromMobileDevice: false),

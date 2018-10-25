@@ -39,4 +39,16 @@
     <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.AspNetCore\ActiveLogin.Authentication.GrandId.AspNetCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Shared\_LayoutMaster.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <None Update="Certificates\BankIdRootCertificate-Prod.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificates\BankIdRootCertificate-Test.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
