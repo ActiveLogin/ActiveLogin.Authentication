@@ -123,7 +123,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.Gender);
+                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
                 if (!string.IsNullOrEmpty(jwtGender))
                 {
                     claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
@@ -132,7 +132,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (Options.IssueBirthdateClaim)
             {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.DateOfBirth);
+                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
                 claims.Add(new Claim(GrandIdClaimTypes.Birthdate, jwtBirthdate));
             }
         }
