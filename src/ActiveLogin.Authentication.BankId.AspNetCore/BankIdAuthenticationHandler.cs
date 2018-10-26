@@ -119,7 +119,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.Gender);
+                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
                 if (!string.IsNullOrEmpty(jwtGender))
                 {
                     claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
@@ -128,7 +128,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueBirthdateClaim)
             {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.DateOfBirth);
+                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
                 claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtBirthdate));
             }
         }

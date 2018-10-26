@@ -10,13 +10,13 @@ namespace ActiveLogin.Authentication.Common.Serialization
         /// </summary>
         /// <param name="gender"></param>
         /// <returns></returns>
-        public static string GetGender(SwedishGender gender)
+        public static string GetGender(Gender gender)
         {
             switch (gender)
             {
-                case SwedishGender.Female:
+                case Gender.Female:
                     return "female";
-                case SwedishGender.Male:
+                case Gender.Male:
                     return "male";
             }
 
