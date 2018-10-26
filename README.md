@@ -131,6 +131,30 @@ For more use cases, samples and inspiration; feel free to browse our unit tests 
 
 ## FAQ
 
+### Can I prepopulate the personal identity number for the user?
+
+Yes you can! If you provide an authentication property item named `swedishPersonalIdentityNumber` (available as constants `BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber` or `GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber`) that value will be used and sent to BankID/GrandID.
+
+_Example usage:_
+
+```csharp
+public IActionResult ExternalLogin(string provider, string returnUrl, string personalIdentityNumber)
+{
+    var props = new AuthenticationProperties
+    {
+        RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
+        Items =
+        {
+            {"returnUrl", returnUrl},
+            {"scheme", provider},
+            { BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, personalIdentityNumber }
+        }
+    };
+
+    return Challenge(props, provider);
+}
+```
+
 ### How do I run the samples?
 
 The samples are configured to run in development mode (no BankID certificates or GrandID keys required) by default. The _MVC Client sample_ is using the _Identity Server Sample_ as its identity provider. So to run the _MVC Client_, the _Identity Server Sample_ needs to be running first.
