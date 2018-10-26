@@ -123,7 +123,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.Gender);
+                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
                 if (!string.IsNullOrEmpty(jwtGender))
                 {
                     claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
@@ -132,7 +132,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (Options.IssueBirthdateClaim)
             {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.DateOfBirth);
+                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
                 claims.Add(new Claim(GrandIdClaimTypes.Birthdate, jwtBirthdate));
             }
         }
@@ -142,9 +142,10 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             AppendStateCookie(properties);
 
             var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
+            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
             try
             {
-                var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl);
+                var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
                 _logger.GrandIdAuthSuccess(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
                 Response.Redirect(response.RedirectUrl);
             }
@@ -153,6 +154,19 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 _logger.GrandIdAuthFailure(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
                 throw;
             }
+        }
+
+        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        {
+            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
+            {
+                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+                {
+                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                }
+            }
+
+            return null;
         }
 
         private string GetAbsoluteUrl(string returnUrl)

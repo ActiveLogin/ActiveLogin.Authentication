@@ -119,7 +119,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.Gender);
+                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
                 if (!string.IsNullOrEmpty(jwtGender))
                 {
                     claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
@@ -128,7 +128,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (Options.IssueBirthdateClaim)
             {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.DateOfBirth);
+                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
                 claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtBirthdate));
             }
         }
@@ -139,7 +139,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             var loginOptions = new BankIdLoginOptions(
                 Options.BankIdCertificatePolicies,
-                null, 
+                GetSwedishPersonalIdentityNumber(properties),
                 Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdAutoLaunch,
                 Options.BankIdAllowBiometric
@@ -148,6 +148,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
+        }
+
+        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        {
+            if (properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
+            {
+                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+                {
+                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                }
+            }
+
+            return null;
         }
 
         private string GetLoginUrl(BankIdLoginOptions loginOptions)
