@@ -10,7 +10,7 @@
     <PackageId>ActiveLogin.Authentication.GrandId.Api</PackageId>
 
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>alpha-3</VersionSuffix>
+    <VersionSuffix>alpha-4</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <Description>API client that enables an application to call GrandID's (Svensk E-identitet) REST API in .NET.</Description>
