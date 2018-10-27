@@ -131,6 +131,22 @@ For more use cases, samples and inspiration; feel free to browse our unit tests 
 
 ## FAQ
 
+### How do I run the samples?
+
+The samples are configured to run in development mode (no BankID certificates or GrandID keys required) by default. The _MVC Client sample_ is using the _Identity Server Sample_ as its identity provider. So to run the _MVC Client_, the _Identity Server Sample_ needs to be running first.
+
+The easiest way to try the sample out is to:
+
+1. Configure the solution to use _Multiple startup projects_, and set it to start both _IdentityServerSample_ and _MvcClientSample_
+1. Press F5
+
+### Can I try out a live demo of the samples?
+
+Yes! They are available here. Please note that MvcClientSample uses IdentityServerSample as the IdentityProvider, so the MvcClientSample is a good place to start.
+
+* MvcClientSample: [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net)
+* IdentityServerSample: [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net)
+
 ### Can I prepopulate the personal identity number for the user?
 
 Yes you can! If you provide an authentication property item named `swedishPersonalIdentityNumber` (available as constants `BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber` or `GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber`) that value will be used and sent to BankID/GrandID.
@@ -155,21 +171,17 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
 }
 ```
 
-### How do I run the samples?
+### Why are the names sometimes capitalized?
 
-The samples are configured to run in development mode (no BankID certificates or GrandID keys required) by default. The _MVC Client sample_ is using the _Identity Server Sample_ as its identity provider. So to run the _MVC Client_, the _Identity Server Sample_ needs to be running first.
+It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
+We have choosen not to mornalize the capitalization of the names as it´s hard or impossible to do so in a general way. If you really need to, this code is a good start at least:
 
-The easiest way to try the sample out is to:
-
-1. Configure the solution to use _Multiple startup projects_, and set it to start both _IdentityServerSample_ and _MvcClientSample_
-1. Press F5
-
-### Can I try out a live demo of the samples?
-
-Yes! They are available here. Please note that MvcClientSample uses IdentityServerSample as the IdentityProvider, so the MvcClientSample is a good place to start.
-
-* MvcClientSample: [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net)
-* IdentityServerSample: [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net)
+```csharp
+private string NormalizeName(string name)
+{
+    return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name.ToLowerInvariant());
+}
+```
 
 ## ActiveLogin
 
