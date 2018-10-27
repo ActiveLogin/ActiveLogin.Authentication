@@ -1,7 +1,7 @@
 ﻿using System;
 using ActiveLogin.Identity.Swedish;
 
-namespace ActiveLogin.Authentication.Common.Serialization
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
     public static class JwtSerializer
     {

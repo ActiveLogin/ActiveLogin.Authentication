@@ -38,8 +38,4 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="all" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="ActiveLogin.Identity.Swedish" Version="1.0.0-alpha-2" />
-  </ItemGroup>
 </Project>
