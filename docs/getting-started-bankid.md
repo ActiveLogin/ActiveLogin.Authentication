@@ -210,6 +210,33 @@ BankId options allows you to set and override some options such as these.
 });
 ```
 
+### BankID Certificate Policies
+
+BankId options allows you to set a list of certificate policies and there is a class available to help you out with this.
+
+```c#
+.AddOtherDevice(options =>
+{
+	options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId);
+});
+```
+
+Because the policies have different values for test and production environment, you need to use either `.GetPoliciesForProductionEnvironment()` or `.GetPoliciesForTestEnvironment()` depending on what environment you are using.
+
+Example:
+
+```c#
+.AddOtherDevice(options =>
+{
+	var policies = new[] { BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId };
+	if(isProductionEnvironment) {
+		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(policies);
+	} else {
+		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForTestEnvironment(policies);
+	}
+});
+```
+
 ### Full sample for production
 
 Finally, a full sample on how to use BankID in production with client certificate from Azure KeyVault and trusting a custom root certificate.
