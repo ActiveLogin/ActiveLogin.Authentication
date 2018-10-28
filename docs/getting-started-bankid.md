@@ -217,7 +217,7 @@ BankId options allows you to set a list of certificate policies and there is a c
 ```c#
 .AddOtherDevice(options =>
 {
-	options.BankIdCertificatePolicies = BankIdCertificatePolicyBuilder.GetPoliciesForProductionEnvironment(BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId);
+	options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId);
 });
 ```
 
@@ -230,9 +230,9 @@ Example:
 {
 	var policies = new[] { BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId };
 	if(isProductionEnvironment) {
-		options.BankIdCertificatePolicies = BankIdCertificatePolicyBuilder.GetPoliciesForProductionEnvironment(policies);
+		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(policies);
 	} else {
-		options.BankIdCertificatePolicies = BankIdCertificatePolicyBuilder.GetPoliciesForTestEnvironment(policies);
+		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForTestEnvironment(policies);
 	}
 });
 ```
