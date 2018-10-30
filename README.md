@@ -174,7 +174,7 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
 ### Why are the names sometimes capitalized?
 
 It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
-We have choosen not to mornalize the capitalization of the names as it´s hard or impossible to do so in a general way. If you really need to, this code is a good start at least:
+We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way. If you really need to, this code is a good start at least:
 
 ```csharp
 private string NormalizeName(string name)
