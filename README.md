@@ -25,16 +25,18 @@ First of all, you need to decide if you want to use [native BankID](https://www.
 
 ActiveLogin.Authentication is distributed as [packages on NuGet](https://www.nuget.org/profiles/ActiveLogin), install using the tool of your choice, for example _dotnet cli_.
 
+_Note:_ The packages relfecting the documentation are currently in alpha, so make sure to search for the pre release packages.
+
 #### BankID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
+dotnet add package ActiveLogin.Authentication.BankId.AspNetCore -Version 1.0.0-alpha-4
 ```
 
 #### GrandID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore
+dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore -Version 1.0.0-alpha-4
 ```
 
 ### 2. Prepare your project
