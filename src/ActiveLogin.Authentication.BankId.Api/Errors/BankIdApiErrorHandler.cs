@@ -8,9 +8,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
 {
     internal class BankIdApiErrorHandler
     {
-        public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage, IJsonSerializer jsonSerializer)
+        public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage)
         {
-            var error = await TryGetErrorAsync(httpResponseMessage, jsonSerializer).ConfigureAwait(false);
+            var error = await TryGetErrorAsync(httpResponseMessage).ConfigureAwait(false);
 
             try
             {
@@ -27,14 +27,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
         }
 
-        private static async Task<Error> TryGetErrorAsync(HttpResponseMessage httpResponseMessage, IJsonSerializer jsonSerializer)
+        private static async Task<Error> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
         {
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
                 try
                 {
                     var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return jsonSerializer.Deserialize<Error>(content);
+                    return SystemRuntimeJsonSerializer.Deserialize<Error>(content);
                 }
                 catch (Exception)
                 {
