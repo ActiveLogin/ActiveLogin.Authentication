@@ -21,7 +21,7 @@ First of all, you need to decide if you want to use [native BankID](https://www.
 * _Native BankID_ gives you full flexibility, including custom UI but requires issuing a certificate through a bank and usually takes some time to sort out.
 * _GrandID (Svensk E-identitet)_ uses a predefined UI and does not support all functionalities of the BankID API, but is really easy to get started with and does not require any certificates.
 
-_Screenshots on how de default UI for Native BankID looks._
+_Screenshots on how the default UI for Native BankID looks._
 
 ![Active Login Screenshots](docs/images/activelogin-screenshots.png)
 
