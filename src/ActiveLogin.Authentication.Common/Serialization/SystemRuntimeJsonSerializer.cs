@@ -4,9 +4,9 @@ using System.Text;
 
 namespace ActiveLogin.Authentication.Common.Serialization
 {
-    public class SystemRuntimeJsonSerializer : IJsonSerializer
+    public static class SystemRuntimeJsonSerializer
     {
-        public T Deserialize<T>(string json)
+        public static T Deserialize<T>(string json)
         {
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
@@ -15,13 +15,13 @@ namespace ActiveLogin.Authentication.Common.Serialization
             }
         }
 
-        public T Deserialize<T>(Stream json)
+        public static T Deserialize<T>(Stream json)
         {
             var serializer = new DataContractJsonSerializer(typeof(T));
             return (T)serializer.ReadObject(json);
         }
 
-        public string Serialize<T>(T value)
+        public static string Serialize<T>(T value)
         {
             if (value == null)
             {

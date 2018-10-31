@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 
 namespace ActiveLogin.Authentication.GrandId.Api
@@ -14,13 +13,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
     public class GrandIdApiClient : IGrandIdApiClient
     {
         private readonly HttpClient _httpClient;
-        private readonly IJsonSerializer _jsonSerializer;
         private readonly string _apiKey;
 
-        public GrandIdApiClient(HttpClient httpClient, IJsonSerializer jsonSerializer, GrandIdApiClientConfiguration configuration)
+        public GrandIdApiClient(HttpClient httpClient, GrandIdApiClientConfiguration configuration)
         {
             _httpClient = httpClient;
-            _jsonSerializer = jsonSerializer;
             _apiKey = configuration.ApiKey;
         }
 
@@ -46,7 +43,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var url = GetUrl("FederatedLogin", queryStringParams);
 
-            var fullResponse = await _httpClient.GetAsync<FederatedLoginFullResponse>(url, _jsonSerializer);
+            var fullResponse = await _httpClient.GetAsync<FederatedLoginFullResponse>(url);
             if (fullResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
@@ -70,7 +67,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "password", request.Password }
             });
 
-            var fullResponse = await _httpClient.GetAsync<FederatedDirectLoginFullResponse>(url, _jsonSerializer);
+            var fullResponse = await _httpClient.GetAsync<FederatedDirectLoginFullResponse>(url);
             if (fullResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
@@ -92,7 +89,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            var fullResponse = await _httpClient.GetAsync<SessionStateFullResponse>(url, _jsonSerializer);
+            var fullResponse = await _httpClient.GetAsync<SessionStateFullResponse>(url);
             if (fullResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
@@ -112,7 +109,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            var fullResponse = await _httpClient.GetAsync<LogoutFullResponse>(url, _jsonSerializer);
+            var fullResponse = await _httpClient.GetAsync<LogoutFullResponse>(url);
             if (fullResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);

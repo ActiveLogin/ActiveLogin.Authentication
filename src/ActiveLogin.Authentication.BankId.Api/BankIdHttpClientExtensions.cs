@@ -9,19 +9,19 @@ namespace ActiveLogin.Authentication.BankId.Api
 {
     internal static class BankIdHttpClientExtensions
     {
-        public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request, IJsonSerializer jsonSerializer)
+        public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
-            var httpResponseMessage = await GetHttpResponseAsync(url, request, httpClient.PostAsync, jsonSerializer).ConfigureAwait(false);
-            return jsonSerializer.Deserialize<TResult>(await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false));
+            var httpResponseMessage = await GetHttpResponseAsync(url, request, httpClient.PostAsync).ConfigureAwait(false);
+            return SystemRuntimeJsonSerializer.Deserialize<TResult>(await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false));
         }
 
-        private static async Task<HttpResponseMessage> GetHttpResponseAsync<TRequest>(string url, TRequest request, Func<string, HttpContent, Task<HttpResponseMessage>> httpRequest, IJsonSerializer jsonSerializer)
+        private static async Task<HttpResponseMessage> GetHttpResponseAsync<TRequest>(string url, TRequest request, Func<string, HttpContent, Task<HttpResponseMessage>> httpRequest)
         {
-            var requestJson = jsonSerializer.Serialize(request);
+            var requestJson = SystemRuntimeJsonSerializer.Serialize(request);
             var requestContent = GetJsonStringContent(requestJson);
 
             var httpResponseMessage = await httpRequest(CleanUrl(url), requestContent).ConfigureAwait(false);
-            await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage, jsonSerializer).ConfigureAwait(false);
+            await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage).ConfigureAwait(false);
             return httpResponseMessage;
         }
 
