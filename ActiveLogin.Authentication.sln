@@ -41,8 +41,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4764448D-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7D32EBEE-65D6-46D3-BC7E-65951C143969}"
 	ProjectSection(SolutionItems) = preProject
+		docs\images\active-login-bankid-loggedin-screenshot.png = docs\images\active-login-bankid-loggedin-screenshot.png
+		docs\images\active-login-bankid-login-otherdevice-pin-screenshot.png = docs\images\active-login-bankid-login-otherdevice-pin-screenshot.png
+		docs\images\active-login-bankid-login-samedevice-status-screenshot.png = docs\images\active-login-bankid-login-samedevice-status-screenshot.png
+		docs\images\active-login-chooseprovider-screenshot.png = docs\images\active-login-chooseprovider-screenshot.png
 		docs\images\active-login-logo-fingerprint-blue-256x256.png = docs\images\active-login-logo-fingerprint-blue-256x256.png
 		docs\images\active-login-logo-fingerprint-blue-v2-256x256.png = docs\images\active-login-logo-fingerprint-blue-v2-256x256.png
+		docs\images\activelogin-screenshots.png = docs\images\activelogin-screenshots.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.GrandId.Api", "src\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj", "{00C97046-36F3-4431-9FC8-A2EED39B3EA9}"
