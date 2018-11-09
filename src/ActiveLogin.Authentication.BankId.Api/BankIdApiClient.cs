@@ -15,7 +15,6 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// Creates an instance of <see cref="BankIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
         /// </summary>
         /// <param name="httpClient">The HttpClient to use.</param>
-        /// <param name="jsonSerializer">The JsonSerializer to se for serializing and deserializing requests and responses.</param>
         public BankIdApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
