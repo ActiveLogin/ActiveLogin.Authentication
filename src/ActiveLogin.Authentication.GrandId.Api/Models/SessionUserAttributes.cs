@@ -28,5 +28,20 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
 
         [DataMember(Name = "ipAddress")]
         public string IpAddress { get; set; }
+
+        [DataMember(Name = "serialNumber")]
+        public string SerialNumber { get; set; }
+
+        [DataMember(Name = "firstname")]
+        public string FirstName { get; set; }
+
+        [DataMember(Name = "lastname")]
+        public string LastName { get; set; }
+
+        [DataMember(Name = "clientCertificateSerial")]
+        public string ClientCertificateSerial { get; set; }
+
+        [DataMember(Name = "DN_Email")]
+        public string Email { get; set; }
     }
 }

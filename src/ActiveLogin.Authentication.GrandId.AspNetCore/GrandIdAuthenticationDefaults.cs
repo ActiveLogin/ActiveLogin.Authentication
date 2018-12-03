@@ -17,6 +17,10 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public const string ChooseDeviceDisplayName = "BankID";
         public static readonly PathString ChooseDeviceCallpackPath = new PathString("/signin-grandid-choosedevice");
 
+        public const string SithsAuthenticationScheme = "grandid-siths";
+        public const string SithsDisplayName = "Siths";
+        public static readonly PathString SithsCallpackPath = new PathString("/signin-grandid-siths");
+
         public const string IdentityProviderName = "GrandId";
         public const string AuthenticationMethodName = "grandid";
 

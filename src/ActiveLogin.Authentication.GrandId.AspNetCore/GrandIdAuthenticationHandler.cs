@@ -77,7 +77,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 properties.ExpiresUtc = expiresUtc;
             }
 
-            var claims = GetClaims(loginResult, expiresUtc);
+            var claims = Options.UseSiths ? GetSithsClaims(loginResult, expiresUtc) 
+                : GetClaims(loginResult, expiresUtc);
+
             var identity = new ClaimsIdentity(claims, Scheme.Name, GrandIdClaimTypes.Name, GrandIdClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
 
@@ -87,19 +89,33 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         private IEnumerable<Claim> GetClaims(SessionStateResponse loginResult, DateTimeOffset? expiresUtc)
         {
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
+
             var claims = new List<Claim>
-            {
-                new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
-
-                new Claim(GrandIdClaimTypes.Name, loginResult.UserAttributes.Name),
-                new Claim(GrandIdClaimTypes.FamilyName, loginResult.UserAttributes.Surname),
-                new Claim(GrandIdClaimTypes.GivenName, loginResult.UserAttributes.GivenName),
-
-                new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
-            };
+                {
+                    new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
+                    new Claim(GrandIdClaimTypes.Name, loginResult.UserAttributes.Name),
+                    new Claim(GrandIdClaimTypes.FamilyName, loginResult.UserAttributes.Surname),
+                    new Claim(GrandIdClaimTypes.GivenName, loginResult.UserAttributes.GivenName),
+                    new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
+                };
 
             AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);
 
+            return claims;
+        }
+
+        private IEnumerable<Claim> GetSithsClaims(SessionStateResponse loginResult, DateTimeOffset? expiresUtc)
+        {
+            var claims = new List<Claim>
+                {
+                    new Claim(GrandIdClaimTypes.Subject, loginResult.UserName),
+                    new Claim("hsaId", loginResult.UserName),
+                    new Claim("grandidsession", loginResult.SessionId),
+                    new Claim("firstname", loginResult.UserAttributes.FirstName),
+                    new Claim("lastname", loginResult.UserAttributes.LastName),
+                    new Claim("email", loginResult.UserAttributes.Email),
+                    new Claim("certificateserial", loginResult.UserAttributes.ClientCertificateSerial),
+                };
             return claims;
         }
 

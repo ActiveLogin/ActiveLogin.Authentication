@@ -22,7 +22,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         /// AuthenticateServiceKey obtained from GrandID (Svensk E-identitet).
         /// </summary>
         public string GrandIdAuthenticateServiceKey { get; set; }
-
         public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;
@@ -33,7 +32,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public bool IssueGenderClaim { get; set; } = true;
         public bool IssueBirthdateClaim { get; set; } = true;
-
+        public bool UseSiths { get; set; } = false;
         public ISecureDataFormat<GrandIdState> StateDataFormat { get; set; }
 
         public CookieBuilder StateCookie
