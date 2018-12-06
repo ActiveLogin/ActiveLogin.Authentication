@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdAuthenticationOptions : RemoteAuthenticationOptions
+    public class GrandIdBankIdAuthenticationOptions : RemoteAuthenticationOptions
     {
         private const string DefaultStateCookieName = "__ActiveLogin.GrandIdState";
 
@@ -26,7 +26,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;
-        public string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.AuthenticationMethodName;
+        public string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.BankIdAuthenticationMethodName;
 
         public bool IssueIdentityProviderClaim { get; set; } = true;
         public string IdentityProviderName { get; set; } = GrandIdAuthenticationDefaults.IdentityProviderName;

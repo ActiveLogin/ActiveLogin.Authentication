@@ -3,7 +3,7 @@ using System;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public static class LoggerExtensions
+    internal static class LoggerExtensions
     {
         public static void GrandIdGetSessionSuccess(this ILogger logger, string sessionId)
         {

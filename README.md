@@ -76,8 +76,8 @@ services
     {
         builder
             .UseDevelopmentEnvironment()
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddBankIdSameDevice(options => { })
+            .AddBankIdOtherDevice(options => { });
     });
 ```
 
@@ -115,13 +115,13 @@ services
     {
         builder
             .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddSameDevice(options =>
+            .AddBankIdSameDevice(options =>
             {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
+                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
             })
-            .AddOtherDevice(options =>
+            .AddBankIdOtherDevice(options =>
             {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
             });
     });
 ```

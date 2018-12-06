@@ -14,18 +14,18 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdAuthenticationOptions>
+    public class GrandIdBankIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdBankIdAuthenticationOptions>
     {
-        private readonly ILogger<GrandIdAuthenticationHandler> _logger;
+        private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
 
         private readonly IGrandIdApiClient _grandIdApiClient;
 
-        public GrandIdAuthenticationHandler(
-            IOptionsMonitor<GrandIdAuthenticationOptions> options,
+        public GrandIdBankIdAuthenticationHandler(
+            IOptionsMonitor<GrandIdBankIdAuthenticationOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
             ISystemClock clock,
-            ILogger<GrandIdAuthenticationHandler> logger,
+            ILogger<GrandIdBankIdAuthenticationHandler> logger,
             IGrandIdApiClient grandIdApiClient
             )
             : base(options, loggerFactory, encoder, clock)

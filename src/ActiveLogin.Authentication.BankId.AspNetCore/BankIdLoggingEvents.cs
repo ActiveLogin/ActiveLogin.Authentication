@@ -2,7 +2,7 @@
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public static class BankIdLoggingEvents
+    internal static class BankIdLoggingEvents
     {
         // BankId Authentication Handler
         public static readonly EventId BankIdAuthenticationTicketCreated = new EventId(1_1_1, nameof(BankIdAuthenticationTicketCreated));

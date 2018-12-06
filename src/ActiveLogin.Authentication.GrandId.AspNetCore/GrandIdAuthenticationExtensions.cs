@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     {
         public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdAuthenticationBuilder> grandId)
         {
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdAuthenticationOptions>, GrandIdAuthenticationPostConfigureOptions>());
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdBankIdAuthenticationOptions>, GrandIdBankIdAuthenticationPostConfigureOptions>());
 
             var grandIdAuthenticationBuilder = new GrandIdAuthenticationBuilder(builder);
             grandIdAuthenticationBuilder.AddDefaultServices();

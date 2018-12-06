@@ -4,7 +4,6 @@
     {
         internal static IGrandIdAuthenticationBuilder AddDefaultServices(this IGrandIdAuthenticationBuilder builder)
         {
-
             return builder;
         }
     }

@@ -6,14 +6,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public static class GrandIdAuthenticationBuilderSchemeExtensions
     {
-        internal static IGrandIdAuthenticationBuilder AddScheme(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, PathString callpackPath, Action<GrandIdAuthenticationOptions> configureOptions)
+        internal static IGrandIdAuthenticationBuilder AddBankIdScheme(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, PathString callpackPath, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
         {
-            builder.AuthenticationBuilder.Services.Configure<GrandIdAuthenticationOptions>(authenticationScheme, options =>
+            builder.AuthenticationBuilder.Services.Configure<GrandIdBankIdAuthenticationOptions>(authenticationScheme, options =>
             {
                 options.CallbackPath = callpackPath;
             });
 
-            builder.AuthenticationBuilder.AddScheme<GrandIdAuthenticationOptions, GrandIdAuthenticationHandler>(
+            builder.AuthenticationBuilder.AddScheme<GrandIdBankIdAuthenticationOptions, GrandIdBankIdAuthenticationHandler>(
                 authenticationScheme,
                 displayName,
                 configureOptions
@@ -22,33 +22,33 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return builder;
         }
 
-        public static IGrandIdAuthenticationBuilder AddSameDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddSameDevice(builder, GrandIdAuthenticationDefaults.SameDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.SameDeviceDisplayName, configureOptions);
+        public static IGrandIdAuthenticationBuilder AddBankIdSameDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdSameDevice(builder, GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.BankIdSameDeviceDisplayName, configureOptions);
 
-        public static IGrandIdAuthenticationBuilder AddSameDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddSameDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.SameDeviceDisplayName, configureOptions);
+        public static IGrandIdAuthenticationBuilder AddBankIdSameDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdSameDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.BankIdSameDeviceDisplayName, configureOptions);
 
-        public static IGrandIdAuthenticationBuilder AddSameDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.SameDeviceCallpackPath, configureOptions);
-
-
-        public static IGrandIdAuthenticationBuilder AddOtherDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddOtherDevice(builder, GrandIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.OtherDeviceDisplayName, configureOptions);
-
-        public static IGrandIdAuthenticationBuilder AddOtherDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddOtherDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.OtherDeviceDisplayName, configureOptions);
-
-        public static IGrandIdAuthenticationBuilder AddOtherDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.OtherDeviceCallpackPath, configureOptions);
+        public static IGrandIdAuthenticationBuilder AddBankIdSameDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.BankIdSameDeviceCallpackPath, configureOptions);
 
 
-        public static IGrandIdAuthenticationBuilder AddChooseDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddChooseDevice(builder, GrandIdAuthenticationDefaults.ChooseDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.ChooseDeviceDisplayName, configureOptions);
+        public static IGrandIdAuthenticationBuilder AddBankIdOtherDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdOtherDevice(builder, GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.BankIdOtherDeviceDisplayName, configureOptions);
 
-        public static IGrandIdAuthenticationBuilder AddChooseDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddChooseDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.ChooseDeviceDisplayName, configureOptions);
+        public static IGrandIdAuthenticationBuilder AddBankIdOtherDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdOtherDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.BankIdOtherDeviceDisplayName, configureOptions);
 
-        public static IGrandIdAuthenticationBuilder AddChooseDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdAuthenticationOptions> configureOptions)
-            => AddScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.ChooseDeviceCallpackPath, configureOptions);
+        public static IGrandIdAuthenticationBuilder AddBankIdOtherDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.BankIdOtherDeviceCallpackPath, configureOptions);
+
+
+        public static IGrandIdAuthenticationBuilder AddBankIdChooseDevice(this IGrandIdAuthenticationBuilder builder, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdChooseDevice(builder, GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, GrandIdAuthenticationDefaults.BankIdChooseDeviceDisplayName, configureOptions);
+
+        public static IGrandIdAuthenticationBuilder AddBankIdChooseDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdChooseDevice(builder, authenticationScheme, GrandIdAuthenticationDefaults.BankIdChooseDeviceDisplayName, configureOptions);
+
+        public static IGrandIdAuthenticationBuilder AddBankIdChooseDevice(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+            => AddBankIdScheme(builder, authenticationScheme, displayName, GrandIdAuthenticationDefaults.BankIdChooseDeviceCallpackPath, configureOptions);
     }
 }

@@ -13,9 +13,9 @@
 ```json
 {
   "ActiveLogin:GrandId:ApiKey": "TODO-ADD-YOUR-VALUE",
-  "ActiveLogin:GrandId:SameDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
-  "ActiveLogin:GrandId:OtherDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
-  "ActiveLogin:GrandId:ChooseDeviceServiceKey": "TODO-ADD-YOUR-VALUE"
+  "ActiveLogin:GrandId:BankIdSameDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:GrandId:BankIdOtherDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:GrandId:BankIdChooseDeviceServiceKey": "TODO-ADD-YOUR-VALUE"
 }
 ```
 
@@ -34,8 +34,8 @@ services
     {
         builder
             .UseDevelopmentEnvironment()
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddBankIdSameDevice(options => { })
+            .AddBankIdOtherDevice(options => { });
     });
 ```
 
@@ -50,8 +50,8 @@ services
     {
         builder
             .UseDevelopmentEnvironment("Alice", "Smith", "199908072391")
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddBankIdSameDevice(options => { })
+            .AddBankIdOtherDevice(options => { });
     });
 ```
 
@@ -97,13 +97,13 @@ services
     {
         builder
             .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddSameDevice(options =>
+            .AddBankIdSameDevice(options =>
             {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
+                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
             })
-            .AddOtherDevice(options =>
+            .AddBankIdOtherDevice(options =>
             {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
             });
     });
 ```
@@ -119,9 +119,9 @@ services
     {
         builder
             .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddChooseDevice(options =>
+            .AddBankIdChooseDevice(options =>
             {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdChooseDeviceServiceKey");
             });
     });
 ```
@@ -137,7 +137,7 @@ services
     {
         builder
             .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
-            .AddOtherDevice(GrandIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
+            .AddBankIdSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
+            .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });
 ```
