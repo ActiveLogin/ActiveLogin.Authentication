@@ -15,14 +15,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             logger.LogError(GrandIdLoggingEvents.GrandIdGetSessionHardFailure, exception, "GrandId get session failed for the sessionId '{SessionId}'", sessionId, exception);
         }
 
-        public static void GrandIdAuthSuccess(this ILogger logger, string authenticateServiceKey, string returnUrl, string sessionId)
+        public static void GrandIdFederatedLoginSuccess(this ILogger logger, string authenticateServiceKey, string returnUrl, string sessionId)
         {
-            logger.LogInformation(GrandIdLoggingEvents.GrandIdAuthSuccess, "GrandId auth succedded for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
+            logger.LogInformation(GrandIdLoggingEvents.GrandIdFederatedLoginSuccess, "GrandId federated login succedded for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
         }
 
-        public static void GrandIdAuthFailure(this ILogger logger, string authenticateServiceKey, string returnUrl, Exception exception)
+        public static void GrandIdFederatedLoginFailure(this ILogger logger, string authenticateServiceKey, string returnUrl, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdAuthHardFailure, exception, "GrandId auth failed for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
+            logger.LogError(GrandIdLoggingEvents.GrandIdFederatedLoginHardFailure, exception, "GrandId federated login failed for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
         }
     }
 }

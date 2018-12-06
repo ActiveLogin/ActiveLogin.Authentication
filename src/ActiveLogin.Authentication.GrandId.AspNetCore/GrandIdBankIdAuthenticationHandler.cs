@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
-using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Serialization;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
@@ -14,12 +11,8 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdBankIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdBankIdAuthenticationOptions>
+    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, GrandIdBankIdAuthenticationHandler>
     {
-        private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
-
-        private readonly IGrandIdApiClient _grandIdApiClient;
-
         public GrandIdBankIdAuthenticationHandler(
             IOptionsMonitor<GrandIdBankIdAuthenticationOptions> options,
             ILoggerFactory loggerFactory,
@@ -28,63 +21,29 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             ILogger<GrandIdBankIdAuthenticationHandler> logger,
             IGrandIdApiClient grandIdApiClient
             )
-            : base(options, loggerFactory, encoder, clock)
+            : base(options, loggerFactory, encoder, clock, logger, grandIdApiClient)
         {
-            _logger = logger;
-            _grandIdApiClient = grandIdApiClient;
         }
 
-        protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
+        protected override string GetGrandIdAuthenticateServiceKey()
         {
-            var state = GetStateFromCookie();
-            if (state == null)
-            {
-                return HandleRequestResult.Fail("Invalid state cookie.");
-            }
-
-            DeleteStateCookie();
-
-            var sessionId = Request.Query["grandidsession"];
-            if (string.IsNullOrEmpty(sessionId))
-            {
-                return HandleRequestResult.Fail("Missing grandidsession from GrandID.");
-            }
-
-            try
-            {
-                var sessionResult = await _grandIdApiClient.GetSessionAsync(Options.GrandIdAuthenticateServiceKey, sessionId);
-
-                var properties = state.AuthenticationProperties;
-                var ticket = GetAuthenticationTicket(sessionResult, properties);
-                _logger.GrandIdGetSessionSuccess(sessionResult.SessionId);
-
-                return HandleRequestResult.Success(ticket);
-            }
-            catch (Exception ex)
-            {
-                _logger.GrandIdGetSessionFailure(sessionId, ex);
-
-                return HandleRequestResult.Fail("Failed to get session from GrandID.");
-            }
+            return Options.GrandIdAuthenticateServiceKey;
         }
 
-        private AuthenticationTicket GetAuthenticationTicket(SessionStateResponse loginResult, AuthenticationProperties properties)
+        protected override SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            DateTimeOffset? expiresUtc = null;
-            if (Options.TokenExpiresIn.HasValue)
+            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
             {
-                expiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
-                properties.ExpiresUtc = expiresUtc;
+                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+                {
+                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                }
             }
 
-            var claims = GetClaims(loginResult, expiresUtc);
-            var identity = new ClaimsIdentity(claims, Scheme.Name, GrandIdClaimTypes.Name, GrandIdClaimTypes.Role);
-            var principal = new ClaimsPrincipal(identity);
-
-            return new AuthenticationTicket(principal, properties, Scheme.Name);
+            return null;
         }
 
-        private IEnumerable<Claim> GetClaims(SessionStateResponse loginResult, DateTimeOffset? expiresUtc)
+        protected override IEnumerable<Claim> GetClaims(SessionStateResponse loginResult)
         {
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>
@@ -97,28 +56,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
                 new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
             };
-
-            AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);
-
-            return claims;
-        }
-
-        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
-        {
-            if (expiresUtc.HasValue)
-            {
-                claims.Add(new Claim(GrandIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
-            }
-
-            if (Options.IssueAuthenticationMethodClaim)
-            {
-                claims.Add(new Claim(GrandIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
-            }
-
-            if (Options.IssueIdentityProviderClaim)
-            {
-                claims.Add(new Claim(GrandIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
-            }
 
             if (Options.IssueGenderClaim)
             {
@@ -134,71 +71,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
                 claims.Add(new Claim(GrandIdClaimTypes.Birthdate, jwtBirthdate));
             }
-        }
 
-        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
-        {
-            AppendStateCookie(properties);
-
-            var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
-            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
-            try
-            {
-                var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
-                _logger.GrandIdAuthSuccess(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
-                Response.Redirect(response.RedirectUrl);
-            }
-            catch (Exception ex)
-            {
-                _logger.GrandIdAuthFailure(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
-                throw;
-            }
-        }
-
-        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
-        {
-            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
-            {
-                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
-                {
-                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
-                }
-            }
-
-            return null;
-        }
-
-        private string GetAbsoluteUrl(string returnUrl)
-        {
-            var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
-            return absoluteUri + returnUrl;
-        }
-
-        private void AppendStateCookie(AuthenticationProperties properties)
-        {
-            var state = new GrandIdState(properties);
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            var cookieValue = Options.StateDataFormat.Protect(state);
-
-            Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
-        }
-
-        private GrandIdState GetStateFromCookie()
-        {
-            var protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState))
-            {
-                return null;
-            }
-
-            var state = Options.StateDataFormat.Unprotect(protectedState);
-            return state;
-        }
-
-        private void DeleteStateCookie()
-        {
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
+            return claims;
         }
     }
 }
