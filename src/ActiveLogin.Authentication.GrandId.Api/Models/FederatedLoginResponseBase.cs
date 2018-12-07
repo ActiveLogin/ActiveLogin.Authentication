@@ -10,8 +10,11 @@
         protected FederatedLoginResponseBase(TFullResponse fullResponse)
         {
             SessionId = fullResponse.SessionId;
+            RedirectUrl = fullResponse.RedirectUrl;
         }
 
         public string SessionId { get; set; }
+
+        public string RedirectUrl { get; set; }
     }
 }

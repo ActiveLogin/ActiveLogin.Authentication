@@ -16,7 +16,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         private readonly Dictionary<string, ExtendedFederatedLoginResponse> _federatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
-        private readonly Dictionary<string, DirectFederatedLoginResponse> _federatedDirectLogins = new Dictionary<string, DirectFederatedLoginResponse>();
+        private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
 
         public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
         {
@@ -77,16 +77,16 @@ namespace ActiveLogin.Authentication.GrandId.Api
         }
 
 
-        public async Task<DirectFederatedLoginResponse> DirectFederatedLoginAsync(DirectFederatedLoginRequest request)
+        public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString();
-            var response = new DirectFederatedLoginResponse
+            var response = new FederatedDirectLoginResponse
             {
                 SessionId = sessionId,
                 Username = $"{_givenName.ToLower()}.{_surname.ToLower()}@example.org",
-                UserAttributes = new DirectFederatedLoginUserAttributes
+                UserAttributes = new FederatedDirectLoginUserAttributes
                 {
                     GivenName = _givenName,
                     Surname = _surname,
@@ -116,7 +116,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 _federatedDirectLogins.Remove(sessionId);
             }
 
-            return new LogoutResponse()
+            return new LogoutResponse
             {
                 SessionDeleted = true
             };

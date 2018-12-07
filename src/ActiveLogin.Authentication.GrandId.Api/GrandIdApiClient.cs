@@ -80,7 +80,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// The value returned value will be the user’s properties.
         /// </summary>
         /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
-        public async Task<DirectFederatedLoginResponse> DirectFederatedLoginAsync(DirectFederatedLoginRequest request)
+        public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
         {
             var url = GetUrl("FederatedDirectLogin", new Dictionary<string, string>
             {
@@ -90,13 +90,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "password", request.Password }
             });
 
-            var fullResponse = await _httpClient.GetAsync<DirectFederatedLoginFullResponse>(url);
+            var fullResponse = await _httpClient.GetAsync<FederatedDirectLoginFullResponse>(url);
             if (fullResponse.ErrorObject != null)
             {
                 throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
             }
 
-            return new DirectFederatedLoginResponse(fullResponse);
+            return new FederatedDirectLoginResponse(fullResponse);
         }
 
 

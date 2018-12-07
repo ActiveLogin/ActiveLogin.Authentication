@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class DirectFederatedLoginUserAttributes
+    public class FederatedDirectLoginUserAttributes
     {
         [DataMember(Name = "mobile")]
         public string MobilePhone { get; set; }

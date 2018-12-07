@@ -29,7 +29,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// The value returned value will be the user’s properties.
         /// </summary>
         /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
-        Task<DirectFederatedLoginResponse> DirectFederatedLoginAsync(DirectFederatedLoginRequest request);
+        Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request);
 
 
         /// <summary>

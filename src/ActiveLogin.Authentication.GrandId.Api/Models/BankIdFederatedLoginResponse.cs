@@ -10,9 +10,6 @@
         public BankIdFederatedLoginResponse(BankIdFederatedLoginFullResponse fullResponse)
         : base(fullResponse)
         {
-            RedirectUrl = fullResponse.RedirectUrl;
         }
-
-        public string RedirectUrl { get; set; }
     }
 }
