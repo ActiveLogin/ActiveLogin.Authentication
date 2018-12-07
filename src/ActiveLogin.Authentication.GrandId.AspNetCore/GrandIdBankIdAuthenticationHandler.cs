@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Serialization;
@@ -11,8 +13,11 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, GrandIdBankIdAuthenticationHandler>
+    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, BankIdSessionStateResponse>
     {
+        private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
+        private readonly IGrandIdApiClient _grandIdApiClient;
+
         public GrandIdBankIdAuthenticationHandler(
             IOptionsMonitor<GrandIdBankIdAuthenticationOptions> options,
             ILoggerFactory loggerFactory,
@@ -21,16 +26,31 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             ILogger<GrandIdBankIdAuthenticationHandler> logger,
             IGrandIdApiClient grandIdApiClient
             )
-            : base(options, loggerFactory, encoder, clock, logger, grandIdApiClient)
+            : base(options, loggerFactory, encoder, clock)
         {
+            _logger = logger;
+            _grandIdApiClient = grandIdApiClient;
         }
 
-        protected override string GetGrandIdAuthenticateServiceKey()
+        protected override async Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl)
         {
-            return Options.GrandIdAuthenticateServiceKey;
+            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
+            var grandIdAuthenticateServiceKey = Options.GrandIdAuthenticateServiceKey;
+
+            try
+            {
+                var federatedLoginResponse = await _grandIdApiClient.BankIdFederatedLoginAsync(grandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
+                _logger.GrandIdBankIdFederatedLoginSuccess(grandIdAuthenticateServiceKey, absoluteReturnUrl, federatedLoginResponse.SessionId);
+                return federatedLoginResponse.RedirectUrl;
+            }
+            catch (Exception ex)
+            {
+                _logger.GrandIdBankIdFederatedLoginFailure(grandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
+                throw;
+            }
         }
 
-        protected override SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        private SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
             if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
             {
@@ -41,6 +61,21 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
 
             return null;
+        }
+
+        protected override async Task<BankIdSessionStateResponse> GetSessionStateAsync(string sessionId)
+        {
+            try
+            {
+                var sessionResponse = await _grandIdApiClient.BankIdGetSessionAsync(Options.GrandIdAuthenticateServiceKey, sessionId);
+                _logger.GrandIdBankIdGetSessionSuccess(sessionResponse.SessionId);
+                return sessionResponse;
+            }
+            catch (Exception ex)
+            {
+                _logger.GrandIdBankIdGetSessionFailure(sessionId, ex);
+                throw;
+            }
         }
 
         protected override IEnumerable<Claim> GetClaims(BankIdSessionStateResponse loginResult)

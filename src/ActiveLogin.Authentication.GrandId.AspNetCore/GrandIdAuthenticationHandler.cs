@@ -3,35 +3,24 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.GrandId.Api;
-using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Serialization;
-using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public abstract class GrandIdAuthenticationHandler<TOptions, THandler> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdAuthenticationOptions, new()
+    public abstract class GrandIdAuthenticationHandler<TOptions, TSessionState> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdAuthenticationOptions, new()
     {
-        private readonly ILogger<THandler> _logger;
-
-        private readonly IGrandIdApiClient _grandIdApiClient;
-
         protected GrandIdAuthenticationHandler(
             IOptionsMonitor<TOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
-            ISystemClock clock,
-            ILogger<THandler> logger,
-            IGrandIdApiClient grandIdApiClient
+            ISystemClock clock
         )
             : base(options, loggerFactory, encoder, clock)
         {
-            _logger = logger;
-            _grandIdApiClient = grandIdApiClient;
         }
 
         protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
@@ -52,25 +41,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             try
             {
-                var sessionResult = await _grandIdApiClient.BankIdGetSessionAsync(GetGrandIdAuthenticateServiceKey(), sessionId);
+                var sessionResult = await GetSessionStateAsync(sessionId);
 
                 var properties = state.AuthenticationProperties;
                 var ticket = GetAuthenticationTicket(sessionResult, properties);
-                _logger.GrandIdGetSessionSuccess(sessionResult.SessionId);
 
                 return HandleRequestResult.Success(ticket);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.GrandIdGetSessionFailure(sessionId, ex);
-
                 return HandleRequestResult.Fail("Failed to get session from GrandID.");
             }
         }
 
-        protected abstract string GetGrandIdAuthenticateServiceKey();
+        protected abstract Task<TSessionState> GetSessionStateAsync(string sessionId);
 
-        private AuthenticationTicket GetAuthenticationTicket(BankIdSessionStateResponse loginResult, AuthenticationProperties properties)
+        private AuthenticationTicket GetAuthenticationTicket(TSessionState loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -86,7 +72,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return new AuthenticationTicket(principal, properties, Scheme.Name);
         }
 
-        private IEnumerable<Claim> GetAllClaims(BankIdSessionStateResponse loginResult, DateTimeOffset? expiresUtc)
+        private IEnumerable<Claim> GetAllClaims(TSessionState loginResult, DateTimeOffset? expiresUtc)
         {
             var claims = new List<Claim>();
 
@@ -118,33 +104,19 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return claims;
         }
 
-        protected abstract IEnumerable<Claim> GetClaims(BankIdSessionStateResponse loginResult);
+        protected abstract IEnumerable<Claim> GetClaims(TSessionState loginResult);
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             AppendStateCookie(properties);
 
             var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
-            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
-            var grandIdAuthenticateServiceKey = GetGrandIdAuthenticateServiceKey();
+            var redirectUrl = await GetRedirectUrlAsync(properties, absoluteReturnUrl);
 
-            try
-            {
-                var response = await _grandIdApiClient.BankIdFederatedLoginAsync(grandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
-                _logger.GrandIdFederatedLoginSuccess(grandIdAuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
-                Response.Redirect(response.RedirectUrl);
-            }
-            catch (Exception ex)
-            {
-                _logger.GrandIdFederatedLoginFailure(grandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
-                throw;
-            }
+            Response.Redirect(redirectUrl);
         }
 
-        protected virtual SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
-        {
-            return null;
-        }
+        protected abstract Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl);
 
         private string GetAbsoluteUrl(string returnUrl)
         {

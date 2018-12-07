@@ -1,6 +1,6 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class BankIdSessionStateResponse : BankIdSessionStateResponseBase<BankIdSessionStateFullResponse, SessionUserAttributes>
+    public class BankIdSessionStateResponse : SessionStateResponseBase<BankIdSessionStateFullResponse, SessionUserAttributes>
     {
         public BankIdSessionStateResponse()
         {

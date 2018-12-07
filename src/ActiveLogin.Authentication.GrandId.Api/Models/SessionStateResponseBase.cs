@@ -1,13 +1,13 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public abstract class BankIdSessionStateResponseBase<TFullResponse, TUserAttributes> where TFullResponse : SessionStateFullResponseBase<TUserAttributes>
+    public abstract class SessionStateResponseBase<TFullResponse, TUserAttributes> where TFullResponse : SessionStateFullResponseBase<TUserAttributes>
     {
-        protected BankIdSessionStateResponseBase()
+        protected SessionStateResponseBase()
         {
             
         }
 
-        protected BankIdSessionStateResponseBase(TFullResponse fullResponse)
+        protected SessionStateResponseBase(TFullResponse fullResponse)
         {
             SessionId = fullResponse.SessionId;
             UserName = fullResponse.UserName;
