@@ -8,25 +8,28 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public static class GrandIdApiClientExtensions
     {
-        public static Task<FederatedLoginResponse> FederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl)
+        public static Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl)
         {
-            return apiClient.FederatedLoginAsync(new FederatedLoginRequest(authenticateServiceKey, callbackUrl));
+            return apiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest(authenticateServiceKey, callbackUrl));
         }
 
-        public static Task<FederatedLoginResponse> FederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl, string personalIdentityNumber)
+        public static Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl, string personalIdentityNumber)
         {
-            return apiClient.FederatedLoginAsync(new FederatedLoginRequest(authenticateServiceKey, callbackUrl, personalIdentityNumber));
+            return apiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest(authenticateServiceKey, callbackUrl, personalIdentityNumber));
         }
 
-        public static Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
+        public static Task<BankIdSessionStateResponse> BankIdGetSessionAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string sessionId)
         {
-            return apiClient.FederatedDirectLoginAsync(new FederatedDirectLoginRequest(authenticateServiceKey, username, password));
+            return apiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest(authenticateServiceKey, sessionId));
         }
 
-        public static Task<SessionStateResponse> GetSessionAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string sessionId)
+
+        public static Task<DirectFederatedLoginResponse> DirectFederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
         {
-            return apiClient.GetSessionAsync(new SessionStateRequest(authenticateServiceKey, sessionId));
+            return apiClient.DirectFederatedLoginAsync(new DirectFederatedLoginRequest(authenticateServiceKey, username, password));
         }
+
+
         public static Task<LogoutResponse> LogoutAsync(this IGrandIdApiClient apiClient, string sessionId)
         {
             return apiClient.LogoutAsync(new LogoutRequest(sessionId));

@@ -43,7 +43,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return null;
         }
 
-        protected override IEnumerable<Claim> GetClaims(SessionStateResponse loginResult)
+        protected override IEnumerable<Claim> GetClaims(BankIdSessionStateResponse loginResult)
         {
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>

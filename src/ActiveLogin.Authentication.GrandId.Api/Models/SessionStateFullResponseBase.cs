@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class SessionStateFullResponse
+    public abstract class SessionStateFullResponseBase<TUserAttributes>
     {
         [DataMember(Name = "sessionId")]
         public string SessionId { get; set; }
@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         public string UserName { get; set; }
 
         [DataMember(Name = "userAttributes")]
-        public SessionUserAttributes UserAttributes { get; set; }
+        public TUserAttributes UserAttributes { get; set; }
 
         [DataMember(Name = "errorObject")]
         public ErrorObject ErrorObject { get; set; }

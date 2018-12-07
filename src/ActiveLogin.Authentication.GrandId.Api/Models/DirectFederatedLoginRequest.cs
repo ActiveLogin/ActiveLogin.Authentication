@@ -1,13 +1,13 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class FederatedDirectLoginRequest
+    public class DirectFederatedLoginRequest
     {
-        public FederatedDirectLoginRequest()
+        public DirectFederatedLoginRequest()
         {
             
         }
 
-        public FederatedDirectLoginRequest(string authenticateServiceKey, string username, string password)
+        public DirectFederatedLoginRequest(string authenticateServiceKey, string username, string password)
         {
             AuthenticateServiceKey = authenticateServiceKey;
             Username = username;

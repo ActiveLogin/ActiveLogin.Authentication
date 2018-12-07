@@ -16,7 +16,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         private readonly Dictionary<string, ExtendedFederatedLoginResponse> _federatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
-        private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
+        private readonly Dictionary<string, DirectFederatedLoginResponse> _federatedDirectLogins = new Dictionary<string, DirectFederatedLoginResponse>();
 
         public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
         {
@@ -39,12 +39,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
             set => _delay = value < TimeSpan.Zero ? TimeSpan.Zero : value;
         }
 
-        public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
+        public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString();
-            var response = new FederatedLoginResponse
+            var response = new BankIdFederatedLoginResponse
             {
                 SessionId = sessionId,
                 RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"
@@ -54,29 +54,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return response;
         }
 
-        public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
-        {
-            await SimulateResponseDelay().ConfigureAwait(false);
-
-            var sessionId = Guid.NewGuid().ToString();
-            var response = new FederatedDirectLoginResponse
-            {
-                SessionId = sessionId,
-                Username = $"{_givenName.ToLower()}.{_surname.ToLower()}@example.org",
-                UserAttributes = new FederatedDirectLoginUserAttributes
-                {
-                    GivenName = _givenName,
-                    Surname = _surname,
-                    MobilePhone = string.Empty,
-                    SameAccountName = $"{_givenName.ToLower()}.{_surname.ToLower()}",
-                    Title = "Software Developer"
-                }
-            };
-            _federatedDirectLogins.Add(sessionId, response);
-            return response;
-        }
-
-        public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
+        public async Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
@@ -89,14 +67,38 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _federatedLogins.Remove(request.SessionId);
 
             var personalIdentityNumber = !string.IsNullOrEmpty(auth.PersonalIdentityNumber) ? auth.PersonalIdentityNumber : _personalIdentityNumber;
-            var response = new SessionStateResponse
+            var response = new BankIdSessionStateResponse
             {
-                SessionId = auth.FederatedLoginResponse.SessionId,
+                SessionId = auth.BankIdFederatedLoginResponse.SessionId,
                 UserAttributes = GetUserAttributes(personalIdentityNumber)
             };
 
             return response;
         }
+
+
+        public async Task<DirectFederatedLoginResponse> DirectFederatedLoginAsync(DirectFederatedLoginRequest request)
+        {
+            await SimulateResponseDelay().ConfigureAwait(false);
+
+            var sessionId = Guid.NewGuid().ToString();
+            var response = new DirectFederatedLoginResponse
+            {
+                SessionId = sessionId,
+                Username = $"{_givenName.ToLower()}.{_surname.ToLower()}@example.org",
+                UserAttributes = new DirectFederatedLoginUserAttributes
+                {
+                    GivenName = _givenName,
+                    Surname = _surname,
+                    MobilePhone = string.Empty,
+                    SameAccountName = $"{_givenName.ToLower()}.{_surname.ToLower()}",
+                    Title = "Software Developer"
+                }
+            };
+            _federatedDirectLogins.Add(sessionId, response);
+            return response;
+        }
+
 
         public async Task<LogoutResponse> LogoutAsync(LogoutRequest request)
         {
@@ -138,13 +140,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         private class ExtendedFederatedLoginResponse
         {
-            public ExtendedFederatedLoginResponse(FederatedLoginResponse federatedLoginResponse, string personalIdentityNumber)
+            public ExtendedFederatedLoginResponse(BankIdFederatedLoginResponse bankIdFederatedLoginResponse, string personalIdentityNumber)
             {
-                FederatedLoginResponse = federatedLoginResponse;
+                BankIdFederatedLoginResponse = bankIdFederatedLoginResponse;
                 PersonalIdentityNumber = personalIdentityNumber;
             }
 
-            public FederatedLoginResponse FederatedLoginResponse { get; }
+            public BankIdFederatedLoginResponse BankIdFederatedLoginResponse { get; }
             public string PersonalIdentityNumber { get; }
         }
     }

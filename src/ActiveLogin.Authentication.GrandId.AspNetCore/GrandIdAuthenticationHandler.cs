@@ -52,7 +52,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             try
             {
-                var sessionResult = await _grandIdApiClient.GetSessionAsync(GetGrandIdAuthenticateServiceKey(), sessionId);
+                var sessionResult = await _grandIdApiClient.BankIdGetSessionAsync(GetGrandIdAuthenticateServiceKey(), sessionId);
 
                 var properties = state.AuthenticationProperties;
                 var ticket = GetAuthenticationTicket(sessionResult, properties);
@@ -70,7 +70,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         protected abstract string GetGrandIdAuthenticateServiceKey();
 
-        private AuthenticationTicket GetAuthenticationTicket(SessionStateResponse loginResult, AuthenticationProperties properties)
+        private AuthenticationTicket GetAuthenticationTicket(BankIdSessionStateResponse loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -86,7 +86,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return new AuthenticationTicket(principal, properties, Scheme.Name);
         }
 
-        private IEnumerable<Claim> GetAllClaims(SessionStateResponse loginResult, DateTimeOffset? expiresUtc)
+        private IEnumerable<Claim> GetAllClaims(BankIdSessionStateResponse loginResult, DateTimeOffset? expiresUtc)
         {
             var claims = new List<Claim>();
 
@@ -118,7 +118,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return claims;
         }
 
-        protected abstract IEnumerable<Claim> GetClaims(SessionStateResponse loginResult);
+        protected abstract IEnumerable<Claim> GetClaims(BankIdSessionStateResponse loginResult);
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
@@ -130,7 +130,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             try
             {
-                var response = await _grandIdApiClient.FederatedLoginAsync(grandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
+                var response = await _grandIdApiClient.BankIdFederatedLoginAsync(grandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
                 _logger.GrandIdFederatedLoginSuccess(grandIdAuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
                 Response.Redirect(response.RedirectUrl);
             }

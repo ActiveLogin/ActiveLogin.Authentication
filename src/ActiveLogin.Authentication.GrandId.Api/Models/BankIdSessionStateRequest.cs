@@ -1,8 +1,8 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class SessionStateRequest
+    public class BankIdSessionStateRequest
     {
-        public SessionStateRequest(string authenticateServiceKey, string sessionId)
+        public BankIdSessionStateRequest(string authenticateServiceKey, string sessionId)
         {
             AuthenticateServiceKey = authenticateServiceKey;
             SessionId = sessionId;
