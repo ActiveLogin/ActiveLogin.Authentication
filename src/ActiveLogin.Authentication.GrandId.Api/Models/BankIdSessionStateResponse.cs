@@ -10,9 +10,6 @@
         public BankIdSessionStateResponse(BankIdSessionStateFullResponse fullResponse)
         : base(fullResponse)
         {
-            SessionId = fullResponse.SessionId;
-            UserName = fullResponse.UserName;
-            UserAttributes = fullResponse.UserAttributes;
         }
     }
 }
