@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly string _personalIdentityNumber;
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
-        private readonly Dictionary<string, ExtendedFederatedLoginResponse> _federatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
+        private readonly Dictionary<string, ExtendedFederatedLoginResponse> _bankidFederatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
         private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
 
         public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
@@ -50,7 +50,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"
             };
             var extendedResponse = new ExtendedFederatedLoginResponse(response, request.PersonalIdentityNumber);
-            _federatedLogins.Add(sessionId, extendedResponse);
+            _bankidFederatedLogins.Add(sessionId, extendedResponse);
             return response;
         }
 
@@ -58,13 +58,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (!_federatedLogins.ContainsKey(request.SessionId))
+            if (!_bankidFederatedLogins.ContainsKey(request.SessionId))
             {
                 throw new GrandIdApiException(ErrorCode.UNKNOWN, "SessionId not found");
             }
 
-            var auth = _federatedLogins[request.SessionId];
-            _federatedLogins.Remove(request.SessionId);
+            var auth = _bankidFederatedLogins[request.SessionId];
+            _bankidFederatedLogins.Remove(request.SessionId);
 
             var personalIdentityNumber = !string.IsNullOrEmpty(auth.PersonalIdentityNumber) ? auth.PersonalIdentityNumber : _personalIdentityNumber;
             var response = new BankIdSessionStateResponse
@@ -106,9 +106,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var sessionId = request.SessionId;
 
-            if (_federatedLogins.ContainsKey(sessionId))
+            if (_bankidFederatedLogins.ContainsKey(sessionId))
             {
-                _federatedLogins.Remove(sessionId);
+                _bankidFederatedLogins.Remove(sessionId);
             }
 
             if (_federatedDirectLogins.ContainsKey(sessionId))
