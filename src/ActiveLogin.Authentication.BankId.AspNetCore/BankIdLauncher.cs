@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
@@ -13,7 +14,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var prefix = GetPrefixPart(device);
             var queryString = GetQueryStringPart(request);
 
-            return $"{prefix}?{queryString}";
+            return $"{prefix}{queryString}";
         }
 
         private string GetPrefixPart(BankIdSupportedDevice device)
@@ -56,7 +57,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 return string.Empty;
             }
 
-            return string.Join("&", queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+            var queryBuilder = new QueryBuilder(queryStringParams);
+            return queryBuilder.ToQueryString().ToString();
         }
     }
 }
