@@ -21,7 +21,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;
-        public string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.BankIdAuthenticationMethodName;
+        public abstract string AuthenticationMethodName { get; set; }
 
         public bool IssueIdentityProviderClaim { get; set; } = true;
         public string IdentityProviderName { get; set; } = GrandIdAuthenticationDefaults.IdentityProviderName;

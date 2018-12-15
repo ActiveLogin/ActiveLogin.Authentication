@@ -4,6 +4,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public class GrandIdBankIdAuthenticationOptions : GrandIdAuthenticationOptions
     {
+        public override string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.BankIdAuthenticationMethodName;
+
         /// <summary>
         /// AuthenticateServiceKey obtained from GrandID (Svensk E-identitet).
         /// </summary>

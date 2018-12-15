@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
@@ -8,6 +10,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
     {
         internal static IGrandIdAuthenticationBuilder AddBankIdScheme(this IGrandIdAuthenticationBuilder builder, string authenticationScheme, string displayName, PathString callpackPath, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
         {
+            builder.AuthenticationBuilder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<GrandIdBankIdAuthenticationOptions>, GrandIdBankIdAuthenticationPostConfigureOptions>());
             builder.AuthenticationBuilder.Services.Configure<GrandIdBankIdAuthenticationOptions>(authenticationScheme, options =>
             {
                 options.CallbackPath = callpackPath;
