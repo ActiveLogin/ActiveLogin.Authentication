@@ -8,46 +8,46 @@
         /// <summary>
         /// Unknown error.
         /// </summary>
-        UNKNOWN,
+        Unknown,
 
         // General
 
         /// <summary>
         /// The provided apiKey and AuthenticateServiceKey could not be validated: Authentication keys are wrong (FederatedLogin).
         /// </summary>
-        APIKEYNOTVALID01,
+        ApiKeyNotValid01,
 
         /// <summary>
         /// Incorrect combination of authentication keys: Authentication keys are wrong (GetSession).
         /// </summary>
-        FIELDSNOTVALID,
+        FieldsNotValid,
 
         // BankID
 
         /// <summary>
         /// User canceled: Incorrect input data or error from BankID.
         /// </summary>
-        CANCEL1,
+        Cancel1,
 
         /// <summary>
         /// User canceled: BankID is incorrectly installed or user aborted.
         /// </summary>
-        CANCEL2,
+        Cancel2,
 
         /// <summary>
         /// Already in progress: Another session is currently trying to authenticate this personal number / certificate.
         /// Can happen if not all requests are completed before re-trying.
         /// </summary>
-        ALREADY_IN_PROGRESS,
+        Already_In_Progress,
 
         /// <summary>
         /// Error message was malformed: Error message was malformed.
         /// </summary>
-        UNKNOWN_FORMATTING,
+        Unknown_Formatting,
 
         /// <summary>
         /// Transaction expired before user authenticated: The transaction was expired by bankid before it was completed on GrandIDs end.
         /// </summary>
-        EXPIRED_TRANSACTION
+        Expired_Transaction
     }
 }

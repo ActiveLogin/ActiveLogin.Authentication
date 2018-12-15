@@ -43,12 +43,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var url = GetUrl("FederatedLogin", queryStringParams);
 
-            var fullResponse = await _httpClient.GetAsync<BankIdFederatedLoginFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
+            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdFederatedLoginFullResponse>(url);
             return new BankIdFederatedLoginResponse(fullResponse);
         }
 
@@ -65,12 +60,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            var fullResponse = await _httpClient.GetAsync<BankIdSessionStateFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
+            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdSessionStateFullResponse>(url);
             return new BankIdSessionStateResponse(fullResponse);
         }
 
@@ -90,12 +80,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "password", request.Password }
             });
 
-            var fullResponse = await _httpClient.GetAsync<FederatedDirectLoginFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
+            var fullResponse = await GetFullResponseAndEnsureSuccess<FederatedDirectLoginFullResponse>(url);
             return new FederatedDirectLoginResponse(fullResponse);
         }
 
@@ -111,12 +96,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            var fullResponse = await _httpClient.GetAsync<LogoutFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
+            var fullResponse = await GetFullResponseAndEnsureSuccess<LogoutFullResponse>(url);
             return new LogoutResponse(fullResponse);
         }
 
@@ -130,6 +110,17 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var queryString = string.Join("&", queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
             return $"{baseUrl}?{queryString}";
+        }
+
+        private async Task<TResult> GetFullResponseAndEnsureSuccess<TResult>(string url) where TResult : FullResponseBase
+        {
+            var fullResponse = await _httpClient.GetAsync<TResult>(url);
+            if (fullResponse.ErrorObject != null)
+            {
+                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
+            }
+
+            return fullResponse;
         }
     }
 }
