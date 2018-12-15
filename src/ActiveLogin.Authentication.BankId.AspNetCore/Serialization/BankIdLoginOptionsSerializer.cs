@@ -22,7 +22,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     writer.Write(FormatVersion);
 
                     writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies ?? new List<string>()));
-                    writer.Write(model.PersonalIdentityNumber?.ToLongString() ?? string.Empty);
+                    writer.Write(model.PersonalIdentityNumber?.To12DigitString() ?? string.Empty);
                     writer.Write(model.AllowChangingPersonalIdentityNumber);
                     writer.Write(model.AutoLaunch);
                     writer.Write(model.AllowBiometric);

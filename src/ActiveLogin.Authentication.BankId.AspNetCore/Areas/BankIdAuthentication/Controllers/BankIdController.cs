@@ -60,7 +60,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 ReturnUrl = returnUrl,
 
                 AutoLogin = unprotectedLoginOptions.IsAutoLogin(),
-                PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.ToLongString() ?? string.Empty,
+                PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
                 OrderRef = orderRef,
 
                 LoginOptions = loginOptions,
