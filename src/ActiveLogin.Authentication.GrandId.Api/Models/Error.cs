@@ -7,13 +7,13 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     public class Error
     {
         [DataMember(Name = "errorObject")]
-        private string errorObject { get; set; }
+        private string ErrorObject { get; set; }
 
         public ErrorCode ErrorCode
         {
             get
             {
-                Enum.TryParse<ErrorCode>(errorObject, true, out var parsedErrorCode);
+                Enum.TryParse<ErrorCode>(ErrorObject, true, out var parsedErrorCode);
                 return parsedErrorCode;
             }
         }

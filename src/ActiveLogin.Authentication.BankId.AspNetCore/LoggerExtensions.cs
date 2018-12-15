@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public static class LoggerExtensions
+    internal static class LoggerExtensions
     {
         private const string MissingPersonalIdentityNumber = "-";
 

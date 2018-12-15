@@ -5,21 +5,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public class GrandIdAuthenticationDefaults
     {
-        public const string SameDeviceAuthenticationScheme = "grandid-samedevice";
-        public const string SameDeviceDisplayName = "BankID (Denna enhet)";
-        public static readonly PathString SameDeviceCallpackPath = new PathString("/signin-grandid-samedevice");
-
-        public const string OtherDeviceAuthenticationScheme = "grandid-otherdevice";
-        public const string OtherDeviceDisplayName = "BankID (Annan enhet)";
-        public static readonly PathString OtherDeviceCallpackPath = new PathString("/signin-grandid-otherdevice");
-
-        public const string ChooseDeviceAuthenticationScheme = "grandid-choosedevice";
-        public const string ChooseDeviceDisplayName = "BankID";
-        public static readonly PathString ChooseDeviceCallpackPath = new PathString("/signin-grandid-choosedevice");
-
         public const string IdentityProviderName = "GrandId";
-        public const string AuthenticationMethodName = "grandid";
-
         public static readonly TimeSpan MaximumSessionLifespan = TimeSpan.FromHours(1);
+
+        // BankID
+        public const string BankIdSameDeviceAuthenticationScheme = "grandid-bankid-samedevice";
+        public const string BankIdSameDeviceDisplayName = "BankID (Denna enhet)";
+        public static readonly PathString BankIdSameDeviceCallpackPath = new PathString("/signin-grandid-bankid-samedevice");
+
+        public const string BankIdOtherDeviceAuthenticationScheme = "grandid-bankid-otherdevice";
+        public const string BankIdOtherDeviceDisplayName = "BankID (Annan enhet)";
+        public static readonly PathString BankIdOtherDeviceCallpackPath = new PathString("/signin-grandid-bankid-otherdevice");
+
+        public const string BankIdChooseDeviceAuthenticationScheme = "grandid-bankid-choosedevice";
+        public const string BankIdChooseDeviceDisplayName = "BankID";
+        public static readonly PathString BankIdChooseDeviceCallpackPath = new PathString("/signin-grandid-bankid-choosedevice");
+
+        public const string BankIdAuthenticationMethodName = "grandid-bankid";
     }
 }

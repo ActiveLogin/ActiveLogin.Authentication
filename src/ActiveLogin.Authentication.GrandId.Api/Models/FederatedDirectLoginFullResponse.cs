@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class FederatedDirectLoginFullResponse
+    public class FederatedDirectLoginFullResponse : FullResponseBase
     {
         [DataMember(Name = "sessionId")]
         public string SessionId { get; set; }
@@ -13,8 +13,5 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
 
         [DataMember(Name = "userAttributes")]
         public FederatedDirectLoginUserAttributes UserAttributes { get; set; }
-
-        [DataMember(Name = "errorObject")]
-        public ErrorObject ErrorObject { get; set; }
     }
 }

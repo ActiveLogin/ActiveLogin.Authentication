@@ -26,7 +26,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// The return value will be a sessionid and a return URL.
         /// </summary>
         /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
-        public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
+        public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request)
         {
             var queryStringParams = new Dictionary<string, string>
             {
@@ -43,14 +43,27 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var url = GetUrl("FederatedLogin", queryStringParams);
 
-            var fullResponse = await _httpClient.GetAsync<FederatedLoginFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
-            return new FederatedLoginResponse(fullResponse);
+            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdFederatedLoginFullResponse>(url);
+            return new BankIdFederatedLoginResponse(fullResponse);
         }
+
+        /// <summary>
+        /// Fetches the currents Session Data for a sessionId.
+        /// </summary>
+        /// <returns>If the request is successful, the sessionData is returned</returns>
+        public async Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request)
+        {
+            var url = GetUrl("GetSession", new Dictionary<string, string>
+            {
+                { "apiKey", _apiKey },
+                { "authenticateServiceKey", request.AuthenticateServiceKey },
+                { "sessionid", request.SessionId }
+            });
+
+            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdSessionStateFullResponse>(url);
+            return new BankIdSessionStateResponse(fullResponse);
+        }
+
 
         /// <summary>
         /// This is the function for logging in using an apiKey, authenticateServiceKey, username and password.
@@ -67,36 +80,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "password", request.Password }
             });
 
-            var fullResponse = await _httpClient.GetAsync<FederatedDirectLoginFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
+            var fullResponse = await GetFullResponseAndEnsureSuccess<FederatedDirectLoginFullResponse>(url);
             return new FederatedDirectLoginResponse(fullResponse);
         }
 
-        /// <summary>
-        /// Fetches the currents Session Data for a sessionId.
-        /// </summary>
-        /// <returns>If the request is successful, the sessionData is returned</returns>
-        public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
-        {
-            var url = GetUrl("GetSession", new Dictionary<string, string>
-            {
-                { "apiKey", _apiKey },
-                { "authenticateServiceKey", request.AuthenticateServiceKey },
-                { "sessionid", request.SessionId }
-            });
-
-            var fullResponse = await _httpClient.GetAsync<SessionStateFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
-            return new SessionStateResponse(fullResponse);
-        }
 
         /// <summary>
         /// This is the function to logout a user from an IDP.
@@ -109,14 +96,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            var fullResponse = await _httpClient.GetAsync<LogoutFullResponse>(url);
-            if (fullResponse.ErrorObject != null)
-            {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
-            }
-
+            var fullResponse = await GetFullResponseAndEnsureSuccess<LogoutFullResponse>(url);
             return new LogoutResponse(fullResponse);
         }
+
 
         internal static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
         {
@@ -127,6 +110,17 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var queryString = string.Join("&", queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
             return $"{baseUrl}?{queryString}";
+        }
+
+        private async Task<TResult> GetFullResponseAndEnsureSuccess<TResult>(string url) where TResult : FullResponseBase
+        {
+            var fullResponse = await _httpClient.GetAsync<TResult>(url);
+            if (fullResponse.ErrorObject != null)
+            {
+                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
+            }
+
+            return fullResponse;
         }
     }
 }

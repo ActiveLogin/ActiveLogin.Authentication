@@ -20,5 +20,4 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         [DataMember(Name = "title")]
         public string Title { get; set; }
     }
-
 }

@@ -3,26 +3,26 @@ using System;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public static class LoggerExtensions
+    internal static class LoggerExtensions
     {
-        public static void GrandIdGetSessionSuccess(this ILogger logger, string sessionId)
+        public static void GrandIdBankIdGetSessionSuccess(this ILogger logger, string sessionId)
         {
-            logger.LogInformation(GrandIdLoggingEvents.GrandIdGetSessionSuccess, "GrandId get session succedded for the sessionId '{SessionId}'", sessionId);
+            logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdGetSessionSuccess, "GrandId (BankId) get session succedded for the sessionId '{SessionId}'", sessionId);
         }
 
-        public static void GrandIdGetSessionFailure(this ILogger logger, string sessionId, Exception exception)
+        public static void GrandIdBankIdGetSessionFailure(this ILogger logger, string sessionId, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdGetSessionHardFailure, exception, "GrandId get session failed for the sessionId '{SessionId}'", sessionId, exception);
+            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdGetSessionHardFailure, exception, "GrandId (BankId) get session failed for the sessionId '{SessionId}'", sessionId, exception);
         }
 
-        public static void GrandIdAuthSuccess(this ILogger logger, string authenticateServiceKey, string returnUrl, string sessionId)
+        public static void GrandIdBankIdFederatedLoginSuccess(this ILogger logger, string authenticateServiceKey, string returnUrl, string sessionId)
         {
-            logger.LogInformation(GrandIdLoggingEvents.GrandIdAuthSuccess, "GrandId auth succedded for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
+            logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginSuccess, "GrandId (BankId) federated login succedded for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
         }
 
-        public static void GrandIdAuthFailure(this ILogger logger, string authenticateServiceKey, string returnUrl, Exception exception)
+        public static void GrandIdBankIdFederatedLoginFailure(this ILogger logger, string authenticateServiceKey, string returnUrl, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdAuthHardFailure, exception, "GrandId auth failed for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
+            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginHardFailure, exception, "GrandId (BankId) federated login failed for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
         }
     }
 }

@@ -3,35 +3,24 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.GrandId.Api;
-using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Serialization;
-using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdAuthenticationHandler : RemoteAuthenticationHandler<GrandIdAuthenticationOptions>
+    public abstract class GrandIdAuthenticationHandler<TOptions, TSessionState> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdAuthenticationOptions, new()
     {
-        private readonly ILogger<GrandIdAuthenticationHandler> _logger;
-
-        private readonly IGrandIdApiClient _grandIdApiClient;
-
-        public GrandIdAuthenticationHandler(
-            IOptionsMonitor<GrandIdAuthenticationOptions> options,
+        protected GrandIdAuthenticationHandler(
+            IOptionsMonitor<TOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
-            ISystemClock clock,
-            ILogger<GrandIdAuthenticationHandler> logger,
-            IGrandIdApiClient grandIdApiClient
-            )
+            ISystemClock clock
+        )
             : base(options, loggerFactory, encoder, clock)
         {
-            _logger = logger;
-            _grandIdApiClient = grandIdApiClient;
         }
 
         protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
@@ -52,23 +41,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             try
             {
-                var sessionResult = await _grandIdApiClient.GetSessionAsync(Options.GrandIdAuthenticateServiceKey, sessionId);
+                var sessionResult = await GetSessionStateAsync(sessionId);
 
                 var properties = state.AuthenticationProperties;
                 var ticket = GetAuthenticationTicket(sessionResult, properties);
-                _logger.GrandIdGetSessionSuccess(sessionResult.SessionId);
 
                 return HandleRequestResult.Success(ticket);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.GrandIdGetSessionFailure(sessionId, ex);
-
                 return HandleRequestResult.Fail("Failed to get session from GrandID.");
             }
         }
 
-        private AuthenticationTicket GetAuthenticationTicket(SessionStateResponse loginResult, AuthenticationProperties properties)
+        protected abstract Task<TSessionState> GetSessionStateAsync(string sessionId);
+
+        private AuthenticationTicket GetAuthenticationTicket(TSessionState loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -77,34 +65,27 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 properties.ExpiresUtc = expiresUtc;
             }
 
-            var claims = GetClaims(loginResult, expiresUtc);
+            var claims = GetAllClaims(loginResult, expiresUtc);
             var identity = new ClaimsIdentity(claims, Scheme.Name, GrandIdClaimTypes.Name, GrandIdClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
 
             return new AuthenticationTicket(principal, properties, Scheme.Name);
         }
 
-        private IEnumerable<Claim> GetClaims(SessionStateResponse loginResult, DateTimeOffset? expiresUtc)
+        private IEnumerable<Claim> GetAllClaims(TSessionState loginResult, DateTimeOffset? expiresUtc)
         {
-            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
-            var claims = new List<Claim>
-            {
-                new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
+            var claims = new List<Claim>();
 
-                new Claim(GrandIdClaimTypes.Name, loginResult.UserAttributes.Name),
-                new Claim(GrandIdClaimTypes.FamilyName, loginResult.UserAttributes.Surname),
-                new Claim(GrandIdClaimTypes.GivenName, loginResult.UserAttributes.GivenName),
-
-                new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
-            };
-
-            AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);
+            claims.AddRange(GetBaseClaims(expiresUtc));
+            claims.AddRange(GetClaims(loginResult));
 
             return claims;
         }
 
-        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
+        private IEnumerable<Claim> GetBaseClaims(DateTimeOffset? expiresUtc)
         {
+            var claims = new List<Claim>();
+
             if (expiresUtc.HasValue)
             {
                 claims.Add(new Claim(GrandIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
@@ -120,53 +101,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 claims.Add(new Claim(GrandIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
             }
 
-            if (Options.IssueGenderClaim)
-            {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
-                if (!string.IsNullOrEmpty(jwtGender))
-                {
-                    claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
-                }
-            }
-
-            if (Options.IssueBirthdateClaim)
-            {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
-                claims.Add(new Claim(GrandIdClaimTypes.Birthdate, jwtBirthdate));
-            }
+            return claims;
         }
+
+        protected abstract IEnumerable<Claim> GetClaims(TSessionState loginResult);
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             AppendStateCookie(properties);
 
             var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
-            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
-            try
-            {
-                var response = await _grandIdApiClient.FederatedLoginAsync(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
-                _logger.GrandIdAuthSuccess(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, response.SessionId);
-                Response.Redirect(response.RedirectUrl);
-            }
-            catch (Exception ex)
-            {
-                _logger.GrandIdAuthFailure(Options.GrandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
-                throw;
-            }
+            var redirectUrl = await GetRedirectUrlAsync(properties, absoluteReturnUrl);
+
+            Response.Redirect(redirectUrl);
         }
 
-        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
-        {
-            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
-            {
-                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
-                {
-                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
-                }
-            }
-
-            return null;
-        }
+        protected abstract Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl);
 
         private string GetAbsoluteUrl(string returnUrl)
         {

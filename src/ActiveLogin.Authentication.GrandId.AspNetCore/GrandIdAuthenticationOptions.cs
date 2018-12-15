@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdAuthenticationOptions : RemoteAuthenticationOptions
+    public abstract class GrandIdAuthenticationOptions : RemoteAuthenticationOptions
     {
         private const string DefaultStateCookieName = "__ActiveLogin.GrandIdState";
 
@@ -18,21 +18,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             IsEssential = true
         };
 
-        /// <summary>
-        /// AuthenticateServiceKey obtained from GrandID (Svensk E-identitet).
-        /// </summary>
-        public string GrandIdAuthenticateServiceKey { get; set; }
-
         public TimeSpan? TokenExpiresIn { get; set; } = GrandIdAuthenticationDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;
-        public string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.AuthenticationMethodName;
+        public abstract string AuthenticationMethodName { get; set; }
 
         public bool IssueIdentityProviderClaim { get; set; } = true;
         public string IdentityProviderName { get; set; } = GrandIdAuthenticationDefaults.IdentityProviderName;
-
-        public bool IssueGenderClaim { get; set; } = true;
-        public bool IssueBirthdateClaim { get; set; } = true;
 
         public ISecureDataFormat<GrandIdState> StateDataFormat { get; set; }
 
@@ -40,16 +32,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             get => _stateCookieBuilder;
             set => _stateCookieBuilder = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        public override void Validate()
-        {
-            base.Validate();
-
-            if (string.IsNullOrWhiteSpace(GrandIdAuthenticateServiceKey))
-            {
-                throw new ArgumentException($"The '{nameof(GrandIdAuthenticateServiceKey)}' must be provided.'", nameof(GrandIdAuthenticateServiceKey));
-            }
         }
     }
 }

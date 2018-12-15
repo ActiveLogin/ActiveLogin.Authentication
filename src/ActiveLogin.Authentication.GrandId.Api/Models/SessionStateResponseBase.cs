@@ -1,13 +1,13 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class SessionStateResponse
+    public abstract class SessionStateResponseBase<TFullResponse, TUserAttributes> where TFullResponse : SessionStateFullResponseBase<TUserAttributes>
     {
-        public SessionStateResponse()
+        protected SessionStateResponseBase()
         {
             
         }
 
-        public SessionStateResponse(SessionStateFullResponse fullResponse)
+        protected SessionStateResponseBase(TFullResponse fullResponse)
         {
             SessionId = fullResponse.SessionId;
             UserName = fullResponse.UserName;
@@ -16,6 +16,6 @@
 
         public string SessionId { get; set; }
         public string UserName { get; set; }
-        public SessionUserAttributes UserAttributes { get; set; }
+        public TUserAttributes UserAttributes { get; set; }
     }
 }

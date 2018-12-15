@@ -48,7 +48,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public bool IssueIdentityProviderClaim { get; set; } = true;
         public string IdentityProviderName { get; set; } = BankIdAuthenticationDefaults.IdentityProviderName;
 
+        /// <summary>
+        /// Whether or not to issue gender claim based on Swedish Personal Identity Number.
+        /// </summary>
         public bool IssueGenderClaim { get; set; } = true;
+
+        /// <summary>
+        /// Whether or not to issue birthday claim based on Swedish Personal Identity Number.
+        /// </summary>
         public bool IssueBirthdateClaim { get; set; } = true;
 
         public ISecureDataFormat<BankIdState> StateDataFormat { get; set; }

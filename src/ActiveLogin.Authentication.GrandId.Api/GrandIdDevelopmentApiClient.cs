@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private readonly string _personalIdentityNumber;
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
-        private readonly Dictionary<string, ExtendedFederatedLoginResponse> _federatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
+        private readonly Dictionary<string, ExtendedFederatedLoginResponse> _bankidFederatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
         private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
 
         public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
@@ -39,20 +39,43 @@ namespace ActiveLogin.Authentication.GrandId.Api
             set => _delay = value < TimeSpan.Zero ? TimeSpan.Zero : value;
         }
 
-        public async Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request)
+        public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString();
-            var response = new FederatedLoginResponse
+            var response = new BankIdFederatedLoginResponse
             {
                 SessionId = sessionId,
                 RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"
             };
             var extendedResponse = new ExtendedFederatedLoginResponse(response, request.PersonalIdentityNumber);
-            _federatedLogins.Add(sessionId, extendedResponse);
+            _bankidFederatedLogins.Add(sessionId, extendedResponse);
             return response;
         }
+
+        public async Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request)
+        {
+            await SimulateResponseDelay().ConfigureAwait(false);
+
+            if (!_bankidFederatedLogins.ContainsKey(request.SessionId))
+            {
+                throw new GrandIdApiException(ErrorCode.Unknown, "SessionId not found");
+            }
+
+            var auth = _bankidFederatedLogins[request.SessionId];
+            _bankidFederatedLogins.Remove(request.SessionId);
+
+            var personalIdentityNumber = !string.IsNullOrEmpty(auth.PersonalIdentityNumber) ? auth.PersonalIdentityNumber : _personalIdentityNumber;
+            var response = new BankIdSessionStateResponse
+            {
+                SessionId = auth.BankIdFederatedLoginResponse.SessionId,
+                UserAttributes = GetUserAttributes(personalIdentityNumber)
+            };
+
+            return response;
+        }
+
 
         public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
         {
@@ -76,27 +99,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return response;
         }
 
-        public async Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request)
-        {
-            await SimulateResponseDelay().ConfigureAwait(false);
-
-            if (!_federatedLogins.ContainsKey(request.SessionId))
-            {
-                throw new GrandIdApiException(ErrorCode.UNKNOWN, "SessionId not found");
-            }
-
-            var auth = _federatedLogins[request.SessionId];
-            _federatedLogins.Remove(request.SessionId);
-
-            var personalIdentityNumber = !string.IsNullOrEmpty(auth.PersonalIdentityNumber) ? auth.PersonalIdentityNumber : _personalIdentityNumber;
-            var response = new SessionStateResponse
-            {
-                SessionId = auth.FederatedLoginResponse.SessionId,
-                UserAttributes = GetUserAttributes(personalIdentityNumber)
-            };
-
-            return response;
-        }
 
         public async Task<LogoutResponse> LogoutAsync(LogoutRequest request)
         {
@@ -104,9 +106,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var sessionId = request.SessionId;
 
-            if (_federatedLogins.ContainsKey(sessionId))
+            if (_bankidFederatedLogins.ContainsKey(sessionId))
             {
-                _federatedLogins.Remove(sessionId);
+                _bankidFederatedLogins.Remove(sessionId);
             }
 
             if (_federatedDirectLogins.ContainsKey(sessionId))
@@ -114,7 +116,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 _federatedDirectLogins.Remove(sessionId);
             }
 
-            return new LogoutResponse()
+            return new LogoutResponse
             {
                 SessionDeleted = true
             };
@@ -138,13 +140,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         private class ExtendedFederatedLoginResponse
         {
-            public ExtendedFederatedLoginResponse(FederatedLoginResponse federatedLoginResponse, string personalIdentityNumber)
+            public ExtendedFederatedLoginResponse(BankIdFederatedLoginResponse bankIdFederatedLoginResponse, string personalIdentityNumber)
             {
-                FederatedLoginResponse = federatedLoginResponse;
+                BankIdFederatedLoginResponse = bankIdFederatedLoginResponse;
                 PersonalIdentityNumber = personalIdentityNumber;
             }
 
-            public FederatedLoginResponse FederatedLoginResponse { get; }
+            public BankIdFederatedLoginResponse BankIdFederatedLoginResponse { get; }
             public string PersonalIdentityNumber { get; }
         }
     }

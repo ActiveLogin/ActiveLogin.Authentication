@@ -9,11 +9,20 @@ namespace ActiveLogin.Authentication.GrandId.Api
     public interface IGrandIdApiClient
     {
         /// <summary>
+        /// Login using GrandID BankID.
+        /// 
         /// This is the function to log in using an apiKey, authenticateServiceKey and a callbackUrl.
         /// The return value will be a sessionid and a return URL.
         /// </summary>
         /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
-        Task<FederatedLoginResponse> FederatedLoginAsync(FederatedLoginRequest request);
+        Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request);
+
+        /// <summary>
+        /// Fetches the currents Session Data for a BankID sessionId.
+        /// </summary>
+        /// <returns>If the request is successful, the sessionData is returned</returns>
+        Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request);
+
 
         /// <summary>
         /// This is the function for logging in using an apiKey, authenticateServiceKey, username and password.
@@ -22,11 +31,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
         Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request);
 
-        /// <summary>
-        /// Fetches the currents Session Data for a sessionId.
-        /// </summary>
-        /// <returns>If the request is successful, the sessionData is returned</returns>
-        Task<SessionStateResponse> GetSessionAsync(SessionStateRequest request);
 
         /// <summary>
         /// This is the function to logout a user from an IDP.

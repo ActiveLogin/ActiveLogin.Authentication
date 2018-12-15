@@ -59,8 +59,8 @@ namespace IdentityServerSample
             //    {
             //        builder
             //            .UseDevelopmentEnvironment()
-            //            .AddSameDevice()
-            //            .AddOtherDevice();
+            //            .AddBankIdSameDevice()
+            //            .AddBankIdOtherDevice();
             //    });
 
             // Sample of using BankID with production environment
@@ -71,8 +71,8 @@ namespace IdentityServerSample
             //                .UseProductionEnvironment()
             //                .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             //                .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            //                .AddSameDevice()
-            //                .AddOtherDevice();
+            //                .AddBankIdSameDevice()
+            //                .AddBankIdOtherDevice();
             //        });
 
 
@@ -82,8 +82,8 @@ namespace IdentityServerSample
             //        {
             //            builder
             //                .UseDevelopmentEnvironment()
-            //                .AddSameDevice(options => { })
-            //                .AddOtherDevice(options => { });
+            //                .AddBankIdSameDevice(options => { })
+            //                .AddBankIdOtherDevice(options => { });
             //        });
 
             // Sample of using BankID through GrandID (Svensk E-identitet) with production environment
@@ -92,7 +92,7 @@ namespace IdentityServerSample
             //        {
             //            builder
             //                .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            //                .AddChooseDevice(options =>
+            //                .AddBankIdChooseDevice(options =>
             //                {
             //                    options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
             //                });
@@ -124,17 +124,17 @@ namespace IdentityServerSample
                 })
                 .AddGrandId(builder =>
                 {
-                    builder.AddSameDevice(GrandIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "GrandID (SameDevice)", options =>
+                    builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options =>
                             {
-                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:SameDeviceServiceKey");
+                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
                             })
-                            .AddOtherDevice(GrandIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options =>
+                            .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options =>
                             {
-                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:OtherDeviceServiceKey");
+                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
                             })
-                            .AddChooseDevice(GrandIdAuthenticationDefaults.ChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options =>
+                            .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options =>
                             {
-                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
+                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdChooseDeviceServiceKey");
                             });
 
 

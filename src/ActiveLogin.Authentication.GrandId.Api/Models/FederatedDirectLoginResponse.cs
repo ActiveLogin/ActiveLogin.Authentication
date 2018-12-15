@@ -4,7 +4,7 @@
     {
         public FederatedDirectLoginResponse()
         {
-            
+
         }
 
         public FederatedDirectLoginResponse(FederatedDirectLoginFullResponse fullResponse)
