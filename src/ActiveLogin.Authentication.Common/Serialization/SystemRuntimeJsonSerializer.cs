@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ActiveLogin.Authentication.Common.Serialization
 {
-    public static class SystemRuntimeJsonSerializer
+    internal static class SystemRuntimeJsonSerializer
     {
         public static T Deserialize<T>(string json)
         {

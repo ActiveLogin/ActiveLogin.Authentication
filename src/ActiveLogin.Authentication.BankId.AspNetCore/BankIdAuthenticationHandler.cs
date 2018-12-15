@@ -85,13 +85,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
-                new Claim(BankIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
+                new Claim(BankIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
 
                 new Claim(BankIdClaimTypes.Name, loginResult.Name),
                 new Claim(BankIdClaimTypes.FamilyName, loginResult.Surname),
                 new Claim(BankIdClaimTypes.GivenName, loginResult.GivenName),
 
-                new Claim(BankIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
+                new Claim(BankIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.To10DigitString())
             };
 
             AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);

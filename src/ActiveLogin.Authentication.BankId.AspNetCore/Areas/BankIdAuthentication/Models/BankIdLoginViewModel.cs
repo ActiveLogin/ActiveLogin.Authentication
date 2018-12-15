@@ -15,6 +15,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         public BankIdLoginOptions UnprotectedLoginOptions { get; set; }
 
         public BankIdLoginScriptOptions LoginScriptOptions { get; set; }
+        public string LoginScriptOptionsJson { get; set; }
         public string AntiXsrfRequestToken { get; set; }
     }
 }

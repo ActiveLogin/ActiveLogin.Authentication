@@ -22,13 +22,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static void BankIdAuthFailure(this ILogger logger, SwedishPersonalIdentityNumber personalIdentityNumber, BankIdApiException bankIdApiException)
         {
             logger.LogError(bankIdApiException, "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'", bankIdApiException.ErrorCode, bankIdApiException.Details);
-            logger.LogTrace(BankIdLoggingEvents.BankIdAuthHardFailure, "BankID auth failed for PersonalIdentityNumber '{PersonalIdentityNumber}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", personalIdentityNumber?.ToLongString() ?? MissingPersonalIdentityNumber, bankIdApiException.ErrorCode, bankIdApiException.Details);
+            logger.LogTrace(BankIdLoggingEvents.BankIdAuthHardFailure, "BankID auth failed for PersonalIdentityNumber '{PersonalIdentityNumber}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", personalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, bankIdApiException.ErrorCode, bankIdApiException.Details);
         }
 
         public static void BankIdAuthSuccess(this ILogger logger, SwedishPersonalIdentityNumber personalIdentityNumber, string orderRef)
         {
             logger.LogInformation(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth succedded with the OrderRef '{OrderRef}'", orderRef);
-            logger.LogTrace(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth succedded for PersonalIdentityNumber '{PersonalIdentityNumber}' with the OrderRef '{OrderRef}'", personalIdentityNumber?.ToLongString() ?? MissingPersonalIdentityNumber, orderRef);
+            logger.LogTrace(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth succedded for PersonalIdentityNumber '{PersonalIdentityNumber}' with the OrderRef '{OrderRef}'", personalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, orderRef);
         }
 
         // BankID API - Collect

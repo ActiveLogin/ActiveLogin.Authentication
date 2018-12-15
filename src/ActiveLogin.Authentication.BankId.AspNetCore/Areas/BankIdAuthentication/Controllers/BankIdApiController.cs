@@ -113,7 +113,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var endUserIp = GetEndUserIp();
             var certificatePolicies = loginOptions.CertificatePolicies?.Any() ?? false ? loginOptions.CertificatePolicies : null;
-            var personalIdentityNumberString = personalIdentityNumber?.ToLongString();
+            var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
             var autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
 
             var authRequestRequirement = new Requirement(certificatePolicies, autoStartTokenRequired, loginOptions.AllowBiometric);

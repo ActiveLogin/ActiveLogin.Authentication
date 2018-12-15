@@ -39,7 +39,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             try
             {
-                var federatedLoginResponse = await _grandIdApiClient.BankIdFederatedLoginAsync(grandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.ToLongString());
+                var federatedLoginResponse = await _grandIdApiClient.BankIdFederatedLoginAsync(grandIdAuthenticateServiceKey, absoluteReturnUrl, swedishPersonalIdentityNumber?.To12DigitString());
                 _logger.GrandIdBankIdFederatedLoginSuccess(grandIdAuthenticateServiceKey, absoluteReturnUrl, federatedLoginResponse.SessionId);
                 return federatedLoginResponse.RedirectUrl;
             }
@@ -83,13 +83,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
-                new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.ToLongString()),
+                new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
 
                 new Claim(GrandIdClaimTypes.Name, loginResult.UserAttributes.Name),
                 new Claim(GrandIdClaimTypes.FamilyName, loginResult.UserAttributes.Surname),
                 new Claim(GrandIdClaimTypes.GivenName, loginResult.UserAttributes.GivenName),
 
-                new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.ToShortString())
+                new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.To10DigitString())
             };
 
             if (Options.IssueGenderClaim)
