@@ -48,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" />
     <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
   </ItemGroup>
   
@@ -95,5 +94,12 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Serialization\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\SystemRuntimeJsonSerializer.cs" Link="Common\Serialization\SystemRuntimeJsonSerializer.cs" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
-﻿@using ActiveLogin.Authentication.Common.Serialization
-@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+﻿@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 
 <script>
     (function (options) {
@@ -195,5 +194,5 @@
                 element.classList.remove('is-invalid');
             }
         }
-    }(@Html.Raw(SystemRuntimeJsonSerializer.Serialize(Model.LoginScriptOptions))));
+    }(@Html.Raw(Model.LoginScriptOptionsJson)));
 </script>

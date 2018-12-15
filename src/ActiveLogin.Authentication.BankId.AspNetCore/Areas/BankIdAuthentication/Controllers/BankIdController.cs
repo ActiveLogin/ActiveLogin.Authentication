@@ -4,6 +4,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Mo
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +44,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         
         private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens, string orderRef = null)
         {
+            var loginScriptOptions = new BankIdLoginScriptOptions
+            {
+                RefreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs,
+
+                InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA13),
+                UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
+
+                BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.InitializeAsync), "BankIdApi"),
+                BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.StatusAsync), "BankIdApi")
+            };
+
             return new BankIdLoginViewModel
             {
                 ReturnUrl = returnUrl,
@@ -55,16 +67,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 UnprotectedLoginOptions = unprotectedLoginOptions,
 
                 AntiXsrfRequestToken = antiforgeryTokens.RequestToken,
-                LoginScriptOptions = new BankIdLoginScriptOptions
-                {
-                    RefreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs,
-
-                    InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA13),
-                    UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
-
-                    BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.InitializeAsync), "BankIdApi"),
-                    BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.StatusAsync), "BankIdApi")
-                }
+                LoginScriptOptions = loginScriptOptions,
+                LoginScriptOptionsJson = SystemRuntimeJsonSerializer.Serialize(loginScriptOptions)
             };
         }
     }

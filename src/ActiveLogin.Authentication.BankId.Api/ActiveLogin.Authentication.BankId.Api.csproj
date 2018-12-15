@@ -40,11 +40,14 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ActiveLogin.Authentication.Common\ActiveLogin.Authentication.Common.csproj" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Serialization\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\SystemRuntimeJsonSerializer.cs" Link="Common\Serialization\SystemRuntimeJsonSerializer.cs" />
   </ItemGroup>
 </Project>
