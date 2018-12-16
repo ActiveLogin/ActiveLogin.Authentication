@@ -1,9 +1,9 @@
 ﻿using System;
 using ActiveLogin.Identity.Swedish;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
+namespace ActiveLogin.Authentication.Common.Serialization
 {
-    public static class JwtSerializer
+    internal static class JwtSerializer
     {
         /// <summary>
         /// Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1

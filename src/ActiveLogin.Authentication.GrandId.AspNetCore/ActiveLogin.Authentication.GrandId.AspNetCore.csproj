@@ -53,4 +53,11 @@
   <ItemGroup>
     <ProjectReference Include="..\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Serialization\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
+  </ItemGroup>
 </Project>

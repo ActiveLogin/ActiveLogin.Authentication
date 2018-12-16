@@ -104,5 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\SystemRuntimeJsonSerializer.cs" Link="Common\Serialization\SystemRuntimeJsonSerializer.cs" />
+    <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
   </ItemGroup>
 </Project>
