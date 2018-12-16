@@ -5,7 +5,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public class GrandIdAuthenticationDefaults
     {
-        public const string IdentityProviderName = "GrandId";
+        public const string IdentityProviderName = "GrandID";
         public static readonly TimeSpan MaximumSessionLifespan = TimeSpan.FromHours(1);
 
         // BankID
