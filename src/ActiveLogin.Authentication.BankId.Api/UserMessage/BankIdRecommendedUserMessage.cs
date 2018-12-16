@@ -59,7 +59,7 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             return mapping?.MessageShortName ?? MessageShortName.RFA22;
         }
 
-        public class CollectResponseMapping
+        private class CollectResponseMapping
         {
             public MessageShortName MessageShortName { get; }
 
@@ -93,7 +93,7 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             }
         }
 
-        public class ErrorResponseMapping
+        private class ErrorResponseMapping
         {
             public MessageShortName MessageShortName { get; }
 
