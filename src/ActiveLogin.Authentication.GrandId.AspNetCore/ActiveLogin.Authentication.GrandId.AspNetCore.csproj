@@ -12,7 +12,7 @@
     <PackageId>ActiveLogin.Authentication.GrandId.AspNetCore</PackageId>
 
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>alpha-4</VersionSuffix>
+    <VersionSuffix>rc-1</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
@@ -52,5 +52,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Serialization\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
   </ItemGroup>
 </Project>
