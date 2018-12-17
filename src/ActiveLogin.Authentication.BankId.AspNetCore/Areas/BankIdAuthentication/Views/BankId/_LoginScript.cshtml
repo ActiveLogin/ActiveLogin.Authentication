@@ -84,7 +84,10 @@
                     } else {
                         hide(formElement);
                         showStatus(options.initialStatusMessage, 'light', true);
-                        checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
+
+                        if (data.checkStatus) {
+                            checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
+                        }
                     }
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);

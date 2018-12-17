@@ -102,8 +102,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (unprotectedLoginOptions.AutoLaunch)
             {
-                var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse);
-                return Ok(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri));
+                var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
+                var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse, detectedDevice);
+
+                var response = detectedDevice.IsDesktop
+                    ? BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri)
+                    : BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri);
+
+                return Ok(response);
             }
 
             return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
@@ -126,9 +132,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return HttpContext.Connection.RemoteIpAddress.ToString();
         }
 
-        private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, string protectedOrderRef, AuthResponse authResponse)
+        private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, string protectedOrderRef, AuthResponse authResponse, BankIdSupportedDevice detectedDevice)
         {
-            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
             var returnRedirectUri = GetAbsoluteUrl(Url.Action(nameof(BankIdController.Login), "BankId", new
             {
                 orderRef = protectedOrderRef,
