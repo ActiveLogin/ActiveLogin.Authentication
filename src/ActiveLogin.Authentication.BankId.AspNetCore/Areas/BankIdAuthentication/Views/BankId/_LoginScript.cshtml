@@ -76,7 +76,9 @@
                 .then(function (data) {
                     if (data.isAutoLaunch) {
                         document.location = data.redirectUri;
-                    } else if (!!data["PersonalIdentityNumber"]) {
+                    }
+
+                    if (!!data["PersonalIdentityNumber"]) {
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
                     } else {

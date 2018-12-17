@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
             var prefix = GetPrefixPart(device);
-            var queryString = GetQueryStringPart(request);
+            var queryString = GetQueryStringPart(device, request);
 
             return $"{prefix}{queryString}";
         }
@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return "bankid:///";
         }
 
-        private string GetQueryStringPart(LaunchUrlRequest request)
+        private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
             var queryStringParams = new Dictionary<string, string>();
             if (!string.IsNullOrWhiteSpace(request.AutoStartToken))
@@ -39,7 +39,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 queryStringParams.Add("rpref", Base64Encode(request.RelyingPartyReference));
             }
 
-            queryStringParams.Add("redirect", request.RedirectUrl);
+            // Don't set any redirect url on Desktop as it opens in a new tab
+            var redirectUrl = device.IsDesktop ? "null" : request.RedirectUrl;
+            queryStringParams.Add("redirect", redirectUrl);
 
             return GetQueryString(queryStringParams);
         }

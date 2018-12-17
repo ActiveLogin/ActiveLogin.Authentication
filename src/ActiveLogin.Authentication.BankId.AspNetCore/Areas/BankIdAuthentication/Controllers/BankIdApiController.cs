@@ -103,7 +103,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             if (unprotectedLoginOptions.AutoLaunch)
             {
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse);
-                return Ok(BankIdLoginApiInitializeResponse.AutoLaunch(bankIdRedirectUri));
+                return Ok(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri));
             }
 
             return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
