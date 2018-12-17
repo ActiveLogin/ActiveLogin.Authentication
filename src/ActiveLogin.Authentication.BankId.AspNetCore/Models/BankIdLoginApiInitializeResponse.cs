@@ -15,9 +15,9 @@
         public string RedirectUri { get; }
 
 
-        public static BankIdLoginApiInitializeResponse AutoLaunch(string redirectUri)
+        public static BankIdLoginApiInitializeResponse AutoLaunch(string orderRef, string redirectUri)
         {
-            return new BankIdLoginApiInitializeResponse(true, null, redirectUri);
+            return new BankIdLoginApiInitializeResponse(true, orderRef, redirectUri);
         }
 
         public static BankIdLoginApiInitializeResponse ManualLaunch(string orderRef)
