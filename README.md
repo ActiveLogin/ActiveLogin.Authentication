@@ -2,6 +2,16 @@
 
 ActiveLogin.Authentication enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms.
 
+## Features
+
+- :id: Supports BankID both natively and through GrandID
+- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Framework 4.6.1
+- :heavy_check_mark: Strong named
+- :lock: GDPR Compliant
+- :cloud: Great support for Microsoft Azure
+- :earth_americas: Multi language support with English and Swedish out of the box
+- :wrench: Customizable UI
+
 ## Continuous integration & Packages overview
 
 [![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155)
