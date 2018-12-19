@@ -78,7 +78,7 @@
                         document.location = data.redirectUri;
                     }
 
-                    if (!!data["PersonalIdentityNumber"]) {
+                    if (!!data.personalIdentityNumber || !!data.PersonalIdentityNumber) {
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
                     } else {
