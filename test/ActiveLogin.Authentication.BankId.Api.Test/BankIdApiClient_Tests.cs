@@ -35,6 +35,30 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
+        public async void ErrorResponse__ShouldThrowException_WithErrorCode_AndDetails()
+        {
+            // Arrange
+            var messageHandlerMock = GetHttpClientMessageHandlerMock(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Content = new StringContent("{ \"errorCode\": \"AlreadyInProgress\", \"details\": \"d\" }", Encoding.Default, "application/json"),
+            });
+
+            var httpClient = new HttpClient(messageHandlerMock.Object)
+            {
+                BaseAddress = new Uri("https://bankid/")
+            };
+            var bankIdApiClient = new BankIdApiClient(httpClient);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<BankIdApiException>(() => bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1")));
+
+            // Assert
+            Assert.Equal(ErrorCode.AlreadyInProgress, exception.ErrorCode);
+            Assert.Equal("d", exception.Details);
+        }
+
+        [Fact]
         public async void AuthAsync_WithAuthRequest__ShouldPostToBankIdAuth_WithJsonPayload()
         {
             // Arrange
@@ -247,7 +271,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataCert_ConvetedFromUnixEpochMillisecondsToDateTime()
+        public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataCertDates_ConvetedFromUnixEpochMillisecondsToDateTime()
         {
             // Arrange
             var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"cert\": { \"notBefore\": 671630400000, \"notAfter\": 671659200000 } } }");
@@ -260,6 +284,39 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             Assert.NotNull(result);
             Assert.Equal(new DateTime(1991, 4, 14, 12, 00, 00), result.CompletionData.Cert.NotBefore);
             Assert.Equal(new DateTime(1991, 4, 14, 20, 00, 00), result.CompletionData.Cert.NotAfter);
+        }
+
+        [Fact]
+        public async void CancelAsync_WithCancelRequest__ShouldPostToBankIdCancel_WithJsonPayload()
+        {
+            // Arrange
+
+            // Act
+            await _bankIdApiClient.CancelAsync(new CancelRequest("x"));
+
+            // Assert
+            Assert.Single(_messageHandlerMock.Invocations);
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            Assert.NotNull(request);
+
+            Assert.Equal(HttpMethod.Post, request.Method);
+            Assert.Equal(new Uri("https://bankid/cancel"), request.RequestUri);
+            Assert.Equal(new MediaTypeHeaderValue("application/json"), request.Content.Headers.ContentType);
+        }
+
+        [Fact]
+        public async void CancelAsync_WithOrderRef__ShouldPostJsonPayload_WithOrderRef()
+        {
+            // Arrange
+
+            // Act
+            await _bankIdApiClient.CancelAsync(new CancelRequest("abc123"));
+
+            // Assert
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Equal("{\"orderRef\":\"abc123\"}", contentString);
         }
 
 
