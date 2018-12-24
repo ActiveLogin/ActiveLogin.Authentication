@@ -155,7 +155,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void BankIdGetSessionAsync_WithBankIdGetSessionRequest__ShouldParseAndReturnSessionState()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"sessionId\": \"s\", \"username\": \"u\", \"userAttributes\": { \"signature\": \"us\", \"givenName\": \"ugn\", \"surname\": \"usn\", \"name\": \"un\", \"personalNumber\": \"upn\", \"notBefore\": \"unb\", \"notAfter\": \"una\", \"ipAddress\": \"uip\" } }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"sessionId\": \"s\", \"username\": \"u\", \"userAttributes\": { \"signature\": \"us\", \"givenName\": \"ugn\", \"surname\": \"usn\", \"name\": \"un\", \"personalNumber\": \"upn\", \"ipAddress\": \"uip\" } }");
             var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("x"));
 
             // Act
@@ -172,8 +172,24 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             Assert.Equal("usn", result.UserAttributes.Surname);
             Assert.Equal("un", result.UserAttributes.Name);
             Assert.Equal("upn", result.UserAttributes.PersonalIdentityNumber);
-            Assert.Equal("unb", result.UserAttributes.NotBefore);
             Assert.Equal("uip", result.UserAttributes.IpAddress);
+        }
+
+        [Fact]
+        public async void BankIdGetSessionAsync_WithBankIdGetSessionRequest__ShouldParseAndReturnNotBefore_AndNotAfter()
+        {
+            // Arrange
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"userAttributes\": { \"notBefore\": \"2018-12-25T00:00:00.000+02:00\", \"notAfter\": \"2018-12-26T00:00:00.000+02:00\" } }");
+            var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("x"));
+
+            // Act
+            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", "y"));
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.UserAttributes);
+            Assert.Equal(new DateTime(2018, 12, 24, 22, 00, 00, DateTimeKind.Local), result.UserAttributes.NotBefore);
+            Assert.Equal(new DateTime(2018, 12, 25, 22, 00, 00, DateTimeKind.Utc), result.UserAttributes.NotAfter);
         }
 
         [Fact]

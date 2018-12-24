@@ -1,9 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class SessionUserAttributes
+    public class BankIdSessionStateUserAttributes
     {
         [DataMember(Name = "signature")]
         public string Signature { get; set; }
@@ -21,10 +23,12 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         public string PersonalIdentityNumber { get; set; }
 
         [DataMember(Name = "notBefore")]
-        public string NotBefore { get; set; }
+        private string notBefore { get; set; }
+        public DateTime NotBefore => DateTime.Parse(notBefore).ToUniversalTime();
 
         [DataMember(Name = "notAfter")]
-        public string NotAfter { get; set; }
+        private string notAfter { get; set; }
+        public DateTime NotAfter => DateTime.Parse(notAfter).ToUniversalTime();
 
         [DataMember(Name = "ipAddress")]
         public string IpAddress { get; set; }

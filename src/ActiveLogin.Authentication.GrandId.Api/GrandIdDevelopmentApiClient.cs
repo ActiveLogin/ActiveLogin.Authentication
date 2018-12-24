@@ -126,9 +126,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
             };
         }
 
-        private SessionUserAttributes GetUserAttributes(string personalIdentityNumber)
+        private BankIdSessionStateUserAttributes GetUserAttributes(string personalIdentityNumber)
         {
-            return new SessionUserAttributes
+            return new BankIdSessionStateUserAttributes
             {
                 GivenName = _givenName,
                 Surname = _surname,
