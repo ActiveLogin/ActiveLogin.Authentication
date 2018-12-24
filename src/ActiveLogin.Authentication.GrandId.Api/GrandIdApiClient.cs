@@ -117,7 +117,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             var fullResponse = await _httpClient.GetAsync<TResult>(url);
             if (fullResponse.ErrorObject != null)
             {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
+                throw new GrandIdApiException(fullResponse.ErrorObject);
             }
 
             return fullResponse;

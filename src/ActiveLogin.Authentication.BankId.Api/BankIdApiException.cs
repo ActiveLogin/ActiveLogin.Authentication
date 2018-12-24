@@ -9,22 +9,18 @@ namespace ActiveLogin.Authentication.BankId.Api
     /// </summary>
     public class BankIdApiException : HttpRequestException
     {
-        public BankIdApiException(string description, Exception inner)
-            : this(ErrorCode.Unknown, description, inner)
+        internal BankIdApiException(Error error)
+            : this(error, null)
         { }
 
-        public BankIdApiException(Error error, Exception inner)
+        internal BankIdApiException(Error error, Exception inner)
             : this(error.ErrorCode, error.Details, inner)
         { }
 
-        public BankIdApiException(ErrorCode errorCode, string details)
-            : this(errorCode, details, null)
-        { }
-
-        public BankIdApiException(ErrorCode errorCode, string details, Exception inner)
-            : base($"{errorCode}: {details}", inner)
+        private BankIdApiException(string errorCodeString, string details, Exception inner)
+            : base($"{errorCodeString}: {details}", inner)
         {
-            ErrorCode = errorCode;
+            ErrorCode = Enum.TryParse<ErrorCode>(errorCodeString, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
             Details = details;
         }
 

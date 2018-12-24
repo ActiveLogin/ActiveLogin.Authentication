@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api;
+using ActiveLogin.Authentication.GrandId.Api.Models;
 using Moq;
 using Moq.Protected;
+using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test
 {
@@ -29,7 +31,31 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             };
             _grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("key"));
         }
-        
+
+        [Fact]
+        public async void ErrorResponse__ShouldThrowException_WithErrorCode_AndMessage()
+        {
+            // Arrange
+            var messageHandlerMock = GetHttpClientMessageHandlerMock(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Content = new StringContent("{ \"errorObject\": { \"code\": \"FieldsNotValid\", \"message\": \"m\" } }", Encoding.Default, "application/json"),
+            });
+
+            var httpClient = new HttpClient(messageHandlerMock.Object)
+            {
+                BaseAddress = new Uri("https://grandid/")
+            };
+            var bankIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("key"));
+
+            // Act
+            var exception = await Assert.ThrowsAsync<GrandIdApiException>(() => bankIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("askey", "http://cb/")));
+
+            // Assert
+            Assert.Equal(ErrorCode.FieldsNotValid, exception.ErrorCode);
+            Assert.Equal("m", exception.Details);
+        }
+
 
         private static HttpClient GetHttpClientMockWithOkResponse(string jsonResponse)
         {

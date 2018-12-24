@@ -104,7 +104,11 @@ namespace ActiveLogin.Authentication.BankId.Api
             {
                 var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
                 await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
-                throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
+                throw new BankIdApiException(new Error
+                {
+                    ErrorCode = "AlreadyInProgress",
+                    Details = "A login for this user is already in progress."
+                });
             }
         }
 
@@ -114,7 +118,11 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             if (!_auths.ContainsKey(request.OrderRef))
             {
-                throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found");
+                throw new BankIdApiException(new Error
+                {
+                    ErrorCode = "NotFound",
+                    Details = "OrderRef not found."
+                });
             }
 
             var auth = _auths[request.OrderRef];

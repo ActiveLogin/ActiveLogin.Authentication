@@ -9,26 +9,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public class GrandIdApiException : HttpRequestException
     {
-        public GrandIdApiException(string description, Exception inner)
-            : this(ErrorCode.Unknown, description, inner)
+        internal GrandIdApiException(ErrorObject error)
+            : this(error.Code, error.Message)
         { }
 
-        public GrandIdApiException(Error error, Exception inner)
-            : this(error.ErrorCode, error.Details, inner)
-        { }
-
-        public GrandIdApiException(ErrorCode errorCode, string details)
-            : this(errorCode, details, null)
-        { }
-
-        public GrandIdApiException(ErrorCode errorCode, string details, Exception inner)
-            : base($"{errorCode}: {details}", inner)
-        {
-            ErrorCode = errorCode;
-            Details = details;
-        }
-
-        public GrandIdApiException(string errorCodeString, string details)
+        private GrandIdApiException(string errorCodeString, string details)
           : base($"{errorCodeString}: {details}", null)
         {
             ErrorCode = Enum.TryParse<ErrorCode>(errorCodeString, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
