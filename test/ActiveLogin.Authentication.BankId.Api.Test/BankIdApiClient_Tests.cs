@@ -127,7 +127,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void AuthAsync_WithAuthRequest__ShouldParseAndReturnOrderRef_AndAutoStatToken()
+        public async void AuthAsync_WithAuthRequest__ShouldParseAndReturnOrderRef_AndAutoStartToken()
         {
             // Arrange
             var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\" }");

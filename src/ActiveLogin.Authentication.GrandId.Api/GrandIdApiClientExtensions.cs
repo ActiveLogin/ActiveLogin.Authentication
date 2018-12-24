@@ -24,7 +24,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         }
 
 
-        public static Task<FederatedDirectLoginResponse> DirectFederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
+        public static Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
         {
             return apiClient.FederatedDirectLoginAsync(new FederatedDirectLoginRequest(authenticateServiceKey, username, password));
         }

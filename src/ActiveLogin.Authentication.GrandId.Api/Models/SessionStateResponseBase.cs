@@ -10,12 +10,12 @@
         protected SessionStateResponseBase(TFullResponse fullResponse)
         {
             SessionId = fullResponse.SessionId;
-            UserName = fullResponse.UserName;
+            Username = fullResponse.UserName;
             UserAttributes = fullResponse.UserAttributes;
         }
 
         public string SessionId { get; set; }
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public TUserAttributes UserAttributes { get; set; }
     }
 }
