@@ -112,12 +112,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391", new Requirement()
-            {
-                CertificatePolicies = new List<string> { "req1", "req2" },
-                AllowFingerprint = true,
-                AutoStartTokenRequired = true
-            }));
+            await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391", new Requirement(new List<string> { "req1", "req2" }, true, true)));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();

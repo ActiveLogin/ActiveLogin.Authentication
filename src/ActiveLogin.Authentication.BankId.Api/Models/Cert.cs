@@ -9,6 +9,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class Cert
     {
+        public Cert()
+        {
+            
+        }
+
+        public Cert(string notBefore, string notAfter)
+        {
+            this.notBefore = notBefore;
+            this.notAfter = notAfter;
+        }
+
         [DataMember(Name = "notBefore")]
         private string notBefore { get; set; }
 

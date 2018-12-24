@@ -81,11 +81,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             var auth = new Auth(orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
-            return new AuthResponse
-            {
-                OrderRef = orderRef,
-                AutoStartToken = Guid.NewGuid().ToString()
-            };
+            return new AuthResponse(orderRef, Guid.NewGuid().ToString());
         }
 
         private string GetPersonalIdentityNumber(AuthRequest request)
@@ -104,11 +100,8 @@ namespace ActiveLogin.Authentication.BankId.Api
             {
                 var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
                 await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
-                throw new BankIdApiException(new Error
-                {
-                    ErrorCode = "AlreadyInProgress",
-                    Details = "A login for this user is already in progress."
-                });
+
+                throw new BankIdApiException(new Error("AlreadyInProgress", "A login for this user is already in progress."));
             }
         }
 
@@ -118,11 +111,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             if (!_auths.ContainsKey(request.OrderRef))
             {
-                throw new BankIdApiException(new Error
-                {
-                    ErrorCode = "NotFound",
-                    Details = "OrderRef not found."
-                });
+                throw new BankIdApiException(new Error("NotFound", "OrderRef not found."));
             }
 
             var auth = _auths[request.OrderRef];
@@ -130,11 +119,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             var hintCode = GetHintCode(auth.CollectCalls);
             var completionData = GetCompletionData(status, auth.PersonalIdentityNumber);
 
-            var response = new CollectResponse(status, hintCode)
-            {
-                OrderRef = auth.OrderRef,
-                CompletionData = completionData
-            };
+            var response = new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
 
             if (status == CollectStatus.Complete)
             {
@@ -158,16 +143,9 @@ namespace ActiveLogin.Authentication.BankId.Api
                 return null;
             }
 
-            return new CompletionData
-            {
-                User = new User
-                {
-                    PersonalIdentityNumber = personalIdentityNumber,
-                    Name = _name,
-                    GivenName = _givenName,
-                    Surname = _surname
-                }
-            };
+            var user = new User(personalIdentityNumber, _name, _givenName, _surname);
+
+            return new CompletionData(user, new Device(), new Cert(), string.Empty, string.Empty);
         }
 
         private CollectStatus GetStatus(int collectCalls)

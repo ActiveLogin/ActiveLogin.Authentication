@@ -70,19 +70,19 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// In this case, the internal representation of those systems IP address is ok to use.
         /// </summary>
         [DataMember(Name = "endUserIp")]
-        public string EndUserIp { get; set; }
+        public string EndUserIp { get; private set; }
 
         /// <summary>
         /// The personal number of the user. 12 digits, century must be included (YYYYMMDDSSSC).
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </summary>
         [DataMember(Name = "personalNumber", EmitDefaultValue = false)]
-        public string PersonalIdentityNumber { get; set; }
+        public string PersonalIdentityNumber { get; private set; }
 
         /// <summary>
         /// Requirements on how the auth or sign order must be performed.
         /// </summary>
         [DataMember(Name = "requirement", EmitDefaultValue = false)]
-        public Requirement Requirement { get; set; }
+        public Requirement Requirement { get; private set; }
     }
 }

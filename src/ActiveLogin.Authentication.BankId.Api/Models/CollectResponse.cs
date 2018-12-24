@@ -9,12 +9,38 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CollectResponse
     {
-        public CollectResponse() { }
-
-        public CollectResponse(CollectStatus status, CollectHintCode hintCode)
+        public CollectResponse()
         {
-            this.status = status.ToString();
-            this.hintCode = hintCode.ToString();
+
+        }
+
+        public CollectResponse(string orderRef, string status, string hintCode, CompletionData completionData)
+        {
+            OrderRef = orderRef;
+            this.status = status;
+            this.hintCode = hintCode;
+            CompletionData = completionData;
+        }
+
+        /// <summary>
+        /// The orderRef in question.
+        /// </summary>
+        [DataMember(Name = "orderRef")]
+        public string OrderRef { get; private set; }
+
+        [DataMember(Name = "status")]
+        private string status { get; set; }
+
+        /// <summary>
+        /// Collect status.
+        /// </summary>
+        public CollectStatus Status
+        {
+            get
+            {
+                Enum.TryParse<CollectStatus>(status, true, out var parsedStatus);
+                return parsedStatus;
+            }
         }
 
         [DataMember(Name = "hintCode")]
@@ -35,33 +61,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         }
 
         /// <summary>
-        /// The orderRef in question.
-        /// </summary>
-        [DataMember(Name = "orderRef")]
-        public string OrderRef { get; set; }
-
-        [DataMember(Name = "status")]
-        private string status { get; set; }
-
-        /// <summary>
-        /// Collect status.
-        /// </summary>
-        public CollectStatus Status
-        {
-            get
-            {
-                Enum.TryParse<CollectStatus>(status, true, out var parsedStatus);
-                return parsedStatus;
-            }
-        }
-
-        /// <summary>
         /// The completionData includes the signature, user information and the OCSP response.
         /// RP should control the user information and continue their process.
         /// RP should keep the completion data for future references/compliance/audit.
         /// </summary>
         /// <remarks>Only present for complete orders.</remarks>
         [DataMember(Name = "completionData")]
-        public CompletionData CompletionData { get; set; }
+        public CompletionData CompletionData { get; private set; }
     }
 }

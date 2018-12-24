@@ -8,10 +8,20 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class Device
     {
+        public Device()
+        {
+            
+        }
+
+        public Device(string ipAddress)
+        {
+            IpAddress = ipAddress;
+        }
+
         /// <summary>
         /// The IP address of the user agent as the BankID server discovers it.
         /// </summary>
         [DataMember(Name = "ipAddress")]
-        public string IpAddress { get; set; }
+        public string IpAddress { get; private set; }
     }
 }

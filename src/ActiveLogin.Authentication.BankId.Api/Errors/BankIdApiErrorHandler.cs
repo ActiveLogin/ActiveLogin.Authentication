@@ -23,11 +23,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
                     throw new BankIdApiException(error, e);
                 }
 
-                throw new BankIdApiException(new Error
-                {
-                    ErrorCode = "Unknown",
-                    Details = "Unknown error"
-                }, e);
+                throw new BankIdApiException(new Error("Unknown", "Unknown error"), e);
             }
         }
 
