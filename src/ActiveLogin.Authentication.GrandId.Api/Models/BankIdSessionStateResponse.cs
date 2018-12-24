@@ -2,17 +2,18 @@
 {
     public class BankIdSessionStateResponse : SessionStateResponseBase
     {
-        public BankIdSessionStateResponse()
-        {
-
-        }
-
         internal BankIdSessionStateResponse(BankIdSessionStateFullResponse fullResponse)
         : base(fullResponse)
         {
             UserAttributes = fullResponse.UserAttributes;
         }
 
-        public BankIdSessionStateUserAttributes UserAttributes { get; set; }
+        public BankIdSessionStateResponse(string sessionId, string username, BankIdSessionStateUserAttributes userAttributes)
+            : base(sessionId, username)
+        {
+            UserAttributes = userAttributes;
+        }
+
+        public BankIdSessionStateUserAttributes UserAttributes { get; }
     }
 }

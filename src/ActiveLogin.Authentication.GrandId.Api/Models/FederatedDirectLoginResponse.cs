@@ -14,10 +14,17 @@
             UserAttributes = fullResponse.UserAttributes;
         }
 
-        public string SessionId { get; set; }
+        public FederatedDirectLoginResponse(string sessionId, string username, FederatedDirectLoginUserAttributes userAttributes)
+        {
+            SessionId = sessionId;
+            Username = username;
+            UserAttributes = userAttributes;
+        }
 
-        public string Username { get; set; }
+        public string SessionId { get; }
 
-        public FederatedDirectLoginUserAttributes UserAttributes { get; set; }
+        public string Username { get; }
+
+        public FederatedDirectLoginUserAttributes UserAttributes { get; }
     }
 }

@@ -2,18 +2,19 @@
 {
     public abstract class SessionStateResponseBase
     {
-        protected SessionStateResponseBase()
-        {
-            
-        }
-
         internal SessionStateResponseBase(SessionStateFullResponseBase fullResponse)
         {
             SessionId = fullResponse.SessionId;
             Username = fullResponse.UserName;
         }
 
-        public string SessionId { get; set; }
-        public string Username { get; set; }
+        protected SessionStateResponseBase(string sessionId, string username)
+        {
+            SessionId = sessionId;
+            Username = username;
+        }
+
+        public string SessionId { get; }
+        public string Username { get; }
     }
 }

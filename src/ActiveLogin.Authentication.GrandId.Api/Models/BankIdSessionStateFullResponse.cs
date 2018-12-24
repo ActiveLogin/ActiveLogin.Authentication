@@ -6,6 +6,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     internal class BankIdSessionStateFullResponse : SessionStateFullResponseBase
     {
         [DataMember(Name = "userAttributes")]
-        public BankIdSessionStateUserAttributes UserAttributes { get; set; }
+        public BankIdSessionStateUserAttributes UserAttributes { get; private set; }
     }
 }

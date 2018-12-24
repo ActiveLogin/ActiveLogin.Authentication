@@ -2,11 +2,6 @@
 {
     public class BankIdFederatedLoginRequest
     {
-        public BankIdFederatedLoginRequest()
-        {
-            
-        }
-
         public BankIdFederatedLoginRequest(string authenticateServiceKey, string callbackUrl)
             : this(authenticateServiceKey, callbackUrl, null)
         {
@@ -19,13 +14,13 @@
             PersonalIdentityNumber = personalIdentityNumber;
         }
 
-        public string AuthenticateServiceKey { get; set; }
-        public string CallbackUrl { get; set; }
+        public string AuthenticateServiceKey { get; }
+        public string CallbackUrl { get; }
 
         /// <summary>
         /// When using the login method Bankid Another Device you may use this parameter in the format of 12 digits, YYYYMMDDnnnn, if you know the users personal number in advance.
         /// When using the pnr parameter the authentication must be completed on a mobile device, such as phone or tablet.
         /// </summary>
-        public string PersonalIdentityNumber { get; set; }
+        public string PersonalIdentityNumber { get; }
     }
 }

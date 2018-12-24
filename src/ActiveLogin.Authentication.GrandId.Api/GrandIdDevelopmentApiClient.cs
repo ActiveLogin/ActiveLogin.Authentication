@@ -44,11 +44,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             await SimulateResponseDelay().ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString();
-            var response = new BankIdFederatedLoginResponse
-            {
-                SessionId = sessionId,
-                RedirectUrl = $"{request.CallbackUrl}?grandidsession={sessionId}"
-            };
+            var response = new BankIdFederatedLoginResponse(sessionId, $"{request.CallbackUrl}?grandidsession={sessionId}");
             var extendedResponse = new ExtendedFederatedLoginResponse(response, request.PersonalIdentityNumber);
             _bankidFederatedLogins.Add(sessionId, extendedResponse);
             return response;
@@ -60,22 +56,18 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             if (!_bankidFederatedLogins.ContainsKey(request.SessionId))
             {
-                throw new GrandIdApiException(new ErrorObject
-                {
-                    Code = "Unknown",
-                    Message = "SessionId not found."
-                });
+                throw new GrandIdApiException(new ErrorObject("Unknown", "SessionId not found."));
             }
 
             var auth = _bankidFederatedLogins[request.SessionId];
             _bankidFederatedLogins.Remove(request.SessionId);
 
             var personalIdentityNumber = !string.IsNullOrEmpty(auth.PersonalIdentityNumber) ? auth.PersonalIdentityNumber : _personalIdentityNumber;
-            var response = new BankIdSessionStateResponse
-            {
-                SessionId = auth.BankIdFederatedLoginResponse.SessionId,
-                UserAttributes = GetUserAttributes(personalIdentityNumber)
-            };
+            var userAttributes = GetUserAttributes(personalIdentityNumber);
+            var response = new BankIdSessionStateResponse(auth.BankIdFederatedLoginResponse.SessionId,
+                userAttributes.PersonalIdentityNumber,
+                userAttributes
+            );
 
             return response;
         }
@@ -86,19 +78,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
             await SimulateResponseDelay().ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString();
-            var response = new FederatedDirectLoginResponse
-            {
-                SessionId = sessionId,
-                Username = $"{_givenName.ToLower()}.{_surname.ToLower()}@example.org",
-                UserAttributes = new FederatedDirectLoginUserAttributes
-                {
-                    GivenName = _givenName,
-                    Surname = _surname,
-                    MobilePhone = string.Empty,
-                    SameAccountName = $"{_givenName.ToLower()}.{_surname.ToLower()}",
-                    Title = "Software Developer"
-                }
-            };
+            var userAttributes = new FederatedDirectLoginUserAttributes(string.Empty, _givenName, _surname, $"{_givenName.ToLower()}.{_surname.ToLower()}", "Software Developer");
+            var response = new FederatedDirectLoginResponse(sessionId, $"{_givenName.ToLower()}.{_surname.ToLower()}@example.org", userAttributes);
             _federatedDirectLogins.Add(sessionId, response);
             return response;
         }
@@ -120,21 +101,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 _federatedDirectLogins.Remove(sessionId);
             }
 
-            return new LogoutResponse
-            {
-                SessionDeleted = true
-            };
+            return new LogoutResponse(true);
         }
 
         private BankIdSessionStateUserAttributes GetUserAttributes(string personalIdentityNumber)
         {
-            return new BankIdSessionStateUserAttributes
-            {
-                GivenName = _givenName,
-                Surname = _surname,
-                Name = $"{_givenName} {_surname}",
-                PersonalIdentityNumber = personalIdentityNumber
-            };
+            return new BankIdSessionStateUserAttributes(string.Empty, _givenName, _surname, $"{_givenName} {_surname}", personalIdentityNumber, string.Empty, string.Empty, string.Empty);
         }
 
         private async Task SimulateResponseDelay()

@@ -6,12 +6,12 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     internal class FederatedDirectLoginFullResponse : FullResponseBase
     {
         [DataMember(Name = "sessionId")]
-        public string SessionId { get; set; }
+        public string SessionId { get; private set; }
 
         [DataMember(Name = "username")]
-        public string Username { get; set; }
+        public string Username { get; private set; }
 
         [DataMember(Name = "userAttributes")]
-        public FederatedDirectLoginUserAttributes UserAttributes { get; set; }
+        public FederatedDirectLoginUserAttributes UserAttributes { get; private set; }
     }
 }

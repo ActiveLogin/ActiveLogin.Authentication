@@ -2,13 +2,13 @@
 {
     public class BankIdFederatedLoginResponse : FederatedLoginResponseBase
     {
-        public BankIdFederatedLoginResponse()
-        {
-
-        }
-
         internal BankIdFederatedLoginResponse(BankIdFederatedLoginFullResponse fullResponse)
         : base(fullResponse)
+        {
+        }
+
+        public BankIdFederatedLoginResponse(string sessionId, string redirectUrl)
+            : base(sessionId, redirectUrl)
         {
         }
     }

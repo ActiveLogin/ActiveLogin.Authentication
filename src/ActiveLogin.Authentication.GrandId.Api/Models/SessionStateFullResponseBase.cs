@@ -6,9 +6,9 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     internal abstract class SessionStateFullResponseBase : FullResponseBase
     {
         [DataMember(Name = "sessionId")]
-        public string SessionId { get; set; }
+        public string SessionId { get; private set; }
 
         [DataMember(Name = "username")]
-        public string UserName { get; set; }
+        public string UserName { get; private set; }
     }
 }

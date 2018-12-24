@@ -8,7 +8,7 @@
             SessionId = sessionId;
         }
 
-        public string AuthenticateServiceKey { get; set; }
-        public string SessionId { get; set; }
+        public string AuthenticateServiceKey { get; }
+        public string SessionId { get; }
     }
 }

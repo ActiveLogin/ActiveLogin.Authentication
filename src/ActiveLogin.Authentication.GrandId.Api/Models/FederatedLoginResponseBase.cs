@@ -2,19 +2,20 @@
 {
     public abstract class FederatedLoginResponseBase
     {
-        protected FederatedLoginResponseBase()
-        {
-            
-        }
-
         internal FederatedLoginResponseBase(FederatedLoginFullResponseBase fullResponse)
         {
             SessionId = fullResponse.SessionId;
             RedirectUrl = fullResponse.RedirectUrl;
         }
 
-        public string SessionId { get; set; }
+        protected FederatedLoginResponseBase(string sessionId, string redirectUrl)
+        {
+            SessionId = sessionId;
+            RedirectUrl = redirectUrl;
+        }
 
-        public string RedirectUrl { get; set; }
+        public string SessionId { get; }
+
+        public string RedirectUrl { get; }
     }
 }
