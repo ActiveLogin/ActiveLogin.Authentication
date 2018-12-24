@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public abstract class FederatedLoginFullResponseBase : FullResponseBase
+    internal abstract class FederatedLoginFullResponseBase : FullResponseBase
     {
         [DataMember(Name = "sessionId")]
         public string SessionId { get; set; }

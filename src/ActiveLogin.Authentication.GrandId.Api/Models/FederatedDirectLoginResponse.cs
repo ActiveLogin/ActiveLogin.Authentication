@@ -7,7 +7,7 @@
 
         }
 
-        public FederatedDirectLoginResponse(FederatedDirectLoginFullResponse fullResponse)
+        internal FederatedDirectLoginResponse(FederatedDirectLoginFullResponse fullResponse)
         {
             SessionId = fullResponse.SessionId;
             Username = fullResponse.Username;

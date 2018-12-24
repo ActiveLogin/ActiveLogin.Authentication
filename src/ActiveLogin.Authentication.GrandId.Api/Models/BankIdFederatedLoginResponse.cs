@@ -1,13 +1,13 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class BankIdFederatedLoginResponse : FederatedLoginResponseBase<BankIdFederatedLoginFullResponse>
+    public class BankIdFederatedLoginResponse : FederatedLoginResponseBase
     {
         public BankIdFederatedLoginResponse()
         {
 
         }
 
-        public BankIdFederatedLoginResponse(BankIdFederatedLoginFullResponse fullResponse)
+        internal BankIdFederatedLoginResponse(BankIdFederatedLoginFullResponse fullResponse)
         : base(fullResponse)
         {
         }

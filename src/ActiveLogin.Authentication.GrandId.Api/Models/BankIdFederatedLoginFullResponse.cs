@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class BankIdFederatedLoginFullResponse : FederatedLoginFullResponseBase
+    internal class BankIdFederatedLoginFullResponse : FederatedLoginFullResponseBase
     {
     }
 }
