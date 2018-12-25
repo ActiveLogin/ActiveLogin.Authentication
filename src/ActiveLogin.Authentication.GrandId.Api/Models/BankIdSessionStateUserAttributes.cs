@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
@@ -8,7 +9,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     {
         public BankIdSessionStateUserAttributes(string signature, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
         {
-            Signature = signature;
+            this.signature = signature;
             GivenName = givenName;
             Surname = surname;
             Name = name;
@@ -19,7 +20,16 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         }
 
         [DataMember(Name = "signature")]
-        public string Signature { get; private set; }
+        private string signature { get; set; }
+
+        public string SignatureXml
+        {
+            get
+            {
+                var data = Convert.FromBase64String(signature);
+                return Encoding.UTF8.GetString(data);
+            }
+        }
 
         [DataMember(Name = "givenName")]
         public string GivenName { get; private set; }

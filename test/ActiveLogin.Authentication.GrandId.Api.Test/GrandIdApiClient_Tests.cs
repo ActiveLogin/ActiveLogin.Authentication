@@ -155,7 +155,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void BankIdGetSessionAsync_WithBankIdGetSessionRequest__ShouldParseAndReturnSessionState()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"sessionId\": \"s\", \"username\": \"u\", \"userAttributes\": { \"signature\": \"us\", \"givenName\": \"ugn\", \"surname\": \"usn\", \"name\": \"un\", \"personalNumber\": \"upn\", \"ipAddress\": \"uip\" } }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"sessionId\": \"s\", \"username\": \"u\", \"userAttributes\": { \"givenName\": \"ugn\", \"surname\": \"usn\", \"name\": \"un\", \"personalNumber\": \"upn\", \"ipAddress\": \"uip\" } }");
             var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("x"));
 
             // Act
@@ -167,12 +167,27 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             Assert.Equal("u", result.Username);
 
             Assert.NotNull(result.UserAttributes);
-            Assert.Equal("us", result.UserAttributes.Signature);
             Assert.Equal("ugn", result.UserAttributes.GivenName);
             Assert.Equal("usn", result.UserAttributes.Surname);
             Assert.Equal("un", result.UserAttributes.Name);
             Assert.Equal("upn", result.UserAttributes.PersonalIdentityNumber);
             Assert.Equal("uip", result.UserAttributes.IpAddress);
+        }
+
+        [Fact]
+        public async void BankIdGetSessionAsync_WithBankIdGetSessionRequest__ShouldParseAndReturnSignatureXml()
+        {
+            // Arrange
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"userAttributes\": { \"signature\": \"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHNhbXBsZT48dmFsdWU+SGk8L3ZhbHVlPjxjb250ZW50PkJ5ZTwvY29uZW50Pjwvc2FtcGxlPg==\" } }");
+            var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("x"));
+
+            // Act
+            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", "y"));
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.UserAttributes);
+            Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><sample><value>Hi</value><content>Bye</conent></sample>", result.UserAttributes.SignatureXml);
         }
 
         [Fact]
