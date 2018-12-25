@@ -4,14 +4,13 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.Api.Test.TestHelpers;
 using Moq;
 using Moq.Protected;
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.Api.Test
+namespace ActiveLogin.Authentication.GrandId.Api.Test
 {
     public class GrandIdApiClient_Tests
     {
