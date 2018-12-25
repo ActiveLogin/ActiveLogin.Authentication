@@ -5,7 +5,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class FederatedDirectLoginUserAttributes
     {
-        public FederatedDirectLoginUserAttributes(string mobilePhone, string givenName, string surname, string sameAccountName, string title)
+        internal FederatedDirectLoginUserAttributes(string mobilePhone, string givenName, string surname, string sameAccountName, string title)
         {
             MobilePhone = mobilePhone;
             GivenName = givenName;

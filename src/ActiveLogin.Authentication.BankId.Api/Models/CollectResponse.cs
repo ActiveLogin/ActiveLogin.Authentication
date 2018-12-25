@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CollectResponse
     {
-        public CollectResponse(string orderRef, string statusRaw, string hintCodeRaw, CompletionData completionData)
+        internal CollectResponse(string orderRef, string statusRaw, string hintCodeRaw, CompletionData completionData)
         {
             OrderRef = orderRef;
             StatusRaw = statusRaw;

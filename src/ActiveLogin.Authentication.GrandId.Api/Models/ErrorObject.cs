@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class ErrorObject
     {
-        public ErrorObject(string codeRaw, string message)
+        internal ErrorObject(string codeRaw, string message)
         {
             CodeRaw = codeRaw;
             Message = message;

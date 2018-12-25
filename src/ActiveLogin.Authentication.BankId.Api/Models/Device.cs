@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class Device
     {
-        public Device(string ipAddress)
+        internal Device(string ipAddress)
         {
             IpAddress = ipAddress;
         }

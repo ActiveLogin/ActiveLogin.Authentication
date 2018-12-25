@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class Error
     {
-        public Error(string errorCode, string details)
+        internal Error(string errorCode, string details)
         {
             ErrorCodeRaw = errorCode;
             Details = details;

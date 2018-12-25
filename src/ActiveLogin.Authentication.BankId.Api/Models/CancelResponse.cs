@@ -8,5 +8,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CancelResponse
     {
+        internal CancelResponse()
+        {
+            
+        }
     }
 }

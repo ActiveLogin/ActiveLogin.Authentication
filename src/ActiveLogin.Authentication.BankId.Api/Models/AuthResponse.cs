@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class AuthResponse
     {
-        public AuthResponse(string orderRef, string autoStartToken)
+        internal AuthResponse(string orderRef, string autoStartToken)
         {
             OrderRef = orderRef;
             AutoStartToken = autoStartToken;

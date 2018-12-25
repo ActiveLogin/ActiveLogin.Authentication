@@ -7,7 +7,7 @@
         {
         }
 
-        public BankIdFederatedLoginResponse(string sessionId, string redirectUrl)
+        internal BankIdFederatedLoginResponse(string sessionId, string redirectUrl)
             : base(sessionId, redirectUrl)
         {
         }

@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class BankIdSessionStateUserAttributes
     {
-        public BankIdSessionStateUserAttributes(string signatureRaw, string givenName, string surname, string name, string personalIdentityNumber, string notBeforeRaw, string notAfterRaw, string ipAddress)
+        internal BankIdSessionStateUserAttributes(string signatureRaw, string givenName, string surname, string name, string personalIdentityNumber, string notBeforeRaw, string notAfterRaw, string ipAddress)
         {
             SignatureRaw = signatureRaw;
             GivenName = givenName;

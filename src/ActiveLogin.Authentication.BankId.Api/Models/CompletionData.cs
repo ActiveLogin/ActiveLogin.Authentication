@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CompletionData
     {
-        public CompletionData(User user, Device device, Cert cert, string signatureRaw, string ocspResponse)
+        internal CompletionData(User user, Device device, Cert cert, string signatureRaw, string ocspResponse)
         {
             User = user;
             Device = device;

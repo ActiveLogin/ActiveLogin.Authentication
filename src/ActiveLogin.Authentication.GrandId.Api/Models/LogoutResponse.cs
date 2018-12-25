@@ -7,7 +7,7 @@
             SessionDeleted = fullResponse.SessionDeleted?.Equals("1") ?? false;
         }
 
-        public LogoutResponse(bool sessionDeleted)
+        internal LogoutResponse(bool sessionDeleted)
         {
             SessionDeleted = sessionDeleted;
         }

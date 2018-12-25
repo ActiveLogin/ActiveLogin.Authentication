@@ -9,7 +9,7 @@
             UserAttributes = fullResponse.UserAttributes;
         }
 
-        public FederatedDirectLoginResponse(string sessionId, string username, FederatedDirectLoginUserAttributes userAttributes)
+        internal FederatedDirectLoginResponse(string sessionId, string username, FederatedDirectLoginUserAttributes userAttributes)
         {
             SessionId = sessionId;
             Username = username;

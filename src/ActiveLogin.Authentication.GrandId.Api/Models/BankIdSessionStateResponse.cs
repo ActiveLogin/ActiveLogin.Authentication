@@ -8,7 +8,7 @@
             UserAttributes = fullResponse.UserAttributes;
         }
 
-        public BankIdSessionStateResponse(string sessionId, string username, BankIdSessionStateUserAttributes userAttributes)
+        internal BankIdSessionStateResponse(string sessionId, string username, BankIdSessionStateUserAttributes userAttributes)
             : base(sessionId, username)
         {
             UserAttributes = userAttributes;
