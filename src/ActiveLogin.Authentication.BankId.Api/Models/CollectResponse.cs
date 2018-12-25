@@ -9,11 +9,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CollectResponse
     {
-        public CollectResponse(string orderRef, string status, string hintCode, CompletionData completionData)
+        public CollectResponse(string orderRef, string statusRaw, string hintCodeRaw, CompletionData completionData)
         {
             OrderRef = orderRef;
-            this.status = status;
-            this.hintCode = hintCode;
+            StatusRaw = statusRaw;
+            HintCodeRaw = hintCodeRaw;
             CompletionData = completionData;
         }
 
@@ -24,36 +24,22 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         public string OrderRef { get; private set; }
 
         [DataMember(Name = "status")]
-        private string status { get; set; }
+        public string StatusRaw { get; private set; }
 
         /// <summary>
         /// Collect status.
         /// </summary>
-        public CollectStatus Status
-        {
-            get
-            {
-                Enum.TryParse<CollectStatus>(status, true, out var parsedStatus);
-                return parsedStatus;
-            }
-        }
+        public CollectStatus Status => Enum.TryParse<CollectStatus>(StatusRaw, true, out var parsedStatus) ? parsedStatus : CollectStatus.Unknown;
 
         [DataMember(Name = "hintCode")]
-        private string hintCode { get; set; }
+        public string HintCodeRaw { get; private set; }
 
         /// <summary>
         /// Collect hint code.
         /// RP should use the HintCode to provide the user with details and instructions and keep on calling collect until failed or complete.
         /// </summary>
         /// <remarks>Only present for pending and failed orders.</remarks>
-        public CollectHintCode HintCode
-        {
-            get
-            {
-                Enum.TryParse<CollectHintCode>(hintCode, true, out var parsedHintCode);
-                return parsedHintCode;
-            }
-        }
+        public CollectHintCode HintCode => Enum.TryParse<CollectHintCode>(HintCodeRaw, true, out var parsedHintCode) ? parsedHintCode : CollectHintCode.Unknown;
 
         /// <summary>
         /// The completionData includes the signature, user information and the OCSP response.

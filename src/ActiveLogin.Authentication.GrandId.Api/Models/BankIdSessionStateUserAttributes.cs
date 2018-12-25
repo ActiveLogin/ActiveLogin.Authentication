@@ -20,7 +20,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         }
 
         [DataMember(Name = "signature")]
-        public string SignatureRaw { get; set; }
+        public string SignatureRaw { get; private set; }
         public string SignatureXml => Encoding.UTF8.GetString(Convert.FromBase64String(SignatureRaw));
 
         [DataMember(Name = "givenName")]
@@ -36,11 +36,11 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         public string PersonalIdentityNumber { get; private set; }
 
         [DataMember(Name = "notBefore")]
-        private string NotBeforeRaw { get; set; }
+        public string NotBeforeRaw { get; private set; }
         public DateTime NotBefore => DateTime.Parse(NotBeforeRaw).ToUniversalTime();
 
         [DataMember(Name = "notAfter")]
-        private string NotAfterRaw { get; set; }
+        public string NotAfterRaw { get; private set; }
         public DateTime NotAfter => DateTime.Parse(NotAfterRaw).ToUniversalTime();
 
         [DataMember(Name = "ipAddress")]

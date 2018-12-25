@@ -38,7 +38,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The signature. The content of the signature is described in BankID Signature Profile specification.
         /// </summary>
         [DataMember(Name = "signature")]
-        public string SignatureRaw { get; set; }
+        public string SignatureRaw { get; private set; }
         public string SignatureXml => Encoding.UTF8.GetString(Convert.FromBase64String(SignatureRaw));
 
         /// <summary>

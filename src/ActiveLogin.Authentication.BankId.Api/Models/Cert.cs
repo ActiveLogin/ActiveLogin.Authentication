@@ -11,25 +11,25 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     {
         public Cert(DateTime notBefore, DateTime notAfter)
         {
-            this.notBefore = UnixTimestampMillisecondsFromDateTime(notBefore).ToString("D");
-            this.notAfter = UnixTimestampMillisecondsFromDateTime(notAfter).ToString("D");
+            NotBeforeRaw = UnixTimestampMillisecondsFromDateTime(notBefore).ToString("D");
+            NotAfterRaw = UnixTimestampMillisecondsFromDateTime(notAfter).ToString("D");
         }
 
         [DataMember(Name = "notBefore")]
-        private string notBefore { get; set; }
+        public string NotBeforeRaw { get; private set; }
 
         /// <summary>
         /// Start of validity of the users BankID.
         /// </summary>
-        public DateTime NotBefore => ParseUnixTimestampMillis(notBefore);
+        public DateTime NotBefore => ParseUnixTimestampMillis(NotBeforeRaw);
 
         [DataMember(Name = "notAfter")]
-        private string notAfter { get; set; }
+        public string NotAfterRaw { get; private set; }
 
         /// <summary>
         /// End of validity of the Users BankID.
         /// </summary>
-        public DateTime NotAfter => ParseUnixTimestampMillis(notAfter);
+        public DateTime NotAfter => ParseUnixTimestampMillis(NotAfterRaw);
 
 
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
