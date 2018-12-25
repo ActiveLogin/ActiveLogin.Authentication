@@ -1,27 +1,24 @@
-﻿using System;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
     public class BankIdSessionStateUserAttributes
     {
-        internal BankIdSessionStateUserAttributes(string signatureRaw, string givenName, string surname, string name, string personalIdentityNumber, string notBeforeRaw, string notAfterRaw, string ipAddress)
+        internal BankIdSessionStateUserAttributes(string signature, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
         {
-            SignatureRaw = signatureRaw;
+            Signature = signature;
             GivenName = givenName;
             Surname = surname;
             Name = name;
             PersonalIdentityNumber = personalIdentityNumber;
-            NotBeforeRaw = notBeforeRaw;
-            NotAfterRaw = notAfterRaw;
+            NotBefore = notBefore;
+            NotAfter = notAfter;
             IpAddress = ipAddress;
         }
 
         [DataMember(Name = "signature")]
-        public string SignatureRaw { get; private set; }
-        public string SignatureXml => Encoding.UTF8.GetString(Convert.FromBase64String(SignatureRaw));
+        public string Signature { get; private set; }
 
         [DataMember(Name = "givenName")]
         public string GivenName { get; private set; }
@@ -36,12 +33,10 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         public string PersonalIdentityNumber { get; private set; }
 
         [DataMember(Name = "notBefore")]
-        public string NotBeforeRaw { get; private set; }
-        public DateTime NotBefore => DateTime.Parse(NotBeforeRaw).ToUniversalTime();
+        public string NotBefore { get; private set; }
 
         [DataMember(Name = "notAfter")]
-        public string NotAfterRaw { get; private set; }
-        public DateTime NotAfter => DateTime.Parse(NotAfterRaw).ToUniversalTime();
+        public string NotAfter { get; private set; }
 
         [DataMember(Name = "ipAddress")]
         public string IpAddress { get; private set; }

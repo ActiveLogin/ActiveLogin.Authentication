@@ -8,8 +8,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public class GrandIdApiException : HttpRequestException
     {
-        internal GrandIdApiException(ErrorObject error)
-            : this(error.Code, error.Message)
+        internal GrandIdApiException(Error error)
+            : this(error.GetErrorCode(), error.Message)
         { }
 
         internal GrandIdApiException(ErrorCode errorCode, string errorDetails)

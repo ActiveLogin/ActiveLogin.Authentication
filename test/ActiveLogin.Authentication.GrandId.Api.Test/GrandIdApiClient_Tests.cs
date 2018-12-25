@@ -187,7 +187,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.UserAttributes);
-            Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><sample><value>Hi</value><content>Bye</conent></sample>", result.UserAttributes.SignatureXml);
+            Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><sample><value>Hi</value><content>Bye</conent></sample>", result.UserAttributes.GetSignatureXml());
         }
 
         [Fact]
@@ -203,8 +203,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.UserAttributes);
-            Assert.Equal(new DateTime(2018, 12, 24, 22, 00, 00, DateTimeKind.Local), result.UserAttributes.NotBefore);
-            Assert.Equal(new DateTime(2018, 12, 25, 22, 00, 00, DateTimeKind.Utc), result.UserAttributes.NotAfter);
+            Assert.Equal(new DateTime(2018, 12, 24, 22, 00, 00, DateTimeKind.Local), result.UserAttributes.GetNotBeforeDateTime());
+            Assert.Equal(new DateTime(2018, 12, 25, 22, 00, 00, DateTimeKind.Utc), result.UserAttributes.GetNotAfterDateTime());
         }
 
         [Fact]

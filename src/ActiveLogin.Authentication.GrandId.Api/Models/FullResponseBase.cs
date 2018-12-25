@@ -6,6 +6,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     public abstract class FullResponseBase
     {
         [DataMember(Name = "errorObject")]
-        public ErrorObject ErrorObject { get; private set; }
+        public Error ErrorObject { get; private set; }
     }
 }
