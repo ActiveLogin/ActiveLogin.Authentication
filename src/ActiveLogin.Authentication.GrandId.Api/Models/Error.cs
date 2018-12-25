@@ -3,9 +3,9 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class Error
+    internal class Error
     {
-        internal Error(string code, string message)
+        public Error(string code, string message)
         {
             Code = code;
             Message = message;

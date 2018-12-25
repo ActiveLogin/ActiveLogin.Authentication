@@ -3,7 +3,7 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public abstract class FullResponseBase
+    internal abstract class FullResponseBase
     {
         [DataMember(Name = "errorObject")]
         public Error ErrorObject { get; private set; }

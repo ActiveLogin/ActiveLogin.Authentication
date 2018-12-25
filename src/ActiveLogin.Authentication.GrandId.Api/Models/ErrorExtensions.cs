@@ -2,7 +2,7 @@
 
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public static class ErrorExtensions
+    internal static class ErrorExtensions
     {
         public static ErrorCode GetErrorCode(this Error error)
         {
