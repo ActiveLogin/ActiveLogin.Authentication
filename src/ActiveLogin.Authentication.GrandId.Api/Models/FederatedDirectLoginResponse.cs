@@ -2,11 +2,6 @@
 {
     public class FederatedDirectLoginResponse
     {
-        public FederatedDirectLoginResponse()
-        {
-
-        }
-
         internal FederatedDirectLoginResponse(FederatedDirectLoginFullResponse fullResponse)
         {
             SessionId = fullResponse.SessionId;

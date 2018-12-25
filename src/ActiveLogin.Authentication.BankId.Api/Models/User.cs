@@ -8,11 +8,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class User
     {
-        public User()
-        {
-            
-        }
-
         public User(string personalIdentityNumber, string name, string givenName, string surname)
         {
             PersonalIdentityNumber = personalIdentityNumber;

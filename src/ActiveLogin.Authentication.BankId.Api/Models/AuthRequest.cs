@@ -36,7 +36,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </param>
         public AuthRequest(string endUserIp, string personalIdentityNumber)
-            : this(endUserIp, personalIdentityNumber, requirement: new Requirement())
+            : this(endUserIp, personalIdentityNumber, new Requirement())
         {
         }
 

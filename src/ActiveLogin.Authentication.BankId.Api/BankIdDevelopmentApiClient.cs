@@ -145,7 +145,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             var user = new User(personalIdentityNumber, _name, _givenName, _surname);
 
-            return new CompletionData(user, new Device(), new Cert(), string.Empty, string.Empty);
+            return new CompletionData(user, new Device("1.1.1.1"), new Cert(DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow.AddMonths(1)), string.Empty, string.Empty);
         }
 
         private CollectStatus GetStatus(int collectCalls)

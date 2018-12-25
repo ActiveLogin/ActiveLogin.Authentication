@@ -5,11 +5,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CompletionData
     {
-        public CompletionData()
-        {
-            
-        }
-
         public CompletionData(User user, Device device, Cert cert, string signature, string ocspResponse)
         {
             User = user;

@@ -5,11 +5,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class ErrorObject
     {
-        public ErrorObject()
-        {
-            
-        }
-
         public ErrorObject(string code, string message)
         {
             Code = code;

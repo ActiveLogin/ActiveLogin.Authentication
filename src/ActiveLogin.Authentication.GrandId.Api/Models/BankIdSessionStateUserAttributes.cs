@@ -6,11 +6,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class BankIdSessionStateUserAttributes
     {
-        public BankIdSessionStateUserAttributes()
-        {
-            
-        }
-
         public BankIdSessionStateUserAttributes(string signature, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
         {
             Signature = signature;
