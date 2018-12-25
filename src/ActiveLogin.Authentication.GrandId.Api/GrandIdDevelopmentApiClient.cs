@@ -56,7 +56,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             if (!_bankidFederatedLogins.ContainsKey(request.SessionId))
             {
-                throw new GrandIdApiException(new ErrorObject("Unknown", "SessionId not found."));
+                throw new GrandIdApiException(ErrorCode.Unknown, "SessionId not found.");
             }
 
             var auth = _bankidFederatedLogins[request.SessionId];

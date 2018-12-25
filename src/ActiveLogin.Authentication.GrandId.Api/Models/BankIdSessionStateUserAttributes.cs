@@ -7,15 +7,15 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class BankIdSessionStateUserAttributes
     {
-        public BankIdSessionStateUserAttributes(string signatureRaw, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
+        public BankIdSessionStateUserAttributes(string signatureRaw, string givenName, string surname, string name, string personalIdentityNumber, string notBeforeRaw, string notAfterRaw, string ipAddress)
         {
             SignatureRaw = signatureRaw;
             GivenName = givenName;
             Surname = surname;
             Name = name;
             PersonalIdentityNumber = personalIdentityNumber;
-            this.notBefore = notBefore;
-            this.notAfter = notAfter;
+            NotBeforeRaw = notBeforeRaw;
+            NotAfterRaw = notAfterRaw;
             IpAddress = ipAddress;
         }
 
@@ -36,12 +36,12 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         public string PersonalIdentityNumber { get; private set; }
 
         [DataMember(Name = "notBefore")]
-        private string notBefore { get; set; }
-        public DateTime NotBefore => DateTime.Parse(notBefore).ToUniversalTime();
+        private string NotBeforeRaw { get; set; }
+        public DateTime NotBefore => DateTime.Parse(NotBeforeRaw).ToUniversalTime();
 
         [DataMember(Name = "notAfter")]
-        private string notAfter { get; set; }
-        public DateTime NotAfter => DateTime.Parse(notAfter).ToUniversalTime();
+        private string NotAfterRaw { get; set; }
+        public DateTime NotAfter => DateTime.Parse(NotAfterRaw).ToUniversalTime();
 
         [DataMember(Name = "ipAddress")]
         public string IpAddress { get; private set; }

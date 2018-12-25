@@ -45,7 +45,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.Equal(ErrorCode.FieldsNotValid, exception.ErrorCode);
-            Assert.Equal("m", exception.Details);
+            Assert.Equal("m", exception.ErrorDetails);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.Equal(ErrorCode.FieldsNotValid, exception.ErrorCode);
-            Assert.Equal("m", exception.Details);
+            Assert.Equal("m", exception.ErrorDetails);
         }
 
         [Fact]

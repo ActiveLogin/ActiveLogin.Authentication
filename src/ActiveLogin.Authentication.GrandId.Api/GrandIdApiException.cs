@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 
 namespace ActiveLogin.Authentication.GrandId.Api
@@ -13,11 +12,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
             : this(error.Code, error.Message)
         { }
 
-        private GrandIdApiException(string errorCodeString, string details)
-          : base($"{errorCodeString}: {details}", null)
+        internal GrandIdApiException(ErrorCode errorCode, string errorDetails)
+          : base($"{errorCode}: {errorDetails}", null)
         {
-            ErrorCode = Enum.TryParse<ErrorCode>(errorCodeString, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
-            Details = details;
+            ErrorCode = errorCode;
+            ErrorDetails = errorDetails;
         }
 
         /// <summary>
@@ -28,6 +27,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <summary>
         /// Details about the error.
         /// </summary>
-        public string Details { get; }
+        public string ErrorDetails { get; }
     }
 }
