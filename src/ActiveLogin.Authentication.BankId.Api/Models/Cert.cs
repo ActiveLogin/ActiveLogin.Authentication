@@ -9,30 +9,44 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class Cert
     {
-        internal Cert(string notBeforeRaw, string notAfteRaw)
+        internal Cert(string notBefore, string notAfter)
         {
-            NotBeforeRaw = notBeforeRaw;
-            NotAfterRaw = notAfteRaw;
+            NotBefore = notBefore;
+            NotAfter = notAfter;
         }
-
-        [DataMember(Name = "notBefore")]
-        public string NotBeforeRaw { get; private set; }
 
         /// <summary>
         /// Start of validity of the users BankID.
         /// </summary>
-        public DateTime NotBefore => ParseUnixTimestampMillis(NotBeforeRaw);
-
-        [DataMember(Name = "notAfter")]
-        public string NotAfterRaw { get; private set; }
+        [DataMember(Name = "notBefore")]
+        public string NotBefore { get; private set; }
 
         /// <summary>
         /// End of validity of the Users BankID.
         /// </summary>
-        public DateTime NotAfter => ParseUnixTimestampMillis(NotAfterRaw);
+        [DataMember(Name = "notAfter")]
+        public string NotAfter { get; private set; }
+    }
 
-
+    public static class CertExtensions
+    {
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>
+        /// Start of validity of the users BankID.
+        /// </summary>
+        public static DateTime GetNotBeforeDateTime(this Cert cert)
+        {
+            return ParseUnixTimestampMillis(cert.NotBefore);
+        }
+
+        /// <summary>
+        /// End of validity of the Users BankID.
+        /// </summary>
+        public static DateTime GetNotAfterDateTime(this Cert cert)
+        {
+            return ParseUnixTimestampMillis(cert.NotAfter);
+        }
 
         private static DateTime ParseUnixTimestampMillis(string milliseconds)
         {

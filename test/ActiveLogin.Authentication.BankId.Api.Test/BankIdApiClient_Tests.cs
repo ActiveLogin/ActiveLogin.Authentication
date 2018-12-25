@@ -291,8 +291,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(new DateTime(1991, 4, 14, 12, 00, 00), result.CompletionData.Cert.NotBefore);
-            Assert.Equal(new DateTime(1991, 4, 14, 20, 00, 00), result.CompletionData.Cert.NotAfter);
+            Assert.Equal(new DateTime(1991, 4, 14, 12, 00, 00), result.CompletionData.Cert.GetNotBeforeDateTime());
+            Assert.Equal(new DateTime(1991, 4, 14, 20, 00, 00), result.CompletionData.Cert.GetNotAfterDateTime());
         }
 
         [Fact]
