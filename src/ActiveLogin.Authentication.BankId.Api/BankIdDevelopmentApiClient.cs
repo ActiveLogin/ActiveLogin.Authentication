@@ -101,7 +101,7 @@ namespace ActiveLogin.Authentication.BankId.Api
                 var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
                 await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
 
-                throw new BankIdApiException(new Error("AlreadyInProgress", "A login for this user is already in progress."));
+                throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
             }
         }
 
@@ -111,7 +111,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             if (!_auths.ContainsKey(request.OrderRef))
             {
-                throw new BankIdApiException(new Error("NotFound", "OrderRef not found."));
+                throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found.");
             }
 
             var auth = _auths[request.OrderRef];
@@ -145,7 +145,13 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             var user = new User(personalIdentityNumber, _name, _givenName, _surname);
 
-            return new CompletionData(user, new Device("1.1.1.1"), new Cert(DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow.AddMonths(1)), string.Empty, string.Empty);
+            return new CompletionData(user, new Device("1.1.1.1"), new Cert(UnixTimestampMillisecondsFromDateTime(DateTime.UtcNow.AddMonths(-1)).ToString("D"), UnixTimestampMillisecondsFromDateTime(DateTime.UtcNow.AddMonths(1)).ToString("D")), string.Empty, string.Empty);
+        }
+
+        private static long UnixTimestampMillisecondsFromDateTime(DateTime dateTime)
+        {
+            var unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return (long)(dateTime - unixEpoch).TotalMilliseconds;
         }
 
         private CollectStatus GetStatus(int collectCalls)

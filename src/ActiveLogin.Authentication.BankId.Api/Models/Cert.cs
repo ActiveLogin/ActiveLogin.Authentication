@@ -9,10 +9,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class Cert
     {
-        public Cert(DateTime notBefore, DateTime notAfter)
+        public Cert(string notBeforeRaw, string notAfteRaw)
         {
-            NotBeforeRaw = UnixTimestampMillisecondsFromDateTime(notBefore).ToString("D");
-            NotAfterRaw = UnixTimestampMillisecondsFromDateTime(notAfter).ToString("D");
+            NotBeforeRaw = notBeforeRaw;
+            NotAfterRaw = notAfteRaw;
         }
 
         [DataMember(Name = "notBefore")]
@@ -42,11 +42,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         private static DateTime DateTimeFromUnixTimestampMilliseconds(long milliseconds)
         {
             return UnixEpoch.AddMilliseconds(milliseconds);
-        }
-
-        private static long UnixTimestampMillisecondsFromDateTime(DateTime dateTime)
-        {
-            return (long) (dateTime - UnixEpoch).TotalMilliseconds;
         }
     }
 }
