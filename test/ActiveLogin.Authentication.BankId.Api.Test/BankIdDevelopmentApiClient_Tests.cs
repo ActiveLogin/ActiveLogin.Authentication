@@ -31,7 +31,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             do
             {
                 response = await _bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
-            } while (response.Status != CollectStatus.Complete);
+            } while (response.GetCollectStatus() != CollectStatus.Complete);
 
             response = null;
 
@@ -39,7 +39,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             do
             {
                 response = await _bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
-            } while (response.Status != CollectStatus.Complete);
+            } while (response.GetCollectStatus() != CollectStatus.Complete);
 
             Assert.True(true, "Did not throw");
         }

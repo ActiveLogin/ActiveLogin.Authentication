@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
@@ -8,13 +7,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     {
         internal Error(string errorCode, string details)
         {
-            ErrorCodeRaw = errorCode;
+            ErrorCode = errorCode;
             Details = details;
         }
 
         [DataMember(Name = "errorCode")]
-        public string ErrorCodeRaw { get; private set; }
-        public ErrorCode ErrorCode => Enum.TryParse<ErrorCode>(ErrorCodeRaw, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
+        public string ErrorCode { get; private set; }
 
         [DataMember(Name = "details")]
         public string Details { get; private set; }

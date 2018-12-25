@@ -183,7 +183,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(CollectHintCode.OutstandingTransaction, result.HintCode);
+            Assert.Equal("OutstandingTransaction", result.HintCode);
+            Assert.Equal(CollectHintCode.OutstandingTransaction, result.GetCollectHintCode());
         }
 
         [Fact]
@@ -198,7 +199,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(CollectStatus.Pending, result.Status);
+            Assert.Equal("Pending", result.Status);
+            Assert.Equal(CollectStatus.Pending, result.GetCollectStatus());
         }
 
         [Fact]
@@ -217,10 +219,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataOcspResponse()
+        public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataSignature_AndOcspResponse()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"ocspResponse\": \"or\" } }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": {  \"signature\": \"s\", \"ocspResponse\": \"or\" } }");
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act
@@ -228,6 +230,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
+            Assert.Equal("s", result.CompletionData.Signature);
             Assert.Equal("or", result.CompletionData.OcspResponse);
         }
 
@@ -243,7 +246,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><sample><value>Hi</value><content>Bye</conent></sample>", result.CompletionData.SignatureXml);
+            Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><sample><value>Hi</value><content>Bye</conent></sample>", result.CompletionData.GetSignatureXml());
         }
 
         [Fact]
@@ -283,7 +286,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataCertDates_ConvetedFromUnixEpochMillisecondsToDateTime()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"cert\": { \"notBefore\": 671630400000, \"notAfter\": 671659200000 } } }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"cert\": { \"notBefore\": \"671630400000\", \"notAfter\": \"671659200000\" } } }");
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act
@@ -291,7 +294,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
+            Assert.Equal("671630400000", result.CompletionData.Cert.NotBefore);
             Assert.Equal(new DateTime(1991, 4, 14, 12, 00, 00), result.CompletionData.Cert.GetNotBeforeDateTime());
+            Assert.Equal("671659200000", result.CompletionData.Cert.NotAfter);
             Assert.Equal(new DateTime(1991, 4, 14, 20, 00, 00), result.CompletionData.Cert.GetNotAfterDateTime());
         }
 

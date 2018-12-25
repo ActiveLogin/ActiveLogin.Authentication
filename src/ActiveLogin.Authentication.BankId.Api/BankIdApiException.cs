@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Api
     public class BankIdApiException : HttpRequestException
     {
         internal BankIdApiException(Error error, Exception inner)
-            : this(error.ErrorCode, error.Details, inner)
+            : this(error.GetErrorCode(), error.Details, inner)
         { }
 
         internal BankIdApiException(ErrorCode errorCode, string details)

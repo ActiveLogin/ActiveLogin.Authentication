@@ -173,12 +173,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var statusMessage = GetStatusMessage(collectResponse, unprotectedLoginOptions, HttpContext.Request);
 
-            if (collectResponse.Status == CollectStatus.Pending)
+            if (collectResponse.GetCollectStatus() == CollectStatus.Pending)
             {
                 return CollectPending(collectResponse, statusMessage);
             }
 
-            if (collectResponse.Status == CollectStatus.Complete)
+            if (collectResponse.GetCollectStatus() == CollectStatus.Complete)
             {
                 return await CollectComplete(request, collectResponse);
             }
@@ -188,7 +188,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage)
         {
-            _logger.BankIdCollectFailure(collectResponse.OrderRef, collectResponse.HintCode);
+            _logger.BankIdCollectFailure(collectResponse.OrderRef, collectResponse.GetCollectHintCode());
             return BadRequest(new BankIdLoginApiErrorResponse(statusMessage));
         }
 
@@ -208,7 +208,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private ActionResult CollectPending(CollectResponse collectResponse, string statusMessage)
         {
-            _logger.BankIdCollectPending(collectResponse.OrderRef, collectResponse.HintCode);
+            _logger.BankIdCollectPending(collectResponse.OrderRef, collectResponse.GetCollectHintCode());
             return Ok(BankIdLoginApiStatusResponse.Pending(statusMessage));
         }
 
@@ -218,7 +218,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var detectedDevice = _bankIdSupportedDeviceDetector.Detect(request.Headers["User-Agent"]);
             var accessedFromMobileDevice = detectedDevice.IsMobile;
 
-            var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(collectResponse.Status, collectResponse.HintCode, authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(collectResponse.GetCollectStatus(), collectResponse.GetCollectHintCode(), authPersonalIdentityNumberProvided, accessedFromMobileDevice);
             var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
 
             return statusMessage;

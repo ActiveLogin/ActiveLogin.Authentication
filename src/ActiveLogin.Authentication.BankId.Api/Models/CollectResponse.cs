@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
@@ -9,11 +8,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CollectResponse
     {
-        internal CollectResponse(string orderRef, string statusRaw, string hintCodeRaw, CompletionData completionData)
+        internal CollectResponse(string orderRef, string status, string hintCode, CompletionData completionData)
         {
             OrderRef = orderRef;
-            StatusRaw = statusRaw;
-            HintCodeRaw = hintCodeRaw;
+            Status = status;
+            HintCode = hintCode;
             CompletionData = completionData;
         }
 
@@ -23,23 +22,19 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         [DataMember(Name = "orderRef")]
         public string OrderRef { get; private set; }
 
-        [DataMember(Name = "status")]
-        public string StatusRaw { get; private set; }
-
         /// <summary>
         /// Collect status.
         /// </summary>
-        public CollectStatus Status => Enum.TryParse<CollectStatus>(StatusRaw, true, out var parsedStatus) ? parsedStatus : CollectStatus.Unknown;
-
-        [DataMember(Name = "hintCode")]
-        public string HintCodeRaw { get; private set; }
+        [DataMember(Name = "status")]
+        public string Status { get; private set; }
 
         /// <summary>
         /// Collect hint code.
         /// RP should use the HintCode to provide the user with details and instructions and keep on calling collect until failed or complete.
         /// </summary>
         /// <remarks>Only present for pending and failed orders.</remarks>
-        public CollectHintCode HintCode => Enum.TryParse<CollectHintCode>(HintCodeRaw, true, out var parsedHintCode) ? parsedHintCode : CollectHintCode.Unknown;
+        [DataMember(Name = "hintCode")]
+        public string HintCode { get; private set; }
 
         /// <summary>
         /// The completionData includes the signature, user information and the OCSP response.
