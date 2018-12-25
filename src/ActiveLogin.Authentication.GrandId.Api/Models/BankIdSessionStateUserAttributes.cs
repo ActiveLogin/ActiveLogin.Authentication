@@ -7,9 +7,9 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class BankIdSessionStateUserAttributes
     {
-        public BankIdSessionStateUserAttributes(string signature, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
+        public BankIdSessionStateUserAttributes(string signatureRaw, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
         {
-            this.signature = signature;
+            SignatureRaw = signatureRaw;
             GivenName = givenName;
             Surname = surname;
             Name = name;
@@ -20,16 +20,8 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         }
 
         [DataMember(Name = "signature")]
-        private string signature { get; set; }
-
-        public string SignatureXml
-        {
-            get
-            {
-                var data = Convert.FromBase64String(signature);
-                return Encoding.UTF8.GetString(data);
-            }
-        }
+        public string SignatureRaw { get; set; }
+        public string SignatureXml => Encoding.UTF8.GetString(Convert.FromBase64String(SignatureRaw));
 
         [DataMember(Name = "givenName")]
         public string GivenName { get; private set; }

@@ -1,16 +1,18 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
+using System.Text;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     [DataContract]
     public class CompletionData
     {
-        public CompletionData(User user, Device device, Cert cert, string signature, string ocspResponse)
+        public CompletionData(User user, Device device, Cert cert, string signatureRaw, string ocspResponse)
         {
             User = user;
             Device = device;
             Cert = cert;
-            Signature = signature;
+            SignatureRaw = signatureRaw;
             OcspResponse = ocspResponse;
         }
 
@@ -36,7 +38,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The signature. The content of the signature is described in BankID Signature Profile specification.
         /// </summary>
         [DataMember(Name = "signature")]
-        public string Signature { get; private set; }
+        public string SignatureRaw { get; set; }
+        public string SignatureXml => Encoding.UTF8.GetString(Convert.FromBase64String(SignatureRaw));
 
         /// <summary>
         /// The OCSP response. String. Base64-encoded.

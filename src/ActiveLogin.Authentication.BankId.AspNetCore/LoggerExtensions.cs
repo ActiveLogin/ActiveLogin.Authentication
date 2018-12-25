@@ -51,7 +51,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static void BankIdCollectCompleted(this ILogger logger, string orderRef, CompletionData completionData)
         {
             logger.LogInformation(BankIdLoggingEvents.BankIdCollectCompleted, "BankID collect is completed for OrderRef '{OrderRef}'", orderRef);
-            logger.LogTrace(BankIdLoggingEvents.BankIdCollectCompleted, "BankID collect is completed for OrderRef '{OrderRef}' with User (PersonalIdentityNumber: '{UserPersonalIdentityNumber}'; GivenName: '{UserGivenName}'; Surname: '{UserSurname}'; Name: '{UserName}'), Signature '{Signature}' and OcspResponse '{OcspResponse}'", orderRef, completionData.User.PersonalIdentityNumber, completionData.User.GivenName, completionData.User.Surname, completionData.User.Name, completionData.Signature, completionData.OcspResponse);
+            logger.LogTrace(BankIdLoggingEvents.BankIdCollectCompleted, "BankID collect is completed for OrderRef '{OrderRef}' with User (PersonalIdentityNumber: '{UserPersonalIdentityNumber}'; GivenName: '{UserGivenName}'; Surname: '{UserSurname}'; Name: '{UserName}'), Signature '{Signature}' and OcspResponse '{OcspResponse}'", orderRef, completionData.User.PersonalIdentityNumber, completionData.User.GivenName, completionData.User.Surname, completionData.User.Name, completionData.SignatureRaw, completionData.OcspResponse);
         }
     }
 }

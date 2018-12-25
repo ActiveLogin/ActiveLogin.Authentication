@@ -217,10 +217,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataSignature_AndCompletionDataOcspResponse()
+        public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataOcspResponse()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"signature\": \"s\", \"ocspResponse\": \"or\" } }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"ocspResponse\": \"or\" } }");
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act
@@ -228,8 +228,22 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("s", result.CompletionData.Signature);
             Assert.Equal("or", result.CompletionData.OcspResponse);
+        }
+
+        [Fact]
+        public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataSignatureXml()
+        {
+            // Arrange
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"signature\": \"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHNhbXBsZT48dmFsdWU+SGk8L3ZhbHVlPjxjb250ZW50PkJ5ZTwvY29uZW50Pjwvc2FtcGxlPg==\" } }");
+            var bankIdClient = new BankIdApiClient(httpClient);
+
+            // Act
+            var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><sample><value>Hi</value><content>Bye</conent></sample>", result.CompletionData.SignatureXml);
         }
 
         [Fact]
