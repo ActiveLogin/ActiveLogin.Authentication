@@ -104,7 +104,7 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             {
             }
 
-            public ErrorResponseMapping(MessageShortName messageShortName, IEnumerable<ErrorCode> errorCodes)
+            private ErrorResponseMapping(MessageShortName messageShortName, IEnumerable<ErrorCode> errorCodes)
             {
                 MessageShortName = messageShortName;
                 ErrorCodes.AddRange(errorCodes);
