@@ -55,7 +55,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.Equal(ErrorCode.AlreadyInProgress, exception.ErrorCode);
-            Assert.Equal("d", exception.Details);
+            Assert.Equal("d", exception.ErrorDetails);
         }
 
         [Fact]

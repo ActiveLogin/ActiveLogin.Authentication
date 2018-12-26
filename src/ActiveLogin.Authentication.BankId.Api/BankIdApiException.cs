@@ -13,16 +13,16 @@ namespace ActiveLogin.Authentication.BankId.Api
             : this(error.GetErrorCode(), error.Details, inner)
         { }
 
-        internal BankIdApiException(ErrorCode errorCode, string details)
-            : this(errorCode, details, null)
+        internal BankIdApiException(ErrorCode errorCode, string errorDetails)
+            : this(errorCode, errorDetails, null)
         {
         }
 
-        internal BankIdApiException(ErrorCode errorCode, string details, Exception inner)
-            : base($"{errorCode}: {details}", inner)
+        internal BankIdApiException(ErrorCode errorCode, string errorDetails, Exception inner)
+            : base($"{errorCode}: {errorDetails}", inner)
         {
             ErrorCode = errorCode;
-            Details = details;
+            ErrorDetails = errorDetails;
         }
 
         /// <summary>
@@ -33,6 +33,6 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// <summary>
         /// Details about the error.
         /// </summary>
-        public string Details { get; }
+        public string ErrorDetails { get; }
     }
 }
