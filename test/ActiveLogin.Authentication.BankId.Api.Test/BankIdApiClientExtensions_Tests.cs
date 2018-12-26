@@ -34,12 +34,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
                 .ReturnsAsync(It.IsAny<AuthResponse>());
 
             // Act
-            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "199908072391");
+            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "201801012392");
 
             // Assert
             var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
             Assert.Equal("1.1.1.1", request.EndUserIp);
-            Assert.Equal("199908072391", request.PersonalIdentityNumber);
+            Assert.Equal("201801012392", request.PersonalIdentityNumber);
         }
 
         [Fact]

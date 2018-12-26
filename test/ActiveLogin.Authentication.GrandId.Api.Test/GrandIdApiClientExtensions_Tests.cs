@@ -35,13 +35,13 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
                 .ReturnsAsync(It.IsAny<BankIdFederatedLoginResponse>());
 
             // Act
-            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object, "ask", "https://cb/", "199908072391");
+            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object, "ask", "https://cb/", "201801012392");
 
             // Assert
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
             Assert.Equal("ask", request.AuthenticateServiceKey);
             Assert.Equal("https://cb/", request.CallbackUrl);
-            Assert.Equal("199908072391", request.PersonalIdentityNumber);
+            Assert.Equal("201801012392", request.PersonalIdentityNumber);
         }
 
         [Fact]

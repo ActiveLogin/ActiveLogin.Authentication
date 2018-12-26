@@ -97,13 +97,13 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391"));
+            await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392"));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"199908072391\",\"requirement\":{}}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{}}", contentString);
         }
 
         [Fact]
@@ -112,13 +112,13 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391", new Requirement(new List<string> { "req1", "req2" }, true, true)));
+            await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"199908072391\",\"requirement\":{\"allowFingerprint\":true,\"autoStartTokenRequired\":true,\"certificatePolicies\":[\"req1\",\"req2\"]}}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"autoStartTokenRequired\":true,\"certificatePolicies\":[\"req1\",\"req2\"]}}", contentString);
         }
 
         [Fact]
@@ -253,7 +253,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataUser()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"user\": { \"personalNumber\": \"199908072391\", \"name\": \"n\", \"givenName\": \"gn\", \"surname\": \"sn\" } } }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"user\": { \"personalNumber\": \"201801012392\", \"name\": \"n\", \"givenName\": \"gn\", \"surname\": \"sn\" } } }");
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act
@@ -261,7 +261,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("199908072391", result.CompletionData.User.PersonalIdentityNumber);
+            Assert.Equal("201801012392", result.CompletionData.User.PersonalIdentityNumber);
             Assert.Equal("n", result.CompletionData.User.Name);
             Assert.Equal("gn", result.CompletionData.User.GivenName);
             Assert.Equal("sn", result.CompletionData.User.Surname);

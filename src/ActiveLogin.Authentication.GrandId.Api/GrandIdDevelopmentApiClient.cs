@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 
@@ -10,27 +11,42 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public class GrandIdDevelopmentApiClient : IGrandIdApiClient
     {
+        private const string DefaultGivenName = "GivenName";
+        private const string DefaultSurname = "Surname";
+        private const string DefaultPersonalIdentityNumber = "199908072391";
+        private const string DefaultMobilePhone = "0046999123456";
+        private const string DefaultTitle = "Software Developer";
+
         private readonly string _givenName;
         private readonly string _surname;
         private readonly string _personalIdentityNumber;
+        private readonly string _mobilePhone;
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         private readonly Dictionary<string, ExtendedFederatedLoginResponse> _bankidFederatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
         private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
 
-        public GrandIdDevelopmentApiClient() : this("GivenName", "Surname")
+        public GrandIdDevelopmentApiClient()
+            : this(DefaultGivenName, DefaultSurname)
         {
         }
 
-        public GrandIdDevelopmentApiClient(string givenName, string surname) : this(givenName, surname, "199908072391")
+        public GrandIdDevelopmentApiClient(string givenName, string surname)
+            : this(givenName, surname, DefaultPersonalIdentityNumber)
         {
         }
 
         public GrandIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber)
+            : this(givenName, surname, personalIdentityNumber, DefaultMobilePhone)
+        {
+        }
+
+        public GrandIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber, string mobilePhone)
         {
             _givenName = givenName;
             _surname = surname;
             _personalIdentityNumber = personalIdentityNumber;
+            _mobilePhone = mobilePhone;
         }
 
         public TimeSpan Delay
@@ -43,11 +59,26 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            var sessionId = Guid.NewGuid().ToString();
+            var personalIdentityNumber = !string.IsNullOrEmpty(request.PersonalIdentityNumber) ? request.PersonalIdentityNumber : _personalIdentityNumber;
+            await EnsureNoExistingLogin(personalIdentityNumber).ConfigureAwait(false);
+
+            var sessionId = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var response = new BankIdFederatedLoginResponse(sessionId, $"{request.CallbackUrl}?grandidsession={sessionId}");
-            var extendedResponse = new ExtendedFederatedLoginResponse(response, request.PersonalIdentityNumber);
+            var extendedResponse = new ExtendedFederatedLoginResponse(response, personalIdentityNumber);
             _bankidFederatedLogins.Add(sessionId, extendedResponse);
+
             return response;
+        }
+
+        private async Task EnsureNoExistingLogin(string personalIdentityNumber)
+        {
+            if (_bankidFederatedLogins.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
+            {
+                var existingLoginSessionId = _bankidFederatedLogins.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
+                await LogoutAsync(new LogoutRequest(existingLoginSessionId)).ConfigureAwait(false);
+
+                throw new GrandIdApiException(ErrorCode.Already_In_Progress, "A login for this user is already in progress.");
+            }
         }
 
         public async Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request)
@@ -62,7 +93,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             var auth = _bankidFederatedLogins[request.SessionId];
             _bankidFederatedLogins.Remove(request.SessionId);
 
-            var personalIdentityNumber = !string.IsNullOrEmpty(auth.PersonalIdentityNumber) ? auth.PersonalIdentityNumber : _personalIdentityNumber;
+            var personalIdentityNumber = auth.PersonalIdentityNumber;
             var userAttributes = GetUserAttributes(personalIdentityNumber);
             var response = new BankIdSessionStateResponse(auth.BankIdFederatedLoginResponse.SessionId,
                 userAttributes.PersonalIdentityNumber,
@@ -78,8 +109,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
             await SimulateResponseDelay().ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString();
-            var userAttributes = new FederatedDirectLoginUserAttributes(string.Empty, _givenName, _surname, $"{_givenName.ToLower()}.{_surname.ToLower()}", "Software Developer");
-            var response = new FederatedDirectLoginResponse(sessionId, $"{_givenName.ToLower()}.{_surname.ToLower()}@example.org", userAttributes);
+            var userAttributes = new FederatedDirectLoginUserAttributes(_mobilePhone, _givenName, _surname, request.Username, DefaultTitle);
+            var response = new FederatedDirectLoginResponse(sessionId, request.Username, userAttributes);
             _federatedDirectLogins.Add(sessionId, response);
             return response;
         }

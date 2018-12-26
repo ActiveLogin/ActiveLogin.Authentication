@@ -23,10 +23,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arange
 
             // Act
-            await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391"));
+            await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392"));
 
             // Assert
-            await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "199908072391")));
+            await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "201801012392")));
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arange
 
             // Act
-            var firstAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "199908072391"));
+            var firstAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392"));
             CollectResponse firstCollectResponse;
             do
             {
@@ -43,7 +43,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             } while (firstCollectResponse.GetCollectStatus() != CollectStatus.Complete);
 
 
-            var secondAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "199908072391"));
+            var secondAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "201801012392"));
             CollectResponse secondCollectResponse;
             do
             {
@@ -58,7 +58,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void CollectAsync_WithDefaultValuesInConstructor__ShouldReturnPersonInfo()
         {
             // Arange
-            var bankIdClient = new BankIdDevelopmentApiClient("gn", "sn", "n", "199908072391")
+            var bankIdClient = new BankIdDevelopmentApiClient("gn", "sn", "n", "201801012392")
             {
                 Delay = TimeSpan.Zero
             };
@@ -75,7 +75,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             Assert.Equal("gn", collectResponse.CompletionData.User.GivenName);
             Assert.Equal("sn", collectResponse.CompletionData.User.Surname);
             Assert.Equal("n", collectResponse.CompletionData.User.Name);
-            Assert.Equal("199908072391", collectResponse.CompletionData.User.PersonalIdentityNumber);
+            Assert.Equal("201801012392", collectResponse.CompletionData.User.PersonalIdentityNumber);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             };
 
             // Act
-            var authResponse = await bankIdClient.AuthAsync(new AuthRequest("2.2.2.2", "199908072391"));
+            var authResponse = await bankIdClient.AuthAsync(new AuthRequest("2.2.2.2", "201801012392"));
             CollectResponse collectResponse;
             do
             {
@@ -97,7 +97,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             
             // Assert
             Assert.Equal("2.2.2.2", collectResponse.CompletionData.Device.IpAddress);
-            Assert.Equal("199908072391", collectResponse.CompletionData.User.PersonalIdentityNumber);
+            Assert.Equal("201801012392", collectResponse.CompletionData.User.PersonalIdentityNumber);
         }
 
         [Fact]

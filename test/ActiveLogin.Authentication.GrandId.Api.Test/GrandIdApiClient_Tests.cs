@@ -112,11 +112,11 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             // Arrange
 
             // Act
-            await _grandIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("y", "https://c/", "199908072391"));
+            await _grandIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("y", "https://c/", "201801012392"));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-            Assert.Contains("pnr=199908072391", request.RequestUri.ToString());
+            Assert.Contains("pnr=201801012392", request.RequestUri.ToString());
         }
 
         [Fact]
