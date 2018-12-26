@@ -51,7 +51,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// Fetches the currents Session Data for a sessionId.
         /// </summary>
         /// <returns>If the request is successful, the sessionData is returned</returns>
-        public async Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request)
+        public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request)
         {
             var url = GetUrl("GetSession", new Dictionary<string, string>
             {
@@ -61,7 +61,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             });
 
             var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdSessionStateFullResponse>(url);
-            return new BankIdSessionStateResponse(fullResponse);
+            return new BankIdGetSessionResponse(fullResponse);
         }
 
 

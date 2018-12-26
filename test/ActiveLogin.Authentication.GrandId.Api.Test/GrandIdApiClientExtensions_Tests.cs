@@ -49,14 +49,14 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
         {
             // Arrange
             var grandIdApiClientMock = new Mock<IGrandIdApiClient>(MockBehavior.Strict);
-            grandIdApiClientMock.Setup(client => client.BankIdGetSessionAsync(It.IsAny<BankIdSessionStateRequest>()))
-                .ReturnsAsync(It.IsAny<BankIdSessionStateResponse>());
+            grandIdApiClientMock.Setup(client => client.BankIdGetSessionAsync(It.IsAny<BankIdGetSessionRequest>()))
+                .ReturnsAsync(It.IsAny<BankIdGetSessionResponse>());
 
             // Act
             await GrandIdApiClientExtensions.BankIdGetSessionAsync(grandIdApiClientMock.Object, "ask", "s");
 
             // Assert
-            var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdSessionStateRequest>();
+            var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdGetSessionRequest>();
             Assert.Equal("ask", request.AuthenticateServiceKey);
             Assert.Equal("s", request.SessionId);
         }

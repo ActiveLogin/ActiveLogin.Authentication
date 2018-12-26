@@ -142,7 +142,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             // Arrange
 
             // Act
-            await _grandIdApiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("ask", "s"));
+            await _grandIdApiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("ask", "s"));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -158,7 +158,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("x"));
 
             // Act
-            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", "y"));
+            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", "y"));
 
             // Assert
             Assert.NotNull(result);
@@ -181,7 +181,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("x"));
 
             // Act
-            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", "y"));
+            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", "y"));
 
             // Assert
             Assert.NotNull(result);
@@ -197,7 +197,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("x"));
 
             // Act
-            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", "y"));
+            var result = await grandIdApiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", "y"));
 
             // Assert
             Assert.NotNull(result);

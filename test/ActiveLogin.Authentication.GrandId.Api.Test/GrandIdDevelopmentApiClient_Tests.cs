@@ -35,11 +35,11 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
 
             // Act
             var firstLoginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", "201801012392"));
-            await _grandIdClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", firstLoginResponse.SessionId));
+            await _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", firstLoginResponse.SessionId));
 
 
             var secondLoginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", "201801012392"));
-            await _grandIdClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", secondLoginResponse.SessionId));
+            await _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", secondLoginResponse.SessionId));
 
             // Assert
             Assert.True(true, "Did not throw");
@@ -56,7 +56,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
 
             // Act
             var loginResponse = await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/"));
-            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", loginResponse.SessionId));
+            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", loginResponse.SessionId));
 
             // Assert
             Assert.Equal("201801012392", sessionResponse.Username);
@@ -76,7 +76,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
 
             // Act
             var loginResponse = await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", "201801012392"));
-            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", loginResponse.SessionId));
+            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", loginResponse.SessionId));
 
             // Assert
             Assert.Equal("201801012392", sessionResponse.Username);
@@ -115,7 +115,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             await _grandIdClient.LogoutAsync(new LogoutRequest(loginResponse.SessionId));
 
             // Assert
-            await Assert.ThrowsAsync<GrandIdApiException>(() => _grandIdClient.BankIdGetSessionAsync(new BankIdSessionStateRequest("x", loginResponse.SessionId)));
+            await Assert.ThrowsAsync<GrandIdApiException>(() => _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", loginResponse.SessionId)));
         }
     }
 }

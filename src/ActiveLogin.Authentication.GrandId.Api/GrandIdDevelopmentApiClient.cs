@@ -81,7 +81,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             }
         }
 
-        public async Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request)
+        public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
@@ -95,7 +95,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var personalIdentityNumber = auth.PersonalIdentityNumber;
             var userAttributes = GetUserAttributes(personalIdentityNumber);
-            var response = new BankIdSessionStateResponse(auth.BankIdFederatedLoginResponse.SessionId,
+            var response = new BankIdGetSessionResponse(auth.BankIdFederatedLoginResponse.SessionId,
                 userAttributes.PersonalIdentityNumber,
                 userAttributes
             );

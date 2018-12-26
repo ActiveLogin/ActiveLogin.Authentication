@@ -21,7 +21,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// Fetches the currents Session Data for a BankID sessionId.
         /// </summary>
         /// <returns>If the request is successful, the sessionData is returned</returns>
-        Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request);
+        Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request);
 
 
         /// <summary>

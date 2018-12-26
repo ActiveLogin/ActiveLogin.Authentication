@@ -1,14 +1,14 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public class BankIdSessionStateResponse : SessionStateResponseBase
+    public class BankIdGetSessionResponse : SessionStateResponseBase
     {
-        internal BankIdSessionStateResponse(BankIdSessionStateFullResponse fullResponse)
+        internal BankIdGetSessionResponse(BankIdSessionStateFullResponse fullResponse)
         : base(fullResponse)
         {
             UserAttributes = fullResponse.UserAttributes;
         }
 
-        internal BankIdSessionStateResponse(string sessionId, string username, BankIdSessionStateUserAttributes userAttributes)
+        internal BankIdGetSessionResponse(string sessionId, string username, BankIdSessionStateUserAttributes userAttributes)
             : base(sessionId, username)
         {
             UserAttributes = userAttributes;
