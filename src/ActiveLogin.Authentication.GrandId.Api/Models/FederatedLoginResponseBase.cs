@@ -8,7 +8,7 @@
             RedirectUrl = fullResponse.RedirectUrl;
         }
 
-        protected FederatedLoginResponseBase(string sessionId, string redirectUrl)
+        internal FederatedLoginResponseBase(string sessionId, string redirectUrl)
         {
             SessionId = sessionId;
             RedirectUrl = redirectUrl;

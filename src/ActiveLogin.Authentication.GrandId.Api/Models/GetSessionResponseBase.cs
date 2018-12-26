@@ -8,7 +8,7 @@
             Username = fullResponse.UserName;
         }
 
-        protected GetSessionResponseBase(string sessionId, string username)
+        internal GetSessionResponseBase(string sessionId, string username)
         {
             SessionId = sessionId;
             Username = username;
