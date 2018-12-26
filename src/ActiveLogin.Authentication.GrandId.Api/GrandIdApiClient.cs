@@ -60,7 +60,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdSessionStateFullResponse>(url);
+            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdGetSessionFullResponse>(url);
             return new BankIdGetSessionResponse(fullResponse);
         }
 

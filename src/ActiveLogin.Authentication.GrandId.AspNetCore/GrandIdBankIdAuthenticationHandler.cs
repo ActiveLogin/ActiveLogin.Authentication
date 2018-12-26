@@ -63,7 +63,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return null;
         }
 
-        protected override async Task<BankIdGetSessionResponse> GetSessionStateAsync(string sessionId)
+        protected override async Task<BankIdGetSessionResponse> GetSessionResponseAsync(string sessionId)
         {
             try
             {

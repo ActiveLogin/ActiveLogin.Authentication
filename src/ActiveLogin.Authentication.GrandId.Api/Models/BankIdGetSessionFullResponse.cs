@@ -3,9 +3,9 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    internal class BankIdSessionStateFullResponse : SessionStateFullResponseBase
+    internal class BankIdGetSessionFullResponse : GetSessionFullResponseBase
     {
         [DataMember(Name = "userAttributes")]
-        public BankIdSessionStateUserAttributes UserAttributes { get; private set; }
+        public BankIdGetSessionUserAttributes UserAttributes { get; private set; }
     }
 }

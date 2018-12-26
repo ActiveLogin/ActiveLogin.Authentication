@@ -1,14 +1,14 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public abstract class SessionStateResponseBase
+    public abstract class GetSessionResponseBase
     {
-        internal SessionStateResponseBase(SessionStateFullResponseBase fullResponse)
+        internal GetSessionResponseBase(GetSessionFullResponseBase fullResponse)
         {
             SessionId = fullResponse.SessionId;
             Username = fullResponse.UserName;
         }
 
-        protected SessionStateResponseBase(string sessionId, string username)
+        protected GetSessionResponseBase(string sessionId, string username)
         {
             SessionId = sessionId;
             Username = username;

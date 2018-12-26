@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public abstract class GrandIdAuthenticationHandler<TOptions, TSessionState> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdAuthenticationOptions, new()
+    public abstract class GrandIdAuthenticationHandler<TOptions, TGetSessionResponse> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdAuthenticationOptions, new()
     {
         protected GrandIdAuthenticationHandler(
             IOptionsMonitor<TOptions> options,
@@ -41,7 +41,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             try
             {
-                var sessionResult = await GetSessionStateAsync(sessionId);
+                var sessionResult = await GetSessionResponseAsync(sessionId);
 
                 var properties = state.AuthenticationProperties;
                 var ticket = GetAuthenticationTicket(sessionResult, properties);
@@ -54,9 +54,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        protected abstract Task<TSessionState> GetSessionStateAsync(string sessionId);
+        protected abstract Task<TGetSessionResponse> GetSessionResponseAsync(string sessionId);
 
-        private AuthenticationTicket GetAuthenticationTicket(TSessionState loginResult, AuthenticationProperties properties)
+        private AuthenticationTicket GetAuthenticationTicket(TGetSessionResponse loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -72,7 +72,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return new AuthenticationTicket(principal, properties, Scheme.Name);
         }
 
-        private IEnumerable<Claim> GetAllClaims(TSessionState loginResult, DateTimeOffset? expiresUtc)
+        private IEnumerable<Claim> GetAllClaims(TGetSessionResponse loginResult, DateTimeOffset? expiresUtc)
         {
             var claims = new List<Claim>();
 
@@ -104,7 +104,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return claims;
         }
 
-        protected abstract IEnumerable<Claim> GetClaims(TSessionState loginResult);
+        protected abstract IEnumerable<Claim> GetClaims(TGetSessionResponse loginResult);
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {

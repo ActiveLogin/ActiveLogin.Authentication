@@ -135,9 +135,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return new LogoutResponse(true);
         }
 
-        private BankIdSessionStateUserAttributes GetUserAttributes(string personalIdentityNumber)
+        private BankIdGetSessionUserAttributes GetUserAttributes(string personalIdentityNumber)
         {
-            return new BankIdSessionStateUserAttributes(string.Empty, _givenName, _surname, $"{_givenName} {_surname}", personalIdentityNumber, string.Empty, string.Empty, string.Empty);
+            return new BankIdGetSessionUserAttributes(string.Empty, _givenName, _surname, $"{_givenName} {_surname}", personalIdentityNumber, string.Empty, string.Empty, string.Empty);
         }
 
         private async Task SimulateResponseDelay()

@@ -151,7 +151,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
         }
 
         [Fact]
-        public async void BankIdGetSessionAsync_WithBankIdGetSessionRequest__ShouldParseAndReturnSessionState()
+        public async void BankIdGetSessionAsync_WithBankIdGetSessionRequest__ShouldParseAndReturnGetSessionResponse()
         {
             // Arrange
             var httpClient = GetHttpClientMockWithOkResponse("{ \"sessionId\": \"s\", \"username\": \"u\", \"userAttributes\": { \"givenName\": \"ugn\", \"surname\": \"usn\", \"name\": \"un\", \"personalNumber\": \"upn\", \"ipAddress\": \"uip\" } }");
