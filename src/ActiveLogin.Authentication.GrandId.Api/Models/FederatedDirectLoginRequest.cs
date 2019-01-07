@@ -2,11 +2,6 @@
 {
     public class FederatedDirectLoginRequest
     {
-        public FederatedDirectLoginRequest()
-        {
-            
-        }
-
         public FederatedDirectLoginRequest(string authenticateServiceKey, string username, string password)
         {
             AuthenticateServiceKey = authenticateServiceKey;
@@ -14,8 +9,8 @@
             Password = password;
         }
 
-        public string AuthenticateServiceKey { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string AuthenticateServiceKey { get; }
+        public string Username { get; }
+        public string Password { get; }
     }
 }

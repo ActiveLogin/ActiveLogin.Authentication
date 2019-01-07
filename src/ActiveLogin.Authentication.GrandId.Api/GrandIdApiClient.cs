@@ -51,7 +51,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// Fetches the currents Session Data for a sessionId.
         /// </summary>
         /// <returns>If the request is successful, the sessionData is returned</returns>
-        public async Task<BankIdSessionStateResponse> BankIdGetSessionAsync(BankIdSessionStateRequest request)
+        public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request)
         {
             var url = GetUrl("GetSession", new Dictionary<string, string>
             {
@@ -60,8 +60,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdSessionStateFullResponse>(url);
-            return new BankIdSessionStateResponse(fullResponse);
+            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdGetSessionFullResponse>(url);
+            return new BankIdGetSessionResponse(fullResponse);
         }
 
 
@@ -117,7 +117,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             var fullResponse = await _httpClient.GetAsync<TResult>(url);
             if (fullResponse.ErrorObject != null)
             {
-                throw new GrandIdApiException(fullResponse.ErrorObject.Code, fullResponse.ErrorObject.Message);
+                throw new GrandIdApiException(fullResponse.ErrorObject);
             }
 
             return fullResponse;

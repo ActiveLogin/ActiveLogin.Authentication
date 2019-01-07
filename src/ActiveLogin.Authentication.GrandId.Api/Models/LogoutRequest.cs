@@ -2,16 +2,11 @@
 {
     public class LogoutRequest
     {
-        public LogoutRequest()
-        {
-            
-        }
-
         public LogoutRequest(string sessionId)
         {
             SessionId = sessionId;
         }
 
-        public string SessionId { get; set; }
+        public string SessionId { get; }
     }
 }

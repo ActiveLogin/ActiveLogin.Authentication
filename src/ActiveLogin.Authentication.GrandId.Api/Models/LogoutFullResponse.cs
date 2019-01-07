@@ -3,9 +3,9 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class LogoutFullResponse : FullResponseBase
+    internal class LogoutFullResponse : FullResponseBase
     {
         [DataMember(Name = "sessiondeleted")]
-        public string SessionDeleted { get; set; }
+        public string SessionDeleted { get; private set; }
     }
 }

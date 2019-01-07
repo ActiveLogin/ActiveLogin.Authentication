@@ -1,24 +1,20 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     [DataContract]
-    public class Error
+    internal class Error
     {
-        [DataMember(Name = "errorCode")]
-        private string errorCode { get; set; }
-
-        public ErrorCode ErrorCode
+        public Error(string errorCode, string details)
         {
-            get
-            {
-                Enum.TryParse<ErrorCode>(errorCode, true, out var parsedErrorCode);
-                return parsedErrorCode;
-            }
+            ErrorCode = errorCode;
+            Details = details;
         }
 
+        [DataMember(Name = "errorCode")]
+        public string ErrorCode { get; private set; }
+
         [DataMember(Name = "details")]
-        public string Details { get; set; }
+        public string Details { get; private set; }
     }
 }

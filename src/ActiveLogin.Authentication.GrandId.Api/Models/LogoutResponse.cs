@@ -2,16 +2,16 @@
 {
     public class LogoutResponse
     {
-        public LogoutResponse()
-        {
-            
-        }
-
-        public LogoutResponse(LogoutFullResponse fullResponse)
+        internal LogoutResponse(LogoutFullResponse fullResponse)
         {
             SessionDeleted = fullResponse.SessionDeleted?.Equals("1") ?? false;
         }
 
-        public bool SessionDeleted { get; set; }
+        internal LogoutResponse(bool sessionDeleted)
+        {
+            SessionDeleted = sessionDeleted;
+        }
+
+        public bool SessionDeleted { get; }
     }
 }

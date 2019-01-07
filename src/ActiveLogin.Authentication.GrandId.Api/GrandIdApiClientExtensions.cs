@@ -18,13 +18,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return apiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest(authenticateServiceKey, callbackUrl, personalIdentityNumber));
         }
 
-        public static Task<BankIdSessionStateResponse> BankIdGetSessionAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string sessionId)
+        public static Task<BankIdGetSessionResponse> BankIdGetSessionAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string sessionId)
         {
-            return apiClient.BankIdGetSessionAsync(new BankIdSessionStateRequest(authenticateServiceKey, sessionId));
+            return apiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(authenticateServiceKey, sessionId));
         }
 
 
-        public static Task<FederatedDirectLoginResponse> DirectFederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
+        public static Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
         {
             return apiClient.FederatedDirectLoginAsync(new FederatedDirectLoginRequest(authenticateServiceKey, username, password));
         }

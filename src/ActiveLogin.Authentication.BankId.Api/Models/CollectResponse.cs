@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
@@ -9,51 +8,33 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CollectResponse
     {
-        public CollectResponse() { }
-
-        public CollectResponse(CollectStatus status, CollectHintCode hintCode)
+        internal CollectResponse(string orderRef, string status, string hintCode, CompletionData completionData)
         {
-            this.status = status.ToString();
-            this.hintCode = hintCode.ToString();
-        }
-
-        [DataMember(Name = "hintCode")]
-        private string hintCode { get; set; }
-
-        /// <summary>
-        /// Collect hint code.
-        /// RP should use the HintCode to provide the user with details and instructions and keep on calling collect until failed or complete.
-        /// </summary>
-        /// <remarks>Only present for pending and failed orders.</remarks>
-        public CollectHintCode HintCode
-        {
-            get
-            {
-                Enum.TryParse<CollectHintCode>(hintCode, true, out var parsedHintCode);
-                return parsedHintCode;
-            }
+            OrderRef = orderRef;
+            Status = status;
+            HintCode = hintCode;
+            CompletionData = completionData;
         }
 
         /// <summary>
         /// The orderRef in question.
         /// </summary>
         [DataMember(Name = "orderRef")]
-        public string OrderRef { get; set; }
-
-        [DataMember(Name = "status")]
-        private string status { get; set; }
+        public string OrderRef { get; private set; }
 
         /// <summary>
         /// Collect status.
         /// </summary>
-        public CollectStatus Status
-        {
-            get
-            {
-                Enum.TryParse<CollectStatus>(status, true, out var parsedStatus);
-                return parsedStatus;
-            }
-        }
+        [DataMember(Name = "status")]
+        public string Status { get; private set; }
+
+        /// <summary>
+        /// Collect hint code.
+        /// RP should use the HintCode to provide the user with details and instructions and keep on calling collect until failed or complete.
+        /// </summary>
+        /// <remarks>Only present for pending and failed orders.</remarks>
+        [DataMember(Name = "hintCode")]
+        public string HintCode { get; private set; }
 
         /// <summary>
         /// The completionData includes the signature, user information and the OCSP response.
@@ -62,6 +43,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// </summary>
         /// <remarks>Only present for complete orders.</remarks>
         [DataMember(Name = "completionData")]
-        public CompletionData CompletionData { get; set; }
+        public CompletionData CompletionData { get; private set; }
     }
 }

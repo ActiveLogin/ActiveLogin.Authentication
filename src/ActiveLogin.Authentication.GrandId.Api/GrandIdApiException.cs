@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 
 namespace ActiveLogin.Authentication.GrandId.Api
@@ -9,30 +8,15 @@ namespace ActiveLogin.Authentication.GrandId.Api
     /// </summary>
     public class GrandIdApiException : HttpRequestException
     {
-        public GrandIdApiException(string description, Exception inner)
-            : this(ErrorCode.Unknown, description, inner)
+        internal GrandIdApiException(Error error)
+            : this(error.GetErrorCode(), error.Message)
         { }
 
-        public GrandIdApiException(Error error, Exception inner)
-            : this(error.ErrorCode, error.Details, inner)
-        { }
-
-        public GrandIdApiException(ErrorCode errorCode, string details)
-            : this(errorCode, details, null)
-        { }
-
-        public GrandIdApiException(ErrorCode errorCode, string details, Exception inner)
-            : base($"{errorCode}: {details}", inner)
+        internal GrandIdApiException(ErrorCode errorCode, string errorDetails)
+          : base($"{errorCode}: {errorDetails}", null)
         {
             ErrorCode = errorCode;
-            Details = details;
-        }
-
-        public GrandIdApiException(string errorCodeString, string details)
-          : base($"{errorCodeString}: {details}", null)
-        {
-            ErrorCode = Enum.TryParse<ErrorCode>(errorCodeString, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
-            Details = details;
+            ErrorDetails = errorDetails;
         }
 
         /// <summary>
@@ -43,6 +27,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <summary>
         /// Details about the error.
         /// </summary>
-        public string Details { get; }
+        public string ErrorDetails { get; }
     }
 }

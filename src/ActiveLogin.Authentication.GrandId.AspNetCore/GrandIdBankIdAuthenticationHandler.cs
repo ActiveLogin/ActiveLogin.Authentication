@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, BankIdSessionStateResponse>
+    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, BankIdGetSessionResponse>
     {
         private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
         private readonly IGrandIdApiClient _grandIdApiClient;
@@ -63,7 +63,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return null;
         }
 
-        protected override async Task<BankIdSessionStateResponse> GetSessionStateAsync(string sessionId)
+        protected override async Task<BankIdGetSessionResponse> GetSessionResponseAsync(string sessionId)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        protected override IEnumerable<Claim> GetClaims(BankIdSessionStateResponse loginResult)
+        protected override IEnumerable<Claim> GetClaims(BankIdGetSessionResponse loginResult)
         {
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>

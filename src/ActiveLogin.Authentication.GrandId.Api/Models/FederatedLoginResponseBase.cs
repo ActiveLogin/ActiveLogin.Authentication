@@ -1,20 +1,21 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
-    public abstract class FederatedLoginResponseBase<TFullResponse> where TFullResponse : FederatedLoginFullResponseBase
+    public abstract class FederatedLoginResponseBase
     {
-        protected FederatedLoginResponseBase()
-        {
-            
-        }
-
-        protected FederatedLoginResponseBase(TFullResponse fullResponse)
+        internal FederatedLoginResponseBase(FederatedLoginFullResponseBase fullResponse)
         {
             SessionId = fullResponse.SessionId;
             RedirectUrl = fullResponse.RedirectUrl;
         }
 
-        public string SessionId { get; set; }
+        internal FederatedLoginResponseBase(string sessionId, string redirectUrl)
+        {
+            SessionId = sessionId;
+            RedirectUrl = redirectUrl;
+        }
 
-        public string RedirectUrl { get; set; }
+        public string SessionId { get; }
+
+        public string RedirectUrl { get; }
     }
 }

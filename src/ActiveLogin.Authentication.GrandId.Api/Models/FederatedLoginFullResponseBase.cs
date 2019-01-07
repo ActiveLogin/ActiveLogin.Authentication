@@ -3,12 +3,12 @@
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public abstract class FederatedLoginFullResponseBase : FullResponseBase
+    internal abstract class FederatedLoginFullResponseBase : FullResponseBase
     {
         [DataMember(Name = "sessionId")]
-        public string SessionId { get; set; }
+        public string SessionId { get; private set; }
 
         [DataMember(Name = "redirectUrl")]
-        public string RedirectUrl { get; set; }
+        public string RedirectUrl { get; private set; }
     }
 }

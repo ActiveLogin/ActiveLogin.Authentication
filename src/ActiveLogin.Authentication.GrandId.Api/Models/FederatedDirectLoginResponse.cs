@@ -2,22 +2,24 @@
 {
     public class FederatedDirectLoginResponse
     {
-        public FederatedDirectLoginResponse()
-        {
-
-        }
-
-        public FederatedDirectLoginResponse(FederatedDirectLoginFullResponse fullResponse)
+        internal FederatedDirectLoginResponse(FederatedDirectLoginFullResponse fullResponse)
         {
             SessionId = fullResponse.SessionId;
             Username = fullResponse.Username;
             UserAttributes = fullResponse.UserAttributes;
         }
 
-        public string SessionId { get; set; }
+        internal FederatedDirectLoginResponse(string sessionId, string username, FederatedDirectLoginUserAttributes userAttributes)
+        {
+            SessionId = sessionId;
+            Username = username;
+            UserAttributes = userAttributes;
+        }
 
-        public string Username { get; set; }
+        public string SessionId { get; }
 
-        public FederatedDirectLoginUserAttributes UserAttributes { get; set; }
+        public string Username { get; }
+
+        public FederatedDirectLoginUserAttributes UserAttributes { get; }
     }
 }

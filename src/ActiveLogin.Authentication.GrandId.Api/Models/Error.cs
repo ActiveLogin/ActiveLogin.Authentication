@@ -1,24 +1,20 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
-    public class Error
+    internal class Error
     {
-        [DataMember(Name = "errorObject")]
-        private string ErrorObject { get; set; }
-
-        public ErrorCode ErrorCode
+        public Error(string code, string message)
         {
-            get
-            {
-                Enum.TryParse<ErrorCode>(ErrorObject, true, out var parsedErrorCode);
-                return parsedErrorCode;
-            }
+            Code = code;
+            Message = message;
         }
 
+        [DataMember(Name = "code")]
+        public string Code { get; private set; }
+
         [DataMember(Name = "message")]
-        public string Details { get; set; }
+        public string Message { get; private set; }
     }
 }
