@@ -4,8 +4,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     public static class CertExtensions
     {
-        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         /// <summary>
         /// Start of validity of the users BankID.
         /// </summary>
@@ -29,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
 
         private static DateTime DateTimeFromUnixTimestampMilliseconds(long milliseconds)
         {
-            return UnixEpoch.AddMilliseconds(milliseconds);
+            return DateTimeOffset.FromUnixTimeMilliseconds(milliseconds).DateTime;
         }
     }
 }

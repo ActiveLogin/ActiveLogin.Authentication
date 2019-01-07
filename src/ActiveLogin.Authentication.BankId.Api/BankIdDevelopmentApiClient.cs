@@ -169,8 +169,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private static long UnixTimestampMillisecondsFromDateTime(DateTime dateTime)
         {
-            var unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return (long)(dateTime - unixEpoch).TotalMilliseconds;
+            var offset = new DateTimeOffset(dateTime);
+            return offset.ToUnixTimeMilliseconds();
         }
 
         private CollectStatus GetStatus(int collectCalls)
