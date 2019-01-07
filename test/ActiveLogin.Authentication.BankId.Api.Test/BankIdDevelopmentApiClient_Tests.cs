@@ -51,7 +51,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             } while (secondCollectResponse.GetCollectStatus() != CollectStatus.Complete);
 
             // Assert
-            Assert.True(true, "Did not throw");
         }
 
         [Fact]
