@@ -2,7 +2,7 @@
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
 
-<div class="bankid-login">
+<div class="bankid-login" style="width: 100%; max-width: 320px; margin: 0 auto; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
     @if (!string.IsNullOrEmpty(Localizer["SignIn_Header"]))
     {
         <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>

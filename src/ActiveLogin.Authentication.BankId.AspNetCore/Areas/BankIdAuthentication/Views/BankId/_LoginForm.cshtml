@@ -15,12 +15,12 @@
             <div class="form-group mb-2">
                 <label for="bankIdLoginPersonalIdentityNumber">@Localizer["PersonalIdentityNumber_Label"]</label>
 
-                <input id="bankIdLoginPersonalIdentityNumber" name="PersonalIdentityNumber" type="tel" class="form-control" placeholder="ÅÅMMDD-XXXX" value="@Model.PersonalIdentityNumber" autofocus required />
+                <input id="bankIdLoginPersonalIdentityNumber" name="PersonalIdentityNumber" type="tel" class="form-control" placeholder="ÅÅMMDD-XXXX" value="@Model.PersonalIdentityNumber" autofocus required style="text-align: center;" />
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">
                 <span class="submit-text">@Localizer["SignIn_Button"]</span>
-                <i class="fa fa-spinner fa-spin fa-pulse status-spinner" style="display: none;"></i>
+                <i class="fa fa-spinner fa-spin fa-pulse status-spinner" style="display: none; font-size: 1.4em;"></i>
             </button>
         }
     </fieldset>
