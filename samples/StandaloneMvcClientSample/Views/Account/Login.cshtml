@@ -1,0 +1,58 @@
+﻿@model AccountLoginViewModel
+@{
+    Layout = "_Layout";
+}
+@{
+    ViewData["Title"] = "Demo";
+}
+
+@if (Model.ExternalProviders.Any())
+{
+    <div class="choose-auth-provider">
+        <h1 class=" mb-5 mt-2 font-weight-normal">Active Login</h1>
+
+        <ul class="list-inline">
+            @foreach (var provider in Model.ExternalProviders)
+            {
+                <li class="mb-2">
+                    <a class="btn btn-primary btn-block btn-lg"
+                       asp-action="ExternalLogin"
+                       asp-route-provider="@provider.AuthenticationScheme"
+                       asp-route-returnUrl="@Model.ReturnUrl">
+                        @provider.DisplayName
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@if (!Model.ExternalProviders.Any())
+{
+    <div class="alert alert-warning">
+        <strong>Invalid login request</strong>
+        There are no login schemes configured for this client.
+    </div>
+}
+
+@section Styles {
+    <style type="text/css">
+        .choose-auth-provider {
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .choose-auth-provider a {
+            text-align: center;
+        }
+        .choose-auth-provider .choose-auth-provider-logo {
+            width: 133px;
+            height: 133px;
+        }
+    </style>
+}
