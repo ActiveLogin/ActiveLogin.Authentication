@@ -42,22 +42,22 @@ namespace StandaloneMvcClientSample
                     builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
                            .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
-                    //if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentEnvironment", false))
-                    //{
+                    if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentEnvironment", false))
+                    {
                         builder.UseDevelopmentEnvironment();
-                    //}
-                    //else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
-                    //{
-                    //    builder.UseTestEnvironment()
-                    //           .UseClientCertificate(() => new X509Certificate2(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate"))))
-                    //           .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
-                    //}
-                    //else
-                    //{
-                    //    builder.UseProductionEnvironment()
-                    //           .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                    //           .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
-                    //}
+                    }
+                    else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
+                    {
+                        builder.UseTestEnvironment()
+                               .UseClientCertificate(() => new X509Certificate2(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate"))))
+                               .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                    }
+                    else
+                    {
+                        builder.UseProductionEnvironment()
+                               .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+                               .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                    }
                 })
                 .AddGrandId(builder =>
                 {
@@ -75,18 +75,18 @@ namespace StandaloneMvcClientSample
                             });
 
 
-                    //if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentEnvironment", false))
-                    //{
+                    if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentEnvironment", false))
+                    {
                         builder.UseDevelopmentEnvironment();
-                    //}
-                    //else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
-                    //{
-                    //    builder.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
-                    //}
-                    //else
-                    //{
-                    //    builder.UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
-                    //}
+                    }
+                    else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
+                    {
+                        builder.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
+                    }
+                    else
+                    {
+                        builder.UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
+                    }
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
