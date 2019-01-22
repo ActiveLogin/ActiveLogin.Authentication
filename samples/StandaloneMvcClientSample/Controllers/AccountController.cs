@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StandaloneMvcClientSample.Models;
 
 namespace StandaloneMvcClientSample.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
@@ -16,6 +18,7 @@ namespace StandaloneMvcClientSample.Controllers
             _authenticationSchemeProvider = authenticationSchemeProvider;
         }
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             var schemes = _authenticationSchemeProvider.GetAllSchemesAsync();
@@ -34,6 +37,7 @@ namespace StandaloneMvcClientSample.Controllers
             });
         }
 
+        [AllowAnonymous]
         public IActionResult ExternalLogin(string provider)
         {
             var props = new AuthenticationProperties
@@ -49,6 +53,7 @@ namespace StandaloneMvcClientSample.Controllers
             return Challenge(props, provider);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> ExternalLoginCallback()
         {

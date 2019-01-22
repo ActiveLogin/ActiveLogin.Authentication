@@ -1,18 +1,15 @@
 ﻿using System.Diagnostics;
-using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StandaloneMvcClientSample.Models;
 
 namespace StandaloneMvcClientSample.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
         {
-            if (!HttpContext.User.Identities.First().IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
             return View();
         }
 
