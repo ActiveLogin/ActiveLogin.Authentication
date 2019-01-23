@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@functions {
+    public string GetClaimValue(IEnumerable<System.Security.Claims.Claim> claims, string type, string fallback = "-")
+    {
+        return claims.FirstOrDefault(x => x.Type == type)?.Value ?? fallback;
+    }
+}
+
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <h2 class="h4 m2-1 mt-5 text-center">Welcome @GetClaimValue(User.Claims, "given_name")!</h2>
+    <div class="card">
+        <div class="card-body">
+            <dl>
+                <dt>Given name</dt>
+                <dd>@GetClaimValue(User.Claims, "given_name")</dd>
+
+                <dt>Family name</dt>
+                <dd>@GetClaimValue(User.Claims, "family_name")</dd>
+
+                <dt>Full name</dt>
+                <dd>@GetClaimValue(User.Claims, "name")</dd>
+
+                <dt>Swedish personal identity number</dt>
+                <dd>@GetClaimValue(User.Claims, "swedish_personal_identity_number")</dd>
+
+                <dt>Birthdate</dt>
+                <dd>@GetClaimValue(User.Claims, "birthdate")</dd>
+
+                <dt>Gender</dt>
+                <dd>@GetClaimValue(User.Claims, "gender")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <h2 class="h4 m2-1 mt-5 text-center">All claims</h2>
+    <div class="card">
+        <div class="card-body">
+            <dl>
+                @foreach (var claim in User.Claims)
+                {
+                    <dt>@claim.Type</dt>
+                    <dd>@claim.Value</dd>
+                }
+            </dl>
+        </div>
+    </div>
+    <div class="mt-4">
+        <form method="post" asp-area="" asp-controller="Account" asp-action="Logout">
+            <input type="submit" value="Logout" class="btn btn-info btn-block" />
+        </form>
+    </div>
+}
