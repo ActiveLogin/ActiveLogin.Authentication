@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -116,7 +116,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         private TestServer CreateServer(Action<IBankIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath, Action<IServiceCollection> configureServices = null)
         {
             var webHostBuilder = new WebHostBuilder()
-                .UseSolutionRelativeContentRoot("test\\ActiveLogin.Authentication.BankId.AspNetCore.Test\\")
+                .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
                 .Configure(app =>
                 {
                     app.UseAuthentication();
