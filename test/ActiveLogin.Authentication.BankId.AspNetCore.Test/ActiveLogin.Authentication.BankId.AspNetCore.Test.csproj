@@ -8,11 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="VIews\Shared\_Layout.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="VIews\Shared\_Layout.cshtml">
+    <Content Include="Views\Shared\_Layout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
