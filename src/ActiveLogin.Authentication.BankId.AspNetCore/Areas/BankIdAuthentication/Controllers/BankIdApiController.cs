@@ -10,6 +10,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using ActiveLogin.Identity.Swedish;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,6 +20,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     [Area(BankIdAuthenticationConstants.AreaName)]
     [Route("/[area]/Api/")]
     [ApiController]
+    [AllowAnonymous]
     public class BankIdApiController : Controller
     {
         private readonly UrlEncoder _urlEncoder;

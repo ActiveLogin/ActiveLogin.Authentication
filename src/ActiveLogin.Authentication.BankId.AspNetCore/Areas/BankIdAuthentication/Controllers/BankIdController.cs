@@ -6,12 +6,14 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
     [Area(BankIdAuthenticationConstants.AreaName)]
     [Route("/[area]/[action]")]
+    [AllowAnonymous]
     public class BankIdController : Controller
     {
         private readonly IAntiforgery _antiforgery;
