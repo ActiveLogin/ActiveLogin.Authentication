@@ -30,20 +30,28 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
             var queryStringParams = new Dictionary<string, string>();
+
             if (!string.IsNullOrWhiteSpace(request.AutoStartToken))
             {
                 queryStringParams.Add("autostarttoken", request.AutoStartToken);
             }
+
             if (!string.IsNullOrWhiteSpace(request.RelyingPartyReference))
             {
                 queryStringParams.Add("rpref", Base64Encode(request.RelyingPartyReference));
             }
 
-            // Don't set any redirect url on Desktop as it opens in a new tab
-            var redirectUrl = device.IsDesktop ? "null" : request.RedirectUrl;
-            queryStringParams.Add("redirect", redirectUrl);
+            queryStringParams.Add("redirect", GetRedirectUrl(device, request));
 
             return GetQueryString(queryStringParams);
+        }
+
+        private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
+        {
+            // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2
+            return device.IsIos
+                ? request.RedirectUrl
+                : "null";
         }
 
         private static string Base64Encode(string value)
