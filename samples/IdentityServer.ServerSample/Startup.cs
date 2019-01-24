@@ -183,12 +183,7 @@ namespace IdentityServer.ServerSample
                 options.SupportedUICultures = supportedCultures;
             });
 
-            // BankID Authentication needs areas to be registered for the UI to work
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute("areas", "{area}/{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
