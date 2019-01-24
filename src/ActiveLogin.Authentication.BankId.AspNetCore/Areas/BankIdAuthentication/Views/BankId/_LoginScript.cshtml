@@ -7,7 +7,7 @@
         var statusSpinnerElement = statusElement.querySelector('.status-spinner');
         var statusMessageElement = statusElement.querySelector('.status-message');
 
-        var requiredFeatures = [window.fetch, window.sessionStorage, window.helloThere];
+        var requiredFeatures = [window.fetch, window.sessionStorage];
         var isMissingSomeFeature = requiredFeatures.some(function(x) { return !x; });
         if (isMissingSomeFeature) {
             showStatus(options.unsuportedBrowserErrorMessage, 'danger', false, true);
