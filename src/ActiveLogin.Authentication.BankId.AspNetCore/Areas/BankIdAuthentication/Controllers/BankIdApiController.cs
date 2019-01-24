@@ -138,7 +138,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var returnRedirectUri = GetAbsoluteUrl(Url.Action(nameof(BankIdController.Login), "BankId", new
             {
-                orderRef = protectedOrderRef,
                 returnUrl = request.ReturnUrl,
                 loginOptions = request.LoginOptions
             }));
