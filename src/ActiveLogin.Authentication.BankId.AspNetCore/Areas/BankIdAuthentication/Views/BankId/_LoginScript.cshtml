@@ -91,7 +91,7 @@
                             sessionStorage.setItem(sessionStorageOrderRefKey, data.orderRef);
                         }
 
-                        document.location = data.redirectUri;
+                        window.location.assign(data.redirectUri);
                     }
 
                     if (!!data.personalIdentityNumber || !!data.PersonalIdentityNumber) {
