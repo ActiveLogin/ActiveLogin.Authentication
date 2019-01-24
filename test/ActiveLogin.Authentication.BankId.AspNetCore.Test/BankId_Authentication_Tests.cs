@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Moq;
 using Xunit;
+using Xunit.Sdk;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 {
@@ -31,7 +32,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false));
         }
 
-        [Fact]
+        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
         public async Task Challange_Redirects_To_BankIdAuthentication_Login()
         {
             // Arrange
@@ -54,7 +55,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
 
-        [Fact]
+        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
         public async Task Authentication_UI_Should_Be_Accessible_Even_When_Site_Requires_Auth()
         {
             // Arrange
@@ -84,7 +85,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
         }
 
-        [Fact]
+        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
         public async Task BankIdAuthentication_Login_Returns_Form()
         {
             // Arrange
