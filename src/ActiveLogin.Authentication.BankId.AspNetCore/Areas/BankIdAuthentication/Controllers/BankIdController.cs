@@ -30,7 +30,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _loginOptionsProtector = loginOptionsProtector;
         }
     
-        public ActionResult Login(string returnUrl, string loginOptions, string orderRef)
+        public ActionResult Login(string returnUrl, string loginOptions)
         {
             if (!Url.IsLocalUrl(returnUrl))
             {
@@ -40,11 +40,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
             var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
 
-            var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens, orderRef);
+            var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
             return View(viewModel);
         }
         
-        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens, string orderRef = null)
+        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
         {
             var loginScriptOptions = new BankIdLoginScriptOptions
             {
@@ -63,7 +63,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
                 AutoLogin = unprotectedLoginOptions.IsAutoLogin(),
                 PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
-                OrderRef = orderRef,
 
                 LoginOptions = loginOptions,
                 UnprotectedLoginOptions = unprotectedLoginOptions,
