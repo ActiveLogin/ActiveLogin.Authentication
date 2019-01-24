@@ -44,10 +44,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.False(detectedDevice.IsDesktop);
         }
 
-        [Fact]
-        public void Should_Only_Detect_Android_And_Mobile_When_Android_User_Agent()
+        [Theory]
+        [InlineData("Mozilla/5.0 (Linux; Android 6.0.1; SM-G532G Build/MMB29T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.83 Mobile Safari/537.36")]
+        [InlineData("Mozilla/5.0 (Linux; Android 9; BLA-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.99 Mobile Safari/537.36")]
+        public void Should_Only_Detect_Android_And_Mobile_When_Android_User_Agent(string userAgent)
         {
-            var userAgent = "Mozilla/5.0 (Linux; Android 6.0.1; SM-G532G Build/MMB29T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.83 Mobile Safari/537.36";
             var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
 
             Assert.False(detectedDevice.IsIos);

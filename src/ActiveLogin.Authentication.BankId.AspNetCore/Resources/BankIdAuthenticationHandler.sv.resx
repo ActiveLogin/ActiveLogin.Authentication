@@ -189,4 +189,7 @@
   <data name="SingIn_Title" xml:space="preserve">
     <value>Logga in med BankID</value>
   </data>
+  <data name="UnsuportedBrowser_ErrorMessage" xml:space="preserve">
+    <value>Din webbläsare saknar funktioner som krävs för att använda denna loginsida.</value>
+  </data>
 </root>

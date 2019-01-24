@@ -2,6 +2,18 @@
 
 <script>
     (function (options) {
+        // Pre check
+        var statusElement = document.querySelector('#bankIdLoginStatus');
+        var statusSpinnerElement = statusElement.querySelector('.status-spinner');
+        var statusMessageElement = statusElement.querySelector('.status-message');
+
+        var requiredFeatures = [window.fetch, window.sessionStorage, window.helloThere];
+        var isMissingSomeFeature = requiredFeatures.some(function(x) { return !x; });
+        if (isMissingSomeFeature) {
+            showStatus(options.unsuportedBrowserErrorMessage, 'danger', false, true);
+            return;
+        }
+
         // OrderRef
 
         var sessionStorageOrderRefKey = 'ActiveLogin_BankId_OrderRef';
@@ -9,10 +21,6 @@
         sessionStorage.removeItem(sessionStorageOrderRefKey);
 
         // Elements
-
-        var statusElement = document.querySelector('#bankIdLoginStatus');
-        var statusSpinnerElement = statusElement.querySelector('.status-spinner');
-        var statusMessageElement = statusElement.querySelector('.status-message');
 
         var formElement = document.querySelector('#bankIdLoginForm');
         var formFieldsetElement = formElement.querySelector('fieldset');
@@ -100,7 +108,7 @@
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
-                    showStatus(error.message, 'danger');
+                    showStatus(error.message, 'danger', false);
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
                     formFieldsetElement.disabled = false;
@@ -158,14 +166,18 @@
                 });
         }
 
-        function showStatus(status, type, spinner) {
+        function showStatus(status, type, spinner, html) {
             var textClass = 'text-white';
             if (type === 'light') {
                 textClass = '';
             }
 
             statusElement.className = 'card bg-' + type + ' ' + textClass;
-            statusMessageElement.innerText = status;
+            if (!!html) {
+                statusMessageElement.innerHTML = status;
+            } else {
+                statusMessageElement.innerText = status;
+            }
             setVisibility(statusSpinnerElement, spinner, 'inline-block');
             show(statusElement);
         }

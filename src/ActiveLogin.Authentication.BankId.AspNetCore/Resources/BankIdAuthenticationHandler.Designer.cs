@@ -276,5 +276,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
                 return ResourceManager.GetString("SingIn_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your browser does not have the features required to use this login page..
+        /// </summary>
+        internal static string UnsuportedBrowser_ErrorMessage {
+            get {
+                return ResourceManager.GetString("UnsuportedBrowser_ErrorMessage", resourceCulture);
+            }
+        }
     }
 }
