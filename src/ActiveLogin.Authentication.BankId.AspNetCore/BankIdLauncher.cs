@@ -13,9 +13,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             var prefix = GetPrefixPart(device);
             var queryString = GetQueryStringPart(device, request);
-            var suffix = GetSuffixPart(device);
 
-            return $"{prefix}{queryString}{suffix}";
+            return $"{prefix}{queryString}";
         }
 
         private string GetPrefixPart(BankIdSupportedDevice device)
@@ -25,23 +24,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 return "https://app.bankid.com/";
             }
 
-            if (device.IsAndroid)
-            {
-                return "intent://";
-            }
-
             return "bankid:///";
-        }
-
-
-        private string GetSuffixPart(BankIdSupportedDevice device)
-        {
-            if (device.IsAndroid)
-            {
-                return "#Intent;scheme=bankid;package=com.bankid.bus;end";
-            }
-            
-            return string.Empty;
         }
 
         private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request)

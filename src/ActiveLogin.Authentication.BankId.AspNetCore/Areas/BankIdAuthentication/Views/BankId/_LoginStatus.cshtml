@@ -1,4 +1,6 @@
-﻿@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+﻿@using Microsoft.Extensions.Localization
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
 
 <div class="card" id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
     <div class="card-body">
@@ -6,3 +8,7 @@
         <div class="status-message">@Model.LoginScriptOptions.InitialStatusMessage</div>
     </div>
 </div>
+
+<button id="bankIdLoginStartApp" type="button" class="btn btn-primary btn-block mt-2" style="display: none;">
+    @Localizer["BankIdUserMessage_ShortName_RFA18"]
+</button>

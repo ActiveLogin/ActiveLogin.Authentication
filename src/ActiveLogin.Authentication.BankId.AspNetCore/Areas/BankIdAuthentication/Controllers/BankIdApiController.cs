@@ -109,8 +109,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse, detectedDevice);
 
                 var response = detectedDevice.IsIos
-                    ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri)
-                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri);
+                    ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
+                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, detectedDevice.IsAndroid);
 
                 return Ok(response);
             }
