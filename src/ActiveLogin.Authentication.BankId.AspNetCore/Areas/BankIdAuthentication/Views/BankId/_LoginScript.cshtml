@@ -121,6 +121,7 @@
                     hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
                     showStatus(error.message, 'danger', false);
+                    hide(startBankIdAppButtonElement);
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
                     formFieldsetElement.disabled = false;
@@ -145,6 +146,7 @@
                     }
                 }).catch(function (error) {
                     showStatus(error.message, 'danger', false);
+                    hide(startBankIdAppButtonElement);
                 });
         }
 
