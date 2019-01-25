@@ -44,13 +44,13 @@ _Note:_ The packages relfecting the documentation are currently in alpha, so mak
 #### BankID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.BankId.AspNetCore -Version 1.0.0-rc-1
+dotnet add package ActiveLogin.Authentication.BankId.AspNetCore -Version 1.0.0-rc-2
 ```
 
 #### GrandID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore -Version 1.0.0-rc-1
+dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore -Version 1.0.0-rc-2
 ```
 
 ### 2. Prepare your project
