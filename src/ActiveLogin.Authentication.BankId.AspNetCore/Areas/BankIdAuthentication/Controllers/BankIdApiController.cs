@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
@@ -107,9 +108,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse, detectedDevice);
 
-                var response = detectedDevice.IsDesktop
-                    ? BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri)
-                    : BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri);
+                var response = detectedDevice.IsIos
+                    ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
+                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, detectedDevice.IsAndroid);
 
                 return Ok(response);
             }

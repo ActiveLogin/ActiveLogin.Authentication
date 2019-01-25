@@ -8,6 +8,7 @@ using ActiveLogin.Authentication.Common.Serialization;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -19,15 +20,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IAntiforgery _antiforgery;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
+        private readonly IStringLocalizer<BankIdAuthenticationHandler> _localizer;
 
         public BankIdController(
             IAntiforgery antiforgery,
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-            IBankIdLoginOptionsProtector loginOptionsProtector)
+            IBankIdLoginOptionsProtector loginOptionsProtector,
+            IStringLocalizer<BankIdAuthenticationHandler> localizer)
         {
             _antiforgery = antiforgery;
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
             _loginOptionsProtector = loginOptionsProtector;
+            _localizer = localizer;
         }
     
         public ActionResult Login(string returnUrl, string loginOptions)
@@ -52,6 +56,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
                 InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA13),
                 UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
+
+                UnsuportedBrowserErrorMessage = _localizer["UnsuportedBrowser_ErrorMessage"],
 
                 BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.InitializeAsync), "BankIdApi"),
                 BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.StatusAsync), "BankIdApi")
