@@ -103,7 +103,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             _logger.BankIdAuthSuccess(personalIdentityNumber, orderRef);
 
-            if (unprotectedLoginOptions.AutoLaunch)
+            if (unprotectedLoginOptions.AutoLaunch && _bankIdLauncher.CanLaunch)
             {
                 var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse, detectedDevice);

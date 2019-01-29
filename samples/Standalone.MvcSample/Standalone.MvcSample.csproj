@@ -7,7 +7,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="ActiveLogin.Authentication.BankId.AspNetCore" Version="1.0.0-rc-1" />
+    <PackageReference Include="ActiveLogin.Authentication.BankId.AspNetCore" Version="1.0.0-rc-2" />
     <PackageReference Include="ActiveLogin.Authentication.BankId.AspNetCore.Azure" Version="1.0.0-rc-1" />
     <PackageReference Include="ActiveLogin.Authentication.GrandId.AspNetCore" Version="1.0.0-rc-1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />

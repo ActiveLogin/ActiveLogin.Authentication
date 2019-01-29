@@ -8,5 +8,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             return request.RedirectUrl;
         }
+
+        public bool CanLaunch => false;
     }
 }

@@ -17,6 +17,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return $"{prefix}{queryString}";
         }
 
+        public bool CanLaunch => true;
+
         private string GetPrefixPart(BankIdSupportedDevice device)
         {
             if (device.IsIos)

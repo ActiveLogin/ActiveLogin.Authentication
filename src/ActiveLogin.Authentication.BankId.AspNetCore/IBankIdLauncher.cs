@@ -5,5 +5,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     public interface IBankIdLauncher
     {
         string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request);
+        bool CanLaunch { get; }
     }
 }
