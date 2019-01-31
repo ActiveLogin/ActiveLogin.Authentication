@@ -1,5 +1,9 @@
 # Getting started with BankID
 
+## Dependencies
+
+The BankID packages has UI that uses classes from [Bootsrap 4](https://getbootstrap.com/) and [Font Awesome](https://fontawesome.com), please make sure these styles are available on the page for the expected UI.
+
 ## Preparation
 
 BankID requires you to use a client certificate and trust a specific root CA-certificate.
