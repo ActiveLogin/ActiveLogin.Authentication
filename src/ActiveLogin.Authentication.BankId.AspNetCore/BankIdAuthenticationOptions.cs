@@ -50,13 +50,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         /// <summary>
         /// Whether or not to issue gender claim based on Swedish Personal Identity Number.
+        /// See https://github.com/ActiveLogin/ActiveLogin.Identity for more info and limitations.
         /// </summary>
-        public bool IssueGenderClaim { get; set; } = true;
+        public bool IssueGenderClaim { get; set; } = false;
 
         /// <summary>
         /// Whether or not to issue birthday claim based on Swedish Personal Identity Number.
+        /// See https://github.com/ActiveLogin/ActiveLogin.Identity for more info and limitations.
         /// </summary>
-        public bool IssueBirthdateClaim { get; set; } = true;
+        public bool IssueBirthdateClaim { get; set; } = false;
 
         public ISecureDataFormat<BankIdState> StateDataFormat { get; set; }
 

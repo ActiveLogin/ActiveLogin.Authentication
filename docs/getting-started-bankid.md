@@ -207,6 +207,12 @@ BankId options allows you to set and override some options such as these.
 
     // Limit possible login methods to, for example, only allow BankID on smartcard. See technical docs for list of policies.
     options.BankIdCertificatePolicies = new List<string> { "1.2.752.78.1.1" };
+
+	// Issue birthdate claim based on data extracted from the personal identity number
+	options.IssueBirthdateClaim = true;
+
+	// Issue gender claim based on data extracted from the personal identity number
+    options.IssueGenderClaim = true;
 });
 ```
 

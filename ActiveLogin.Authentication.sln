@@ -30,7 +30,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4764448D-A014-403F-A956-3F4CFFA00AF2}"
 	ProjectSection(SolutionItems) = preProject
 		docs\getting-started-bankid.md = docs\getting-started-bankid.md
-		docs\getting-started-grandid.md = docs\getting-started-grandid.md
+		docs\getting-started-grandid-bankid.md = docs\getting-started-grandid-bankid.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7D32EBEE-65D6-46D3-BC7E-65951C143969}"
