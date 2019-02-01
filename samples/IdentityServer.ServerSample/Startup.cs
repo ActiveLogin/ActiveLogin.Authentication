@@ -59,8 +59,8 @@ namespace IdentityServer.ServerSample
             //    {
             //        builder
             //            .UseDevelopmentEnvironment()
-            //            .AddBankIdSameDevice()
-            //            .AddBankIdOtherDevice();
+            //            .AddSameDevice()
+            //            .AddOtherDevice();
             //    });
 
             // Sample of using BankID with production environment
@@ -71,8 +71,8 @@ namespace IdentityServer.ServerSample
             //                .UseProductionEnvironment()
             //                .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             //                .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            //                .AddBankIdSameDevice()
-            //                .AddBankIdOtherDevice();
+            //                .AddSameDevice()
+            //                .AddOtherDevice();
             //        });
 
 
@@ -102,8 +102,18 @@ namespace IdentityServer.ServerSample
             services.AddAuthentication()
                 .AddBankId(builder =>
                 {
-                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
-                           .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)",
+                            options =>
+                            {
+                                options.IssueBirthdateClaim = true;
+                                options.IssueGenderClaim = true;
+                            })
+                           .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)",
+                            options =>
+                            {
+                                options.IssueBirthdateClaim = true;
+                                options.IssueGenderClaim = true;
+                            });
 
                     if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentEnvironment", false))
                     {
@@ -126,14 +136,23 @@ namespace IdentityServer.ServerSample
                 {
                     builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options =>
                             {
+                                options.IssueBirthdateClaim = true;
+                                options.IssueGenderClaim = true;
+
                                 options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
                             })
                             .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options =>
                             {
+                                options.IssueBirthdateClaim = true;
+                                options.IssueGenderClaim = true;
+
                                 options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
                             })
                             .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options =>
                             {
+                                options.IssueBirthdateClaim = true;
+                                options.IssueGenderClaim = true;
+
                                 options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdChooseDeviceServiceKey");
                             });
 

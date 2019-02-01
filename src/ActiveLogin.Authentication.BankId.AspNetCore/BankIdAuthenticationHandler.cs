@@ -7,6 +7,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
+using ActiveLogin.Identity.Swedish.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

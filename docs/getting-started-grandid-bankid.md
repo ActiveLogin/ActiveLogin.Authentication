@@ -141,3 +141,18 @@ services
             .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });
 ```
+
+### Customizing GrandID
+
+GrandId options allows you to set and override some options such as these.
+
+```c#
+.AddBankIdOtherDevice(options =>
+{
+	// Issue birthdate claim based on data extracted from the personal identity number
+	options.IssueBirthdateClaim = true;
+
+	// Issue gender claim based on data extracted from the personal identity number
+    options.IssueGenderClaim = true;
+});
+```

@@ -7,6 +7,7 @@ using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Identity.Swedish;
+using ActiveLogin.Identity.Swedish.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

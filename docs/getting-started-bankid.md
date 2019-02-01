@@ -1,5 +1,9 @@
 # Getting started with BankID
 
+## Dependencies
+
+The BankID packages has UI that uses classes from [Bootsrap 4](https://getbootstrap.com/) and [Font Awesome](https://fontawesome.com), please make sure these styles are available on the page for the expected UI.
+
 ## Preparation
 
 BankID requires you to use a client certificate and trust a specific root CA-certificate.
@@ -207,6 +211,12 @@ BankId options allows you to set and override some options such as these.
 
     // Limit possible login methods to, for example, only allow BankID on smartcard. See technical docs for list of policies.
     options.BankIdCertificatePolicies = new List<string> { "1.2.752.78.1.1" };
+
+	// Issue birthdate claim based on data extracted from the personal identity number
+	options.IssueBirthdateClaim = true;
+
+	// Issue gender claim based on data extracted from the personal identity number
+    options.IssueGenderClaim = true;
 });
 ```
 

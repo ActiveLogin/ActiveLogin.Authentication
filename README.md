@@ -96,7 +96,7 @@ services
 To authenticate using a real BankID you need to receive a certificate or API-keys, depending on what solution you choose. The details are described in these documents:
 
 * [Getting started with BankID in Test and Production](docs/getting-started-bankid.md)
-* [Getting started with GrandID in Test and Production](docs/getting-started-grandid.md)
+* [Getting started with GrandID in Test and Production](docs/getting-started-grandid-bankid.md)
 
 Samples on how to use them in production are:
 
@@ -116,7 +116,7 @@ services
     });
 ```
 
-#### [GrandID](docs/getting-started-grandid.md)
+#### [GrandID](docs/getting-started-grandid-bankid.md)
 
 ```c#
 services
@@ -189,18 +189,37 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
     return Challenge(props, provider);
 }
 ```
+### Do I need to use your ASP.NET Core Auth provider, or can just use the API?
+
+No, it's optional :) We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. The look like this and are both well documented using XML-comments.
+
+#### ActiveLogin.Authentication.BankId.Api
+
+```csharp
+public class BankIdApiClient : IBankIdApiClient
+{
+    public Task<AuthResponse> AuthAsync(AuthRequest request) { ... }
+    public Task<CollectResponse> CollectAsync(CollectRequest request) { ... }
+    public Task<CancelResponse> CancelAsync(CancelRequest request) { ... }
+}
+```
+
+#### ActiveLogin.Authentication.GrandId.Api
+
+```csharp
+public class GrandIdApiClient : IGrandIdApiClient
+{
+	public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request) { ... }
+    public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request) { ... }
+    public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request) { ... }
+    public async Task<LogoutResponse> LogoutAsync(LogoutRequest request) { ... }
+}
+```
 
 ### Why are the names sometimes capitalized?
 
 It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
-We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way. If you really need to, this code is a good start at least:
-
-```csharp
-private string NormalizeName(string name)
-{
-    return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name.ToLowerInvariant());
-}
-```
+We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
 
 ## Active Login
 
