@@ -191,7 +191,7 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
 ```
 ### Do I need to use your ASP.NET Core Auth provider, or can just use the API?
 
-No, it's optional :) We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. The look like this and are both well documented using XML-comments:
+No, it's optional :) We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. The look like this and are both well documented using XML-comments.
 
 #### ActiveLogin.Authentication.BankId.Api
 
