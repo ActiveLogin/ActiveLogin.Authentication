@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api.Models;
 
@@ -33,17 +34,22 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "apiKey", _apiKey },
                 { "authenticateServiceKey", request.AuthenticateServiceKey }
             };
-
-            if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
-            {
-                queryStringParams.Add("pnr", request.PersonalIdentityNumber);
-            }
-
-            queryStringParams.Add("callbackUrl", request.CallbackUrl);
-
             var url = GetUrl("FederatedLogin", queryStringParams);
+            var postData = new Dictionary<string, string>
+            {
+                { "callbackUrl", GetBase64EncodedString(request.CallbackUrl) },
+                { "deviceChoice", GetBoolString(request.UseChooseDevice) },
+                { "thisDevice", GetBoolString(request.UseSameDevice) },
+                { "askForSSN", GetBoolString(request.AskForPersonalIdentityNumber) },
+                { "personalNumber", request.PersonalIdentityNumber },
+                { "mobileBankId", GetBoolString(request.RequireMobileBankId) },
+                { "customerURL", GetBase64EncodedString(request.CustomerUrl) },
+                { "gui", GetBoolString(request.ShowGui) },
+                { "userVisibleData", GetBase64EncodedString(request.SignUserVisibleData) },
+                { "userNonVisibleData", GetBase64EncodedString(request.SignUserNonVisibleData) }
+            };
 
-            var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdFederatedLoginFullResponse>(url);
+            var fullResponse = await PostFullResponseAndEnsureSuccess<BankIdFederatedLoginFullResponse>(url, postData);
             return new BankIdFederatedLoginResponse(fullResponse);
         }
 
@@ -101,7 +107,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         }
 
 
-        internal static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
+        private static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
         {
             if (!queryStringParams.Any())
             {
@@ -121,6 +127,38 @@ namespace ActiveLogin.Authentication.GrandId.Api
             }
 
             return fullResponse;
+        }
+
+        private async Task<TResult> PostFullResponseAndEnsureSuccess<TResult>(string url, Dictionary<string, string> postData) where TResult : FullResponseBase
+        {
+            var postDataWithoutNullValues = postData.Where(pair => pair.Value != null).ToDictionary(x => x.Key, x => x.Value);
+            var fullResponse = await _httpClient.PostAsync<TResult>(url, postDataWithoutNullValues);
+            if (fullResponse.ErrorObject != null)
+            {
+                throw new GrandIdApiException(fullResponse.ErrorObject);
+            }
+
+            return fullResponse;
+        }
+
+        private static string GetBase64EncodedString(string value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+        }
+
+        private static string GetBoolString(bool? value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return value.Value ? bool.TrueString.ToLower() : bool.FalseString.ToLower();
         }
     }
 }

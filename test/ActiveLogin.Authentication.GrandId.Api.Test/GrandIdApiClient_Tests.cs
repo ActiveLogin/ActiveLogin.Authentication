@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,7 +64,36 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
         }
 
         [Fact]
-        public async void BankIdFederatedLoginAsync_WithApiKey__ShouldGetToGrandIdFederatedLogin_WithApiKey()
+        public async void BankIdFederatedLoginAsync__ShouldPostToGrandIdFederatedLogin_WithFormPayload()
+        {
+            // Arrange
+            var messageHandlerMock = GetHttpClientMessageHandlerMock(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("{ }", Encoding.Default, "application/json"),
+            });
+
+            var httpClient = new HttpClient(messageHandlerMock.Object)
+            {
+                BaseAddress = new Uri("https://grandid/")
+            };
+            var grandIdApiClient = new GrandIdApiClient(httpClient, new GrandIdApiClientConfiguration("ak"));
+
+            // Act
+            await grandIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("y"));
+
+            // Assert
+            Assert.Single(messageHandlerMock.Invocations);
+            var request = messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            Assert.NotNull(request);
+
+            Assert.Equal(HttpMethod.Post, request.Method);
+            Assert.StartsWith("https://grandid/FederatedLogin", request.RequestUri.ToString());
+            Assert.Equal(new MediaTypeHeaderValue("application/x-www-form-urlencoded"), request.Content.Headers.ContentType);
+        }
+
+        [Fact]
+        public async void BankIdFederatedLoginAsync_WithApiKey__ShouldPostToGrandIdFederatedLogin_WithApiKey()
         {
             // Arrange
             var messageHandlerMock = GetHttpClientMessageHandlerMock(new HttpResponseMessage
@@ -82,17 +112,27 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             await grandIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("y", "https://c/"));
 
             // Assert
-            Assert.Single(messageHandlerMock.Invocations);
             var request = messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-            Assert.NotNull(request);
-
-            Assert.Equal(HttpMethod.Get, request.Method);
-            Assert.StartsWith("https://grandid/FederatedLogin", request.RequestUri.ToString());
             Assert.Contains("apiKey=ak", request.RequestUri.ToString());
         }
 
         [Fact]
-        public async void BankIdFederatedLoginAsync_WithServiceKey_AndCallbackUrl__ShouldGetToGrandIdFederatedLogin_WithServiceKey_AndCallbackUrl_ButNoPin()
+        public async void BankIdFederatedLoginAsync_WithNoParams__ShouldPostToGrandIdFederatedLogin_WithNoPayload()
+        {
+            // Arrange
+
+            // Act
+            await _grandIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("ask"));
+
+            // Assert
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Empty(contentString);
+        }
+
+        [Fact]
+        public async void BankIdFederatedLoginAsync_WithCallbackUrl__ShouldPostToGrandIdFederatedLogin_WithCallbackUrl_ButNoPin()
         {
             // Arrange
 
@@ -101,22 +141,61 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-            Assert.Contains("authenticateServiceKey=ask", request.RequestUri.ToString());
-            Assert.Contains("callbackUrl=https%3A%2F%2Fcb%2F", request.RequestUri.ToString());
-            Assert.DoesNotContain("pnr", request.RequestUri.ToString());
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Equal("callbackUrl=aHR0cHM6Ly9jYi8%3D", contentString);
         }
 
         [Fact]
-        public async void BankIdFederatedLoginAsync_WithServiceKey_AndCallbackUrl_AndPin__ShouldGetToGrandIdFederatedLogin_WithPin()
+        public async void BankIdFederatedLoginAsync_WithAllValues__ShouldPostToGrandIdFederatedLogin_WithAllValues()
+        {
+            // Arrange
+            var bankIdFederatedLoginRequest = new BankIdFederatedLoginRequest(
+                authenticateServiceKey: "ask",
+                callbackUrl: "https://cb/",
+                useChooseDevice: true,
+                useSameDevice: true,
+                askForPersonalIdentityNumber: true,
+                personalIdentityNumber: "20180101239",
+                requireMobileBankId: true,
+                customerUrl: "https://cu/",
+                showGui: true,
+                signUserVisibleData: "uvd",
+                signUserNonVisibleData: "unvd"
+            );
+
+            // Act
+            await _grandIdApiClient.BankIdFederatedLoginAsync(bankIdFederatedLoginRequest);
+
+            // Assert
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Contains("callbackUrl=aHR0cHM6Ly9jYi8%3D", contentString);
+            Assert.Contains("deviceChoice=true", contentString);
+            Assert.Contains("thisDevice=true", contentString);
+            Assert.Contains("askForSSN=true", contentString);
+            Assert.Contains("personalNumber=20180101239", contentString);
+            Assert.Contains("mobileBankId=true", contentString);
+            Assert.Contains("customerURL=aHR0cHM6Ly9jdS8%3D", contentString);
+            Assert.Contains("gui=true", contentString);
+            Assert.Contains("userVisibleData=dXZk", contentString);
+            Assert.Contains("userNonVisibleData=dW52ZA%3D%3D", contentString);
+        }
+
+        [Fact]
+        public async void BankIdFederatedLoginAsync_WithServiceKey_AndCallbackUrl_AndPin__ShouldPostToGrandIdFederatedLogin_WithPin()
         {
             // Arrange
 
             // Act
-            await _grandIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("y", "https://c/", "201801012392"));
+            await _grandIdApiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("y", "https://c/", personalIdentityNumber: "201801012392"));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-            Assert.Contains("pnr=201801012392", request.RequestUri.ToString());
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Contains("personalNumber=20180101239", contentString);
         }
 
         [Fact]

@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
         }
 
         [Fact]
-        public async void BankIdFederatedLoginAsync_WithSeviceKey_AndCallbackUrl_AndPin_ShouldMap_ToBankIdFederatedLoginRequest_WithSeviceKey_AndCallbackUrl_AndPin()
+        public async void BankIdFederatedLoginAsync_WithAllValues_ShouldMap_ToBankIdFederatedLoginRequest_WithAllValues()
         {
             // Arrange
             var grandIdApiClientMock = new Mock<IGrandIdApiClient>(MockBehavior.Strict);
@@ -35,13 +35,33 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
                 .ReturnsAsync(It.IsAny<BankIdFederatedLoginResponse>());
 
             // Act
-            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object, "ask", "https://cb/", "201801012392");
+            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object,
+                "ask",
+                "https://cb/",
+                true,
+                true,
+                true,
+                "20180101239",
+                true,
+                "https://cu/",
+                true,
+                "uvd",
+                "unvd"
+            );
 
             // Assert
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
             Assert.Equal("ask", request.AuthenticateServiceKey);
             Assert.Equal("https://cb/", request.CallbackUrl);
-            Assert.Equal("201801012392", request.PersonalIdentityNumber);
+            Assert.Equal(true, request.UseChooseDevice);
+            Assert.Equal(true, request.UseSameDevice);
+            Assert.Equal(true, request.AskForPersonalIdentityNumber);
+            Assert.Equal("20180101239", request.PersonalIdentityNumber);
+            Assert.Equal(true, request.RequireMobileBankId);
+            Assert.Equal("https://cu/", request.CustomerUrl);
+            Assert.Equal(true, request.ShowGui);
+            Assert.Equal("uvd", request.SignUserVisibleData);
+            Assert.Equal("unvd", request.SignUserNonVisibleData);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 ﻿using System;
+using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
@@ -10,6 +11,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         /// AuthenticateServiceKey obtained from GrandID (Svensk E-identitet).
         /// </summary>
         public string GrandIdAuthenticateServiceKey { get; set; }
+
+        /// <summary>
+        /// What mode to use GrandID BankID in.
+        /// </summary>
+        internal GrandIdBankIdMode GrandIdBankIdMode { get; set; }
+
+        /// <summary>
+        /// If set to true, only mobile certificates will be allowed to be used (mobile apps).
+        /// </summary>
+        public bool RequireMobileBankId { get; } = false;
 
         /// <summary>
         /// Whether or not to issue gender claim based on Swedish Personal Identity Number.
