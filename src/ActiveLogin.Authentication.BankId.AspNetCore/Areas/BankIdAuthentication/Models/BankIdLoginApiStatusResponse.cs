@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
     public class BankIdLoginApiStatusResponse
     {
