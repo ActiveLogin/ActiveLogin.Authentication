@@ -11,18 +11,14 @@ namespace ActiveLogin.Authentication.BankId.Api
     {
         public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
-            var httpResponseMessage = await GetHttpResponseAsync(url, request, httpClient.PostAsync).ConfigureAwait(false);
-            return SystemRuntimeJsonSerializer.Deserialize<TResult>(await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false));
-        }
-
-        private static async Task<HttpResponseMessage> GetHttpResponseAsync<TRequest>(string url, TRequest request, Func<string, HttpContent, Task<HttpResponseMessage>> httpRequest)
-        {
             var requestJson = SystemRuntimeJsonSerializer.Serialize(request);
             var requestContent = GetJsonStringContent(requestJson);
 
-            var httpResponseMessage = await httpRequest(CleanUrl(url), requestContent).ConfigureAwait(false);
+            var httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
             await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage).ConfigureAwait(false);
-            return httpResponseMessage;
+            var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+            return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
         }
 
         private static StringContent GetJsonStringContent(string requestJson)
@@ -30,11 +26,6 @@ namespace ActiveLogin.Authentication.BankId.Api
             var requestContent = new StringContent(requestJson, Encoding.Default, "application/json");
             requestContent.Headers.ContentType.CharSet = string.Empty;
             return requestContent;
-        }
-
-        private static string CleanUrl(string url)
-        {
-            return url.TrimStart('/');
         }
     }
 }
