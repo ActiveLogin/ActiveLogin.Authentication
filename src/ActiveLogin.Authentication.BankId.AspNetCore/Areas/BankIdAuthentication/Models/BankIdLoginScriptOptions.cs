@@ -6,6 +6,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     [DataContract]
     public class BankIdLoginScriptOptions
     {
+        internal BankIdLoginScriptOptions()
+        {
+            
+        }
+
         private const int MinimumRefreshIntervalMs = 1000;
         private int _refreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs;
 

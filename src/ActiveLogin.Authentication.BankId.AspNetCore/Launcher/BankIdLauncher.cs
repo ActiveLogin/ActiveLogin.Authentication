@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdLauncher : IBankIdLauncher
+    internal class BankIdLauncher : IBankIdLauncher
     {
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {

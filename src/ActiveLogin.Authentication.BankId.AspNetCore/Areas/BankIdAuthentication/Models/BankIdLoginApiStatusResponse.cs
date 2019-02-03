@@ -1,8 +1,8 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
     public class BankIdLoginApiStatusResponse
     {
-        private BankIdLoginApiStatusResponse(bool isFinished, string statusMessage, string redirectUri)
+        internal BankIdLoginApiStatusResponse(bool isFinished, string statusMessage, string redirectUri)
         {
             IsFinished = isFinished;
             StatusMessage = statusMessage;

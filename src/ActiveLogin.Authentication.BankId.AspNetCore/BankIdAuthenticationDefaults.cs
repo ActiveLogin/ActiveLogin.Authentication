@@ -13,16 +13,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public const string ResourcesPath = "Resources";
 
 
-        public const string CustomAuthenticationScheme = "bankid";
-        public const string CustomDisplayName = "BankID";
-        public static readonly PathString CustomCallpackPath = new PathString("/signin-bankid");
-
         public const string SameDeviceAuthenticationScheme = "bankid-samedevice";
         public const string SameDeviceDisplayName = "BankID (Same device)";
-        public static readonly PathString SameDeviceCallpackPath = new PathString("/signin-bankid-samedevice");
+        public static readonly PathString SameDeviceCallbackPath = new PathString("/signin-bankid-samedevice");
 
         public const string OtherDeviceAuthenticationScheme = "bankid-otherdevice";
         public const string OtherDeviceDisplayName = "BankID (Other device)";
-        public static readonly PathString OtherDeviceCallpackPath = new PathString("/signin-bankid-otherdevice");
+        public static readonly PathString OtherDeviceCallbackPath = new PathString("/signin-bankid-otherdevice");
     }
 }

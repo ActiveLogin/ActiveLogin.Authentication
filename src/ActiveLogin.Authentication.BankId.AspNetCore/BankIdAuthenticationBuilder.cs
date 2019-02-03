@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             AuthenticationBuilder = authenticationBuilder;
 
-            ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProdApiBaseUrl);
+            ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
             ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);
         }
 

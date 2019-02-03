@@ -2,7 +2,7 @@
 {
     public class BankIdLoginApiInitializeResponse
     {
-        private BankIdLoginApiInitializeResponse(bool isAutoLaunch, bool showLaunchButton, bool checkStatus, string orderRef, string redirectUri)
+        internal BankIdLoginApiInitializeResponse(bool isAutoLaunch, bool showLaunchButton, bool checkStatus, string orderRef, string redirectUri)
         {
             IsAutoLaunch = isAutoLaunch;
             ShowLaunchButton = showLaunchButton;
