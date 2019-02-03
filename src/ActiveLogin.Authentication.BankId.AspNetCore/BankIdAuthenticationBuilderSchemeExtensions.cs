@@ -19,6 +19,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         }
 
 
+        /// <summary>
+        /// Configures options that will apply to all BankID schemes.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configureOptions"></param>
+        /// <returns></returns>
+        public static IBankIdAuthenticationBuilder Configure(this IBankIdAuthenticationBuilder builder, Action<BankIdAuthenticationOptions> configureOptions)
+        {
+            builder.AuthenticationBuilder.Services.ConfigureAll(configureOptions);
+            return builder;
+        }
+
         public static IBankIdAuthenticationBuilder AddCustom(this IBankIdAuthenticationBuilder builder, Action<BankIdAuthenticationOptions> configureOptions)
             => AddCustom(builder, BankIdAuthenticationDefaults.CustomAuthenticationScheme, BankIdAuthenticationDefaults.CustomDisplayName, configureOptions);
 
