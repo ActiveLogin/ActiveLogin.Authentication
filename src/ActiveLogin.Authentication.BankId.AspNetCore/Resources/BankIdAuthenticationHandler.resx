@@ -186,6 +186,9 @@
   <data name="SignIn_Header" xml:space="preserve">
     <value>BankID</value>
   </data>
+  <data name="SignIn_SwedishPersonalIdentityNumber_Placeholder" xml:space="preserve">
+    <value>YYMMDD-XXXX</value>
+  </data>
   <data name="SingIn_Title" xml:space="preserve">
     <value>Sign in with BankID</value>
   </data>
