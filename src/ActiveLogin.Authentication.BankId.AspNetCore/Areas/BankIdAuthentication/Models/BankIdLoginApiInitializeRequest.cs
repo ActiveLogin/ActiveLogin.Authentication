@@ -4,6 +4,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 {
     public class BankIdLoginApiInitializeRequest
     {
+        internal BankIdLoginApiInitializeRequest()
+        {
+            
+        }
+
+
         public string PersonalIdentityNumber { get; set; }
 
         [Required]

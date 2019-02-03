@@ -2,7 +2,7 @@
 {
     public class BankIdLoginApiErrorResponse
     {
-        public BankIdLoginApiErrorResponse(string errorMessage)
+        internal BankIdLoginApiErrorResponse(string errorMessage)
         {
             ErrorMessage = errorMessage;
         }

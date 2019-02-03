@@ -2,7 +2,7 @@
 {
     public class BankIdLoginApiStatusResponse
     {
-        private BankIdLoginApiStatusResponse(bool isFinished, string statusMessage, string redirectUri)
+        internal BankIdLoginApiStatusResponse(bool isFinished, string statusMessage, string redirectUri)
         {
             IsFinished = isFinished;
             StatusMessage = statusMessage;

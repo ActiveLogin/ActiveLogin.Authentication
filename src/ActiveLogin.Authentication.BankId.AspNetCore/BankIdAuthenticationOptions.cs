@@ -27,12 +27,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// <summary>
         /// Allow the user to set and/or change the personal identity number in the UI.
         /// </summary>
-        public bool BankIdAllowChangingPersonalIdentityNumber { get; set; } = true;
+        internal bool BankIdAllowChangingPersonalIdentityNumber { get; set; } = true;
 
         /// <summary>
         /// Auto launch the BankID app on the current device.
         /// </summary>
-        public bool BankIdAutoLaunch { get; set; } = false;
+        internal bool BankIdAutoLaunch { get; set; } = false;
 
         /// <summary>
         /// Users of iOS and Android devices may use fingerprint or face recognition for authentication if the device supports it and the user configured the device to use it.

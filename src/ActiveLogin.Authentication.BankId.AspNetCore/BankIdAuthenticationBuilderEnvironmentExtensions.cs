@@ -6,15 +6,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public static class BankIdAuthenticationBuilderEnvironmentExtensions
     {
-        public static IBankIdAuthenticationBuilder UseEnvironment(this IBankIdAuthenticationBuilder builder, Action<BankIdEnvironmentConfiguration> configureBankIdEnvironment)
+        internal static IBankIdAuthenticationBuilder UseEnvironment(this IBankIdAuthenticationBuilder builder, Uri apiBaseUrl)
         {
-            var configuration = new BankIdEnvironmentConfiguration();
-            configureBankIdEnvironment(configuration);
-
             builder.EnableHttpClient();
             builder.ConfigureHttpClient(httpClient =>
             {
-                httpClient.BaseAddress = configuration.ApiBaseUrl;
+                httpClient.BaseAddress = apiBaseUrl;
             });
 
             builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdApiClient, BankIdApiClient>();
@@ -25,22 +22,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static IBankIdAuthenticationBuilder UseTestEnvironment(this IBankIdAuthenticationBuilder builder)
         {
-            builder.UseEnvironment(configuration =>
-            {
-                configuration.ApiBaseUrl = BankIdUrls.TestApiBaseUrl;
-            });
-
-            return builder;
+            return builder.UseEnvironment(BankIdUrls.TestApiBaseUrl);
         }
 
         public static IBankIdAuthenticationBuilder UseProductionEnvironment(this IBankIdAuthenticationBuilder builder)
         {
-            builder.UseEnvironment(configuration =>
-            {
-                configuration.ApiBaseUrl = BankIdUrls.ProdApiBaseUrl;
-            });
-
-            return builder;
+            return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl);
         }
 
         public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder)

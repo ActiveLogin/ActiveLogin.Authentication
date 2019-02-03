@@ -103,16 +103,13 @@ namespace IdentityServer.ServerSample
             services.AddAuthentication()
                 .AddBankId(builder =>
                 {
-                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options =>
+                    builder.Configure(options =>
                             {
                                 options.IssueBirthdateClaim = true;
                                 options.IssueGenderClaim = true;
                             })
-                           .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options =>
-                            {
-                                options.IssueBirthdateClaim = true;
-                                options.IssueGenderClaim = true;
-                            });
+                            .AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
+                            .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentEnvironment", false))
                     {
