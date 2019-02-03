@@ -220,6 +220,16 @@ BankId options allows you to set and override some options such as these.
 });
 ```
 
+If you want to apply some options for all BankID schemes, you can do so by using `.Configure(...)`.
+
+```c#
+.Configure(options =>
+{
+    options.IssueBirthdateClaim = true;
+    options.IssueGenderClaim = true;
+});
+```
+
 ### BankID Certificate Policies
 
 BankId options allows you to set a list of certificate policies and there is a class available to help you out with this.

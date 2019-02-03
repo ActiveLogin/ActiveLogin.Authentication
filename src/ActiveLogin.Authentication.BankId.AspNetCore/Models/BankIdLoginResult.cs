@@ -23,10 +23,5 @@
         {
             return new BankIdLoginResult(true, personalIdentityNumber, name, givenName, surname);
         }
-
-        public static BankIdLoginResult Fail()
-        {
-            return new BankIdLoginResult(false, null, null, null, null);
-        }
     }
 }

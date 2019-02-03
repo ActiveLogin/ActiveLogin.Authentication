@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
 {
     public class BankIdState
     {
-        public BankIdState(AuthenticationProperties authenticationProperties)
+        internal BankIdState(AuthenticationProperties authenticationProperties)
         {
             AuthenticationProperties = authenticationProperties;
         }

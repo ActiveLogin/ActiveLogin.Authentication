@@ -269,6 +269,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to YYMMDD-XXXX.
+        /// </summary>
+        internal static string SignIn_SwedishPersonalIdentityNumber_Placeholder {
+            get {
+                return ResourceManager.GetString("SignIn_SwedishPersonalIdentityNumber_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign in with BankID.
         /// </summary>
         internal static string SingIn_Title {

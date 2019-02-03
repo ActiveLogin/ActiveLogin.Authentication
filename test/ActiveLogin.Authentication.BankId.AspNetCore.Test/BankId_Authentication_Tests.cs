@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Moq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 {

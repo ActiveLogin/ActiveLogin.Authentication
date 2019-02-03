@@ -2,12 +2,12 @@
 {
     public class LaunchUrlRequest
     {
-        public LaunchUrlRequest(string redirectUrl, string autoStartToken)
+        internal LaunchUrlRequest(string redirectUrl, string autoStartToken)
             : this(redirectUrl, autoStartToken, null)
         {
         }
 
-        public LaunchUrlRequest(string redirectUrl, string autoStartToken, string relyingPartyReference)
+        internal LaunchUrlRequest(string redirectUrl, string autoStartToken, string relyingPartyReference)
         {
             RedirectUrl = redirectUrl;
             AutoStartToken = autoStartToken;

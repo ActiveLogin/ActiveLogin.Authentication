@@ -19,18 +19,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         }
 
 
-        public static IBankIdAuthenticationBuilder AddCustom(this IBankIdAuthenticationBuilder builder, Action<BankIdAuthenticationOptions> configureOptions)
-            => AddCustom(builder, BankIdAuthenticationDefaults.CustomAuthenticationScheme, BankIdAuthenticationDefaults.CustomDisplayName, configureOptions);
-
-        public static IBankIdAuthenticationBuilder AddCustom(this IBankIdAuthenticationBuilder builder, string authenticationScheme, Action<BankIdAuthenticationOptions> configureOptions)
-            => AddCustom(builder, authenticationScheme, BankIdAuthenticationDefaults.CustomDisplayName, configureOptions);
-
-        public static IBankIdAuthenticationBuilder AddCustom(this IBankIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthenticationOptions> configureOptions)
-            => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
-            {
-                options.CallbackPath = BankIdAuthenticationDefaults.CustomCallpackPath;
-            });
-
+        /// <summary>
+        /// Configures options that will apply to all BankID schemes.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configureOptions"></param>
+        /// <returns></returns>
+        public static IBankIdAuthenticationBuilder Configure(this IBankIdAuthenticationBuilder builder, Action<BankIdAuthenticationOptions> configureOptions)
+        {
+            builder.AuthenticationBuilder.Services.ConfigureAll(configureOptions);
+            return builder;
+        }
 
         public static IBankIdAuthenticationBuilder AddSameDevice(this IBankIdAuthenticationBuilder builder)
             => AddSameDevice(builder, BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, BankIdAuthenticationDefaults.SameDeviceDisplayName, options => { });
@@ -44,7 +43,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static IBankIdAuthenticationBuilder AddSameDevice(this IBankIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthenticationOptions> configureOptions)
             => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
                 {
-                    options.CallbackPath = BankIdAuthenticationDefaults.SameDeviceCallpackPath;
+                    options.CallbackPath = BankIdAuthenticationDefaults.SameDeviceCallbackPath;
                     options.BankIdAutoLaunch = true;
                     options.BankIdAllowChangingPersonalIdentityNumber = false;
                 });
@@ -62,7 +61,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static IBankIdAuthenticationBuilder AddOtherDevice(this IBankIdAuthenticationBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthenticationOptions> configureOptions)
             => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
             {
-                options.CallbackPath = BankIdAuthenticationDefaults.OtherDeviceCallpackPath;
+                options.CallbackPath = BankIdAuthenticationDefaults.OtherDeviceCallbackPath;
                 options.BankIdAutoLaunch = false;
                 options.BankIdAllowChangingPersonalIdentityNumber = true;
             });

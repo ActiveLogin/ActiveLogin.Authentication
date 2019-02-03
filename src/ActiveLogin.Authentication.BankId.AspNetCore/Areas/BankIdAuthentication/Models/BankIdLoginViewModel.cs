@@ -5,6 +5,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 {
     public class BankIdLoginViewModel
     {
+        internal BankIdLoginViewModel()
+        {
+            
+        }
+
         public string ReturnUrl { get; set; }
 
         public bool AutoLogin { get; set; }
