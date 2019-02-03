@@ -158,3 +158,13 @@ GrandId options allows you to set and override some options such as these.
     options.IssueGenderClaim = true;
 });
 ```
+
+If you want to apply some options for all BankID schemes, you can do so by using `.ConfigureBankId(...)`.
+
+```c#
+.ConfigureBankId(options =>
+{
+    options.IssueBirthdateClaim = true;
+    options.IssueGenderClaim = true;
+});
+```

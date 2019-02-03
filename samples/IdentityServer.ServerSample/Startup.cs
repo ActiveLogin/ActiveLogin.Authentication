@@ -127,21 +127,14 @@ namespace IdentityServer.ServerSample
                 })
                 .AddGrandId(builder =>
                 {
-                    builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options =>
-                            {
-                                options.IssueBirthdateClaim = true;
-                                options.IssueGenderClaim = true;
-                            })
-                            .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options =>
-                            {
-                                options.IssueBirthdateClaim = true;
-                                options.IssueGenderClaim = true;
-                            })
-                            .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options =>
-                            {
-                                options.IssueBirthdateClaim = true;
-                                options.IssueGenderClaim = true;
-                            });
+                    builder.ConfigureBankId(options =>
+                           {
+                               options.IssueBirthdateClaim = true;
+                               options.IssueGenderClaim = true;
+                           })
+                           .AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
+                           .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
+                           .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentEnvironment", false))
                     {

@@ -27,6 +27,19 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return builder;
         }
 
+        /// <summary>
+        /// Configures options that will apply to all GrandID BankID schemes.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configureOptions"></param>
+        /// <returns></returns>
+        public static IGrandIdAuthenticationBuilder ConfigureBankId(this IGrandIdAuthenticationBuilder builder, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
+        {
+            builder.AuthenticationBuilder.Services.Configure(configureOptions);
+            return builder;
+        }
+
+
         public static IGrandIdAuthenticationBuilder AddBankIdSameDevice(this IGrandIdAuthenticationBuilder builder)
             => AddBankIdSameDevice(builder, options => { });
 
