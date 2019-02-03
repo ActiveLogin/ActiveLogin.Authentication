@@ -35,7 +35,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         /// <returns></returns>
         public static IGrandIdAuthenticationBuilder ConfigureBankId(this IGrandIdAuthenticationBuilder builder, Action<GrandIdBankIdAuthenticationOptions> configureOptions)
         {
-            builder.AuthenticationBuilder.Services.Configure(configureOptions);
+            builder.AuthenticationBuilder.Services.ConfigureAll(configureOptions);
             return builder;
         }
 
