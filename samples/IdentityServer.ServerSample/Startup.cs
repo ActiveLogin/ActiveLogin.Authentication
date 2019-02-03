@@ -91,25 +91,24 @@ namespace IdentityServer.ServerSample
             //        .AddGrandId(builder =>
             //        {
             //            builder
-            //                .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            //                .AddBankIdChooseDevice(options =>
+            //                .UseProductionEnvironment(config =>
             //                {
-            //                    options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ChooseDeviceServiceKey");
-            //                });
+            //                    config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+            //                    config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+            //                })
+            //                .AddBankIdChooseDevice();
             //        });
 
             // Full sample with both BankID and GrandID with custom display name and multiple environment support
             services.AddAuthentication()
                 .AddBankId(builder =>
                 {
-                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)",
-                            options =>
+                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options =>
                             {
                                 options.IssueBirthdateClaim = true;
                                 options.IssueGenderClaim = true;
                             })
-                           .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)",
-                            options =>
+                           .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options =>
                             {
                                 options.IssueBirthdateClaim = true;
                                 options.IssueGenderClaim = true;
@@ -138,36 +137,38 @@ namespace IdentityServer.ServerSample
                             {
                                 options.IssueBirthdateClaim = true;
                                 options.IssueGenderClaim = true;
-
-                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
                             })
                             .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options =>
                             {
                                 options.IssueBirthdateClaim = true;
                                 options.IssueGenderClaim = true;
-
-                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
                             })
                             .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options =>
                             {
                                 options.IssueBirthdateClaim = true;
                                 options.IssueGenderClaim = true;
-
-                                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdChooseDeviceServiceKey");
                             });
-
 
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentEnvironment", false))
                     {
                         builder.UseDevelopmentEnvironment();
                     }
-                    else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
-                    {
-                        builder.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
-                    }
                     else
                     {
-                        builder.UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
+                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
+                        {
+                            builder.UseTestEnvironment(ConfigureEnvironment);
+                        }
+                        else
+                        {
+                            builder.UseProductionEnvironment(ConfigureEnvironment);
+                        }
+
+                        void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
+                        {
+                            config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                            config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+                        }
                     }
                 });
         }

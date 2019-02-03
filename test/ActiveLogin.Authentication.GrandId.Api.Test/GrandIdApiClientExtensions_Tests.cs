@@ -21,7 +21,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
 
             // Assert
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
-            Assert.Equal("ask", request.AuthenticateServiceKey);
             Assert.Equal("https://cb/", request.CallbackUrl);
             Assert.Null(request.PersonalIdentityNumber);
         }
@@ -51,7 +50,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
 
             // Assert
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
-            Assert.Equal("ask", request.AuthenticateServiceKey);
             Assert.Equal("https://cb/", request.CallbackUrl);
             Assert.Equal(true, request.UseChooseDevice);
             Assert.Equal(true, request.UseSameDevice);
@@ -73,32 +71,13 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
                 .ReturnsAsync(It.IsAny<BankIdGetSessionResponse>());
 
             // Act
-            await GrandIdApiClientExtensions.BankIdGetSessionAsync(grandIdApiClientMock.Object, "ask", "s");
+            await GrandIdApiClientExtensions.BankIdGetSessionAsync(grandIdApiClientMock.Object, "s");
 
             // Assert
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdGetSessionRequest>();
-            Assert.Equal("ask", request.AuthenticateServiceKey);
             Assert.Equal("s", request.SessionId);
         }
-
-        [Fact]
-        public async void FederatedDirectLoginAsync_WithServiceKey_AndUsername_AndPassword_ShouldMap_ToFederatedDirectLoginRequest_WithServiceKey_AndUsername_AndPassword()
-        {
-            // Arrange
-            var grandIdApiClientMock = new Mock<IGrandIdApiClient>(MockBehavior.Strict);
-            grandIdApiClientMock.Setup(client => client.FederatedDirectLoginAsync(It.IsAny<FederatedDirectLoginRequest>()))
-                .ReturnsAsync(It.IsAny<FederatedDirectLoginResponse>());
-
-            // Act
-            await GrandIdApiClientExtensions.FederatedDirectLoginAsync(grandIdApiClientMock.Object, "ask", "u", "p");
-
-            // Assert
-            var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, FederatedDirectLoginRequest>();
-            Assert.Equal("ask", request.AuthenticateServiceKey);
-            Assert.Equal("u", request.Username);
-            Assert.Equal("p", request.Password);
-        }
-
+        
         [Fact]
         public async void LogoutAsync_WithSessionId_ShouldMap_ToLogoutRequest_WithSessionId()
         {

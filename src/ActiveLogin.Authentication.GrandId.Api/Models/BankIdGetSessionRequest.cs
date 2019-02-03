@@ -2,13 +2,11 @@
 {
     public class BankIdGetSessionRequest
     {
-        public BankIdGetSessionRequest(string authenticateServiceKey, string sessionId)
+        public BankIdGetSessionRequest(string sessionId)
         {
-            AuthenticateServiceKey = authenticateServiceKey;
             SessionId = sessionId;
         }
 
-        public string AuthenticateServiceKey { get; }
         public string SessionId { get; }
     }
 }

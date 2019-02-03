@@ -8,11 +8,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public override string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.BankIdAuthenticationMethodName;
 
         /// <summary>
-        /// AuthenticateServiceKey obtained from GrandID (Svensk E-identitet).
-        /// </summary>
-        public string GrandIdAuthenticateServiceKey { get; set; }
-
-        /// <summary>
         /// What mode to use GrandID BankID in.
         /// </summary>
         internal GrandIdBankIdMode GrandIdBankIdMode { get; set; }
@@ -33,15 +28,5 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         /// See https://github.com/ActiveLogin/ActiveLogin.Identity for more info and limitations.
         /// </summary>
         public bool IssueBirthdateClaim { get; set; } = false;
-
-        public override void Validate()
-        {
-            base.Validate();
-
-            if (string.IsNullOrWhiteSpace(GrandIdAuthenticateServiceKey))
-            {
-                throw new ArgumentException($"The '{nameof(GrandIdAuthenticateServiceKey)}' must be provided.'", nameof(GrandIdAuthenticateServiceKey));
-            }
-        }
     }
 }

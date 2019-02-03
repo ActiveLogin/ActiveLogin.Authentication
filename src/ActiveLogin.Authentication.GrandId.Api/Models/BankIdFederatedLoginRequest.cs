@@ -2,9 +2,8 @@
 {
     public class BankIdFederatedLoginRequest
     {
-        public BankIdFederatedLoginRequest(string authenticateServiceKey, string callbackUrl = null, bool? useChooseDevice = null, bool? useSameDevice = null, bool? askForPersonalIdentityNumber = null, string personalIdentityNumber = null, bool? requireMobileBankId = null, string customerUrl = null, bool? showGui = null, string signUserVisibleData = null, string signUserNonVisibleData = null)
+        public BankIdFederatedLoginRequest(string callbackUrl = null, bool? useChooseDevice = null, bool? useSameDevice = null, bool? askForPersonalIdentityNumber = null, string personalIdentityNumber = null, bool? requireMobileBankId = null, string customerUrl = null, bool? showGui = null, string signUserVisibleData = null, string signUserNonVisibleData = null)
         {
-            AuthenticateServiceKey = authenticateServiceKey;
             CallbackUrl = callbackUrl;
             UseChooseDevice = useChooseDevice;
             UseSameDevice = useSameDevice;
@@ -16,8 +15,6 @@
             SignUserVisibleData = signUserVisibleData;
             SignUserNonVisibleData = signUserNonVisibleData;
         }
-
-        public string AuthenticateServiceKey { get; }
 
         /// <summary>
         /// The url to return the user to.

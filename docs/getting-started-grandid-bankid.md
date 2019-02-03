@@ -5,17 +5,13 @@
 1. Read through the [GrandID documentation](http://www2.e-identitet.se/index.php?page=api-2). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
 1. [Get in touch with Svensk E-identitet](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/) to receive keys, you need these:
     * `ApiKey`
-    * `SameDeviceServiceKey` (BankID same device)
-    * `OtherDeviceServiceKey` (BankID other device)
-    * `ChooseDeviceServiceKey` (BankID with device choice)
+    * `BankIdServiceKey` (BankID) *Note:* ActiveLogin is built for the latest version of GrandID where only one key is used. Please get in touch with Svensk E-identitet if you need to upgrade to this new version.
 1. Add them to your config, for example:
 
 ```json
 {
   "ActiveLogin:GrandId:ApiKey": "TODO-ADD-YOUR-VALUE",
-  "ActiveLogin:GrandId:BankIdSameDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
-  "ActiveLogin:GrandId:BankIdOtherDeviceServiceKey": "TODO-ADD-YOUR-VALUE",
-  "ActiveLogin:GrandId:BankIdChooseDeviceServiceKey": "TODO-ADD-YOUR-VALUE"
+  "ActiveLogin:GrandId:BankIdServiceKey": "TODO-ADD-YOUR-VALUE"
 }
 ```
 
@@ -64,7 +60,10 @@ services.AddAuthentication()
         .AddGrandId(builder =>
     {
         builder
-            .UseProductionEnvironment()
+            .UseProductionEnvironment(config => {
+                config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                ...
+			})
             ...
     });
 ```
@@ -78,7 +77,10 @@ services.AddAuthentication()
         .AddGrandId(builder =>
     {
         builder
-            .UseTestEnvironment()
+            .UseTestEnvironment(config => {
+			    config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                ...
+			})
             ...
     });
 ```
@@ -96,15 +98,12 @@ services
     .AddGrandId(builder =>
     {
         builder
-            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddBankIdSameDevice(options =>
-            {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
-            })
-            .AddBankIdOtherDevice(options =>
-            {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
-            });
+            .UseProductionEnvironment(config => {
+				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+			})
+            .AddBankIdSameDevice()
+            .AddBankIdOtherDevice();
     });
 ```
 
@@ -118,11 +117,11 @@ services
     .AddGrandId(builder =>
     {
         builder
-            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddBankIdChooseDevice(options =>
-            {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdChooseDeviceServiceKey");
-            });
+            .UseProductionEnvironment(config => {
+				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+			})
+            .AddBankIdChooseDevice();
     });
 ```
 
@@ -136,7 +135,10 @@ services
     .AddGrandId(builder =>
     {
         builder
-            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
+            .UseProductionEnvironment(config => {
+				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+			})
             .AddBankIdSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
             .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });

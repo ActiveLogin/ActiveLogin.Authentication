@@ -10,18 +10,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         public static Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string callbackUrl = null, bool? useChooseDevice = null, bool? useSameDevice = null, bool? askForPersonalIdentityNumber = null, string personalIdentityNumber = null, bool? requireMobileBankId = null, string customerUrl = null, bool? showGui = null, string signUserVisibleData = null, string signUserNonVisibleData = null)
         {
-            return apiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest(authenticateServiceKey, callbackUrl, useChooseDevice, useSameDevice, askForPersonalIdentityNumber, personalIdentityNumber, requireMobileBankId, customerUrl, showGui, signUserVisibleData, signUserNonVisibleData));
+            return apiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest(callbackUrl, useChooseDevice, useSameDevice, askForPersonalIdentityNumber, personalIdentityNumber, requireMobileBankId, customerUrl, showGui, signUserVisibleData, signUserNonVisibleData));
         }
         
-        public static Task<BankIdGetSessionResponse> BankIdGetSessionAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string sessionId)
+        public static Task<BankIdGetSessionResponse> BankIdGetSessionAsync(this IGrandIdApiClient apiClient, string sessionId)
         {
-            return apiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(authenticateServiceKey, sessionId));
-        }
-
-
-        public static Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(this IGrandIdApiClient apiClient, string authenticateServiceKey, string username, string password)
-        {
-            return apiClient.FederatedDirectLoginAsync(new FederatedDirectLoginRequest(authenticateServiceKey, username, password));
+            return apiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(sessionId));
         }
 
 

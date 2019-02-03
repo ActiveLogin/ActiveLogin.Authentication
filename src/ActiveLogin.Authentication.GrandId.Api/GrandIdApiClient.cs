@@ -15,11 +15,18 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
+        private readonly string _bankIdServiceKey;
 
         public GrandIdApiClient(HttpClient httpClient, GrandIdApiClientConfiguration configuration)
         {
             _httpClient = httpClient;
             _apiKey = configuration.ApiKey;
+            _bankIdServiceKey = configuration.BankIdServiceKey;
+
+            if (string.IsNullOrEmpty(configuration.ApiKey))
+            {
+                throw new InvalidOperationException($"A valid '{nameof(configuration.ApiKey)}' must be provided.'");
+            }
         }
 
         /// <summary>
@@ -29,10 +36,12 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
         public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request)
         {
+            EnsureValidBankIdServiceKey();
+
             var queryStringParams = new Dictionary<string, string>
             {
                 { "apiKey", _apiKey },
-                { "authenticateServiceKey", request.AuthenticateServiceKey }
+                { "authenticateServiceKey", _bankIdServiceKey }
             };
             var url = GetUrl("FederatedLogin", queryStringParams);
             var postData = new Dictionary<string, string>
@@ -59,37 +68,18 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// <returns>If the request is successful, the sessionData is returned</returns>
         public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request)
         {
+            EnsureValidBankIdServiceKey();
+
             var url = GetUrl("GetSession", new Dictionary<string, string>
             {
                 { "apiKey", _apiKey },
-                { "authenticateServiceKey", request.AuthenticateServiceKey },
+                { "authenticateServiceKey", _bankIdServiceKey },
                 { "sessionid", request.SessionId }
             });
 
             var fullResponse = await GetFullResponseAndEnsureSuccess<BankIdGetSessionFullResponse>(url);
             return new BankIdGetSessionResponse(fullResponse);
         }
-
-
-        /// <summary>
-        /// This is the function for logging in using an apiKey, authenticateServiceKey, username and password.
-        /// The value returned value will be the user’s properties.
-        /// </summary>
-        /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
-        public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
-        {
-            var url = GetUrl("FederatedDirectLogin", new Dictionary<string, string>
-            {
-                { "apiKey", _apiKey },
-                { "authenticateServiceKey", request.AuthenticateServiceKey },
-                { "username", request.Username },
-                { "password", request.Password }
-            });
-
-            var fullResponse = await GetFullResponseAndEnsureSuccess<FederatedDirectLoginFullResponse>(url);
-            return new FederatedDirectLoginResponse(fullResponse);
-        }
-
 
         /// <summary>
         /// This is the function to logout a user from an IDP.
@@ -159,6 +149,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
             }
 
             return value.Value ? bool.TrueString.ToLower() : bool.FalseString.ToLower();
+        }
+
+        private void EnsureValidBankIdServiceKey()
+        {
+            if (string.IsNullOrEmpty(_bankIdServiceKey))
+            {
+                throw new InvalidOperationException("A valid 'bankIdServiceKey' must be provided.'");
+            }
         }
     }
 }

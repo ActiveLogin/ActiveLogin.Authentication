@@ -37,18 +37,17 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         protected override async Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl)
         {
             var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
-            var grandIdAuthenticateServiceKey = Options.GrandIdAuthenticateServiceKey;
             var request = GetBankIdFederatedLoginRequest(absoluteReturnUrl, Options, swedishPersonalIdentityNumber);
 
             try
             {
                 var federatedLoginResponse = await _grandIdApiClient.BankIdFederatedLoginAsync(request);
-                _logger.GrandIdBankIdFederatedLoginSuccess(grandIdAuthenticateServiceKey, absoluteReturnUrl, federatedLoginResponse.SessionId);
+                _logger.GrandIdBankIdFederatedLoginSuccess(absoluteReturnUrl, federatedLoginResponse.SessionId);
                 return federatedLoginResponse.RedirectUrl;
             }
             catch (Exception ex)
             {
-                _logger.GrandIdBankIdFederatedLoginFailure(grandIdAuthenticateServiceKey, absoluteReturnUrl, ex);
+                _logger.GrandIdBankIdFederatedLoginFailure(absoluteReturnUrl, ex);
                 throw;
             }
         }
@@ -79,7 +78,6 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var personalIdentityNumber = swedishPersonalIdentityNumber?.To12DigitString();
 
             return new BankIdFederatedLoginRequest(
-                options.GrandIdAuthenticateServiceKey,
                 callbackUrl,
                 useChooseDevice: useChooseDevice,
                 useSameDevice: useSameDevice,
@@ -106,7 +104,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             try
             {
-                var sessionResponse = await _grandIdApiClient.BankIdGetSessionAsync(Options.GrandIdAuthenticateServiceKey, sessionId);
+                var sessionResponse = await _grandIdApiClient.BankIdGetSessionAsync(sessionId);
                 _logger.GrandIdBankIdGetSessionSuccess(sessionResponse.SessionId);
                 return sessionResponse;
             }

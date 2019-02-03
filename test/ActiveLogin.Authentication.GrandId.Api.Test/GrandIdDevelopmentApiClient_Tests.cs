@@ -22,10 +22,10 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             // Arange
 
             // Act
-            await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", personalIdentityNumber: "201801012392"));
+            await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/", personalIdentityNumber: "201801012392"));
 
             // Assert
-            await Assert.ThrowsAsync<GrandIdApiException>(() => _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", personalIdentityNumber: "201801012392")));
+            await Assert.ThrowsAsync<GrandIdApiException>(() => _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/", personalIdentityNumber: "201801012392")));
         }
 
         [Fact]
@@ -34,12 +34,12 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             // Arange
 
             // Act
-            var firstLoginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", personalIdentityNumber: "201801012392"));
-            await _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", firstLoginResponse.SessionId));
+            var firstLoginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/", personalIdentityNumber: "201801012392"));
+            await _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(firstLoginResponse.SessionId));
 
 
-            var secondLoginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", personalIdentityNumber: "201801012392"));
-            await _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", secondLoginResponse.SessionId));
+            var secondLoginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/", personalIdentityNumber: "201801012392"));
+            await _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(secondLoginResponse.SessionId));
 
             // Assert
             Assert.True(true, "Did not throw");
@@ -55,8 +55,8 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             };
 
             // Act
-            var loginResponse = await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/"));
-            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", loginResponse.SessionId));
+            var loginResponse = await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/"));
+            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(loginResponse.SessionId));
 
             // Assert
             Assert.Equal("201801012392", sessionResponse.Username);
@@ -75,34 +75,12 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             };
 
             // Act
-            var loginResponse = await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/", personalIdentityNumber: "201801012392"));
-            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", loginResponse.SessionId));
+            var loginResponse = await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/", personalIdentityNumber: "201801012392"));
+            var sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(loginResponse.SessionId));
 
             // Assert
             Assert.Equal("201801012392", sessionResponse.Username);
             Assert.Equal("201801012392", sessionResponse.UserAttributes.PersonalIdentityNumber);
-        }
-
-        [Fact]
-        public async void FederatedDirectLoginAsync__ShouldReturnPersonInfo()
-        {
-            // Arange
-            var grandIdClient = new GrandIdDevelopmentApiClient("gn", "sn", "x", "1")
-            {
-                Delay = TimeSpan.Zero
-            };
-
-            // Act
-            var loginResponse = await grandIdClient.FederatedDirectLoginAsync(new FederatedDirectLoginRequest("x", "u", "p"));
-
-            // Assert
-            Assert.Equal("u", loginResponse.Username);
-            Assert.Equal("u", loginResponse.UserAttributes.SameAccountName);
-
-            Assert.Equal("gn", loginResponse.UserAttributes.GivenName);
-            Assert.Equal("sn", loginResponse.UserAttributes.Surname);
-            Assert.Equal("1", loginResponse.UserAttributes.MobilePhone);
-            Assert.Equal("Software Developer", loginResponse.UserAttributes.Title);
         }
 
         [Fact]
@@ -111,11 +89,11 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             // Arange
 
             // Act
-            var loginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("x", "https://c/"));
+            var loginResponse = await _grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/"));
             await _grandIdClient.LogoutAsync(new LogoutRequest(loginResponse.SessionId));
 
             // Assert
-            await Assert.ThrowsAsync<GrandIdApiException>(() => _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest("x", loginResponse.SessionId)));
+            await Assert.ThrowsAsync<GrandIdApiException>(() => _grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(loginResponse.SessionId)));
         }
     }
 }

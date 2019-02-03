@@ -25,14 +25,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
 
         /// <summary>
-        /// This is the function for logging in using an apiKey, authenticateServiceKey, username and password.
-        /// The value returned value will be the user’s properties.
-        /// </summary>
-        /// <returns>If the request is successful, the redirectUrl and sessionId is returned</returns>
-        Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request);
-
-
-        /// <summary>
         /// This is the function to logout a user from an IDP.
         /// </summary>
         Task<LogoutResponse> LogoutAsync(LogoutRequest request);

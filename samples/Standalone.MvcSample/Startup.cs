@@ -52,30 +52,30 @@ namespace Standalone.MvcSample
                 })
                 .AddGrandId(builder =>
                 {
-                    builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options =>
-                    {
-                        options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
-                    })
-                    .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options =>
-                    {
-                        options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
-                    })
-                    .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options =>
-                    {
-                        options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdChooseDeviceServiceKey");
-                    });
+                    builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
+                           .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
+                           .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentEnvironment", false))
                     {
                         builder.UseDevelopmentEnvironment();
                     }
-                    else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
-                    {
-                        builder.UseTestEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
-                    }
                     else
                     {
-                        builder.UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"));
+                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
+                        {
+                            builder.UseTestEnvironment(ConfigureEnvironment);
+                        }
+                        else
+                        {
+                            builder.UseProductionEnvironment(ConfigureEnvironment);
+                        }
+
+                        void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
+                        {
+                            config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                            config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+                        }
                     }
                 });
 
