@@ -118,12 +118,6 @@ namespace IdentityServer.ServerSample
                     {
                         builder.UseDevelopmentEnvironment();
                     }
-                    else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
-                    {
-                        builder.UseTestEnvironment()
-                               .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                               .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
-                    }
                     else
                     {
                         builder.UseProductionEnvironment()
@@ -155,20 +149,11 @@ namespace IdentityServer.ServerSample
                     }
                     else
                     {
-                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
-                        {
-                            builder.UseTestEnvironment(ConfigureEnvironment);
-                        }
-                        else
-                        {
-                            builder.UseProductionEnvironment(ConfigureEnvironment);
-                        }
-
-                        void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
+                        builder.UseProductionEnvironment(config =>
                         {
                             config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
                             config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
-                        }
+                        });
                     }
                 });
         }

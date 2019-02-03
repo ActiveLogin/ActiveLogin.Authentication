@@ -60,22 +60,19 @@ namespace Standalone.MvcSample
                     {
                         builder.UseDevelopmentEnvironment();
                     }
+                    else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
+                    {
+                        builder.UseTestEnvironment(ConfigureEnvironment);
+                    }
                     else
                     {
-                        if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
-                        {
-                            builder.UseTestEnvironment(ConfigureEnvironment);
-                        }
-                        else
-                        {
-                            builder.UseProductionEnvironment(ConfigureEnvironment);
-                        }
+                        builder.UseProductionEnvironment(ConfigureEnvironment);
+                    }
 
-                        void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
-                        {
-                            config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                            config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
-                        }
+                    void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
+                    {
+                        config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                        config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
                     }
                 });
 
