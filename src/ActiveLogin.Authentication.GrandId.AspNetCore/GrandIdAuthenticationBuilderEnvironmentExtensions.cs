@@ -1,24 +1,28 @@
 ﻿using System;
 using ActiveLogin.Authentication.GrandId.Api;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public static class GrandIdAuthenticationBuilderEnvironmentExtensions
     {
-        public static IGrandIdAuthenticationBuilder UseEnvironment(this IGrandIdAuthenticationBuilder builder, Action<IGrandIdEnvironmentConfiguration> configureGrandIdEnvironment)
+        private static IGrandIdAuthenticationBuilder UseEnvironment(this IGrandIdAuthenticationBuilder builder, Uri apiBaseUrl, Action<IGrandIdEnvironmentConfiguration> configuration)
         {
-            var configuration = new GrandIdEnvironmentConfiguration();
-            configureGrandIdEnvironment(configuration);
+            var environmentConfiguration = new GrandIdEnvironmentConfiguration();
+            configuration(environmentConfiguration);
+
+            if (string.IsNullOrEmpty(environmentConfiguration.ApiKey))
+            {
+                throw new InvalidOperationException($"A valid '{nameof(environmentConfiguration.ApiKey)}' must be provided.'");
+            }
 
             builder.EnableHttpClient();
             builder.ConfigureHttpClient(httpClient =>
             {
-                httpClient.BaseAddress = configuration.ApiBaseUrl;
+                httpClient.BaseAddress = apiBaseUrl;
             });
 
-            builder.AddGrandIdApiClient(configuration.ApiKey);
+            builder.AddGrandIdApiClient(environmentConfiguration.ApiKey, environmentConfiguration.BankIdServiceKey);
 
             return builder;
         }
@@ -27,40 +31,22 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         /// Configures the GrandID client to use the test endpoint of GrandID REST API.
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="apiKey">The apiKey obtained from GrandID (Svensk E-identitet).</param>
+        /// <param name="configuration">Configure GrandID.</param>
         /// <returns></returns>
-        public static IGrandIdAuthenticationBuilder UseTestEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
+        public static IGrandIdAuthenticationBuilder UseTestEnvironment(this IGrandIdAuthenticationBuilder builder, Action<IGrandIdEnvironmentConfiguration> configuration)
         {
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ArgumentException($"The '{nameof(apiKey)}' must be provided.'", nameof(apiKey));
-            }
-
-            return builder.UseEnvironment(configuration =>
-            {
-                configuration.ApiBaseUrl = GrandIdUrls.TestApiBaseUrl;
-                configuration.ApiKey = apiKey;
-            });
+            return builder.UseEnvironment(GrandIdUrls.TestApiBaseUrl, configuration);
         }
 
         /// <summary>
         /// Configures the GrandID client to use the production endpoint of GrandID REST API.
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="apiKey">The apiKey obtained from GrandID (Svensk E-identitet).</param>
+        /// <param name="configuration">Configure GrandID.</param>
         /// <returns></returns>
-        public static IGrandIdAuthenticationBuilder UseProductionEnvironment(this IGrandIdAuthenticationBuilder builder, string apiKey)
+        public static IGrandIdAuthenticationBuilder UseProductionEnvironment(this IGrandIdAuthenticationBuilder builder, Action<IGrandIdEnvironmentConfiguration> configuration)
         {
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ArgumentException($"The '{nameof(apiKey)}' must be provided.'", nameof(apiKey));
-            }
-
-            return builder.UseEnvironment(configuration =>
-            {
-                configuration.ApiBaseUrl = GrandIdUrls.ProductionApiBaseUrl;
-                configuration.ApiKey = apiKey;
-            });
+            return builder.UseEnvironment(GrandIdUrls.ProductionApiBaseUrl, configuration);
         }
 
         /// <summary>
@@ -81,20 +67,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         private static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {
             builder.AuthenticationBuilder.Services.TryAddSingleton(grandIdDevelopmentApiClient);
-            builder.AuthenticationBuilder.Services.PostConfigureAll<GrandIdBankIdAuthenticationOptions>(options =>
-            {
-                if (string.IsNullOrEmpty(options.GrandIdAuthenticateServiceKey))
-                {
-                    options.GrandIdAuthenticateServiceKey = "DEVELOPMENT";
-                }
-            });
 
             return builder;
         }
 
-        private static IGrandIdAuthenticationBuilder AddGrandIdApiClient(this IGrandIdAuthenticationBuilder builder, string apiKey)
+        private static IGrandIdAuthenticationBuilder AddGrandIdApiClient(this IGrandIdAuthenticationBuilder builder, string apiKey, string bankIdServiceKey)
         {
-            builder.AuthenticationBuilder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey));
+            builder.AuthenticationBuilder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey, bankIdServiceKey));
             builder.AuthenticationBuilder.Services.TryAddTransient<IGrandIdApiClient, GrandIdApiClient>();
 
             return builder;

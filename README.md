@@ -124,15 +124,12 @@ services
     .AddGrandId(builder =>
     {
         builder
-            .UseProductionEnvironment(Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey"))
-            .AddBankIdSameDevice(options =>
-            {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdSameDeviceServiceKey");
-            })
-            .AddBankIdOtherDevice(options =>
-            {
-                options.GrandIdAuthenticateServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdOtherDeviceServiceKey");
-            });
+            .UseProductionEnvironment(config => {
+				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+			})
+            .AddBankIdSameDevice()
+            .AddBankIdOtherDevice();
     });
 ```
 
@@ -211,7 +208,6 @@ public class GrandIdApiClient : IGrandIdApiClient
 {
 	public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request) { ... }
     public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request) { ... }
-    public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request) { ... }
     public async Task<LogoutResponse> LogoutAsync(LogoutRequest request) { ... }
 }
 ```

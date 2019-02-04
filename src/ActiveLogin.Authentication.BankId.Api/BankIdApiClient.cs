@@ -26,7 +26,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
         public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            return _httpClient.PostAsync<AuthRequest, AuthResponse>("/auth", request);
+            return _httpClient.PostAsync<AuthRequest, AuthResponse>("auth", request);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// <returns>The user identity is returned when complete.</returns>
         public Task<CollectResponse> CollectAsync(CollectRequest request)
         {
-            return _httpClient.PostAsync<CollectRequest, CollectResponse>("/collect", request);
+            return _httpClient.PostAsync<CollectRequest, CollectResponse>("collect", request);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// </summary>
         public Task<CancelResponse> CancelAsync(CancelRequest request)
         {
-            return _httpClient.PostAsync<CancelRequest, CancelResponse>("/cancel", request);
+            return _httpClient.PostAsync<CancelRequest, CancelResponse>("cancel", request);
         }
     }
 }

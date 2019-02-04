@@ -1,11 +1,15 @@
-﻿using System;
-using ActiveLogin.Authentication.GrandId.Api;
-
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdEnvironmentConfiguration : IGrandIdEnvironmentConfiguration
+    internal class GrandIdEnvironmentConfiguration : IGrandIdEnvironmentConfiguration
     {
-        public Uri ApiBaseUrl { get; set; } = GrandIdUrls.ProductionApiBaseUrl;
+        /// <summary>
+        /// The apiKey obtained from GrandID (Svensk E-identitet).
+        /// </summary>
         public string ApiKey { get; set; }
+
+        /// <summary>
+        /// The authenticateServiceKey for BankID obtained from GrandID (Svensk E-identitet).
+        /// </summary>
+        public string BankIdServiceKey { get; set; } = null;
     }
 }

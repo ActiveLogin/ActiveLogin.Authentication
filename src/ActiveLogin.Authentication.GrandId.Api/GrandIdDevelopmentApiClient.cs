@@ -24,7 +24,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         private readonly Dictionary<string, ExtendedFederatedLoginResponse> _bankidFederatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
-        private readonly Dictionary<string, FederatedDirectLoginResponse> _federatedDirectLogins = new Dictionary<string, FederatedDirectLoginResponse>();
 
         public GrandIdDevelopmentApiClient()
             : this(DefaultGivenName, DefaultSurname)
@@ -103,19 +102,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return response;
         }
 
-
-        public async Task<FederatedDirectLoginResponse> FederatedDirectLoginAsync(FederatedDirectLoginRequest request)
-        {
-            await SimulateResponseDelay().ConfigureAwait(false);
-
-            var sessionId = Guid.NewGuid().ToString();
-            var userAttributes = new FederatedDirectLoginUserAttributes(_mobilePhone, _givenName, _surname, request.Username, DefaultTitle);
-            var response = new FederatedDirectLoginResponse(sessionId, request.Username, userAttributes);
-            _federatedDirectLogins.Add(sessionId, response);
-            return response;
-        }
-
-
+        
         public async Task<LogoutResponse> LogoutAsync(LogoutRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
@@ -125,11 +112,6 @@ namespace ActiveLogin.Authentication.GrandId.Api
             if (_bankidFederatedLogins.ContainsKey(sessionId))
             {
                 _bankidFederatedLogins.Remove(sessionId);
-            }
-
-            if (_federatedDirectLogins.ContainsKey(sessionId))
-            {
-                _federatedDirectLogins.Remove(sessionId);
             }
 
             return new LogoutResponse(true);

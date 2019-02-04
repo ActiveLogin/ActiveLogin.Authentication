@@ -15,14 +15,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             logger.LogError(GrandIdLoggingEvents.GrandIdBankIdGetSessionHardFailure, exception, "GrandId (BankId) get session failed for the sessionId '{SessionId}'", sessionId, exception);
         }
 
-        public static void GrandIdBankIdFederatedLoginSuccess(this ILogger logger, string authenticateServiceKey, string returnUrl, string sessionId)
+        public static void GrandIdBankIdFederatedLoginSuccess(this ILogger logger, string returnUrl, string sessionId)
         {
-            logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginSuccess, "GrandId (BankId) federated login succedded for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
+            logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginSuccess, "GrandId (BankId) federated login succedded with the returnUrl '{returnUrl}'", returnUrl);
         }
 
-        public static void GrandIdBankIdFederatedLoginFailure(this ILogger logger, string authenticateServiceKey, string returnUrl, Exception exception)
+        public static void GrandIdBankIdFederatedLoginFailure(this ILogger logger, string returnUrl, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginHardFailure, exception, "GrandId (BankId) federated login failed for authenticateServiceKey '{AuthenticateServiceKey}' and returnUrl '{returnUrl}'", authenticateServiceKey, returnUrl);
+            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginHardFailure, exception, "GrandId (BankId) federated login failed with the returnUrl '{returnUrl}'", returnUrl);
         }
     }
 }
