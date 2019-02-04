@@ -125,9 +125,9 @@ services
     {
         builder
             .UseProductionEnvironment(config => {
-				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
-			})
+	        config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+	        config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+            })
             .AddBankIdSameDevice()
             .AddBankIdOtherDevice();
     });
