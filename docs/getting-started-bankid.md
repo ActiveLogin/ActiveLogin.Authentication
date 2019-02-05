@@ -209,8 +209,8 @@ BankId options allows you to set and override some options such as these.
     // If the user can use biometric identification such as fingerprint or face recognition
     options.BankIdAllowBiometric = false;
 
-    // Limit possible login methods to, for example, only allow BankID on smartcard. See technical docs for list of policies.
-    options.BankIdCertificatePolicies = new List<string> { "1.2.752.78.1.1" };
+    // Limit possible login methods to, for example, only allow BankID on smartcard.
+    options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(...);
 
 	// Issue birthdate claim based on data extracted from the personal identity number
 	options.IssueBirthdateClaim = true;
