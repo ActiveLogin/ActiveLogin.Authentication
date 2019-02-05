@@ -204,7 +204,7 @@ public class BankIdApiClient : IBankIdApiClient
 ```csharp
 public class GrandIdApiClient : IGrandIdApiClient
 {
-	public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request) { ... }
+    public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request) { ... }
     public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request) { ... }
     public async Task<LogoutResponse> LogoutAsync(LogoutRequest request) { ... }
 }
