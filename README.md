@@ -39,18 +39,16 @@ _Screenshots on how the default UI for Native BankID looks._
 
 ActiveLogin.Authentication is distributed as [packages on NuGet](https://www.nuget.org/profiles/ActiveLogin), install using the tool of your choice, for example _dotnet cli_.
 
-_Note:_ The packages relfecting the documentation are currently in alpha, so make sure to search for the pre release packages.
-
 #### BankID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.BankId.AspNetCore -Version 1.0.0-rc-2
+dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
 ```
 
 #### GrandID
 
 ```powershell
-dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore -Version 1.0.0-rc-2
+dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore
 ```
 
 ### 2. Prepare your project
@@ -206,7 +204,7 @@ public class BankIdApiClient : IBankIdApiClient
 ```csharp
 public class GrandIdApiClient : IGrandIdApiClient
 {
-	public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request) { ... }
+    public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request) { ... }
     public async Task<BankIdGetSessionResponse> BankIdGetSessionAsync(BankIdGetSessionRequest request) { ... }
     public async Task<LogoutResponse> LogoutAsync(LogoutRequest request) { ... }
 }
