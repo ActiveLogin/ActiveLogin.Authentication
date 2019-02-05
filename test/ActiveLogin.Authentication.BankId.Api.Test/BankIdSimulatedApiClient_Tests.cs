@@ -5,13 +5,13 @@ using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test
 {
-    public class BankIdDevelopmentApiClient_Tests
+    public class BankIdSimulatedApiClient_Tests
     {
-        private readonly BankIdDevelopmentApiClient _bankIdClient;
+        private readonly BankIdSimulatedApiClient _bankIdClient;
 
-        public BankIdDevelopmentApiClient_Tests()
+        public BankIdSimulatedApiClient_Tests()
         {
-            _bankIdClient = new BankIdDevelopmentApiClient
+            _bankIdClient = new BankIdSimulatedApiClient
             {
                 Delay = TimeSpan.Zero
             };
@@ -57,7 +57,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void CollectAsync_WithDefaultValuesInConstructor__ShouldReturnPersonInfo()
         {
             // Arange
-            var bankIdClient = new BankIdDevelopmentApiClient("gn", "sn", "n", "201801012392")
+            var bankIdClient = new BankIdSimulatedApiClient("gn", "sn", "n", "201801012392")
             {
                 Delay = TimeSpan.Zero
             };
@@ -81,7 +81,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void CollectAsync_WithSpecifiedEndUserIp_AndPin_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
         {
             // Arange
-            var bankIdClient = new BankIdDevelopmentApiClient("x", "x", "x", "x")
+            var bankIdClient = new BankIdSimulatedApiClient("x", "x", "x", "x")
             {
                 Delay = TimeSpan.Zero
             };
@@ -103,13 +103,13 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async void CancelAsync_CancelsTheCollectFlow()
         {
             // Arange
-            var statuses = new List<BankIdDevelopmentApiClient.CollectState>
+            var statuses = new List<BankIdSimulatedApiClient.CollectState>
             {
-                new BankIdDevelopmentApiClient.CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
-                new BankIdDevelopmentApiClient.CollectState(CollectStatus.Pending, CollectHintCode.Started),
-                new BankIdDevelopmentApiClient.CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
+                new BankIdSimulatedApiClient.CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
+                new BankIdSimulatedApiClient.CollectState(CollectStatus.Pending, CollectHintCode.Started),
+                new BankIdSimulatedApiClient.CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
             };
-            var bankIdClient = new BankIdDevelopmentApiClient(statuses)
+            var bankIdClient = new BankIdSimulatedApiClient(statuses)
             {
                 Delay = TimeSpan.Zero
             };

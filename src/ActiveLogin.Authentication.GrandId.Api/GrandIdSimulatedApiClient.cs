@@ -7,45 +7,36 @@ using ActiveLogin.Authentication.GrandId.Api.Models;
 namespace ActiveLogin.Authentication.GrandId.Api
 {
     /// <summary>
-    /// Dummy implementation that can be used for development and testing purposes.
+    /// Dummy implementation that simulates the GrandID API. Can be used for development and testing purposes.
     /// </summary>
-    public class GrandIdDevelopmentApiClient : IGrandIdApiClient
+    public class GrandIdSimulatedApiClient : IGrandIdApiClient
     {
         private const string DefaultGivenName = "GivenName";
         private const string DefaultSurname = "Surname";
         private const string DefaultPersonalIdentityNumber = "199908072391";
-        private const string DefaultMobilePhone = "0046999123456";
-        private const string DefaultTitle = "Software Developer";
 
         private readonly string _givenName;
         private readonly string _surname;
         private readonly string _personalIdentityNumber;
-        private readonly string _mobilePhone;
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         private readonly Dictionary<string, ExtendedFederatedLoginResponse> _bankidFederatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
 
-        public GrandIdDevelopmentApiClient()
+        public GrandIdSimulatedApiClient()
             : this(DefaultGivenName, DefaultSurname)
         {
         }
 
-        public GrandIdDevelopmentApiClient(string givenName, string surname)
+        public GrandIdSimulatedApiClient(string givenName, string surname)
             : this(givenName, surname, DefaultPersonalIdentityNumber)
         {
         }
-
-        public GrandIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber)
-            : this(givenName, surname, personalIdentityNumber, DefaultMobilePhone)
-        {
-        }
-
-        public GrandIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber, string mobilePhone)
+        
+        public GrandIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber)
         {
             _givenName = givenName;
             _surname = surname;
             _personalIdentityNumber = personalIdentityNumber;
-            _mobilePhone = mobilePhone;
         }
 
         public TimeSpan Delay

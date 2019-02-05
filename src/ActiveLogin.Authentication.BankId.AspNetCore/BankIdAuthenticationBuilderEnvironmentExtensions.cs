@@ -30,16 +30,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl);
         }
 
-        public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder)
-            => UseDevelopmentEnvironment(builder, x => new BankIdDevelopmentApiClient());
+        public static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder)
+            => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient());
 
-        public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname)
-            => UseDevelopmentEnvironment(builder, x => new BankIdDevelopmentApiClient(givenName, surname));
+        public static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname)
+            => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname));
 
-        public static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
-            => UseDevelopmentEnvironment(builder, x => new BankIdDevelopmentApiClient(givenName, surname, personalIdentityNumber));
+        public static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
+            => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
 
-        private static IBankIdAuthenticationBuilder UseDevelopmentEnvironment(this IBankIdAuthenticationBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
+        private static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
         {
             builder.AuthenticationBuilder.Services.TryAddSingleton(bankIdDevelopmentApiClient);
             builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, BankIdDevelopmentLauncher>();

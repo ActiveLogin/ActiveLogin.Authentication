@@ -41,11 +41,11 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 
 ## Environments
 
-### Development environment
+### Simulated environment
 
-For trying out quickly (without the need of certificates) you can use an in-memory implementation of the API by using `.UseDevelopmentEnvironment()`. This could also bee good when writing tests.
+For trying out quickly (without the need of certificates) you can use an in-memory implementation of the API by using `.UseSimulatedEnvironment()`. This could also bee good when writing tests.
 
-### Development environment with no config
+### Simulated environment with no config
 
 ```c#
 services
@@ -53,7 +53,7 @@ services
     .AddBankId(builder =>
     {
         builder
-            .UseDevelopmentEnvironment()
+            .UseSimulatedEnvironment()
             .AddSameDevice()
             .AddOtherDevice();
     });
@@ -69,7 +69,7 @@ services
     .AddBankId(builder =>
     {
         builder
-            .UseDevelopmentEnvironment("Alice", "Smith", "199908072391")
+            .UseSimulatedEnvironment("Alice", "Smith", "199908072391")
             .AddSameDevice()
             .AddOtherDevice();
     });

@@ -7,9 +7,9 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 namespace ActiveLogin.Authentication.BankId.Api
 {
     /// <summary>
-    /// Dummy implementation that can be used for development and testing purposes.
+    /// Dummy implementation that simulates the BankId API. Can be used for development and testing purposes.
     /// </summary>
-    public class BankIdDevelopmentApiClient : IBankIdApiClient
+    public class BankIdSimulatedApiClient : IBankIdApiClient
     {
         private const string DefaultGivenName = "GivenName";
         private const string DefaultSurname = "Surname";
@@ -33,37 +33,37 @@ namespace ActiveLogin.Authentication.BankId.Api
         private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
-        public BankIdDevelopmentApiClient()
+        public BankIdSimulatedApiClient()
             : this(DefaultCollectStates)
         {
         }
 
-        public BankIdDevelopmentApiClient(List<CollectState> collectStates)
+        public BankIdSimulatedApiClient(List<CollectState> collectStates)
             : this(DefaultGivenName, DefaultSurname, DefaultPersonalIdentityNumber, collectStates)
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname)
+        public BankIdSimulatedApiClient(string givenName, string surname)
             : this(givenName, surname, DefaultPersonalIdentityNumber)
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber)
+        public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber)
             : this(givenName, surname, personalIdentityNumber, DefaultCollectStates)
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
+        public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
             : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, collectStates)
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname, string name, string personalIdentityNumber)
+        public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber)
             : this(givenName, surname, name, personalIdentityNumber, DefaultCollectStates)
         {
         }
 
-        public BankIdDevelopmentApiClient(string givenName, string surname, string name, string personalIdentityNumber, List<CollectState> collectStates)
+        public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, List<CollectState> collectStates)
         {
             _givenName = givenName;
             _surname = surname;
@@ -161,8 +161,8 @@ namespace ActiveLogin.Authentication.BankId.Api
             var certNotAfter = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(1));
             var cert = new Cert(certNotBefore.ToString("D"), certNotAfter.ToString("D"));
 
-            var signature = string.Empty; // Not implemented in the development client
-            var ocspResponse = string.Empty; // Not implemented in the development client
+            var signature = string.Empty; // Not implemented in the simulated client
+            var ocspResponse = string.Empty; // Not implemented in the simulated client
 
             return new CompletionData(user, device, cert, signature, ocspResponse);
         }
