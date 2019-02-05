@@ -62,8 +62,7 @@ services.AddAuthentication()
         builder
             .UseProductionEnvironment(config => {
                 config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                ...
-			})
+            })
             ...
     });
 ```
@@ -78,9 +77,9 @@ services.AddAuthentication()
     {
         builder
             .UseTestEnvironment(config => {
-			    config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                ...
-			})
+                config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+		...
+            })
             ...
     });
 ```
@@ -99,9 +98,9 @@ services
     {
         builder
             .UseProductionEnvironment(config => {
-				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
-			})
+                config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+	    })
             .AddBankIdSameDevice()
             .AddBankIdOtherDevice();
     });
@@ -118,9 +117,9 @@ services
     {
         builder
             .UseProductionEnvironment(config => {
-				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
-			})
+                config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+	    })
             .AddBankIdChooseDevice();
     });
 ```
@@ -136,9 +135,9 @@ services
     {
         builder
             .UseProductionEnvironment(config => {
-				config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-				config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
-			})
+                config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+	    })
             .AddBankIdSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
             .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });
@@ -155,7 +154,7 @@ GrandId options allows you to set and override some options such as these.
 	options.IssueBirthdateClaim = true;
 
 	// Issue gender claim based on data extracted from the personal identity number
-    options.IssueGenderClaim = true;
+	options.IssueGenderClaim = true;
 });
 ```
 
