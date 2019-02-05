@@ -2,7 +2,7 @@
 
 ## Preparation
 
-1. Read through the [GrandID documentation](http://www2.e-identitet.se/index.php?page=api-2). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
+1. Read through the [GrandID documentation](https://docs.grandid.com/). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
 1. [Get in touch with Svensk E-identitet](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/) to receive keys, you need these:
     * `ApiKey`
     * `BankIdServiceKey` (BankID) *Note:* ActiveLogin is built for the latest version of GrandID where only one key is used. Please get in touch with Svensk E-identitet if you need to upgrade to this new version.
