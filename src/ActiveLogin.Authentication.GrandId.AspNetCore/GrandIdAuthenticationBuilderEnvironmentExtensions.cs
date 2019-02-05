@@ -50,21 +50,21 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         }
 
         /// <summary>
-        /// Configures the GrandID client to an in memory implementation for development and/or test purposes.
+        /// Configures the GrandID client to a simulated, in memory implementation for development and/or test purposes.
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder)
-            => UseDevelopmentEnvironment(builder, x => new GrandIdDevelopmentApiClient());
+        public static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder)
+            => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient());
 
-        public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname)
-            => UseDevelopmentEnvironment(builder, x => new GrandIdDevelopmentApiClient(givenName, surname));
+        public static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname)
+            => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient(givenName, surname));
 
-        public static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
-            => UseDevelopmentEnvironment(builder, x => new GrandIdDevelopmentApiClient(givenName, surname, personalIdentityNumber));
+        public static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
+            => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
             
 
-        private static IGrandIdAuthenticationBuilder UseDevelopmentEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
+        private static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {
             builder.AuthenticationBuilder.Services.TryAddSingleton(grandIdDevelopmentApiClient);
 

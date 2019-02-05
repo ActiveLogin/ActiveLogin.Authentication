@@ -61,7 +61,7 @@ The authentication modules for BankID and GrandID are registered in `ConfigureSe
 
 ### 3. Get started in development
 
-Both BankID and GrandID requires you to receive either certificates or API-keys, but to get started and try it out the experience there are development environment options available that uses an in-memory implementation.
+Both BankID and GrandID requires you to receive either certificates or API-keys, but to get started and try it out the experience there is a simulated environment options available that uses an in-memory implementation. Great for development and testing.
 
 #### BankID
 
@@ -71,7 +71,7 @@ services
     .AddBankId(builder =>
     {
         builder
-            .UseDevelopmentEnvironment()
+            .UseSimulatedEnvironment()
             .AddSameDevice()
             .AddOtherDevice();
     });
@@ -85,7 +85,7 @@ services
     .AddGrandId(builder =>
     {
         builder
-            .UseDevelopmentEnvironment()
+            .UseSimulatedEnvironment()
             .AddBankIdSameDevice(options => { })
             .AddBankIdOtherDevice(options => { });
     });
@@ -147,7 +147,7 @@ For more use cases, samples and inspiration; feel free to browse our unit tests 
 
 ### How do I run the samples?
 
-The samples are configured to run in development mode (no BankID certificates or GrandID keys required) by default. The _IdentityServer.ClientSample_ is using the _IdentityServer.ServerSample_ as its identity provider. So to run the _IdentityServer.ClientSample_, the _IdentityServer.ServerSample_ needs to be running first.
+The samples are configured to run in simulated mode (no BankID certificates or GrandID keys required) by default. The _IdentityServer.ClientSample_ is using the _IdentityServer.ServerSample_ as its identity provider. So to run the _IdentityServer.ClientSample_, the _IdentityServer.ServerSample_ needs to be running first.
 
 The easiest way to try the sample out is to:
 

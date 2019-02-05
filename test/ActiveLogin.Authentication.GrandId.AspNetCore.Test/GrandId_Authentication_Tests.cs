@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
             // Arrange
             var client = CreateServer(o =>
                 {
-                    o.UseDevelopmentEnvironment()
+                    o.UseSimulatedEnvironment()
                      .AddBankIdSameDevice(options => { });
                 },
                 async context =>

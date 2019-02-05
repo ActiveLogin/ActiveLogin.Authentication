@@ -37,7 +37,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Arrange
             var client = CreateServer(o =>
                 {
-                    o.UseDevelopmentEnvironment()
+                    o.UseSimulatedEnvironment()
                      .AddSameDevice();
                 },
                 async context =>
@@ -60,7 +60,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Arrange
             var client = CreateServer(o =>
                 {
-                    o.UseDevelopmentEnvironment()
+                    o.UseSimulatedEnvironment()
                      .AddSameDevice();
                 },
                 context => Task.CompletedTask,
@@ -90,7 +90,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Arrange
             var client = CreateServer(o =>
                 {
-                    o.UseDevelopmentEnvironment()
+                    o.UseSimulatedEnvironment()
                         .AddSameDevice();
                 },
                 async context =>

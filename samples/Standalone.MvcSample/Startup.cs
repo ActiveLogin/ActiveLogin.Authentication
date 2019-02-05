@@ -33,9 +33,9 @@ namespace Standalone.MvcSample
                     builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
                            .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
-                    if (Configuration.GetValue("ActiveLogin:BankId:UseDevelopmentEnvironment", false))
+                    if (Configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
                     {
-                        builder.UseDevelopmentEnvironment();
+                        builder.UseSimulatedEnvironment();
                     }
                     else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
                     {
@@ -56,9 +56,9 @@ namespace Standalone.MvcSample
                            .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
                            .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
-                    if (Configuration.GetValue("ActiveLogin:GrandId:UseDevelopmentEnvironment", false))
+                    if (Configuration.GetValue("ActiveLogin:GrandId:UseSimulatedEnvironment", false))
                     {
-                        builder.UseDevelopmentEnvironment();
+                        builder.UseSimulatedEnvironment();
                     }
                     else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
                     {

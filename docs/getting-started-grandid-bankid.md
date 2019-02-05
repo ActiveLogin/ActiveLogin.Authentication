@@ -17,11 +17,11 @@
 
 ## Environments
 
-### Development environment
+### Simulated environment
 
-For trying out quickly (without the need of keys) you can use an in-memory implementation of the API by using `.UseDevelopmentEnvironment()`. This could also bee good when writing tests.
+For trying out quickly (without the need of keys) you can use an in-memory implementation of the API by using `.UseSimulatedEnvironment()`. This could also bee good when writing tests.
 
-### Development environment with no config
+### Simulated environment with no config
 
 ```c#
 services

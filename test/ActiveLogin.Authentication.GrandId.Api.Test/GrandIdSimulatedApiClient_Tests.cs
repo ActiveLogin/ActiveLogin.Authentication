@@ -4,13 +4,13 @@ using Xunit;
 
 namespace ActiveLogin.Authentication.GrandId.Api.Test
 {
-    public class GrandIdDevelopmentApiClient_Tests
+    public class GrandIdSimulatedApiClient_Tests
     {
-        private readonly GrandIdDevelopmentApiClient _grandIdClient;
+        private readonly GrandIdSimulatedApiClient _grandIdClient;
 
-        public GrandIdDevelopmentApiClient_Tests()
+        public GrandIdSimulatedApiClient_Tests()
         {
-            _grandIdClient = new GrandIdDevelopmentApiClient
+            _grandIdClient = new GrandIdSimulatedApiClient
             {
                 Delay = TimeSpan.Zero
             };
@@ -49,7 +49,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
         public async void BankIdGetSessionAsync_WithDefaultValuesInConstructor__ShouldReturnPersonInfo()
         {
             // Arange
-            var grandIdClient = new GrandIdDevelopmentApiClient("gn", "sn", "201801012392")
+            var grandIdClient = new GrandIdSimulatedApiClient("gn", "sn", "201801012392")
             {
                 Delay = TimeSpan.Zero
             };
@@ -69,7 +69,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
         public async void BankIdGetSessionAsync_WithSpecifiedPin_InBankIdLoginRequest__ShouldReturnPersonInfo_WithPin()
         {
             // Arange
-            var grandIdClient = new GrandIdDevelopmentApiClient("x", "x", "x")
+            var grandIdClient = new GrandIdSimulatedApiClient("x", "x", "x")
             {
                 Delay = TimeSpan.Zero
             };
