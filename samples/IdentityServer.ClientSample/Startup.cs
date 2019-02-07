@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,8 @@ namespace IdentityServer.ClientSample
                     .Build();
 
                 config.Filters.Add(new AuthorizeFilter(policy));
+
+                config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
