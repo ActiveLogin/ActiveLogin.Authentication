@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -46,7 +47,10 @@ namespace IdentityServer.ServerSample
                 options.Secure = CookieSecurePolicy.Always;
             });
 
-            services.AddMvc();
+            services.AddMvc(config =>
+            {
+                config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
 
             services.AddIdentityServer(x => { x.Authentication.CookieLifetime = TimeSpan.FromHours(1); })
                     .AddDeveloperSigningCredential()
