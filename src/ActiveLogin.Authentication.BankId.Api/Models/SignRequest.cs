@@ -3,10 +3,10 @@
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
-    /// Auth request parameters.
+    /// Sign request parameters.
     /// </summary>
     [DataContract]
-    public class AuthRequest : IAuthRequest
+    public class SignRequest : IAuthRequest
     {
         /// <summary></summary>
         /// <param name="endUserIp">
@@ -17,8 +17,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// In some use cases the IP address is not available, for instance for voice based services.
         /// In this case, the internal representation of those systems IP address is ok to use.
         /// </param>
-        public AuthRequest(string endUserIp)
-            : this(endUserIp, null)
+        /// <param name="userVisibleData">
+        /// The text to be displayed and signed. String. The text can be formatted using CR, LF and CRLF for new lines. The text must be encoded as UTF-8 and then base 64 encoded. 1--40 000 characters after base 64 encoding.
+        /// </param>
+        /// <param name="userNonVisibleData">
+        /// Data not displayed to the user. String. The value must be base 64-encoded. 1-200 000charactersafter base 64-encoding.
+        /// </param>
+        public SignRequest(string endUserIp, string userVisibleData, string userNonVisibleData)
+            : this(endUserIp, null, userVisibleData, userNonVisibleData)
         {
         }
 
@@ -35,8 +41,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The personal number of the user. 12 digits, century must be included (YYYYMMDDSSSC).
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </param>
-        public AuthRequest(string endUserIp, string personalIdentityNumber)
-            : this(endUserIp, personalIdentityNumber, new Requirement())
+        /// <param name="userVisibleData">
+        /// The text to be displayed and signed. String. The text can be formatted using CR, LF and CRLF for new lines. The text must be encoded as UTF-8 and then base 64 encoded. 1--40 000 characters after base 64 encoding.
+        /// </param>
+        /// <param name="userNonVisibleData">
+        /// Data not displayed to the user. String. The value must be base 64-encoded. 1-200 000charactersafter base 64-encoding.
+        /// </param>
+        public SignRequest(string endUserIp, string personalIdentityNumber, string userVisibleData, string userNonVisibleData)
+            : this(endUserIp, personalIdentityNumber, userVisibleData, userNonVisibleData, new Requirement())
         {
         }
 
@@ -52,13 +64,21 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <param name="personalIdentityNumber">
         /// The personal number of the user. 12 digits, century must be included (YYYYMMDDSSSC).
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
+        /// </param>
+        /// <param name="userVisibleData">
+        /// The text to be displayed and signed. String. The text can be formatted using CR, LF and CRLF for new lines. The text must be encoded as UTF-8 and then base 64 encoded. 1--40 000 characters after base 64 encoding.
+        /// </param>
+        /// <param name="userNonVisibleData">
+        /// Data not displayed to the user. String. The value must be base 64-encoded. 1-200 000charactersafter base 64-encoding.
         /// </param>
         /// <param name="requirement">Requirements on how the auth or sign order must be performed.</param>
-        public AuthRequest(string endUserIp, string personalIdentityNumber, Requirement requirement)
+        public SignRequest(string endUserIp, string personalIdentityNumber, string userVisibleData, string userNonVisibleData, Requirement requirement)
         {
             EndUserIp = endUserIp;
             PersonalIdentityNumber = personalIdentityNumber;
             Requirement = requirement;
+            UserVisibleData = userVisibleData;
+            UserNonVisibleData = userNonVisibleData;
         }
 
         /// <summary>
@@ -84,5 +104,18 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// </summary>
         [DataMember(Name = "requirement", EmitDefaultValue = false)]
         public Requirement Requirement { get; private set; }
+
+        /// <summary>
+        /// The text to be displayed and signed. String. The text can be formatted using CR, LF and CRLF for new lines.
+        /// The text must be encoded as UTF-8 and then base 64 encoded. 1--40 000 characters after base 64 encoding.
+        /// </summary>
+        [DataMember(Name = "userVisibleData")]
+        public string UserVisibleData { get; private set; }
+
+        /// <summary>
+        /// Data not displayed to the user. String. The value must be base 64-encoded. 1-200 000 characters after base 64-encoding.
+        /// </summary>
+        [DataMember(Name = "userNonVisibleData", EmitDefaultValue = false)]
+        public string UserNonVisibleData { get; private set; }
     }
 }

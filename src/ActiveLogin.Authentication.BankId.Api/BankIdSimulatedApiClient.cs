@@ -14,6 +14,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         private const string DefaultGivenName = "GivenName";
         private const string DefaultSurname = "Surname";
         private const string DefaultPersonalIdentityNumber = "199908072391";
+
         private static readonly List<CollectState> DefaultCollectStates = new List<CollectState>
         {
             new CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
@@ -94,7 +95,23 @@ namespace ActiveLogin.Authentication.BankId.Api
             return new AuthResponse(orderRef, autoStartToken);
         }
 
-        private string GetPersonalIdentityNumber(AuthRequest request)
+        public async Task<SignResponse> SignAsync(SignRequest request)
+        {
+            await SimulateResponseDelay().ConfigureAwait(false);
+
+            var personalIdentityNumber = GetPersonalIdentityNumber(request);
+            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
+
+            var orderRef = Guid.NewGuid().ToString();
+            var auth = new Auth(request.EndUserIp, orderRef, personalIdentityNumber);
+            _auths.Add(orderRef, auth);
+
+            var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
+
+            return new SignResponse(orderRef, autoStartToken);
+        }
+
+        private string GetPersonalIdentityNumber(IAuthRequest request)
         {
             if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
             {
@@ -217,8 +234,11 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             public string EndUserIp { get; }
+
             public string OrderRef { get; }
+
             public string PersonalIdentityNumber { get; }
+
             public int CollectCalls { get; set; }
         }
 
@@ -231,6 +251,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             public CollectStatus Status { get; }
+
             public CollectHintCode HintCode { get; }
         }
     }
