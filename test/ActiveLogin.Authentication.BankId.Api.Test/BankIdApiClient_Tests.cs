@@ -167,7 +167,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userVisibleData\":\"userVisibleData\"}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
@@ -182,11 +182,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{},\"userVisibleData\":\"userVisibleData\"}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{},\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
-        public async Task SignAsync_WithUserNonVisibleData__ShouldPostJsonPayload_WithUserNonVisibleDat()
+        public async Task SignAsync_WithUserNonVisibleData__ShouldPostJsonPayload_WithUserNonVisibleData()
         {
             // Arrange
 
@@ -197,7 +197,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"userNonVisibleData\",\"userVisibleData\":\"userVisibleData\"}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
@@ -212,7 +212,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"autoStartTokenRequired\":true,\"certificatePolicies\":[\"req1\",\"req2\"]},\"userNonVisibleData\":\"userNonVisibleData\",\"userVisibleData\":\"userVisibleData\"}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"autoStartTokenRequired\":true,\"certificatePolicies\":[\"req1\",\"req2\"]},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
@@ -229,6 +229,21 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             Assert.NotNull(result);
             Assert.Equal("abc123", result.OrderRef);
             Assert.Equal("def456", result.AutoStartToken);
+        }
+
+        [Fact]
+        public async Task SignAsync_WithBase64EncodeduserVisibleData__ShouldPostJsonPayload_WithUntouchedBase64String()
+        {
+            // Arrange
+
+            // Act
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "dXNlclZpc2libGVEYXRh", "dXNlck5vblZpc2libGVEYXRh"));
+
+            // Assert
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]

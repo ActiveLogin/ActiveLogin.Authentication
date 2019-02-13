@@ -1,4 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
@@ -77,8 +80,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
             EndUserIp = endUserIp;
             PersonalIdentityNumber = personalIdentityNumber;
             Requirement = requirement;
-            UserVisibleData = userVisibleData;
-            UserNonVisibleData = userNonVisibleData;
+            UserVisibleData = EnsureBase64EncodedString(userVisibleData);
+            UserNonVisibleData = EnsureBase64EncodedString(userNonVisibleData);
         }
 
         /// <summary>
@@ -117,5 +120,20 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// </summary>
         [DataMember(Name = "userNonVisibleData", EmitDefaultValue = false)]
         public string UserNonVisibleData { get; private set; }
+
+        private static string EnsureBase64EncodedString(string value)
+        {
+            if (value == null) return null;
+            if (IsBase64String(value)) return value;
+
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+        }
+
+        private static bool IsBase64String(string value)
+        {
+            if (value == null) return false;
+            value = value.Trim();
+            return (value.Length % 4 == 0) && Regex.IsMatch(value, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
+        }
     }
 }
