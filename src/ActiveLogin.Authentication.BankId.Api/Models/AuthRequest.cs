@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     /// Auth request parameters.
     /// </summary>
     [DataContract]
-    public class AuthRequest : IAuthRequest
+    public class AuthRequest
     {
         /// <summary></summary>
         /// <param name="endUserIp">

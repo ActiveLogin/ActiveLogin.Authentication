@@ -81,44 +81,36 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            await SimulateResponseDelay().ConfigureAwait(false);
-
-            var personalIdentityNumber = GetPersonalIdentityNumber(request);
-            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
-
-            var orderRef = Guid.NewGuid().ToString();
-            var auth = new Auth(request.EndUserIp, orderRef, personalIdentityNumber);
-            _auths.Add(orderRef, auth);
-
-            var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
-
+            var (orderRef, autoStartToken) = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
+                .ConfigureAwait(false);
             return new AuthResponse(orderRef, autoStartToken);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
         {
+            var (orderRef, autoStartToken) = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
+                .ConfigureAwait(false);
+            return new SignResponse(orderRef, autoStartToken);
+        }
+
+        private async Task<(string orderRef, string autoStartToken)> GetReponseAsync(string personalIdentityNumber, string endUserIp)
+        {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            var personalIdentityNumber = GetPersonalIdentityNumber(request);
+            if (string.IsNullOrEmpty(personalIdentityNumber))
+            {
+                personalIdentityNumber = _personalIdentityNumber;
+            }
+
             await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
 
             var orderRef = Guid.NewGuid().ToString();
-            var auth = new Auth(request.EndUserIp, orderRef, personalIdentityNumber);
+            var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
             var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
-            return new SignResponse(orderRef, autoStartToken);
-        }
-
-        private string GetPersonalIdentityNumber(IAuthRequest request)
-        {
-            if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
-            {
-                return request.PersonalIdentityNumber;
-            }
-
-            return _personalIdentityNumber;
+            return (orderRef, autoStartToken);
         }
 
         private async Task EnsureNoExistingAuth(string personalIdentityNumber)

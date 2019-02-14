@@ -143,7 +143,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null));
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
 
             // Assert
             Assert.Single(_messageHandlerMock.Invocations);
@@ -161,7 +161,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null));
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -176,7 +176,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "201801012392", "userVisibleData", null));
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", "201801012392"));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -191,13 +191,13 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", "userNonVisibleData"));
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", userNonVisibleData: new byte[1]));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"AA==\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
@@ -206,7 +206,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "201801012392", "userVisibleData", "userNonVisibleData", new Requirement(new List<string> { "req1", "req2" }, true, true)));
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -223,27 +223,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act
-            var result = await bankIdClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null));
+            var result = await bankIdClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal("abc123", result.OrderRef);
             Assert.Equal("def456", result.AutoStartToken);
-        }
-
-        [Fact]
-        public async Task SignAsync_WithBase64EncodeduserVisibleData__ShouldPostJsonPayload_WithUntouchedBase64String()
-        {
-            // Arrange
-
-            // Act
-            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "dXNlclZpc2libGVEYXRh", "dXNlck5vblZpc2libGVEYXRh"));
-
-            // Assert
-            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-            var contentString = await request.Content.ReadAsStringAsync();
-
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
