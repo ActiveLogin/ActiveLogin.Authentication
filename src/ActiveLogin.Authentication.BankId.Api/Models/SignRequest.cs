@@ -123,7 +123,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
 
         private static string EnsureBase64EncodedString(string value)
         {
-            if (value == null) return null;
+            if (value == null) {
+                return null;
+            }
             if (IsBase64String(value)) return value;
 
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
