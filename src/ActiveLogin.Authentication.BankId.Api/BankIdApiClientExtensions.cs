@@ -144,7 +144,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
         public static Task<SignResponse> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData, string personalIdentityNumber, byte[] userNonVisibleData)
         {
-            return apiClient.SignAsync(new SignRequest(endUserIp, userVisibleData, userNonVisibleData));
+            return apiClient.SignAsync(new SignRequest(endUserIp, userVisibleData, userNonVisibleData, personalIdentityNumber));
         }
 
         /// <summary>
