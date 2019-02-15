@@ -81,19 +81,19 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var (orderRef, autoStartToken) = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
+            var r = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
                 .ConfigureAwait(false);
-            return new AuthResponse(orderRef, autoStartToken);
+            return new AuthResponse(r.OrderRef, r.AutoStartToken);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
         {
-            var (orderRef, autoStartToken) = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
+            var r = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
                 .ConfigureAwait(false);
-            return new SignResponse(orderRef, autoStartToken);
+            return new SignResponse(r.OrderRef, r.AutoStartToken);
         }
 
-        private async Task<(string orderRef, string autoStartToken)> GetReponseAsync(string personalIdentityNumber, string endUserIp)
+        private async Task<OrderResponse> GetReponseAsync(string personalIdentityNumber, string endUserIp)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
@@ -110,7 +110,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
-            return (orderRef, autoStartToken);
+            return new OrderResponse(orderRef, autoStartToken);
         }
 
         private async Task EnsureNoExistingAuth(string personalIdentityNumber)
@@ -232,6 +232,19 @@ namespace ActiveLogin.Authentication.BankId.Api
             public string PersonalIdentityNumber { get; }
 
             public int CollectCalls { get; set; }
+        }
+
+        public class OrderResponse
+        {
+            public OrderResponse(string orderRef, string autoStartToken)
+            {
+                OrderRef = orderRef;
+                AutoStartToken = autoStartToken;
+            }
+
+            public string OrderRef { get; set; }
+
+            public string AutoStartToken { get; set; }
         }
 
         public class CollectState
