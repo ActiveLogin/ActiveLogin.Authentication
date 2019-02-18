@@ -6,4 +6,10 @@
         public string AzureAdClientSecret { get; set; }
         public string AzureKeyVaultSecretIdentifier { get; set; }
     }
+
+    public class ClientCertificateFromManagedIdentityAzureKeyVaultOptions
+    {
+        public string AzureKeyVaultUri { get; set; }
+        public string CertificateIdentifier { get; set; }
+    }
 }
