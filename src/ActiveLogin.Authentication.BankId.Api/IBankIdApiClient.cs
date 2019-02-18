@@ -9,10 +9,16 @@ namespace ActiveLogin.Authentication.BankId.Api
     public interface IBankIdApiClient
     {
         /// <summary>
-        /// Initiates an authentication or signing order. Use the collect method to query the status of the order.
+        /// Initiates an authentication order. Use the collect method to query the status of the order.
         /// </summary>
         /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
         Task<AuthResponse> AuthAsync(AuthRequest request);
+
+        /// <summary>
+        /// Initiates an signing order. Use the collect method to query the status of the order.
+        /// </summary>
+        /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
+        Task<SignResponse> SignAsync(SignRequest request);
 
         /// <summary>
         /// Collects the result of a sign or auth order using the OrderRef as reference.

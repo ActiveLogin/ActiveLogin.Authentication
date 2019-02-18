@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void AuthAsync_WithSamePersonalIdentityNumber_AtTheSameTime__ShouldThrow()
+        public async Task AuthAsync_WithSamePersonalIdentityNumber_AtTheSameTime__ShouldThrow()
         {
             // Arange
 
@@ -30,7 +31,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void AuthAsync_WithSamePersonalIdentityNumber_OneAtTheTime__ShouldBeAllowed()
+        public async Task AuthAsync_WithSamePersonalIdentityNumber_OneAtTheTime__ShouldBeAllowed()
         {
             // Arange
 
@@ -41,7 +42,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             {
                 firstCollectResponse = await _bankIdClient.CollectAsync(new CollectRequest(firstAuthResponse.OrderRef));
             } while (firstCollectResponse.GetCollectStatus() != CollectStatus.Complete);
-
 
             var secondAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "201801012392"));
             CollectResponse secondCollectResponse;
@@ -54,7 +54,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void CollectAsync_WithDefaultValuesInConstructor__ShouldReturnPersonInfo()
+        public async Task CollectAsync_WithDefaultValuesInConstructor__ShouldReturnPersonInfo()
         {
             // Arange
             var bankIdClient = new BankIdSimulatedApiClient("gn", "sn", "n", "201801012392")
@@ -78,7 +78,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async void CollectAsync_WithSpecifiedEndUserIp_AndPin_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
+        public async Task CollectAsync_WithSpecifiedEndUserIp_AndPin_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
         {
             // Arange
             var bankIdClient = new BankIdSimulatedApiClient("x", "x", "x", "x")
@@ -93,14 +93,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             {
                 collectResponse = await bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
             } while (collectResponse.GetCollectStatus() != CollectStatus.Complete);
-            
+
             // Assert
             Assert.Equal("2.2.2.2", collectResponse.CompletionData.Device.IpAddress);
             Assert.Equal("201801012392", collectResponse.CompletionData.User.PersonalIdentityNumber);
         }
 
         [Fact]
-        public async void CancelAsync_CancelsTheCollectFlow()
+        public async Task CancelAsync_CancelsTheCollectFlow()
         {
             // Arange
             var statuses = new List<BankIdSimulatedApiClient.CollectState>
