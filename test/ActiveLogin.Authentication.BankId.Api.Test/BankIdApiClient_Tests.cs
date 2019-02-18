@@ -176,7 +176,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arrange
 
             // Act
-            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", "201801012392"));
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null, "201801012392"));
 
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();

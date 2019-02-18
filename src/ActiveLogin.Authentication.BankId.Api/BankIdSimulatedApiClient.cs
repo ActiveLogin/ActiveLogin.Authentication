@@ -81,19 +81,17 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var r = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
-                .ConfigureAwait(false);
-            return new AuthResponse(r.OrderRef, r.AutoStartToken);
+            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            return new AuthResponse(response.OrderRef, response.AutoStartToken);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
         {
-            var r = await GetReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
-                .ConfigureAwait(false);
-            return new SignResponse(r.OrderRef, r.AutoStartToken);
+            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            return new SignResponse(response.OrderRef, response.AutoStartToken);
         }
 
-        private async Task<OrderResponse> GetReponseAsync(string personalIdentityNumber, string endUserIp)
+        private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
@@ -234,7 +232,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             public int CollectCalls { get; set; }
         }
 
-        public class OrderResponse
+        private class OrderResponse
         {
             public OrderResponse(string orderRef, string autoStartToken)
             {
