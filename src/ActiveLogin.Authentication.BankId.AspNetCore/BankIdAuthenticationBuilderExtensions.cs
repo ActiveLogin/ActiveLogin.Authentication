@@ -58,12 +58,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             return builder;
         }
-
-        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, string certificateFilePath)
-        {
-            builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
-
-            return builder;
-        }
     }
 }

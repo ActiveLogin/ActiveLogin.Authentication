@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Azure.KeyVault;
 
 namespace Standalone.MvcSample
 {
@@ -39,33 +40,13 @@ namespace Standalone.MvcSample
                     }
                     else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
                     {
-                        if(Configuration.GetValue("ActiveLogin:BankId:UseManagedIdentity", false))
-                        {
-                            builder.UseTestEnvironment()
-                                .UseClientCertificateFromManagedIdentityAzureKeyVaultOptions(Configuration.GetSection("ActiveLogin:BankId:ManagedIdentity"))
-                                .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath"))); ;
-                        }
-                        else
-                        {
-                            builder.UseTestEnvironment()
-                                   .UseClientCertificate(() => new X509Certificate2(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate"))))
-                                   .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
-                        }
+                        builder.UseTestEnvironment()
+                            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
                     }
                     else
                     {
-                        if (Configuration.GetValue("ActiveLogin:BankId:UseManagedIdentity", false))
-                        {
-                            builder.UseProductionEnvironment()
-                                .UseClientCertificateFromManagedIdentityAzureKeyVaultOptions(Configuration.GetSection("ActiveLogin:BankId:ManagedIdentity"))
-                                .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath"))); ;
-                        }
-                        else
-                        {
-                            builder.UseProductionEnvironment()
-                               .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                               .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
-                        }
+                        builder.UseProductionEnvironment()
+                            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
                     }
                 })
                 .AddGrandId(builder =>

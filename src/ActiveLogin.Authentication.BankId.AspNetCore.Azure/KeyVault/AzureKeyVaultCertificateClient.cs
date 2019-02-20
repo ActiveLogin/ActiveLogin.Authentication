@@ -8,65 +8,24 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
 {
-    internal abstract class AzureKeyVaultClient : IDisposable
+    internal class AzureKeyVaultCertificateClient : IDisposable
     {
-        protected const string CertificateContentType = "application/x-pkcs12";
-
-        protected X509Certificate2 GetX509Certificate2(byte[] certificate)
-        {
-            var exportedCertCollection = new X509Certificate2Collection();
-            exportedCertCollection.Import(certificate, string.Empty, X509KeyStorageFlags.MachineKeySet);
-
-            return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
-        }
-
-        public abstract void Dispose();
-    }
-
-    internal class AzureKeyVaultManagedIdentityClient : AzureKeyVaultClient
-    {
-        private readonly KeyVaultClient _keyVaultClient;
-        private readonly string _keyVaultUrl;
-
-        public AzureKeyVaultManagedIdentityClient(string keyVaultUrl)
-        {
-            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            _keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
-            string trimmed = keyVaultUrl.TrimEnd('/');
-            _keyVaultUrl = trimmed.EndsWith("/secrets")
-                ? keyVaultUrl
-                : $"{trimmed}/secrets/";
-        }
-
-        public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
-        {
-            var secret = await _keyVaultClient.GetSecretAsync($"{_keyVaultUrl}/{keyVaultSecretIdentifier}").ConfigureAwait(false);
-            if (secret.ContentType != CertificateContentType)
-            {
-                throw new ArgumentException($"This certificate must be of type {CertificateContentType}");
-            }
-
-            var certificateBytes = Convert.FromBase64String(secret.Value);
-            var certificate = GetX509Certificate2(certificateBytes);
-
-            return certificate;
-        }
-
-        public override void Dispose()
-        {
-            _keyVaultClient.Dispose();
-        }
-    }
-
-    internal class AzureKeyVaultCertificateClient : AzureKeyVaultClient
-    {
+        private const string CertificateContentType = "application/x-pkcs12";
         private readonly ClientCredential _clientCredential;
         private readonly KeyVaultClient _keyVaultClient;
 
-        public AzureKeyVaultCertificateClient(string clientId, string clientSecret)
+        public AzureKeyVaultCertificateClient(ClientCertificateFromAzureKeyVaultOptions options)
         {
-            _clientCredential = new ClientCredential(clientId, clientSecret);
-            _keyVaultClient = new KeyVaultClient(GetToken);
+            if (options.UseManagedIdentity)
+            {
+                _clientCredential = new ClientCredential(options.AzureAdClientId, options.AzureAdClientSecret);
+                _keyVaultClient = new KeyVaultClient(GetToken);
+            }
+            else
+            {
+                var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                _keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+            }
         }
 
         public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
@@ -78,9 +37,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             }
 
             var certificateBytes = Convert.FromBase64String(secret.Value);
-            var certificate = GetX509Certificate2(certificateBytes);
 
-            return certificate;
+            return GetX509Certificate2(certificateBytes);
         }
 
         public async Task<string> GetToken(string authority, string resource, string scope)
@@ -96,9 +54,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             return result.AccessToken;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             _keyVaultClient?.Dispose();
+        }
+
+        private X509Certificate2 GetX509Certificate2(byte[] certificate)
+        {
+            var exportedCertCollection = new X509Certificate2Collection();
+            exportedCertCollection.Import(certificate, string.Empty, X509KeyStorageFlags.MachineKeySet);
+
+            return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
         }
     }
 }
