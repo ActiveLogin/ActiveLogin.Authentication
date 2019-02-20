@@ -3,9 +3,8 @@
 <script>
     (function (options) {
         // Pre check
-        console.log("checking status");
         var statusElement = document.querySelector('#bankIdLoginStatus');
-        var statusSpinnerElement = statusElement.querySelector('.spinner-image');
+        var statusSpinnerElement = statusElement.querySelector('.status-spinner');
         var statusMessageElement = statusElement.querySelector('.status-message');
 
         var requiredFeatures = [window.fetch, window.sessionStorage];
@@ -14,7 +13,7 @@
             showStatus(options.unsuportedBrowserErrorMessage, 'danger', false, true);
             return;
         }
-        
+
         // OrderRef
 
         var sessionStorageOrderRefKey = 'ActiveLogin_BankId_OrderRef';
@@ -32,8 +31,10 @@
 
         var formSubmitButtonElement = formElement.querySelector('button[type="submit"]');
         var formSubmitButtonTextElement = null;
+        var formSubmitButtonSpinnerElement = null;
         if (formSubmitButtonElement) {
             formSubmitButtonTextElement = formSubmitButtonElement.querySelector('.submit-text');
+            formSubmitButtonSpinnerElement = formSubmitButtonElement.querySelector('.button-status-spinner');
         }
 
         // Events
@@ -79,6 +80,8 @@
 
         function initialize(requestVerificationToken, returnUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
             formFieldsetElement.disabled = true;
+            show(formSubmitButtonSpinnerElement);
+            hide(formSubmitButtonTextElement);
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl,
@@ -115,10 +118,12 @@
                         }
                     }
                     show(formSubmitButtonTextElement);
+                    hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
                     showStatus(error.message, 'danger', false);
                     hide(startBankIdAppButtonElement);
                     show(formSubmitButtonTextElement);
+                    hide(formSubmitButtonSpinnerElement);
                     formFieldsetElement.disabled = false;
                 });
         }
