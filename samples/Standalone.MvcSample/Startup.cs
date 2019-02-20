@@ -41,11 +41,13 @@ namespace Standalone.MvcSample
                     else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
                     {
                         builder.UseTestEnvironment()
+                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
                     }
                     else
                     {
                         builder.UseProductionEnvironment()
+                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
                     }
                 })
