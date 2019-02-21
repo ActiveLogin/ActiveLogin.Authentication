@@ -35,6 +35,20 @@ _Screenshots on how the default UI for Native BankID looks._
 
 ![Active Login Screenshots](docs/images/activelogin-screenshots.png)
 
+## Configure as service
+
+### Build the IdP
+
+    docker build . -f IdentityServer.ServerSample.Dockerfile
+
+### Build your own IdP
+
+TODO
+
+### Use together with Ory Hydra / OpenId Connect Provider
+
+TODO
+
 ### 1. Install the NuGet package
 
 ActiveLogin.Authentication is distributed as [packages on NuGet](https://www.nuget.org/profiles/ActiveLogin), install using the tool of your choice, for example _dotnet cli_.
