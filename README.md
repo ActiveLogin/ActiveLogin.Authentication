@@ -39,7 +39,7 @@ _Screenshots on how the default UI for Native BankID looks._
 
 ### Build the IdP
 
-    docker build . -f IdentityServer.ServerSample.Dockerfile
+    docker build . -f IdentityServer.ServerSample.Dockerfile -t active-login-idp:latest
 
 ### Build your own IdP
 
