@@ -57,7 +57,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA13),
                 UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
 
-                UnsuportedBrowserErrorMessage = _localizer["UnsuportedBrowser_ErrorMessage"],
+                UnsuportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"],
 
                 BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.InitializeAsync), "BankIdApi"),
                 BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.StatusAsync), "BankIdApi")
