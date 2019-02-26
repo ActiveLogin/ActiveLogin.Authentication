@@ -27,11 +27,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
         {
             builder.UseClientCertificate(() =>
             {
-                var options = builder.AuthenticationBuilder.Services.BuildServiceProvider().GetService<IOptions<ClientCertificateFromAzureKeyVaultOptions>>();
+                var options = builder.AuthenticationBuilder.Services
+                    .BuildServiceProvider()
+                    .GetService<IOptions<ClientCertificateFromAzureKeyVaultOptions>>();
 
                 using (var keyVaultCertificateClient = AzureKeyVaultCertificateClient.Create(options.Value))
                 {
-                    return keyVaultCertificateClient.GetX509Certificate2Async(options.Value.AzureKeyVaultSecretIdentifier).ConfigureAwait(false).GetAwaiter().GetResult();
+                    return keyVaultCertificateClient.GetX509Certificate2Async(options.Value.AzureKeyVaultSecretIdentifier)
+                        .ConfigureAwait(false)
+                        .GetAwaiter()
+                        .GetResult();
                 }
             });
 

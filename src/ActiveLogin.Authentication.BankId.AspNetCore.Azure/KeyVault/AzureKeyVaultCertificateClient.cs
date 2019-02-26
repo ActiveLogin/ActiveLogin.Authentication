@@ -9,7 +9,7 @@ using static Microsoft.Azure.KeyVault.KeyVaultClient;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
 {
-    public class AzureKeyVaultCertificateClient : IDisposable
+    internal class AzureKeyVaultCertificateClient : IDisposable
     {
         public static AzureKeyVaultCertificateClient Create(ClientCertificateFromAzureKeyVaultOptions options)
         {

@@ -1,45 +1,96 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault;
-using Microsoft.Azure.KeyVault;
-using Newtonsoft.Json;
+using ActiveLogin.Authentication.BankId.Api;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
 {
-    public class BankIdAuthenticationBuilderAzureExtensions_Tests
+    public class BankIdAuthenticationBuilderAzureExtension
     {
-        [Fact]
-        public void Factory__Without_SecretIdentifier__Throws()
+        public class UseClientCertificateFromAzureKeyVault
         {
-            var options = new ClientCertificateFromAzureKeyVaultOptions
+            private ServiceProvider SetupTest(IDictionary<string, string> config)
             {
-                AzureKeyVaultSecretIdentifier = "keysecret",
-            };
-            Assert.Throws<ArgumentException>(() => AzureKeyVaultCertificateClient.Create(options));
-        }
+                IConfiguration configuration = new ConfigurationBuilder()
+                    .Add(new MemoryConfigurationSource { InitialData = config })
+                    .Build();
 
-        [Fact]
-        public void Factory__Without_UseManagedIdentity__Without_ClientId__Throws()
-        {
-            var options = new ClientCertificateFromAzureKeyVaultOptions
-            {
-                AzureAdClientId = "id",
-                AzureKeyVaultSecretIdentifier = "keysecret",
-                UseManagedIdentity = false
-            };
-            Assert.Throws<ArgumentException>(() => AzureKeyVaultCertificateClient.Create(options));
-        }
+                var collection = new ServiceCollection();
+                _ = new AuthenticationBuilder(collection)
+                    .AddBankId(builder =>
+                    {
+                        builder.UseTestEnvironment()
+                            .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+                    });
 
-        [Fact]
-        public void Factory__Without_UseManagedIdentity__Without_AzureAdClientSecret__Throws()
-        {
-            var options = new ClientCertificateFromAzureKeyVaultOptions
+                return collection.BuildServiceProvider();
+            }
+
+            [Fact]
+            public void With_ManagedIdentity_With_MalformedSecretIdentifier__Throws()
             {
-                AzureAdClientSecret = "secret",
-                AzureKeyVaultSecretIdentifier = "keysecret",
-                UseManagedIdentity = false
-            };
-            Assert.Throws<ArgumentException>(() => AzureKeyVaultCertificateClient.Create(options));
+                var config = new Dictionary<string, string>
+                {
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier", "somesecret" },
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "true" }
+                };
+
+                var provider = SetupTest(config);
+
+                Assert.Throws<UriFormatException>(() => provider.GetService<IBankIdApiClient>());
+            }
+
+            [Fact]
+            public void Without_SecretIdentifier__Throws()
+            {
+                var config = new Dictionary<string, string>
+                {
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier", "" },
+                };
+
+                var provider = SetupTest(config);
+
+                ArgumentException exception = Assert.Throws<ArgumentException>(() => provider.GetService<IBankIdApiClient>());
+                Assert.Contains("AzureKeyVaultSecretIdentifier", exception.Message);
+            }
+
+            [Fact]
+            public void Without_UseManagedIdentity__Without_ClientId__Throws()
+            {
+                var config = new Dictionary<string, string>
+                {
+                    { "ActiveLogin:BankId:ClientCertificate:AzureAdClientId", "" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "clientsecret" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier", "keysecret" },
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
+                };
+
+                var provider = SetupTest(config);
+
+                ArgumentException exception = Assert.Throws<ArgumentException>(() => provider.GetService<IBankIdApiClient>());
+                Assert.Contains("AzureAdClientId", exception.Message);
+            }
+
+            [Fact]
+            public void Without_UseManagedIdentity__Without_AzureAdClientSecret__Throws()
+            {
+                var config = new Dictionary<string, string>
+                {
+                    { "ActiveLogin:BankId:ClientCertificate:AzureAdClientId", "id" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier", "keysecret" },
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
+                };
+
+                var provider = SetupTest(config);
+
+                ArgumentException exception = Assert.Throws<ArgumentException>(() => provider.GetService<IBankIdApiClient>());
+                Assert.Contains("AzureAdClientSecret", exception.Message);
+            }
         }
     }
 }
