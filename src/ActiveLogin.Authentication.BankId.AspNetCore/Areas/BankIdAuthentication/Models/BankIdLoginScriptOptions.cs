@@ -41,7 +41,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [DataMember(Name = "unknownErrorMessage")]
         public string UnknownErrorMessage { get; set; } = string.Empty;
 
-        [DataMember(Name = "unsuportedBrowserErrorMessage")]
-        public string UnsuportedBrowserErrorMessage { get; set; } = string.Empty;
+        [DataMember(Name = "unsupportedBrowserErrorMessage")]
+        public string UnsupportedBrowserErrorMessage { get; set; } = string.Empty;
     }
 }
