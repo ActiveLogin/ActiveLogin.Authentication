@@ -14,11 +14,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
 
         public const string SameDeviceAuthenticationScheme = "bankid-samedevice";
-        public const string SameDeviceDisplayName = "BankID (Same device)";
+        public const string SameDeviceDisplayName = "BankID (Denna enhet)";
         public static readonly PathString SameDeviceCallbackPath = new PathString("/signin-bankid-samedevice");
 
         public const string OtherDeviceAuthenticationScheme = "bankid-otherdevice";
-        public const string OtherDeviceDisplayName = "BankID (Other device)";
+        public const string OtherDeviceDisplayName = "BankID (Annan enhet)";
         public static readonly PathString OtherDeviceCallbackPath = new PathString("/signin-bankid-otherdevice");
     }
 }

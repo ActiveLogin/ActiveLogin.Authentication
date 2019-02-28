@@ -3,12 +3,12 @@
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
-    /// Auth response result.
+    /// Sign response result.
     /// </summary>
     [DataContract]
-    public class AuthResponse
+    public class SignResponse
     {
-        internal AuthResponse(string orderRef, string autoStartToken)
+        internal SignResponse(string orderRef, string autoStartToken)
         {
             OrderRef = orderRef;
             AutoStartToken = autoStartToken;

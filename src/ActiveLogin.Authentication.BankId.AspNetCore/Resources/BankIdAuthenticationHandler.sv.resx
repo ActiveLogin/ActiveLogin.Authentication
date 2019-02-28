@@ -189,10 +189,10 @@
   <data name="SignIn_SwedishPersonalIdentityNumber_Placeholder" xml:space="preserve">
     <value>ÅÅMMDD-XXXX</value>
   </data>
-  <data name="SingIn_Title" xml:space="preserve">
+  <data name="SignIn_Title" xml:space="preserve">
     <value>Logga in med BankID</value>
   </data>
-  <data name="UnsuportedBrowser_ErrorMessage" xml:space="preserve">
+  <data name="UnsupportedBrowser_ErrorMessage" xml:space="preserve">
     <value>Din webbläsare saknar funktioner som krävs för att använda denna loginsida.</value>
   </data>
 </root>

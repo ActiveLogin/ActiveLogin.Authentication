@@ -14,6 +14,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         private const string DefaultGivenName = "GivenName";
         private const string DefaultSurname = "Surname";
         private const string DefaultPersonalIdentityNumber = "199908072391";
+
         private static readonly List<CollectState> DefaultCollectStates = new List<CollectState>
         {
             new CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
@@ -80,28 +81,34 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
+            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            return new AuthResponse(response.OrderRef, response.AutoStartToken);
+        }
+
+        public async Task<SignResponse> SignAsync(SignRequest request)
+        {
+            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            return new SignResponse(response.OrderRef, response.AutoStartToken);
+        }
+
+        private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
+        {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            var personalIdentityNumber = GetPersonalIdentityNumber(request);
+            if (string.IsNullOrEmpty(personalIdentityNumber))
+            {
+                personalIdentityNumber = _personalIdentityNumber;
+            }
+
             await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
 
             var orderRef = Guid.NewGuid().ToString();
-            var auth = new Auth(request.EndUserIp, orderRef, personalIdentityNumber);
+            var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
             var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
-            return new AuthResponse(orderRef, autoStartToken);
-        }
-
-        private string GetPersonalIdentityNumber(AuthRequest request)
-        {
-            if (!string.IsNullOrEmpty(request.PersonalIdentityNumber))
-            {
-                return request.PersonalIdentityNumber;
-            }
-
-            return _personalIdentityNumber;
+            return new OrderResponse(orderRef, autoStartToken);
         }
 
         private async Task EnsureNoExistingAuth(string personalIdentityNumber)
@@ -217,9 +224,25 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             public string EndUserIp { get; }
+
             public string OrderRef { get; }
+
             public string PersonalIdentityNumber { get; }
+
             public int CollectCalls { get; set; }
+        }
+
+        private class OrderResponse
+        {
+            public OrderResponse(string orderRef, string autoStartToken)
+            {
+                OrderRef = orderRef;
+                AutoStartToken = autoStartToken;
+            }
+
+            public string OrderRef { get; set; }
+
+            public string AutoStartToken { get; set; }
         }
 
         public class CollectState
@@ -231,6 +254,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             public CollectStatus Status { get; }
+
             public CollectHintCode HintCode { get; }
         }
     }

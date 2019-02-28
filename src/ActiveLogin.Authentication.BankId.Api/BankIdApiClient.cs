@@ -21,12 +21,21 @@ namespace ActiveLogin.Authentication.BankId.Api
         }
 
         /// <summary>
-        /// Initiates an authentication or signing order. Use the collect method to query the status of the order.
+        /// Initiates an authentication order. Use the collect method to query the status of the order.
         /// </summary>
         /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
         public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
             return _httpClient.PostAsync<AuthRequest, AuthResponse>("auth", request);
+        }
+
+        /// <summary>
+        /// Initiates an signing order. Use the collect method to query the status of the order.
+        /// </summary>
+        /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
+        public Task<SignResponse> SignAsync(SignRequest request)
+        {
+            return _httpClient.PostAsync<SignRequest, SignResponse>("sign", request);
         }
 
         /// <summary>

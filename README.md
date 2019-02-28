@@ -194,6 +194,7 @@ No, it's optional :) We have seperated the API-wrappers for both BankID and Gran
 public class BankIdApiClient : IBankIdApiClient
 {
     public Task<AuthResponse> AuthAsync(AuthRequest request) { ... }
+    public Task<SignResponse> SignAsync(SignRequest request) { ... }
     public Task<CollectResponse> CollectAsync(CollectRequest request) { ... }
     public Task<CancelResponse> CancelAsync(CancelRequest request) { ... }
 }
