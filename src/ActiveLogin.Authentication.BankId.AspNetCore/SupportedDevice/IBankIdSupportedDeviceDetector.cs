@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.UserMessage
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 {
     /// <summary>
     /// Detect if the device requesting is one of the supported platforms for BankID.

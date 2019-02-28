@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using Microsoft.AspNetCore.Http.Extensions;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     internal class BankIdLauncher : IBankIdLauncher
     {
