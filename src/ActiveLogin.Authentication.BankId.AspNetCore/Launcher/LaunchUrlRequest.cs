@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     public class LaunchUrlRequest
     {
