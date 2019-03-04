@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 {
-
     public static class BankIdAuthenticationBuilderAzureExtensions
     {
         public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, IConfigurationSection configurationSection)
