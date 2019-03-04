@@ -1,6 +1,6 @@
-﻿using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+﻿using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     public interface IBankIdLauncher
     {

@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class BankIdAuthenticationHandler {
@@ -280,18 +280,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sign in with BankID.
         /// </summary>
-        internal static string SingIn_Title {
+        internal static string SignIn_Title {
             get {
-                return ResourceManager.GetString("SingIn_Title", resourceCulture);
+                return ResourceManager.GetString("SignIn_Title", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Your browser does not have the features required to use this login page..
         /// </summary>
-        internal static string UnsuportedBrowser_ErrorMessage {
+        internal static string UnsupportedBrowser_ErrorMessage {
             get {
-                return ResourceManager.GetString("UnsuportedBrowser_ErrorMessage", resourceCulture);
+                return ResourceManager.GetString("UnsupportedBrowser_ErrorMessage", resourceCulture);
             }
         }
     }
