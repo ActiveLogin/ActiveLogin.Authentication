@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         internal BankIdLoginViewModel()
         {
-            
+
         }
 
         public string ReturnUrl { get; set; }

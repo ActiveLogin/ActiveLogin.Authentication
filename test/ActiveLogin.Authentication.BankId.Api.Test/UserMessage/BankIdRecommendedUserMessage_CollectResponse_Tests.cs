@@ -80,7 +80,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
 
             Assert.Equal(expected, result);
         }
-        
+
         [Theory]
         [InlineData(CollectHintCode.Cancelled, MessageShortName.RFA3)]
         [InlineData(CollectHintCode.UserCancel, MessageShortName.RFA6)]

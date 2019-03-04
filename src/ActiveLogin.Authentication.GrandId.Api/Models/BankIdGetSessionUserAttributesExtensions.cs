@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
         {
             return Encoding.UTF8.GetString(Convert.FromBase64String(userAttributes.Signature));
         }
-        
+
         public static DateTime GetNotBeforeDateTime(this BankIdGetSessionUserAttributes userAttributes)
         {
             return DateTime.Parse(userAttributes.NotBefore).ToUniversalTime();

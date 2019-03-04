@@ -77,7 +77,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdGetSessionRequest>();
             Assert.Equal("s", request.SessionId);
         }
-        
+
         [Fact]
         public async void LogoutAsync_WithSessionId_ShouldMap_ToLogoutRequest_WithSessionId()
         {

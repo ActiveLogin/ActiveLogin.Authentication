@@ -44,7 +44,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                         return null;
                     }
 
-                    var certificatePolicies = reader.ReadString().Split(new []{ CertificatePoliciesSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    var certificatePolicies = reader.ReadString().Split(new[] { CertificatePoliciesSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     var personalIdentityNumberString = reader.ReadString();
                     var personalIdentityNumber = string.IsNullOrEmpty(personalIdentityNumberString) ? null : SwedishPersonalIdentityNumber.Parse(personalIdentityNumberString);
                     var allowChangingPersonalIdentityNumber = reader.ReadBoolean();

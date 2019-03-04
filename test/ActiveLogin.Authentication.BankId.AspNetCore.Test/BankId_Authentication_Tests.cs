@@ -66,7 +66,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 context => Task.CompletedTask,
                 services =>
                 {
-                    services.AddMvc(config => {
+                    services.AddMvc(config =>
+                    {
                         var policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
                             .Build();

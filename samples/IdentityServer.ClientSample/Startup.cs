@@ -34,7 +34,7 @@ namespace IdentityServer.ClientSample
             });
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            
+
             services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -70,7 +70,7 @@ namespace IdentityServer.ClientSample
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

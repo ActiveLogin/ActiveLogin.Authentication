@@ -194,7 +194,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private int GetStatusesToReturnIndex(int collectCalls)
         {
-            return Math.Min(collectCalls, (_collectStates.Count - 1));
+            return Math.Min(collectCalls, ( _collectStates.Count - 1 ));
         }
 
         public async Task<CancelResponse> CancelAsync(CancelRequest request)

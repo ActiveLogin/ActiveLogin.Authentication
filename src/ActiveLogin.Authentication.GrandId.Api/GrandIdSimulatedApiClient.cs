@@ -31,7 +31,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             : this(givenName, surname, DefaultPersonalIdentityNumber)
         {
         }
-        
+
         public GrandIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber)
         {
             _givenName = givenName;
@@ -93,7 +93,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return response;
         }
 
-        
+
         public async Task<LogoutResponse> LogoutAsync(LogoutRequest request)
         {
             await SimulateResponseDelay().ConfigureAwait(false);

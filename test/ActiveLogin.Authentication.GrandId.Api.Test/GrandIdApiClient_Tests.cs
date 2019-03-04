@@ -308,7 +308,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             Assert.Equal(new DateTime(2018, 12, 24, 22, 00, 00, DateTimeKind.Local), result.UserAttributes.GetNotBeforeDateTime());
             Assert.Equal(new DateTime(2018, 12, 25, 22, 00, 00, DateTimeKind.Utc), result.UserAttributes.GetNotAfterDateTime());
         }
-        
+
         [Fact]
         public async void LogoutAsync_WithSessionId__ShouldGetToGrandIdFederatedLogin_WithSessionId()
         {

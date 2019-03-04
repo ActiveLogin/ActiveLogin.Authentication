@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         internal BankIdLoginScriptOptions()
         {
-            
+
         }
 
         private const int MinimumRefreshIntervalMs = 1000;

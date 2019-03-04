@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             return apiClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest(callbackUrl, useChooseDevice, useSameDevice, askForPersonalIdentityNumber, personalIdentityNumber, requireMobileBankId, customerUrl, showGui, signUserVisibleData, signUserNonVisibleData));
         }
-        
+
         public static Task<BankIdGetSessionResponse> BankIdGetSessionAsync(this IGrandIdApiClient apiClient, string sessionId)
         {
             return apiClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(sessionId));

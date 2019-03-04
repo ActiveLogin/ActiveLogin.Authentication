@@ -62,7 +62,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
             => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
-            
+
 
         private static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {

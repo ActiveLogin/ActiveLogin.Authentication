@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         internal BankIdLoginApiStatusRequest()
         {
-            
+
         }
 
         [Required]
