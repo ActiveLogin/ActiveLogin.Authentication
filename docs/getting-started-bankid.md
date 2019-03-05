@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-The BankID packages has UI that uses classes from [Bootsrap 4](https://getbootstrap.com/), please make sure these styles are available on the page for the expected UI.
+The BankID packages has UI that uses classes from [Bootstrap 4](https://getbootstrap.com/), please make sure these styles are available on the page for the expected UI.
 
 ## Preparation
 
