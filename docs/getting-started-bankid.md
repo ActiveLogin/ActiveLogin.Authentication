@@ -284,3 +284,8 @@ Yes! The UI is bundled into the package as a Razor Class Library, a technique th
 ### Can the messages be localized?
 
 The messages are already localized to English and Swedish using the official recommended texts. To select what texts that are used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-2.1#localization-middleware).
+
+### What browsers do you support?
+
+We aim at supporting the latest version of all major browsers (Edge, Chrome, Firefox, Safari).
+If you need to support IE11, you need to polyfill [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), using for example: https://github.com/github/fetch
