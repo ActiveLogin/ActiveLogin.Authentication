@@ -60,6 +60,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.ClientSample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.GrandId.AspNetCore.Test", "test\ActiveLogin.Authentication.GrandId.AspNetCore.Test\ActiveLogin.Authentication.GrandId.AspNetCore.Test.csproj", "{8AA5BD02-FCBB-4A1B-9BCA-7E6463D2DBA9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test", "test\ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test\ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test.csproj", "{436397D0-EF12-45AC-BAD9-D4906C911763}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +120,10 @@ Global
 		{8AA5BD02-FCBB-4A1B-9BCA-7E6463D2DBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AA5BD02-FCBB-4A1B-9BCA-7E6463D2DBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AA5BD02-FCBB-4A1B-9BCA-7E6463D2DBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{436397D0-EF12-45AC-BAD9-D4906C911763}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{436397D0-EF12-45AC-BAD9-D4906C911763}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{436397D0-EF12-45AC-BAD9-D4906C911763}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{436397D0-EF12-45AC-BAD9-D4906C911763}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{B3DE3E86-CCFC-408F-AA47-752C683A9FB6} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 		{80EDD2E6-5D15-4DEF-BEE1-8DC2922E9CC2} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 		{8AA5BD02-FCBB-4A1B-9BCA-7E6463D2DBA9} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
+		{436397D0-EF12-45AC-BAD9-D4906C911763} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}
