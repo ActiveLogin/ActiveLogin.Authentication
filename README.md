@@ -255,4 +255,4 @@ Active Login is built on or uses the following great open source products:
 * [XUnit](https://github.com/xunit/xunit)
 * [IdentityServer](https://github.com/IdentityServer/)
 * [Bootstrap](https://github.com/twbs/bootstrap)
-* [Font Awesome](https://github.com/FortAwesome/Font-Awesome)
+* [Loading.io](https://loading.io/)
