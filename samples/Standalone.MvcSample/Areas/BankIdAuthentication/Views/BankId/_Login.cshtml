@@ -1,0 +1,21 @@
+﻿@using Microsoft.Extensions.Localization
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    string header = Localizer["SignIn_Header"];
+    string subHeader = "With custom subheader";
+}
+
+<div class="bankid-login" style="width: 100%; max-width: 320px; margin: 0 auto; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    @if (!string.IsNullOrEmpty(header))
+    {
+        <div class="h3 mb-3 font-weight-normal">@header</div>
+    }
+    <div class="h4 mb-3 font-weight-normal">@subHeader</div>
+
+    <partial name="_LoginStatus" model="Model" />
+    <partial name="_LoginForm" model="Model" />
+    <partial name="_LoginScript" model="Model" />
+</div>
