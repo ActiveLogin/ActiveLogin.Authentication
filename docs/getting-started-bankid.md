@@ -287,4 +287,6 @@ The messages are already localized to English and Swedish using the official rec
 ### What browsers do you support?
 
 We aim at supporting the latest version of all major browsers (Edge, Chrome, Firefox, Safari).
-If you need to support IE11, you need to polyfill [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), using for example: https://github.com/github/fetch
+If you aim to support IE11, you a polyfill for some JavaScript features we are using is needed.
+
+* [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): https://github.com/github/fetch
