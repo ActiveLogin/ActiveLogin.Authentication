@@ -10,7 +10,7 @@
         var requiredFeatures = [window.fetch, window.sessionStorage];
         var isMissingSomeFeature = requiredFeatures.some(function(x) { return !x; });
         if (isMissingSomeFeature) {
-            showStatus(options.unsuportedBrowserErrorMessage, 'danger', false, true);
+            showStatus(options.unsupportedBrowserErrorMessage, 'danger', false, true);
             return;
         }
 

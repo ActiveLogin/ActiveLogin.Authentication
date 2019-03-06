@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.UserMessage
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 {
     public class BankIdSupportedDeviceDetector : IBankIdSupportedDeviceDetector
     {
