@@ -4,7 +4,9 @@
 
 <div class="card" id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
     <div class="card-body">
-        <i class="fa fa-spinner fa-3x fa-spin fa-pulse status-spinner mb-4"></i>
+        <div class="status-spinner">
+            <partial name="_spinner" />
+        </div>
         <div class="status-message">@Model.LoginScriptOptions.InitialStatusMessage</div>
     </div>
 </div>
