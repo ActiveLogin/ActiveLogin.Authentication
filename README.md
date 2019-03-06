@@ -141,6 +141,20 @@ For more use cases, samples and inspiration; feel free to browse our unit tests 
 * [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)
 * [ActiveLogin.Authentication.BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
 
+## Overriding partial views
+
+ActiveLogin comes with predefined views that you can use, but maybe you'd rather use your own views to customize layout or behavior.
+In your web project, create the following folder:
+```Areas/BankIdAuthentication/Views/BankId```
+In this folder, you can then create any of the partials and MVC will then discover your partials and use any of them before ours. It's still possible to call our partials if you still want to use them.
+
+* `_Login.cshtml`
+* `_LoginForm.cshtml`
+* `_LoginScript.cshtml`
+* `_LoginStatus.cshtml`
+
+See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample/Areas/BankIdAuthentication/Views/BankId/_Login.cshtml).
+
 ## FAQ
 
 ### How do I run the samples?

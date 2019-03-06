@@ -23,4 +23,10 @@
     <Folder Include="Certificates\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Areas\BankIdAuthentication\Views\BankId\_Login.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>
