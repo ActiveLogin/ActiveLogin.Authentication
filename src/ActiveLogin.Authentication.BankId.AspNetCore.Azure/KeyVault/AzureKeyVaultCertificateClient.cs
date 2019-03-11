@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
@@ -20,16 +21,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             _keyVaultClient = new KeyVaultClient(GetToken);
         }
 
+        public void Dispose()
+        {
+            _keyVaultClient?.Dispose();
+        }
+
         public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
         {
-            var secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier).ConfigureAwait(false);
+            SecretBundle secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier).ConfigureAwait(false);
             if (secret.ContentType != CertificateContentType)
-            {
                 throw new ArgumentException($"This certificate must be of type {CertificateContentType}");
-            }
 
-            var certificateBytes = Convert.FromBase64String(secret.Value);
-            var certificate = GetX509Certificate2(certificateBytes);
+            byte[] certificateBytes = Convert.FromBase64String(secret.Value);
+            X509Certificate2 certificate = GetX509Certificate2(certificateBytes);
 
             return certificate;
         }
@@ -45,19 +49,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
         public async Task<string> GetToken(string authority, string resource, string scope)
         {
             var authContext = new AuthenticationContext(authority);
-            var result = await authContext.AcquireTokenAsync(resource, _clientCredential).ConfigureAwait(false);
+            AuthenticationResult result =
+                await authContext.AcquireTokenAsync(resource, _clientCredential).ConfigureAwait(false);
 
-            if (result == null)
-            {
-                throw new InvalidOperationException("Failed to obtain JWT token");
-            }
+            if (result == null) throw new InvalidOperationException("Failed to obtain JWT token");
 
             return result.AccessToken;
-        }
-
-        public void Dispose()
-        {
-            _keyVaultClient?.Dispose();
         }
     }
 }

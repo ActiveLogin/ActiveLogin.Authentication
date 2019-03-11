@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,14 +9,16 @@ namespace ActiveLogin.Authentication.BankId.Api
 {
     internal static class BankIdHttpClientExtensions
     {
-        public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
+        public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url,
+            TRequest request)
         {
-            var requestJson = SystemRuntimeJsonSerializer.Serialize(request);
-            var requestContent = GetJsonStringContent(requestJson);
+            string requestJson = SystemRuntimeJsonSerializer.Serialize(request);
+            StringContent requestContent = GetJsonStringContent(requestJson);
 
-            var httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
+            HttpResponseMessage httpResponseMessage =
+                await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
             await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage).ConfigureAwait(false);
-            var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            Stream content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
         }

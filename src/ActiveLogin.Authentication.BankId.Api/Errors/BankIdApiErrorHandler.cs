@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
     {
         public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage)
         {
-            var error = await TryGetErrorAsync(httpResponseMessage).ConfigureAwait(false);
+            Error error = await TryGetErrorAsync(httpResponseMessage).ConfigureAwait(false);
 
             try
             {
@@ -18,10 +18,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
             catch (HttpRequestException e)
             {
-                if (error != null)
-                {
-                    throw new BankIdApiException(error, e);
-                }
+                if (error != null) throw new BankIdApiException(error, e);
 
                 throw new BankIdApiException(ErrorCode.Unknown, "Unknown error", e);
             }
@@ -30,17 +27,15 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
         private static async Task<Error> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
         {
             if (!httpResponseMessage.IsSuccessStatusCode)
-            {
                 try
                 {
-                    var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    string content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return SystemRuntimeJsonSerializer.Deserialize<Error>(content);
                 }
                 catch (Exception)
                 {
                     // Intentionally left empty
                 }
-            }
 
             return null;
         }

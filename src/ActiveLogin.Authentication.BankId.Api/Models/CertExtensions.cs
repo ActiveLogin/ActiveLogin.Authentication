@@ -5,7 +5,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     public static class CertExtensions
     {
         /// <summary>
-        /// Start of validity of the users BankID.
+        ///     Start of validity of the users BankID.
         /// </summary>
         public static DateTime GetNotBeforeDateTime(this Cert cert)
         {
@@ -13,7 +13,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         }
 
         /// <summary>
-        /// End of validity of the Users BankID.
+        ///     End of validity of the Users BankID.
         /// </summary>
         public static DateTime GetNotAfterDateTime(this Cert cert)
         {

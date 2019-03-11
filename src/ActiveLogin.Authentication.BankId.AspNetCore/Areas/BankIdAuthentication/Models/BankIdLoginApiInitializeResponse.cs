@@ -2,7 +2,8 @@
 {
     public class BankIdLoginApiInitializeResponse
     {
-        internal BankIdLoginApiInitializeResponse(bool isAutoLaunch, bool showLaunchButton, bool checkStatus, string orderRef, string redirectUri)
+        internal BankIdLoginApiInitializeResponse(bool isAutoLaunch, bool showLaunchButton, bool checkStatus,
+            string orderRef, string redirectUri)
         {
             IsAutoLaunch = isAutoLaunch;
             ShowLaunchButton = showLaunchButton;
@@ -19,12 +20,14 @@
         public string RedirectUri { get; }
 
 
-        public static BankIdLoginApiInitializeResponse AutoLaunch(string orderRef, string redirectUri, bool showLaunchButton)
+        public static BankIdLoginApiInitializeResponse AutoLaunch(string orderRef, string redirectUri,
+            bool showLaunchButton)
         {
             return new BankIdLoginApiInitializeResponse(true, showLaunchButton, false, orderRef, redirectUri);
         }
 
-        public static BankIdLoginApiInitializeResponse AutoLaunchAndCheckStatus(string orderRef, string redirectUri, bool showLaunchButton)
+        public static BankIdLoginApiInitializeResponse AutoLaunchAndCheckStatus(string orderRef, string redirectUri,
+            bool showLaunchButton)
         {
             return new BankIdLoginApiInitializeResponse(true, showLaunchButton, true, orderRef, redirectUri);
         }

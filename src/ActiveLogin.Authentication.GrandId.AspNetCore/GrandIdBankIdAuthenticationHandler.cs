@@ -15,10 +15,11 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, BankIdGetSessionResponse>
+    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions,
+        BankIdGetSessionResponse>
     {
-        private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
         private readonly IGrandIdApiClient _grandIdApiClient;
+        private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
 
         public GrandIdBankIdAuthenticationHandler(
             IOptionsMonitor<GrandIdBankIdAuthenticationOptions> options,
@@ -27,21 +28,24 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             ISystemClock clock,
             ILogger<GrandIdBankIdAuthenticationHandler> logger,
             IGrandIdApiClient grandIdApiClient
-            )
+        )
             : base(options, loggerFactory, encoder, clock)
         {
             _logger = logger;
             _grandIdApiClient = grandIdApiClient;
         }
 
-        protected override async Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl)
+        protected override async Task<string> GetRedirectUrlAsync(AuthenticationProperties properties,
+            string absoluteReturnUrl)
         {
-            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
-            var request = GetBankIdFederatedLoginRequest(absoluteReturnUrl, Options, swedishPersonalIdentityNumber);
+            SwedishPersonalIdentityNumber swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
+            BankIdFederatedLoginRequest request =
+                GetBankIdFederatedLoginRequest(absoluteReturnUrl, Options, swedishPersonalIdentityNumber);
 
             try
             {
-                var federatedLoginResponse = await _grandIdApiClient.BankIdFederatedLoginAsync(request);
+                BankIdFederatedLoginResponse federatedLoginResponse =
+                    await _grandIdApiClient.BankIdFederatedLoginAsync(request);
                 _logger.GrandIdBankIdFederatedLoginSuccess(absoluteReturnUrl, federatedLoginResponse.SessionId);
                 return federatedLoginResponse.RedirectUrl;
             }
@@ -52,7 +56,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdAuthenticationOptions options, SwedishPersonalIdentityNumber swedishPersonalIdentityNumber)
+        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl,
+            GrandIdBankIdAuthenticationOptions options, SwedishPersonalIdentityNumber swedishPersonalIdentityNumber)
         {
             bool? useChooseDevice;
             bool? useSameDevice;
@@ -75,27 +80,25 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                     throw new ArgumentOutOfRangeException();
             }
 
-            var personalIdentityNumber = swedishPersonalIdentityNumber?.To12DigitString();
+            string personalIdentityNumber = swedishPersonalIdentityNumber?.To12DigitString();
 
             return new BankIdFederatedLoginRequest(
                 callbackUrl,
-                useChooseDevice: useChooseDevice,
-                useSameDevice: useSameDevice,
-                askForPersonalIdentityNumber: null,
-                personalIdentityNumber: personalIdentityNumber,
-                requireMobileBankId: options.RequireMobileBankId
+                useChooseDevice,
+                useSameDevice,
+                null,
+                personalIdentityNumber,
+                options.RequireMobileBankId
             );
         }
 
         private SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
-            {
+            if (properties.Items.TryGetValue(
+                GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber,
+                out string swedishPersonalIdentityNumber))
                 if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
-                {
                     return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
-                }
-            }
 
             return null;
         }
@@ -104,7 +107,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             try
             {
-                var sessionResponse = await _grandIdApiClient.BankIdGetSessionAsync(sessionId);
+                BankIdGetSessionResponse sessionResponse = await _grandIdApiClient.BankIdGetSessionAsync(sessionId);
                 _logger.GrandIdBankIdGetSessionSuccess(sessionResponse.SessionId);
                 return sessionResponse;
             }
@@ -117,7 +120,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         protected override IEnumerable<Claim> GetClaims(BankIdGetSessionResponse loginResult)
         {
-            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
+            SwedishPersonalIdentityNumber personalIdentityNumber =
+                SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
                 new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
@@ -131,16 +135,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (Options.IssueGenderClaim)
             {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
-                if (!string.IsNullOrEmpty(jwtGender))
-                {
-                    claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
-                }
+                string jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
+                if (!string.IsNullOrEmpty(jwtGender)) claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
             }
 
             if (Options.IssueBirthdateClaim)
             {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
+                string jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
                 claims.Add(new Claim(GrandIdClaimTypes.Birthdate, jwtBirthdate));
             }
 

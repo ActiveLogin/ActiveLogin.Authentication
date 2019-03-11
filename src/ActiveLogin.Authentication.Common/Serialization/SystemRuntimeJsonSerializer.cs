@@ -23,16 +23,13 @@ namespace ActiveLogin.Authentication.Common.Serialization
 
         public static string Serialize<T>(T value)
         {
-            if (value == null)
-            {
-                return string.Empty;
-            }
+            if (value == null) return string.Empty;
 
             using (var stream = new MemoryStream())
             {
                 var serializer = new DataContractJsonSerializer(typeof(T));
                 serializer.WriteObject(stream, value);
-                var json = stream.ToArray();
+                byte[] json = stream.ToArray();
                 return Encoding.UTF8.GetString(json, 0, json.Length);
             }
         }

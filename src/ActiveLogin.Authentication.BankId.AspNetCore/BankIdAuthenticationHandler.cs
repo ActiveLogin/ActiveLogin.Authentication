@@ -9,8 +9,10 @@ using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
@@ -37,35 +39,29 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
-            var state = GetStateFromCookie();
-            if (state == null)
-            {
-                return Task.FromResult(HandleRequestResult.Fail("Invalid state cookie."));
-            }
+            BankIdState state = GetStateFromCookie();
+            if (state == null) return Task.FromResult(HandleRequestResult.Fail("Invalid state cookie."));
 
             DeleteStateCookie();
 
-            var loginResultProtected = Request.Query["loginResult"];
+            StringValues loginResultProtected = Request.Query["loginResult"];
             if (string.IsNullOrEmpty(loginResultProtected))
-            {
                 return Task.FromResult(HandleRequestResult.Fail("Missing login result."));
-            }
 
-            var loginResult = _loginResultProtector.Unprotect(loginResultProtected);
+            BankIdLoginResult loginResult = _loginResultProtector.Unprotect(loginResultProtected);
             if (loginResult == null || !loginResult.IsSuccessful)
-            {
                 return Task.FromResult(HandleRequestResult.Fail("Invalid login result."));
-            }
 
-            var properties = state.AuthenticationProperties;
-            var ticket = GetAuthenticationTicket(loginResult, properties);
+            AuthenticationProperties properties = state.AuthenticationProperties;
+            AuthenticationTicket ticket = GetAuthenticationTicket(loginResult, properties);
 
             _logger.BankIdAuthenticationTicketCreated(loginResult.PersonalIdentityNumber);
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
         }
 
-        private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
+        private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult,
+            AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -74,7 +70,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 properties.ExpiresUtc = expiresUtc;
             }
 
-            var claims = GetClaims(loginResult, expiresUtc);
+            IEnumerable<Claim> claims = GetClaims(loginResult, expiresUtc);
             var identity = new ClaimsIdentity(claims, Scheme.Name, BankIdClaimTypes.Name, BankIdClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
 
@@ -83,7 +79,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private IEnumerable<Claim> GetClaims(BankIdLoginResult loginResult, DateTimeOffset? expiresUtc)
         {
-            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
+            SwedishPersonalIdentityNumber personalIdentityNumber =
+                SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
                 new Claim(BankIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
@@ -100,35 +97,27 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return claims;
         }
 
-        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
+        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber,
+            DateTimeOffset? expiresUtc)
         {
             if (expiresUtc.HasValue)
-            {
                 claims.Add(new Claim(BankIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
-            }
 
             if (Options.IssueAuthenticationMethodClaim)
-            {
                 claims.Add(new Claim(BankIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
-            }
 
             if (Options.IssueIdentityProviderClaim)
-            {
                 claims.Add(new Claim(BankIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
-            }
 
             if (Options.IssueGenderClaim)
             {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
-                if (!string.IsNullOrEmpty(jwtGender))
-                {
-                    claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
-                }
+                string jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
+                if (!string.IsNullOrEmpty(jwtGender)) claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
             }
 
             if (Options.IssueBirthdateClaim)
             {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
+                string jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
                 claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtBirthdate));
             }
         }
@@ -144,21 +133,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdAutoLaunch,
                 Options.BankIdAllowBiometric
             );
-            var loginUrl = GetLoginUrl(loginOptions);
+            string loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
         }
 
-        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(
+            AuthenticationProperties properties)
         {
-            if (properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
-            {
+            if (properties.Items.TryGetValue(
+                BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber,
+                out string swedishPersonalIdentityNumber))
                 if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
-                {
                     return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
-                }
-            }
 
             return null;
         }
@@ -173,27 +161,24 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private void AppendStateCookie(AuthenticationProperties properties)
         {
             var state = new BankIdState(properties);
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            var cookieValue = Options.StateDataFormat.Protect(state);
+            CookieOptions cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            string cookieValue = Options.StateDataFormat.Protect(state);
 
             Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
         }
 
         private BankIdState GetStateFromCookie()
         {
-            var protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState))
-            {
-                return null;
-            }
+            string protectedState = Request.Cookies[Options.StateCookie.Name];
+            if (string.IsNullOrEmpty(protectedState)) return null;
 
-            var state = Options.StateDataFormat.Unprotect(protectedState);
+            BankIdState state = Options.StateDataFormat.Unprotect(protectedState);
             return state;
         }
 
         private void DeleteStateCookie()
         {
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+            CookieOptions cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
             Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }
     }

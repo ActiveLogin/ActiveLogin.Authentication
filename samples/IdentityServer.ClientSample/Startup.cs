@@ -24,7 +24,7 @@ namespace IdentityServer.ClientSample
         {
             services.AddMvc(config =>
             {
-                var policy = new AuthorizationPolicyBuilder()
+                AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
 
@@ -40,7 +40,8 @@ namespace IdentityServer.ClientSample
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => { options.Cookie.Name = "aspnetmvcclient"; })
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+                    options => { options.Cookie.Name = "aspnetmvcclient"; })
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
                     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -66,10 +67,7 @@ namespace IdentityServer.ClientSample
         {
             app.UseHttpsRedirection();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseAuthentication();
             app.UseStaticFiles();

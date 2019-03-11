@@ -5,14 +5,14 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 namespace ActiveLogin.Authentication.BankId.Api
 {
     /// <summary>
-    /// HTTP based client for the BankID REST API.
+    ///     HTTP based client for the BankID REST API.
     /// </summary>
     public class BankIdApiClient : IBankIdApiClient
     {
         private readonly HttpClient _httpClient;
 
         /// <summary>
-        /// Creates an instance of <see cref="BankIdApiClient"/> using the supplied <see cref="HttpClient"/> to talk HTTP.
+        ///     Creates an instance of <see cref="BankIdApiClient" /> using the supplied <see cref="HttpClient" /> to talk HTTP.
         /// </summary>
         /// <param name="httpClient">The HttpClient to use.</param>
         public BankIdApiClient(HttpClient httpClient)
@@ -21,7 +21,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         }
 
         /// <summary>
-        /// Initiates an authentication order. Use the collect method to query the status of the order.
+        ///     Initiates an authentication order. Use the collect method to query the status of the order.
         /// </summary>
         /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
         public Task<AuthResponse> AuthAsync(AuthRequest request)
@@ -30,7 +30,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         }
 
         /// <summary>
-        /// Initiates an signing order. Use the collect method to query the status of the order.
+        ///     Initiates an signing order. Use the collect method to query the status of the order.
         /// </summary>
         /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
         public Task<SignResponse> SignAsync(SignRequest request)
@@ -39,9 +39,9 @@ namespace ActiveLogin.Authentication.BankId.Api
         }
 
         /// <summary>
-        /// Collects the result of a sign or auth order using the OrderRef as reference.
-        /// RP should keep on calling collect every two seconds as long as status indicates pending.
-        /// RP must abort if status indicates failed.
+        ///     Collects the result of a sign or auth order using the OrderRef as reference.
+        ///     RP should keep on calling collect every two seconds as long as status indicates pending.
+        ///     RP must abort if status indicates failed.
         /// </summary>
         /// <returns>The user identity is returned when complete.</returns>
         public Task<CollectResponse> CollectAsync(CollectRequest request)
@@ -50,8 +50,8 @@ namespace ActiveLogin.Authentication.BankId.Api
         }
 
         /// <summary>
-        /// Cancels an ongoing sign or auth order.
-        /// This is typically used if the user cancels the order in your service or app.
+        ///     Cancels an ongoing sign or auth order.
+        ///     This is typically used if the user cancels the order in your service or app.
         /// </summary>
         public Task<CancelResponse> CancelAsync(CancelRequest request)
         {

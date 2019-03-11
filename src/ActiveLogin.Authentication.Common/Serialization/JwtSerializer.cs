@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.Common.Serialization
     internal static class JwtSerializer
     {
         /// <summary>
-        /// Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
+        ///     Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
         /// </summary>
         /// <param name="gender"></param>
         /// <returns></returns>
@@ -24,7 +24,7 @@ namespace ActiveLogin.Authentication.Common.Serialization
         }
 
         /// <summary>
-        /// Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
+        ///     Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
         /// </summary>
         /// <param name="birthdate"></param>
         /// <returns></returns>

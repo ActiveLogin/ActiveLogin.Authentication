@@ -6,16 +6,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         internal BankIdLoginApiInitializeRequest()
         {
-
         }
 
 
         public string PersonalIdentityNumber { get; set; }
 
-        [Required]
-        public string ReturnUrl { get; set; }
+        [Required] public string ReturnUrl { get; set; }
 
-        [Required]
-        public string LoginOptions { get; set; }
+        [Required] public string LoginOptions { get; set; }
     }
 }

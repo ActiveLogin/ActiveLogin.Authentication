@@ -7,7 +7,7 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 namespace ActiveLogin.Authentication.BankId.Api
 {
     /// <summary>
-    /// Dummy implementation that simulates the BankId API. Can be used for development and testing purposes.
+    ///     Dummy implementation that simulates the BankId API. Can be used for development and testing purposes.
     /// </summary>
     public class BankIdSimulatedApiClient : IBankIdApiClient
     {
@@ -25,13 +25,13 @@ namespace ActiveLogin.Authentication.BankId.Api
             new CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
         };
 
-        private readonly string _givenName;
-        private readonly string _surname;
-        private readonly string _name;
-        private readonly string _personalIdentityNumber;
+        private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
         private readonly List<CollectState> _collectStates;
 
-        private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
+        private readonly string _givenName;
+        private readonly string _name;
+        private readonly string _personalIdentityNumber;
+        private readonly string _surname;
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         public BankIdSimulatedApiClient()
@@ -54,7 +54,8 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
         }
 
-        public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
+        public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber,
+            List<CollectState> collectStates)
             : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, collectStates)
         {
         }
@@ -64,7 +65,8 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
         }
 
-        public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, List<CollectState> collectStates)
+        public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber,
+            List<CollectState> collectStates)
         {
             _givenName = givenName;
             _surname = surname;
@@ -81,45 +83,16 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            OrderResponse response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
+                .ConfigureAwait(false);
             return new AuthResponse(response.OrderRef, response.AutoStartToken);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
         {
-            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            OrderResponse response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
+                .ConfigureAwait(false);
             return new SignResponse(response.OrderRef, response.AutoStartToken);
-        }
-
-        private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
-        {
-            await SimulateResponseDelay().ConfigureAwait(false);
-
-            if (string.IsNullOrEmpty(personalIdentityNumber))
-            {
-                personalIdentityNumber = _personalIdentityNumber;
-            }
-
-            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
-
-            var orderRef = Guid.NewGuid().ToString();
-            var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
-            _auths.Add(orderRef, auth);
-
-            var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
-
-            return new OrderResponse(orderRef, autoStartToken);
-        }
-
-        private async Task EnsureNoExistingAuth(string personalIdentityNumber)
-        {
-            if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
-            {
-                var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
-                await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
-
-                throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
-            }
         }
 
         public async Task<CollectResponse> CollectAsync(CollectRequest request)
@@ -127,23 +100,18 @@ namespace ActiveLogin.Authentication.BankId.Api
             await SimulateResponseDelay().ConfigureAwait(false);
 
             if (!_auths.ContainsKey(request.OrderRef))
-            {
                 throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found.");
-            }
 
-            var auth = _auths[request.OrderRef];
-            var status = GetStatus(auth.CollectCalls);
-            var hintCode = GetHintCode(auth.CollectCalls);
-            var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
+            Auth auth = _auths[request.OrderRef];
+            CollectStatus status = GetStatus(auth.CollectCalls);
+            CollectHintCode hintCode = GetHintCode(auth.CollectCalls);
+            CompletionData completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
 
             var response = new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
 
             if (status == CollectStatus.Complete)
             {
-                if (_auths.ContainsKey(request.OrderRef))
-                {
-                    _auths.Remove(request.OrderRef);
-                }
+                if (_auths.ContainsKey(request.OrderRef)) _auths.Remove(request.OrderRef);
             }
             else
             {
@@ -153,23 +121,59 @@ namespace ActiveLogin.Authentication.BankId.Api
             return response;
         }
 
+        public async Task<CancelResponse> CancelAsync(CancelRequest request)
+        {
+            await SimulateResponseDelay().ConfigureAwait(false);
+
+            if (_auths.ContainsKey(request.OrderRef)) _auths.Remove(request.OrderRef);
+
+            return new CancelResponse();
+        }
+
+        private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
+        {
+            await SimulateResponseDelay().ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(personalIdentityNumber)) personalIdentityNumber = _personalIdentityNumber;
+
+            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
+
+            string orderRef = Guid.NewGuid().ToString();
+            var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
+            _auths.Add(orderRef, auth);
+
+            string autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
+
+            return new OrderResponse(orderRef, autoStartToken);
+        }
+
+        private async Task EnsureNoExistingAuth(string personalIdentityNumber)
+        {
+            if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
+            {
+                string existingAuthOrderRef =
+                    _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
+                await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
+
+                throw new BankIdApiException(ErrorCode.AlreadyInProgress,
+                    "A login for this user is already in progress.");
+            }
+        }
+
         private CompletionData GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
         {
-            if (status != CollectStatus.Complete)
-            {
-                return null;
-            }
+            if (status != CollectStatus.Complete) return null;
 
             var user = new User(personalIdentityNumber, _name, _givenName, _surname);
             var device = new Device(endUserIp);
 
-            var certNow = DateTime.UtcNow;
-            var certNotBefore = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(-1));
-            var certNotAfter = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(1));
+            DateTime certNow = DateTime.UtcNow;
+            long certNotBefore = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(-1));
+            long certNotAfter = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(1));
             var cert = new Cert(certNotBefore.ToString("D"), certNotAfter.ToString("D"));
 
-            var signature = string.Empty; // Not implemented in the simulated client
-            var ocspResponse = string.Empty; // Not implemented in the simulated client
+            string signature = string.Empty; // Not implemented in the simulated client
+            string ocspResponse = string.Empty; // Not implemented in the simulated client
 
             return new CompletionData(user, device, cert, signature, ocspResponse);
         }
@@ -182,31 +186,19 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private CollectStatus GetStatus(int collectCalls)
         {
-            var index = GetStatusesToReturnIndex(collectCalls);
+            int index = GetStatusesToReturnIndex(collectCalls);
             return _collectStates[index].Status;
         }
 
         private CollectHintCode GetHintCode(int collectCalls)
         {
-            var index = GetStatusesToReturnIndex(collectCalls);
+            int index = GetStatusesToReturnIndex(collectCalls);
             return _collectStates[index].HintCode;
         }
 
         private int GetStatusesToReturnIndex(int collectCalls)
         {
-            return Math.Min(collectCalls, ( _collectStates.Count - 1 ));
-        }
-
-        public async Task<CancelResponse> CancelAsync(CancelRequest request)
-        {
-            await SimulateResponseDelay().ConfigureAwait(false);
-
-            if (_auths.ContainsKey(request.OrderRef))
-            {
-                _auths.Remove(request.OrderRef);
-            }
-
-            return new CancelResponse();
+            return Math.Min(collectCalls, _collectStates.Count - 1);
         }
 
         private async Task SimulateResponseDelay()
@@ -240,9 +232,9 @@ namespace ActiveLogin.Authentication.BankId.Api
                 AutoStartToken = autoStartToken;
             }
 
-            public string OrderRef { get; set; }
+            public string OrderRef { get; }
 
-            public string AutoStartToken { get; set; }
+            public string AutoStartToken { get; }
         }
 
         public class CollectState

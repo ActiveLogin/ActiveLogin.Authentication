@@ -2,7 +2,8 @@
 {
     public class BankIdLoginResult
     {
-        public BankIdLoginResult(bool isSuccessful, string personalIdentityNumber, string name, string givenName, string surname)
+        public BankIdLoginResult(bool isSuccessful, string personalIdentityNumber, string name, string givenName,
+            string surname)
         {
             IsSuccessful = isSuccessful;
             PersonalIdentityNumber = personalIdentityNumber;
@@ -19,7 +20,8 @@
         public string GivenName { get; }
         public string Surname { get; }
 
-        public static BankIdLoginResult Success(string personalIdentityNumber, string name, string givenName, string surname)
+        public static BankIdLoginResult Success(string personalIdentityNumber, string name, string givenName,
+            string surname)
         {
             return new BankIdLoginResult(true, personalIdentityNumber, name, givenName, surname);
         }

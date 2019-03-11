@@ -21,7 +21,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                 {
                     writer.Write(FormatVersion);
 
-                    writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies ?? new List<string>()));
+                    writer.Write(string.Join(CertificatePoliciesSeparator.ToString(),
+                        model.CertificatePolicies ?? new List<string>()));
                     writer.Write(model.PersonalIdentityNumber?.To12DigitString() ?? string.Empty);
                     writer.Write(model.AllowChangingPersonalIdentityNumber);
                     writer.Write(model.AutoLaunch);
@@ -39,17 +40,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
             {
                 using (var reader = new BinaryReader(memory))
                 {
-                    if (reader.ReadInt32() != FormatVersion)
-                    {
-                        return null;
-                    }
+                    if (reader.ReadInt32() != FormatVersion) return null;
 
-                    var certificatePolicies = reader.ReadString().Split(new[] { CertificatePoliciesSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    var personalIdentityNumberString = reader.ReadString();
-                    var personalIdentityNumber = string.IsNullOrEmpty(personalIdentityNumberString) ? null : SwedishPersonalIdentityNumber.Parse(personalIdentityNumberString);
-                    var allowChangingPersonalIdentityNumber = reader.ReadBoolean();
-                    var autoLaunch = reader.ReadBoolean();
-                    var allowBiometric = reader.ReadBoolean();
+                    List<string> certificatePolicies = reader.ReadString().Split(new[] {CertificatePoliciesSeparator},
+                        StringSplitOptions.RemoveEmptyEntries).ToList();
+                    string personalIdentityNumberString = reader.ReadString();
+                    SwedishPersonalIdentityNumber personalIdentityNumber =
+                        string.IsNullOrEmpty(personalIdentityNumberString)
+                            ? null
+                            : SwedishPersonalIdentityNumber.Parse(personalIdentityNumberString);
+                    bool allowChangingPersonalIdentityNumber = reader.ReadBoolean();
+                    bool autoLaunch = reader.ReadBoolean();
+                    bool allowBiometric = reader.ReadBoolean();
 
                     return new BankIdLoginOptions(
                         certificatePolicies,

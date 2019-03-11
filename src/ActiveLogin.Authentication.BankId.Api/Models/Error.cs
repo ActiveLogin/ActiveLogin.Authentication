@@ -11,10 +11,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
             Details = details;
         }
 
-        [DataMember(Name = "errorCode")]
-        public string ErrorCode { get; private set; }
+        [DataMember(Name = "errorCode")] public string ErrorCode { get; private set; }
 
-        [DataMember(Name = "details")]
-        public string Details { get; private set; }
+        [DataMember(Name = "details")] public string Details { get; private set; }
     }
 }

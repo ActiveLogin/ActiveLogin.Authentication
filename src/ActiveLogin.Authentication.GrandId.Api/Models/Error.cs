@@ -11,10 +11,8 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
             Message = message;
         }
 
-        [DataMember(Name = "code")]
-        public string Code { get; private set; }
+        [DataMember(Name = "code")] public string Code { get; private set; }
 
-        [DataMember(Name = "message")]
-        public string Message { get; private set; }
+        [DataMember(Name = "message")] public string Message { get; private set; }
     }
 }

@@ -6,13 +6,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     [DataContract]
     public class BankIdLoginScriptOptions
     {
-        internal BankIdLoginScriptOptions()
-        {
-
-        }
-
         private const int MinimumRefreshIntervalMs = 1000;
         private int _refreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs;
+
+        internal BankIdLoginScriptOptions()
+        {
+        }
 
         [DataMember(Name = "refreshIntervalMs")]
         public int RefreshIntervalMs
@@ -21,9 +20,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             set
             {
                 if (value < MinimumRefreshIntervalMs)
-                {
-                    throw new ArgumentException("BankID does not allow collecting status more than once a second.", nameof(value));
-                }
+                    throw new ArgumentException("BankID does not allow collecting status more than once a second.",
+                        nameof(value));
 
                 _refreshIntervalMs = value;
             }

@@ -19,9 +19,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(ErrorCode.RequestTimeout, MessageShortName.RFA5)]
         [InlineData(ErrorCode.Maintenance, MessageShortName.RFA5)]
         [InlineData(ErrorCode.InternalError, MessageShortName.RFA5)]
-        public void GetMessageShortNameForErrorResponse_ShouldReturnShortMessage_When_Known(ErrorCode errorCode, MessageShortName expected)
+        public void GetMessageShortNameForErrorResponse_ShouldReturnShortMessage_When_Known(ErrorCode errorCode,
+            MessageShortName expected)
         {
-            var result = _bankIdRecommendedUserMessage.GetMessageShortNameForErrorResponse(errorCode);
+            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForErrorResponse(errorCode);
 
             Assert.Equal(expected, result);
         }
@@ -34,7 +35,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(ErrorCode.Unknown)]
         public void GetMessageShortNameForErrorResponse_ShouldReturn_RFA22_When_Unknown(ErrorCode errorCode)
         {
-            var result = _bankIdRecommendedUserMessage.GetMessageShortNameForErrorResponse(errorCode);
+            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForErrorResponse(errorCode);
 
             Assert.Equal(MessageShortName.RFA22, result);
         }

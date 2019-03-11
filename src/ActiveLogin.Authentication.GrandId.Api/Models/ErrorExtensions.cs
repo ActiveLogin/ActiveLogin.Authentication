@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     {
         public static ErrorCode GetErrorCode(this Error error)
         {
-            return Enum.TryParse<ErrorCode>(error.Code, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
+            return Enum.TryParse(error.Code, true, out ErrorCode errorCode) ? errorCode : ErrorCode.Unknown;
         }
     }
 }

@@ -4,27 +4,25 @@
     {
         public BankIdSupportedDevice Detect(string userAgent)
         {
-            var normalizedUserAgent = userAgent?.ToLower().Trim() ?? string.Empty;
+            string normalizedUserAgent = userAgent?.ToLower().Trim() ?? string.Empty;
 
-            var isIos = IsIos(normalizedUserAgent);
-            var isAndroid = IsAndroid(normalizedUserAgent);
-            var isWindowsPhone = IsWindowsPhone(normalizedUserAgent);
+            bool isIos = IsIos(normalizedUserAgent);
+            bool isAndroid = IsAndroid(normalizedUserAgent);
+            bool isWindowsPhone = IsWindowsPhone(normalizedUserAgent);
 
-            var isWindowsDesktop = IsWindowsDesktop(normalizedUserAgent);
-            var isMacOs = IsMacOs(normalizedUserAgent);
+            bool isWindowsDesktop = IsWindowsDesktop(normalizedUserAgent);
+            bool isMacOs = IsMacOs(normalizedUserAgent);
 
-            var isMobile = isIos || isAndroid || isWindowsPhone;
-            var isDesktop = isWindowsDesktop || isMacOs;
+            bool isMobile = isIos || isAndroid || isWindowsPhone;
+            bool isDesktop = isWindowsDesktop || isMacOs;
 
-            return new BankIdSupportedDevice(isMobile, isDesktop, isIos, isAndroid, isWindowsPhone, isWindowsDesktop, isMacOs);
+            return new BankIdSupportedDevice(isMobile, isDesktop, isIos, isAndroid, isWindowsPhone, isWindowsDesktop,
+                isMacOs);
         }
 
         private bool IsIos(string userAgent)
         {
-            if (IsWindowsPhone(userAgent))
-            {
-                return false;
-            }
+            if (IsWindowsPhone(userAgent)) return false;
 
             return userAgent.Contains("ipad;")
                    || userAgent.Contains("iphone;");
@@ -32,10 +30,7 @@
 
         private bool IsAndroid(string userAgent)
         {
-            if (IsWindowsPhone(userAgent))
-            {
-                return false;
-            }
+            if (IsWindowsPhone(userAgent)) return false;
 
             return userAgent.Contains("android");
         }
@@ -47,20 +42,14 @@
 
         private bool IsWindowsDesktop(string userAgent)
         {
-            if (IsWindowsPhone(userAgent))
-            {
-                return false;
-            }
+            if (IsWindowsPhone(userAgent)) return false;
 
             return userAgent.Contains("windows");
         }
 
         private bool IsMacOs(string userAgent)
         {
-            if (IsIos(userAgent))
-            {
-                return false;
-            }
+            if (IsIos(userAgent)) return false;
 
             return userAgent.Contains("mac os");
         }

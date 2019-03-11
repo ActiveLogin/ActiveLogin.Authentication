@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -10,18 +11,20 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         public static async Task<TResult> GetAsync<TResult>(this HttpClient httpClient, string url)
         {
-            var httpResponseMessage = await httpClient.GetAsync(url);
-            var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(url);
+            Stream content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
         }
 
-        public static async Task<TResult> PostAsync<TResult>(this HttpClient httpClient, string url, Dictionary<string, string> postData)
+        public static async Task<TResult> PostAsync<TResult>(this HttpClient httpClient, string url,
+            Dictionary<string, string> postData)
         {
-            var requestContent = GetFormUrlEncodedContent<TResult>(postData);
+            FormUrlEncodedContent requestContent = GetFormUrlEncodedContent<TResult>(postData);
 
-            var httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
-            var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            HttpResponseMessage httpResponseMessage =
+                await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
+            Stream content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
         }

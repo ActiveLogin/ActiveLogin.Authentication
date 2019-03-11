@@ -3,7 +3,7 @@
     public class BankIdFederatedLoginResponse : FederatedLoginResponseBase
     {
         internal BankIdFederatedLoginResponse(BankIdFederatedLoginFullResponse fullResponse)
-        : base(fullResponse)
+            : base(fullResponse)
         {
         }
 

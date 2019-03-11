@@ -21,7 +21,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             if (options.StateDataFormat == null)
             {
-                var dataProtector = options.DataProtectionProvider.CreateProtector(
+                IDataProtector dataProtector = options.DataProtectionProvider.CreateProtector(
                     typeof(BankIdAuthenticationHandler).FullName,
                     name,
                     "v1"

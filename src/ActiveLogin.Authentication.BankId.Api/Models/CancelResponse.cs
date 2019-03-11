@@ -3,14 +3,13 @@
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
-    /// Cancel response result.
+    ///     Cancel response result.
     /// </summary>
     [DataContract]
     public class CancelResponse
     {
         internal CancelResponse()
         {
-
         }
     }
 }

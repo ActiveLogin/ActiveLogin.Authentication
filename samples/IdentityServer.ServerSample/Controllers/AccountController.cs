@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer.ServerSample.Models;
@@ -11,8 +12,8 @@ namespace IdentityServer.ServerSample.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IIdentityServerInteractionService _interaction;
         private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
+        private readonly IIdentityServerInteractionService _interaction;
 
         public AccountController(IIdentityServerInteractionService interaction,
             IAuthenticationSchemeProvider authenticationSchemeProvider)
@@ -23,8 +24,8 @@ namespace IdentityServer.ServerSample.Controllers
 
         public IActionResult Login(string returnUrl)
         {
-            var schemes = _authenticationSchemeProvider.GetAllSchemesAsync();
-            var providers = schemes.Result
+            Task<IEnumerable<AuthenticationScheme>> schemes = _authenticationSchemeProvider.GetAllSchemesAsync();
+            IEnumerable<ExternalProvider> providers = schemes.Result
                 .Where(x => x.DisplayName != null)
                 .Select(x => new ExternalProvider
                 {
@@ -57,18 +58,12 @@ namespace IdentityServer.ServerSample.Controllers
         [HttpGet]
         public async Task<IActionResult> ExternalLoginCallback()
         {
-            var result = await HttpContext.AuthenticateAsync();
-            if (result?.Succeeded != true)
-            {
-                throw new Exception("External authentication error");
-            }
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result?.Succeeded != true) throw new Exception("External authentication error");
 
-            var returnUrl = result.Properties.Items["returnUrl"];
+            string returnUrl = result.Properties.Items["returnUrl"];
 
-            if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
+            if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
 
             return Redirect("~/");
         }
@@ -77,9 +72,9 @@ namespace IdentityServer.ServerSample.Controllers
         public async Task<IActionResult> Logout(string logoutId)
         {
             LogoutRequest logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
-            var returnUrl = logoutRequest?.PostLogoutRedirectUri;
+            string returnUrl = logoutRequest?.PostLogoutRedirectUri;
 
-            return await Logout(new LogoutModel { ReturnUrl = returnUrl });
+            return await Logout(new LogoutModel {ReturnUrl = returnUrl});
         }
 
         [HttpPost]

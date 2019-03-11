@@ -12,8 +12,8 @@ namespace IdentityServer.ClientSample.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var claims = User.Claims.ToList();
-            return View(new HomeIndexViewModel()
+            List<Claim> claims = User.Claims.ToList();
+            return View(new HomeIndexViewModel
             {
                 Name = GetClaimValue(claims, "name"),
                 GivenName = GetClaimValue(claims, "given_name"),

@@ -14,17 +14,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Cryptography
             _certificateAuthority = certificateAuthority;
         }
 
-        public bool Validate(HttpRequestMessage httpRequestMessage, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        public bool Validate(HttpRequestMessage httpRequestMessage, X509Certificate2 certificate, X509Chain chain,
+            SslPolicyErrors sslPolicyErrors)
         {
             return IsValidChain(_certificateAuthority, certificate);
         }
 
         private static bool IsValidChain(X509Certificate2 certificateAuthority, X509Certificate2 certificate)
         {
-            var chain = GetChain(certificateAuthority);
-            var isChainValid = chain.Build(certificate);
-            var chainRoot = chain.ChainElements[chain.ChainElements.Count - 1].Certificate;
-            var isChainRootCertificateAuthority = chainRoot.RawData.SequenceEqual(certificateAuthority.RawData);
+            X509Chain chain = GetChain(certificateAuthority);
+            bool isChainValid = chain.Build(certificate);
+            X509Certificate2 chainRoot = chain.ChainElements[chain.ChainElements.Count - 1].Certificate;
+            bool isChainRootCertificateAuthority = chainRoot.RawData.SequenceEqual(certificateAuthority.RawData);
 
             return isChainValid && isChainRootCertificateAuthority;
         }

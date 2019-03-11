@@ -6,7 +6,8 @@ namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
 {
     public static class BankIdCertificatePolicies
     {
-        public static List<string> GetPoliciesForProductionEnvironment(params BankIdCertificatePolicy[] certificatePolicies)
+        public static List<string> GetPoliciesForProductionEnvironment(
+            params BankIdCertificatePolicy[] certificatePolicies)
         {
             return GetPolicies(certificatePolicies, GetPolicyForProductionEnvironment);
         }
@@ -16,9 +17,11 @@ namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
             return GetPolicies(certificatePolicies, GetPolicyForTestEnvironment);
         }
 
-        private static List<string> GetPolicies(BankIdCertificatePolicy[] certificatePolicies, Func<BankIdCertificatePolicy, string> getPolicy)
+        private static List<string> GetPolicies(BankIdCertificatePolicy[] certificatePolicies,
+            Func<BankIdCertificatePolicy, string> getPolicy)
         {
-            return certificatePolicies?.Select(getPolicy).Where(x => !string.IsNullOrEmpty(x)).ToList() ?? new List<string>();
+            return certificatePolicies?.Select(getPolicy).Where(x => !string.IsNullOrEmpty(x)).ToList() ??
+                   new List<string>();
         }
 
         public static string GetPolicyForProductionEnvironment(BankIdCertificatePolicy certificatePolicy)

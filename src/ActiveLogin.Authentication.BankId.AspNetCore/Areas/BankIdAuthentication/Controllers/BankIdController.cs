@@ -19,8 +19,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         private readonly IAntiforgery _antiforgery;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
-        private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IStringLocalizer<BankIdAuthenticationHandler> _localizer;
+        private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
 
         public BankIdController(
             IAntiforgery antiforgery,
@@ -37,18 +37,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         public ActionResult Login(string returnUrl, string loginOptions)
         {
             if (!Url.IsLocalUrl(returnUrl))
-            {
                 throw new Exception(BankIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
-            }
 
-            var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
-            var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
+            BankIdLoginOptions unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
+            AntiforgeryTokenSet antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
 
-            var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
+            BankIdLoginViewModel viewModel =
+                GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
             return View(viewModel);
         }
 
-        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
+        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions,
+            BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
         {
             var loginScriptOptions = new BankIdLoginScriptOptions
             {
@@ -68,7 +68,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 ReturnUrl = returnUrl,
 
                 AutoLogin = unprotectedLoginOptions.IsAutoLogin(),
-                PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
+                PersonalIdentityNumber =
+                    unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
 
                 LoginOptions = loginOptions,
                 UnprotectedLoginOptions = unprotectedLoginOptions,

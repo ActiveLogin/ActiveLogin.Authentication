@@ -20,22 +20,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         };
 
         /// <summary>
-        /// The oid in certificate policies in the user certificate. List of String.
+        ///     The oid in certificate policies in the user certificate. List of String.
         /// </summary>
         public List<string> BankIdCertificatePolicies { get; set; } = new List<string>();
 
         /// <summary>
-        /// Allow the user to set and/or change the personal identity number in the UI.
+        ///     Allow the user to set and/or change the personal identity number in the UI.
         /// </summary>
         internal bool BankIdAllowChangingPersonalIdentityNumber { get; set; } = true;
 
         /// <summary>
-        /// Auto launch the BankID app on the current device.
+        ///     Auto launch the BankID app on the current device.
         /// </summary>
         internal bool BankIdAutoLaunch { get; set; } = false;
 
         /// <summary>
-        /// Users of iOS and Android devices may use fingerprint or face recognition for authentication if the device supports it and the user configured the device to use it.
+        ///     Users of iOS and Android devices may use fingerprint or face recognition for authentication if the device supports
+        ///     it and the user configured the device to use it.
         /// </summary>
         public bool BankIdAllowBiometric { get; set; } = true;
 
@@ -49,14 +50,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public string IdentityProviderName { get; set; } = BankIdAuthenticationDefaults.IdentityProviderName;
 
         /// <summary>
-        /// Whether or not to issue gender claim based on Swedish Personal Identity Number.
-        /// See https://github.com/ActiveLogin/ActiveLogin.Identity for more info and limitations.
+        ///     Whether or not to issue gender claim based on Swedish Personal Identity Number.
+        ///     See https://github.com/ActiveLogin/ActiveLogin.Identity for more info and limitations.
         /// </summary>
         public bool IssueGenderClaim { get; set; } = false;
 
         /// <summary>
-        /// Whether or not to issue birthday claim based on Swedish Personal Identity Number.
-        /// See https://github.com/ActiveLogin/ActiveLogin.Identity for more info and limitations.
+        ///     Whether or not to issue birthday claim based on Swedish Personal Identity Number.
+        ///     See https://github.com/ActiveLogin/ActiveLogin.Identity for more info and limitations.
         /// </summary>
         public bool IssueBirthdateClaim { get; set; } = false;
 

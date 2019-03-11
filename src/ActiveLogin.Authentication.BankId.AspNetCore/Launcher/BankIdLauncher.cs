@@ -11,18 +11,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
     {
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
-            var prefix = GetPrefixPart(device);
-            var queryString = GetQueryStringPart(device, request);
+            string prefix = GetPrefixPart(device);
+            string queryString = GetQueryStringPart(device, request);
 
             return $"{prefix}{queryString}";
         }
 
         private string GetPrefixPart(BankIdSupportedDevice device)
         {
-            if (device.IsIos)
-            {
-                return "https://app.bankid.com/";
-            }
+            if (device.IsIos) return "https://app.bankid.com/";
 
             return "bankid:///";
         }
@@ -32,14 +29,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
             var queryStringParams = new Dictionary<string, string>();
 
             if (!string.IsNullOrWhiteSpace(request.AutoStartToken))
-            {
                 queryStringParams.Add("autostarttoken", request.AutoStartToken);
-            }
 
             if (!string.IsNullOrWhiteSpace(request.RelyingPartyReference))
-            {
                 queryStringParams.Add("rpref", Base64Encode(request.RelyingPartyReference));
-            }
 
             queryStringParams.Add("redirect", GetRedirectUrl(device, request));
 
@@ -56,16 +49,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private static string Base64Encode(string value)
         {
-            var encodedBytes = Encoding.Unicode.GetBytes(value);
+            byte[] encodedBytes = Encoding.Unicode.GetBytes(value);
             return Convert.ToBase64String(encodedBytes);
         }
 
         private static string GetQueryString(Dictionary<string, string> queryStringParams)
         {
-            if (!queryStringParams.Any())
-            {
-                return string.Empty;
-            }
+            if (!queryStringParams.Any()) return string.Empty;
 
             var queryBuilder = new QueryBuilder(queryStringParams);
             return queryBuilder.ToQueryString().ToString();

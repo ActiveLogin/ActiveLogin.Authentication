@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 
@@ -35,10 +36,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Challange_Redirects_To_BankIdAuthentication_Login()
         {
             // Arrange
-            var client = CreateServer(o =>
+            HttpClient client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
-                     .AddSameDevice();
+                        .AddSameDevice();
                 },
                 async context =>
                 {
@@ -46,7 +47,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 }).CreateClient();
 
             // Act
-            var transaction = await client.GetAsync("/");
+            HttpResponseMessage transaction = await client.GetAsync("/");
 
             // Assert
             Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
@@ -58,28 +59,29 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Authentication_UI_Should_Be_Accessible_Even_When_Site_Requires_Auth()
         {
             // Arrange
-            var client = CreateServer(o =>
+            HttpClient client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
-                     .AddSameDevice();
+                        .AddSameDevice();
                 },
                 context => Task.CompletedTask,
                 services =>
                 {
                     services.AddMvc(config =>
-                    {
-                        var policy = new AuthorizationPolicyBuilder()
-                            .RequireAuthenticatedUser()
-                            .Build();
-                        config.Filters.Add(new AuthorizeFilter(policy));
-                    })
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                        {
+                            AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
+                                .RequireAuthenticatedUser()
+                                .Build();
+                            config.Filters.Add(new AuthorizeFilter(policy));
+                        })
+                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
                     services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
                 }).CreateClient();
 
             // Act
-            var transaction = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            HttpResponseMessage transaction =
+                await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
@@ -89,7 +91,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task BankIdAuthentication_Login_Returns_Form()
         {
             // Arrange
-            var client = CreateServer(o =>
+            HttpClient client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
                         .AddSameDevice();
@@ -98,26 +100,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 {
                     await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
                 },
-                services =>
-                {
-                    services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
-                }).CreateClient();
+                services => { services.AddTransient(s => _bankIdLoginOptionsProtector.Object); }).CreateClient();
 
             // Act
-            var transaction = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            HttpResponseMessage transaction =
+                await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
-            var content = await transaction.Content.ReadAsStringAsync();
+            string content = await transaction.Content.ReadAsStringAsync();
             Assert.Contains("<form id=\"bankIdLoginForm\">", content);
         }
 
 
-
-        private TestServer CreateServer(Action<IBankIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath, Action<IServiceCollection> configureServices = null)
+        private TestServer CreateServer(Action<IBankIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath,
+            Action<IServiceCollection> configureServices = null)
         {
-            var webHostBuilder = new WebHostBuilder()
-                .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
+            IWebHostBuilder webHostBuilder = new WebHostBuilder()
+                .UseSolutionRelativeContentRoot(Path.Combine("test",
+                    "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
                 .Configure(app =>
                 {
                     app.UseAuthentication();

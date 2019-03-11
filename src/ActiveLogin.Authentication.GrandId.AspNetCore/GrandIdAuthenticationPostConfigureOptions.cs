@@ -6,7 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public abstract class GrandIdAuthenticationPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : GrandIdAuthenticationOptions
+    public abstract class
+        GrandIdAuthenticationPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions>
+        where TOptions : GrandIdAuthenticationOptions
     {
         private readonly IDataProtectionProvider _dp;
 
@@ -21,7 +23,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (options.StateDataFormat == null)
             {
-                var dataProtector = options.DataProtectionProvider.CreateProtector(
+                IDataProtector dataProtector = options.DataProtectionProvider.CreateProtector(
                     typeof(THandler).FullName,
                     name,
                     "v1"

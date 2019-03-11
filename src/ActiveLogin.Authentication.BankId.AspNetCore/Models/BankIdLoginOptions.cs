@@ -5,7 +5,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
 {
     public class BankIdLoginOptions
     {
-        public BankIdLoginOptions(List<string> certificatePolicies, SwedishPersonalIdentityNumber personalIdentityNumber, bool allowChangingPersonalIdentityNumber, bool autoLaunch, bool allowBiometric)
+        public BankIdLoginOptions(List<string> certificatePolicies,
+            SwedishPersonalIdentityNumber personalIdentityNumber, bool allowChangingPersonalIdentityNumber,
+            bool autoLaunch, bool allowBiometric)
         {
             CertificatePolicies = certificatePolicies;
             PersonalIdentityNumber = personalIdentityNumber;

@@ -6,11 +6,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         internal BankIdLoginApiStatusRequest()
         {
-
         }
 
-        [Required]
-        public string OrderRef { get; set; }
+        [Required] public string OrderRef { get; set; }
+
         public string ReturnUrl { get; set; }
         public string LoginOptions { get; set; }
     }

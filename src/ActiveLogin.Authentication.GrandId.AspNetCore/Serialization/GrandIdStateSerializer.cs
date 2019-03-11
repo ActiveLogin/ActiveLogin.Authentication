@@ -28,12 +28,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
             {
                 using (var reader = new BinaryReader(memory))
                 {
-                    if (reader.ReadInt32() != FormatVersion)
-                    {
-                        return null;
-                    }
+                    if (reader.ReadInt32() != FormatVersion) return null;
 
-                    var authenticationProperties = PropertiesSerializer.Default.Read(reader);
+                    AuthenticationProperties authenticationProperties = PropertiesSerializer.Default.Read(reader);
 
                     return new GrandIdState(authenticationProperties);
                 }

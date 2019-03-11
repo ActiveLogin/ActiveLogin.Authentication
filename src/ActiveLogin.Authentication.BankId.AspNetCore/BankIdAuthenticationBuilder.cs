@@ -10,10 +10,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public class BankIdAuthenticationBuilder : IBankIdAuthenticationBuilder
     {
-        public AuthenticationBuilder AuthenticationBuilder { get; }
-
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
-        private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators = new List<Action<HttpClientHandler>>();
+
+        private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators =
+            new List<Action<HttpClientHandler>>();
 
         public BankIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder)
         {
@@ -22,6 +22,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
             ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);
         }
+
+        public AuthenticationBuilder AuthenticationBuilder { get; }
 
         public void ConfigureHttpClient(Action<HttpClient> configureHttpClient)
         {

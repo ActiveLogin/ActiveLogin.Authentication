@@ -11,7 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
 
         public BankIdLoginResultProtector(IDataProtectionProvider dataProtectionProvider)
         {
-            var dataProtector = dataProtectionProvider.CreateProtector(
+            IDataProtector dataProtector = dataProtectionProvider.CreateProtector(
                 typeof(BankIdLoginResultProtector).FullName,
                 "v1"
             );

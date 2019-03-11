@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -21,8 +22,8 @@ namespace Standalone.MvcSample.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-            var schemes = _authenticationSchemeProvider.GetAllSchemesAsync();
-            var providers = schemes.Result
+            Task<IEnumerable<AuthenticationScheme>> schemes = _authenticationSchemeProvider.GetAllSchemesAsync();
+            IEnumerable<ExternalProvider> providers = schemes.Result
                 .Where(x => x.DisplayName != null)
                 .Select(x => new ExternalProvider
                 {
@@ -57,11 +58,8 @@ namespace Standalone.MvcSample.Controllers
         [HttpGet]
         public async Task<IActionResult> ExternalLoginCallback()
         {
-            var result = await HttpContext.AuthenticateAsync();
-            if (result?.Succeeded != true)
-            {
-                throw new Exception("External authentication error");
-            }
+            AuthenticateResult result = await HttpContext.AuthenticateAsync();
+            if (result?.Succeeded != true) throw new Exception("External authentication error");
 
             return Redirect("~/");
         }

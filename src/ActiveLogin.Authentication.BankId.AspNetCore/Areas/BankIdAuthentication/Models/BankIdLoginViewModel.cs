@@ -1,5 +1,4 @@
-﻿
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+﻿using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
@@ -7,7 +6,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         internal BankIdLoginViewModel()
         {
-
         }
 
         public string ReturnUrl { get; set; }
