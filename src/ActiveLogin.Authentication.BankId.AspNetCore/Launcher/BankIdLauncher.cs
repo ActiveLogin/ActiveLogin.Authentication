@@ -19,7 +19,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private string GetPrefixPart(BankIdSupportedDevice device)
         {
-            if (device.IsIos) return "https://app.bankid.com/";
+            if (device.IsIos)
+                return "https://app.bankid.com/";
 
             return "bankid:///";
         }
@@ -55,7 +56,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private static string GetQueryString(Dictionary<string, string> queryStringParams)
         {
-            if (!queryStringParams.Any()) return string.Empty;
+            if (!queryStringParams.Any())
+                return string.Empty;
 
             var queryBuilder = new QueryBuilder(queryStringParams);
             return queryBuilder.ToQueryString().ToString();

@@ -40,7 +40,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
             BankIdState state = GetStateFromCookie();
-            if (state == null) return Task.FromResult(HandleRequestResult.Fail("Invalid state cookie."));
+            if (state == null)
+                return Task.FromResult(HandleRequestResult.Fail("Invalid state cookie."));
 
             DeleteStateCookie();
 
@@ -112,7 +113,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             if (Options.IssueGenderClaim)
             {
                 string jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
-                if (!string.IsNullOrEmpty(jwtGender)) claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
+                if (!string.IsNullOrEmpty(jwtGender))
+                    claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
             }
 
             if (Options.IssueBirthdateClaim)
@@ -170,7 +172,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private BankIdState GetStateFromCookie()
         {
             string protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState)) return null;
+            if (string.IsNullOrEmpty(protectedState))
+                return null;
 
             BankIdState state = Options.StateDataFormat.Unprotect(protectedState);
             return state;

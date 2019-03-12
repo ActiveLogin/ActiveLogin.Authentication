@@ -59,7 +59,8 @@ namespace Standalone.MvcSample.Controllers
         public async Task<IActionResult> ExternalLoginCallback()
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();
-            if (result?.Succeeded != true) throw new Exception("External authentication error");
+            if (result?.Succeeded != true)
+                throw new Exception("External authentication error");
 
             return Redirect("~/");
         }

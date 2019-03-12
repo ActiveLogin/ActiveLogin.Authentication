@@ -152,7 +152,8 @@ namespace IdentityServer.ServerSample
 
             app.UseHttpsRedirection();
 
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
 
             app.UseStaticFiles();
             app.UseCookiePolicy();

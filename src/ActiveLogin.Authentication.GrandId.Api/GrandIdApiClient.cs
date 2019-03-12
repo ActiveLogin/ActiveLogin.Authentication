@@ -99,7 +99,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         private static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
         {
-            if (!queryStringParams.Any()) return baseUrl;
+            if (!queryStringParams.Any())
+                return baseUrl;
 
             string queryString = string.Join("&",
                 queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
@@ -110,7 +111,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
             where TResult : FullResponseBase
         {
             TResult fullResponse = await _httpClient.GetAsync<TResult>(url);
-            if (fullResponse.ErrorObject != null) throw new GrandIdApiException(fullResponse.ErrorObject);
+            if (fullResponse.ErrorObject != null)
+                throw new GrandIdApiException(fullResponse.ErrorObject);
 
             return fullResponse;
         }
@@ -121,21 +123,24 @@ namespace ActiveLogin.Authentication.GrandId.Api
             Dictionary<string, string> postDataWithoutNullValues =
                 postData.Where(pair => pair.Value != null).ToDictionary(x => x.Key, x => x.Value);
             TResult fullResponse = await _httpClient.PostAsync<TResult>(url, postDataWithoutNullValues);
-            if (fullResponse.ErrorObject != null) throw new GrandIdApiException(fullResponse.ErrorObject);
+            if (fullResponse.ErrorObject != null)
+                throw new GrandIdApiException(fullResponse.ErrorObject);
 
             return fullResponse;
         }
 
         private static string GetBase64EncodedString(string value)
         {
-            if (value == null) return null;
+            if (value == null)
+                return null;
 
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
 
         private static string GetBoolString(bool? value)
         {
-            if (value == null) return null;
+            if (value == null)
+                return null;
 
             return value.Value ? bool.TrueString.ToLower() : bool.FalseString.ToLower();
         }

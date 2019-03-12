@@ -30,7 +30,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
             GrandIdState state = GetStateFromCookie();
-            if (state == null) return HandleRequestResult.Fail("Invalid state cookie.");
+            if (state == null)
+                return HandleRequestResult.Fail("Invalid state cookie.");
 
             DeleteStateCookie();
 
@@ -132,7 +133,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         private GrandIdState GetStateFromCookie()
         {
             string protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState)) return null;
+            if (string.IsNullOrEmpty(protectedState))
+                return null;
 
             GrandIdState state = Options.StateDataFormat.Unprotect(protectedState);
             return state;

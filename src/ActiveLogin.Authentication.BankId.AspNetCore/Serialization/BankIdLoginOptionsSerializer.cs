@@ -40,7 +40,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
             {
                 using (var reader = new BinaryReader(memory))
                 {
-                    if (reader.ReadInt32() != FormatVersion) return null;
+                    if (reader.ReadInt32() != FormatVersion)
+                        return null;
 
                     List<string> certificatePolicies = reader.ReadString().Split(new[] { CertificatePoliciesSeparator },
                         StringSplitOptions.RemoveEmptyEntries).ToList();

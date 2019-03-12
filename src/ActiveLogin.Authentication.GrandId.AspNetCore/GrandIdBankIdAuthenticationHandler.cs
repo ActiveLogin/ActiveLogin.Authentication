@@ -76,8 +76,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                     useChooseDevice = false;
                     useSameDevice = false;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: throw new ArgumentOutOfRangeException();
             }
 
             string personalIdentityNumber = swedishPersonalIdentityNumber?.To12DigitString();
@@ -136,7 +135,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             if (Options.IssueGenderClaim)
             {
                 string jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
-                if (!string.IsNullOrEmpty(jwtGender)) claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
+                if (!string.IsNullOrEmpty(jwtGender))
+                    claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
             }
 
             if (Options.IssueBirthdateClaim)

@@ -14,10 +14,8 @@ namespace ActiveLogin.Authentication.Common.Serialization
         {
             switch (gender)
             {
-                case Gender.Female:
-                    return "female";
-                case Gender.Male:
-                    return "male";
+                case Gender.Female: return "female";
+                case Gender.Male: return "male";
             }
 
             return string.Empty;

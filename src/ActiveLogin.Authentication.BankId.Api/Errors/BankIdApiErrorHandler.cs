@@ -18,7 +18,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
             catch (HttpRequestException e)
             {
-                if (error != null) throw new BankIdApiException(error, e);
+                if (error != null)
+                    throw new BankIdApiException(error, e);
 
                 throw new BankIdApiException(ErrorCode.Unknown, "Unknown error", e);
             }

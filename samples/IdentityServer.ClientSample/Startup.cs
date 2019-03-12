@@ -67,7 +67,8 @@ namespace IdentityServer.ClientSample
         {
             app.UseHttpsRedirection();
 
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
 
             app.UseAuthentication();
             app.UseStaticFiles();

@@ -22,7 +22,8 @@
 
         private bool IsIos(string userAgent)
         {
-            if (IsWindowsPhone(userAgent)) return false;
+            if (IsWindowsPhone(userAgent))
+                return false;
 
             return userAgent.Contains("ipad;")
                    || userAgent.Contains("iphone;");
@@ -30,7 +31,8 @@
 
         private bool IsAndroid(string userAgent)
         {
-            if (IsWindowsPhone(userAgent)) return false;
+            if (IsWindowsPhone(userAgent))
+                return false;
 
             return userAgent.Contains("android");
         }
@@ -42,14 +44,16 @@
 
         private bool IsWindowsDesktop(string userAgent)
         {
-            if (IsWindowsPhone(userAgent)) return false;
+            if (IsWindowsPhone(userAgent))
+                return false;
 
             return userAgent.Contains("windows");
         }
 
         private bool IsMacOs(string userAgent)
         {
-            if (IsIos(userAgent)) return false;
+            if (IsIos(userAgent))
+                return false;
 
             return userAgent.Contains("mac os");
         }

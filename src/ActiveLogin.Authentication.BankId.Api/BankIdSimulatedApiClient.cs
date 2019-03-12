@@ -111,7 +111,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             if (status == CollectStatus.Complete)
             {
-                if (_auths.ContainsKey(request.OrderRef)) _auths.Remove(request.OrderRef);
+                if (_auths.ContainsKey(request.OrderRef))
+                    _auths.Remove(request.OrderRef);
             }
             else
             {
@@ -125,7 +126,8 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (_auths.ContainsKey(request.OrderRef)) _auths.Remove(request.OrderRef);
+            if (_auths.ContainsKey(request.OrderRef))
+                _auths.Remove(request.OrderRef);
 
             return new CancelResponse();
         }
@@ -134,7 +136,8 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(personalIdentityNumber)) personalIdentityNumber = _personalIdentityNumber;
+            if (string.IsNullOrEmpty(personalIdentityNumber))
+                personalIdentityNumber = _personalIdentityNumber;
 
             await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
 
@@ -162,7 +165,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private CompletionData GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
         {
-            if (status != CollectStatus.Complete) return null;
+            if (status != CollectStatus.Complete)
+                return null;
 
             var user = new User(personalIdentityNumber, _name, _givenName, _surname);
             var device = new Device(endUserIp);

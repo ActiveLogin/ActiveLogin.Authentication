@@ -91,7 +91,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             string sessionId = request.SessionId;
 
-            if (_bankidFederatedLogins.ContainsKey(sessionId)) _bankidFederatedLogins.Remove(sessionId);
+            if (_bankidFederatedLogins.ContainsKey(sessionId))
+                _bankidFederatedLogins.Remove(sessionId);
 
             return new LogoutResponse(true);
         }

@@ -52,7 +52,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             AuthenticationResult result =
                 await authContext.AcquireTokenAsync(resource, _clientCredential).ConfigureAwait(false);
 
-            if (result == null) throw new InvalidOperationException("Failed to obtain JWT token");
+            if (result == null)
+                throw new InvalidOperationException("Failed to obtain JWT token");
 
             return result.AccessToken;
         }

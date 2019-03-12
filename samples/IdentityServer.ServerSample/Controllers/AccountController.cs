@@ -59,11 +59,13 @@ namespace IdentityServer.ServerSample.Controllers
         public async Task<IActionResult> ExternalLoginCallback()
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();
-            if (result?.Succeeded != true) throw new Exception("External authentication error");
+            if (result?.Succeeded != true)
+                throw new Exception("External authentication error");
 
             string returnUrl = result.Properties.Items["returnUrl"];
 
-            if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
+            if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
 
             return Redirect("~/");
         }
