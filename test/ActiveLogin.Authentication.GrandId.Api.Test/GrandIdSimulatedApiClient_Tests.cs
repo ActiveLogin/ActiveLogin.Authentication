@@ -75,7 +75,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             };
 
             // Act
-            BankIdFederatedLoginResponse loginResponse =  await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/", personalIdentityNumber: "201801012392"));
+            BankIdFederatedLoginResponse loginResponse = await grandIdClient.BankIdFederatedLoginAsync(new BankIdFederatedLoginRequest("https://c/", personalIdentityNumber: "201801012392"));
             BankIdGetSessionResponse sessionResponse = await grandIdClient.BankIdGetSessionAsync(new BankIdGetSessionRequest(loginResponse.SessionId));
 
             // Assert

@@ -87,7 +87,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            if (properties.Items.TryGetValue( GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out string swedishPersonalIdentityNumber))
+            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out string swedishPersonalIdentityNumber))
             {
                 if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
                 {

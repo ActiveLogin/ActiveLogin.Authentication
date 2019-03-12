@@ -151,7 +151,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return Task.CompletedTask;
         }
 
-        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber( AuthenticationProperties properties)
+        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
             if (properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out string swedishPersonalIdentityNumber))
             {

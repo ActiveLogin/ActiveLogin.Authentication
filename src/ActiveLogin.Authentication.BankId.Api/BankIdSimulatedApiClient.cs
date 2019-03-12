@@ -76,8 +76,8 @@ namespace ActiveLogin.Authentication.BankId.Api
         public TimeSpan Delay
         {
             get => _delay;
-            set => _delay = value < TimeSpan.Zero 
-                ? TimeSpan.Zero 
+            set => _delay = value < TimeSpan.Zero
+                ? TimeSpan.Zero
                 : value;
         }
 
@@ -145,7 +145,7 @@ namespace ActiveLogin.Authentication.BankId.Api
                 personalIdentityNumber = _personalIdentityNumber;
             }
 
-            await EnsureNoExistingAuth(personalIdentityNumber) .ConfigureAwait(false);
+            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
 
             string orderRef = Guid.NewGuid().ToString();
             var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
@@ -163,7 +163,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
             {
                 string existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
-                await CancelAsync(new CancelRequest(existingAuthOrderRef)) .ConfigureAwait(false);
+                await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
 
                 throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
             }

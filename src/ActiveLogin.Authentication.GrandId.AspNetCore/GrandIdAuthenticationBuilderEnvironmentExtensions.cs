@@ -13,7 +13,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
             if (string.IsNullOrEmpty(environmentConfiguration.ApiKey))
             {
-                throw new InvalidOperationException( $"A valid '{nameof(environmentConfiguration.ApiKey)}' must be provided.'");
+                throw new InvalidOperationException($"A valid '{nameof(environmentConfiguration.ApiKey)}' must be provided.'");
             }
 
             builder.EnableHttpClient();

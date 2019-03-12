@@ -128,8 +128,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 ? loginOptions.CertificatePolicies
                 : null;
             string personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
-            bool? autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) 
-                ? true 
+            bool? autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString)
+                ? true
                 : (bool?)null;
 
             var authRequestRequirement = new Requirement(certificatePolicies, autoStartTokenRequired, loginOptions.AllowBiometric);
@@ -262,8 +262,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private static string AppendQueryString(string url, string queryString)
         {
-            string delimiter = url.Contains("?") 
-                ? "&" 
+            string delimiter = url.Contains("?")
+                ? "&"
                 : "?";
 
             return $"{url}{delimiter}{queryString}";

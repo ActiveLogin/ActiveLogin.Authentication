@@ -441,7 +441,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public async Task SignAsync_WithSignRequest__ShouldParseAndReturnOrderRef_AndAutoStartToken()
         {
             // Arrange
-            HttpClient httpClient =  GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\" }");
+            HttpClient httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\" }");
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act

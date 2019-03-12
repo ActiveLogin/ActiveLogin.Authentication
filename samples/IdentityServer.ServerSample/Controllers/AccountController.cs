@@ -66,8 +66,8 @@ namespace IdentityServer.ServerSample.Controllers
 
             string returnUrl = result.Properties.Items["returnUrl"];
 
-            return _interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl) 
-                ? Redirect(returnUrl) 
+            return _interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl)
+                ? Redirect(returnUrl)
                 : Redirect("~/");
         }
 

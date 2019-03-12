@@ -8,31 +8,31 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public static void GrandIdBankIdGetSessionSuccess(this ILogger logger, string sessionId)
         {
             logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdGetSessionSuccess,
-                "GrandId (BankId) get session succedded for the sessionId '{SessionId}'", 
+                "GrandId (BankId) get session succedded for the sessionId '{SessionId}'",
                 sessionId);
         }
 
         public static void GrandIdBankIdGetSessionFailure(this ILogger logger, string sessionId, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdGetSessionHardFailure, 
+            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdGetSessionHardFailure,
                 exception,
-                "GrandId (BankId) get session failed for the sessionId '{SessionId}'", 
-                sessionId, 
+                "GrandId (BankId) get session failed for the sessionId '{SessionId}'",
+                sessionId,
                 exception);
         }
 
         public static void GrandIdBankIdFederatedLoginSuccess(this ILogger logger, string returnUrl, string sessionId)
         {
             logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginSuccess,
-                "GrandId (BankId) federated login succedded with the returnUrl '{returnUrl}'", 
+                "GrandId (BankId) federated login succedded with the returnUrl '{returnUrl}'",
                 returnUrl);
         }
 
         public static void GrandIdBankIdFederatedLoginFailure(this ILogger logger, string returnUrl, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginHardFailure, 
+            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginHardFailure,
                 exception,
-                "GrandId (BankId) federated login failed with the returnUrl '{returnUrl}'", 
+                "GrandId (BankId) federated login failed with the returnUrl '{returnUrl}'",
                 returnUrl);
         }
     }

@@ -42,8 +42,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
         public TimeSpan Delay
         {
             get => _delay;
-            set => _delay = value < TimeSpan.Zero 
-                ? TimeSpan.Zero 
+            set => _delay = value < TimeSpan.Zero
+                ? TimeSpan.Zero
                 : value;
         }
 

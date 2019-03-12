@@ -138,15 +138,15 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
 
         private static string ToBase64EncodedString(string value)
         {
-            return value == null 
-                ? null 
+            return value == null
+                ? null
                 : Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
 
         private static string ToBase64EncodedString(byte[] value)
         {
-            return value == null 
-                ? null 
+            return value == null
+                ? null
                 : Convert.ToBase64String(value);
         }
     }

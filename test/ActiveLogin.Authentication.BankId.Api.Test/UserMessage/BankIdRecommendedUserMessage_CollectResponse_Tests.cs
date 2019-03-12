@@ -40,7 +40,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.Started, MessageShortName.RFA14A)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_BankID_ManuallyStartBankIDApp( CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_BankID_ManuallyStartBankIDApp(CollectHintCode collectHintCode, MessageShortName expected)
         {
             CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = true;
@@ -61,7 +61,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.Started, MessageShortName.RFA15B)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_MobileBankID_AutomaticallyStartBankIDAPP( CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_MobileBankID_AutomaticallyStartBankIDAPP(CollectHintCode collectHintCode, MessageShortName expected)
         {
             CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = false;
@@ -104,7 +104,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.CertificateErr, MessageShortName.RFA16)]
         [InlineData(CollectHintCode.StartFailed, MessageShortName.RFA17)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_FailedOrder( CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_FailedOrder(CollectHintCode collectHintCode, MessageShortName expected)
         {
             CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = true;
