@@ -27,7 +27,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
 
         private static DateTime DateTimeFromUnixTimestampMilliseconds(long milliseconds)
         {
-            return DateTimeOffset.FromUnixTimeMilliseconds(milliseconds).DateTime;
+            return DateTimeOffset.FromUnixTimeMilliseconds(milliseconds)
+                .DateTime;
         }
     }
 }

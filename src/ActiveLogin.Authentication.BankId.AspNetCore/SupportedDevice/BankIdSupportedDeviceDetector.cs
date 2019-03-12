@@ -16,8 +16,7 @@
             bool isMobile = isIos || isAndroid || isWindowsPhone;
             bool isDesktop = isWindowsDesktop || isMacOs;
 
-            return new BankIdSupportedDevice(isMobile, isDesktop, isIos, isAndroid, isWindowsPhone, isWindowsDesktop,
-                isMacOs);
+            return new BankIdSupportedDevice(isMobile, isDesktop, isIos, isAndroid, isWindowsPhone, isWindowsDesktop, isMacOs);
         }
 
         private bool IsIos(string userAgent)
@@ -26,7 +25,7 @@
                 return false;
 
             return userAgent.Contains("ipad;")
-                   || userAgent.Contains("iphone;");
+                || userAgent.Contains("iphone;");
         }
 
         private bool IsAndroid(string userAgent)

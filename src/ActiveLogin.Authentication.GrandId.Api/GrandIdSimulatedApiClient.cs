@@ -15,8 +15,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private const string DefaultSurname = "Surname";
         private const string DefaultPersonalIdentityNumber = "199908072391";
 
-        private readonly Dictionary<string, ExtendedFederatedLoginResponse> _bankidFederatedLogins =
-            new Dictionary<string, ExtendedFederatedLoginResponse>();
+        private readonly Dictionary<string, ExtendedFederatedLoginResponse> _bankidFederatedLogins = new Dictionary<string, ExtendedFederatedLoginResponse>();
 
         private readonly string _givenName;
         private readonly string _personalIdentityNumber;
@@ -55,9 +54,10 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 : _personalIdentityNumber;
             await EnsureNoExistingLogin(personalIdentityNumber).ConfigureAwait(false);
 
-            string sessionId = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            var response =
-                new BankIdFederatedLoginResponse(sessionId, $"{request.CallbackUrl}?grandidsession={sessionId}");
+            string sessionId = Guid.NewGuid()
+                .ToString()
+                .Replace("-", string.Empty);
+            var response = new BankIdFederatedLoginResponse(sessionId, $"{request.CallbackUrl}?grandidsession={sessionId}");
             var extendedResponse = new ExtendedFederatedLoginResponse(response, personalIdentityNumber);
             _bankidFederatedLogins.Add(sessionId, extendedResponse);
 
@@ -102,7 +102,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
             if (_bankidFederatedLogins.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
             {
                 string existingLoginSessionId = _bankidFederatedLogins
-                    .First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
+                    .First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber)
+                    .Key;
                 await LogoutAsync(new LogoutRequest(existingLoginSessionId)).ConfigureAwait(false);
 
                 throw new GrandIdApiException(ErrorCode.Already_In_Progress,

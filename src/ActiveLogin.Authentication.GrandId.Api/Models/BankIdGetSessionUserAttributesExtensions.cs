@@ -12,12 +12,14 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
 
         public static DateTime GetNotBeforeDateTime(this BankIdGetSessionUserAttributes userAttributes)
         {
-            return DateTime.Parse(userAttributes.NotBefore).ToUniversalTime();
+            return DateTime.Parse(userAttributes.NotBefore)
+                .ToUniversalTime();
         }
 
         public static DateTime GetNotAfterDateTime(this BankIdGetSessionUserAttributes userAttributes)
         {
-            return DateTime.Parse(userAttributes.NotAfter).ToUniversalTime();
+            return DateTime.Parse(userAttributes.NotAfter)
+                .ToUniversalTime();
         }
     }
 }

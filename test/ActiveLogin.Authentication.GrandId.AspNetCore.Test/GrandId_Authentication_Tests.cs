@@ -30,7 +30,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
                 })
                 .ConfigureServices(services =>
                 {
-                    services.AddAuthentication().AddGrandId(builder);
+                    services.AddAuthentication()
+                        .AddGrandId(builder);
                     configureServices?.Invoke(services);
                 });
 
@@ -42,14 +43,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
         {
             // Arrange
             HttpClient client = CreateServer(o =>
-                {
-                    o.UseSimulatedEnvironment()
-                        .AddBankIdSameDevice(options => { });
-                },
-                async context =>
-                {
-                    await context.ChallengeAsync(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme);
-                }).CreateClient();
+                    {
+                        o.UseSimulatedEnvironment()
+                            .AddBankIdSameDevice(options => { });
+                    },
+                    async context =>
+                    {
+                        await context.ChallengeAsync(GrandIdAuthenticationDefaults
+                            .BankIdSameDeviceAuthenticationScheme);
+                    })
+                .CreateClient();
 
             // Act
             HttpResponseMessage transaction = await client.GetAsync("/");

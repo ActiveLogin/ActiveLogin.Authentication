@@ -9,14 +9,12 @@ namespace ActiveLogin.Authentication.BankId.Api
 {
     internal static class BankIdHttpClientExtensions
     {
-        public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url,
-            TRequest request)
+        public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
             string requestJson = SystemRuntimeJsonSerializer.Serialize(request);
             StringContent requestContent = GetJsonStringContent(requestJson);
 
-            HttpResponseMessage httpResponseMessage =
-                await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
             await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage).ConfigureAwait(false);
             Stream content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 

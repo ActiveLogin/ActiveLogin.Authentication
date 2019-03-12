@@ -17,13 +17,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
         }
 
-        public static async Task<TResult> PostAsync<TResult>(this HttpClient httpClient, string url,
-            Dictionary<string, string> postData)
+        public static async Task<TResult> PostAsync<TResult>(this HttpClient httpClient, string url, Dictionary<string, string> postData)
         {
             FormUrlEncodedContent requestContent = GetFormUrlEncodedContent<TResult>(postData);
 
-            HttpResponseMessage httpResponseMessage =
-                await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
             Stream content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);

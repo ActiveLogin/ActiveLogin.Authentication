@@ -10,7 +10,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
     {
         public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage)
         {
-            Error error = await TryGetErrorAsync(httpResponseMessage).ConfigureAwait(false);
+            Error error = await TryGetErrorAsync(httpResponseMessage)
+                .ConfigureAwait(false);
 
             try
             {
@@ -30,7 +31,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             if (!httpResponseMessage.IsSuccessStatusCode)
                 try
                 {
-                    string content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    string content = await httpResponseMessage.Content.ReadAsStringAsync()
+                        .ConfigureAwait(false);
                     return SystemRuntimeJsonSerializer.Deserialize<Error>(content);
                 }
                 catch (Exception)

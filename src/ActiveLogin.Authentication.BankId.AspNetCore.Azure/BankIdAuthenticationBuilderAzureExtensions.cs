@@ -38,8 +38,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
                         options.Value.AzureAdClientSecret))
                 {
                     return keyVaultCertificateClient
-                        .GetX509Certificate2Async(options.Value.AzureKeyVaultSecretIdentifier).ConfigureAwait(false)
-                        .GetAwaiter().GetResult();
+                        .GetX509Certificate2Async(options.Value.AzureKeyVaultSecretIdentifier)
+                        .ConfigureAwait(false)
+                        .GetAwaiter()
+                        .GetResult();
                 }
             });
 

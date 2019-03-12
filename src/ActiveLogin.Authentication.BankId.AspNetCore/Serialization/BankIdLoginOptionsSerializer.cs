@@ -21,8 +21,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                 {
                     writer.Write(FormatVersion);
 
-                    writer.Write(string.Join(CertificatePoliciesSeparator.ToString(),
-                        model.CertificatePolicies ?? new List<string>()));
+                    writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies ?? new List<string>()));
                     writer.Write(model.PersonalIdentityNumber?.To12DigitString() ?? string.Empty);
                     writer.Write(model.AllowChangingPersonalIdentityNumber);
                     writer.Write(model.AutoLaunch);
@@ -43,11 +42,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     if (reader.ReadInt32() != FormatVersion)
                         return null;
 
-                    List<string> certificatePolicies = reader.ReadString().Split(new[] { CertificatePoliciesSeparator },
-                        StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> certificatePolicies = reader.ReadString()
+                        .Split(new[] { CertificatePoliciesSeparator }, StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
                     string personalIdentityNumberString = reader.ReadString();
-                    SwedishPersonalIdentityNumber personalIdentityNumber =
-                        string.IsNullOrEmpty(personalIdentityNumberString)
+                    SwedishPersonalIdentityNumber personalIdentityNumber = string.IsNullOrEmpty(personalIdentityNumberString)
                             ? null
                             : SwedishPersonalIdentityNumber.Parse(personalIdentityNumberString);
                     bool allowChangingPersonalIdentityNumber = reader.ReadBoolean();

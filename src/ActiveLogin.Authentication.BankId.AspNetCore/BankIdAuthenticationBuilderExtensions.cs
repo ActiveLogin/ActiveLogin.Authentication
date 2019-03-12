@@ -28,10 +28,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddTransient<IBankIdResultStore, BankIdResultTraceLoggerStore>();
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
-            services.AddLocalization(options =>
-            {
-                options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath;
-            });
+            services.AddLocalization(options => { options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath; });
 
             return builder;
         }

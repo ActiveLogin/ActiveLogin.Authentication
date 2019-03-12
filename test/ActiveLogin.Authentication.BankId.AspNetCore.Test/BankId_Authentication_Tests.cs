@@ -37,14 +37,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         {
             // Arrange
             HttpClient client = CreateServer(o =>
-                {
-                    o.UseSimulatedEnvironment()
-                        .AddSameDevice();
-                },
-                async context =>
-                {
-                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
-                }).CreateClient();
+                    {
+                        o.UseSimulatedEnvironment()
+                            .AddSameDevice();
+                    },
+                    async context => { await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme); })
+                .CreateClient();
 
             // Act
             HttpResponseMessage transaction = await client.GetAsync("/");
@@ -60,24 +58,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         {
             // Arrange
             HttpClient client = CreateServer(o =>
-                {
-                    o.UseSimulatedEnvironment()
-                        .AddSameDevice();
-                },
-                context => Task.CompletedTask,
-                services =>
-                {
-                    services.AddMvc(config =>
-                        {
-                            AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
-                                .RequireAuthenticatedUser()
-                                .Build();
-                            config.Filters.Add(new AuthorizeFilter(policy));
-                        })
-                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                    {
+                        o.UseSimulatedEnvironment()
+                            .AddSameDevice();
+                    },
+                    context => Task.CompletedTask,
+                    services =>
+                    {
+                        services.AddMvc(config =>
+                            {
+                                AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
+                                    .RequireAuthenticatedUser()
+                                    .Build();
+                                config.Filters.Add(new AuthorizeFilter(policy));
+                            })
+                            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-                    services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
-                }).CreateClient();
+                        services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
+                    })
+                .CreateClient();
 
             // Act
             HttpResponseMessage transaction =
@@ -92,15 +91,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         {
             // Arrange
             HttpClient client = CreateServer(o =>
-                {
-                    o.UseSimulatedEnvironment()
-                        .AddSameDevice();
-                },
-                async context =>
-                {
-                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
-                },
-                services => { services.AddTransient(s => _bankIdLoginOptionsProtector.Object); }).CreateClient();
+                    {
+                        o.UseSimulatedEnvironment()
+                            .AddSameDevice();
+                    },
+                    async context => { await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme); },
+                    services => { services.AddTransient(s => _bankIdLoginOptionsProtector.Object); })
+                .CreateClient();
 
             // Act
             HttpResponseMessage transaction =
@@ -132,7 +129,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 })
                 .ConfigureServices(services =>
                 {
-                    services.AddAuthentication().AddBankId(builder);
+                    services.AddAuthentication()
+                        .AddBankId(builder);
                     services.AddMvc();
                     configureServices?.Invoke(services);
                 });

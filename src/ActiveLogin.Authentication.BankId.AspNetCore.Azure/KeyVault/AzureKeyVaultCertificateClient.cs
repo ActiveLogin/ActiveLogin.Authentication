@@ -28,7 +28,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
 
         public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
         {
-            SecretBundle secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier).ConfigureAwait(false);
+            SecretBundle secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier)
+                .ConfigureAwait(false);
             if (secret.ContentType != CertificateContentType)
                 throw new ArgumentException($"This certificate must be of type {CertificateContentType}");
 
@@ -43,14 +44,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             var exportedCertCollection = new X509Certificate2Collection();
             exportedCertCollection.Import(certificate, string.Empty, X509KeyStorageFlags.MachineKeySet);
 
-            return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
+            return exportedCertCollection.Cast<X509Certificate2>()
+                .First(x => x.HasPrivateKey);
         }
 
         public async Task<string> GetToken(string authority, string resource, string scope)
         {
             var authContext = new AuthenticationContext(authority);
             AuthenticationResult result =
-                await authContext.AcquireTokenAsync(resource, _clientCredential).ConfigureAwait(false);
+                await authContext.AcquireTokenAsync(resource, _clientCredential)
+                    .ConfigureAwait(false);
 
             if (result == null)
                 throw new InvalidOperationException("Failed to obtain JWT token");

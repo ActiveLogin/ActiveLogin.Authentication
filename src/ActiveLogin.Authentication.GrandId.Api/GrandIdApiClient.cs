@@ -56,8 +56,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "userNonVisibleData", GetBase64EncodedString(request.SignUserNonVisibleData) }
             };
 
-            BankIdFederatedLoginFullResponse fullResponse =
-                await PostFullResponseAndEnsureSuccess<BankIdFederatedLoginFullResponse>(url, postData);
+            BankIdFederatedLoginFullResponse fullResponse = await PostFullResponseAndEnsureSuccess<BankIdFederatedLoginFullResponse>(url, postData);
             return new BankIdFederatedLoginResponse(fullResponse);
         }
 
@@ -76,8 +75,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "sessionid", request.SessionId }
             });
 
-            BankIdGetSessionFullResponse fullResponse =
-                await GetFullResponseAndEnsureSuccess<BankIdGetSessionFullResponse>(url);
+            BankIdGetSessionFullResponse fullResponse = await GetFullResponseAndEnsureSuccess<BankIdGetSessionFullResponse>(url);
             return new BankIdGetSessionResponse(fullResponse);
         }
 
@@ -117,12 +115,15 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return fullResponse;
         }
 
-        private async Task<TResult> PostFullResponseAndEnsureSuccess<TResult>(string url,
-            Dictionary<string, string> postData) where TResult : FullResponseBase
+        private async Task<TResult> PostFullResponseAndEnsureSuccess<TResult>(string url, Dictionary<string, string> postData) 
+            where TResult : FullResponseBase
         {
-            Dictionary<string, string> postDataWithoutNullValues =
-                postData.Where(pair => pair.Value != null).ToDictionary(x => x.Key, x => x.Value);
+            Dictionary<string, string> postDataWithoutNullValues = postData
+                .Where(pair => pair.Value != null)
+                .ToDictionary(x => x.Key, x => x.Value);
+
             TResult fullResponse = await _httpClient.PostAsync<TResult>(url, postDataWithoutNullValues);
+
             if (fullResponse.ErrorObject != null)
                 throw new GrandIdApiException(fullResponse.ErrorObject);
 
@@ -131,10 +132,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         private static string GetBase64EncodedString(string value)
         {
-            if (value == null)
-                return null;
-
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+            return value == null 
+                ? null 
+                : Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
 
         private static string GetBoolString(bool? value)
@@ -142,7 +142,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
             if (value == null)
                 return null;
 
-            return value.Value ? bool.TrueString.ToLower() : bool.FalseString.ToLower();
+            return value.Value 
+                ? bool.TrueString.ToLower() 
+                : bool.FalseString.ToLower();
         }
 
         private void EnsureValidBankIdServiceKey()

@@ -97,7 +97,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<CollectResponse> CollectAsync(CollectRequest request)
         {
-            await SimulateResponseDelay().ConfigureAwait(false);
+            await SimulateResponseDelay()
+                .ConfigureAwait(false);
 
             if (!_auths.ContainsKey(request.OrderRef))
                 throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found.");
@@ -124,7 +125,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<CancelResponse> CancelAsync(CancelRequest request)
         {
-            await SimulateResponseDelay().ConfigureAwait(false);
+            await SimulateResponseDelay()
+                .ConfigureAwait(false);
 
             if (_auths.ContainsKey(request.OrderRef))
                 _auths.Remove(request.OrderRef);
@@ -134,18 +136,23 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
         {
-            await SimulateResponseDelay().ConfigureAwait(false);
+            await SimulateResponseDelay()
+                .ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(personalIdentityNumber))
                 personalIdentityNumber = _personalIdentityNumber;
 
-            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
+            await EnsureNoExistingAuth(personalIdentityNumber)
+                .ConfigureAwait(false);
 
-            string orderRef = Guid.NewGuid().ToString();
+            string orderRef = Guid.NewGuid()
+                .ToString();
             var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
-            string autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            string autoStartToken = Guid.NewGuid()
+                .ToString()
+                .Replace("-", string.Empty);
 
             return new OrderResponse(orderRef, autoStartToken);
         }
@@ -155,8 +162,10 @@ namespace ActiveLogin.Authentication.BankId.Api
             if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
             {
                 string existingAuthOrderRef =
-                    _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
-                await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
+                    _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber)
+                        .Key;
+                await CancelAsync(new CancelRequest(existingAuthOrderRef))
+                    .ConfigureAwait(false);
 
                 throw new BankIdApiException(ErrorCode.AlreadyInProgress,
                     "A login for this user is already in progress.");
@@ -191,13 +200,15 @@ namespace ActiveLogin.Authentication.BankId.Api
         private CollectStatus GetStatus(int collectCalls)
         {
             int index = GetStatusesToReturnIndex(collectCalls);
-            return _collectStates[index].Status;
+            return _collectStates[index]
+                .Status;
         }
 
         private CollectHintCode GetHintCode(int collectCalls)
         {
             int index = GetStatusesToReturnIndex(collectCalls);
-            return _collectStates[index].HintCode;
+            return _collectStates[index]
+                .HintCode;
         }
 
         private int GetStatusesToReturnIndex(int collectCalls)
@@ -207,7 +218,8 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private async Task SimulateResponseDelay()
         {
-            await Task.Delay(Delay).ConfigureAwait(false);
+            await Task.Delay(Delay)
+                .ConfigureAwait(false);
         }
 
         private class Auth

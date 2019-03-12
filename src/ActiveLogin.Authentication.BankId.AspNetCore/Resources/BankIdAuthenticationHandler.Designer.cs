@@ -277,10 +277,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources
         /// </summary>
         internal static string SignIn_SwedishPersonalIdentityNumber_Placeholder
         {
-            get
-            {
-                return ResourceManager.GetString("SignIn_SwedishPersonalIdentityNumber_Placeholder", resourceCulture);
-            }
+            get { return ResourceManager.GetString("SignIn_SwedishPersonalIdentityNumber_Placeholder", resourceCulture); }
         }
 
         /// <summary>
