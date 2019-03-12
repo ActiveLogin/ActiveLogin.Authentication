@@ -10,13 +10,11 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
     public class GrandIdApiClientExtensions_Tests
     {
         [Fact]
-        public async void
-            BankIdFederatedLoginAsync_WithAllValues_ShouldMap_ToBankIdFederatedLoginRequest_WithAllValues()
+        public async void BankIdFederatedLoginAsync_WithAllValues_ShouldMap_ToBankIdFederatedLoginRequest_WithAllValues()
         {
             // Arrange
             var grandIdApiClientMock = new Mock<IGrandIdApiClient>(MockBehavior.Strict);
-            grandIdApiClientMock.Setup(client =>
-                    client.BankIdFederatedLoginAsync(It.IsAny<BankIdFederatedLoginRequest>()))
+            grandIdApiClientMock.Setup(client => client.BankIdFederatedLoginAsync(It.IsAny<BankIdFederatedLoginRequest>()))
                 .ReturnsAsync(It.IsAny<BankIdFederatedLoginResponse>());
 
             // Act
@@ -35,8 +33,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             );
 
             // Assert
-            BankIdFederatedLoginRequest request = grandIdApiClientMock
-                .GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
+            BankIdFederatedLoginRequest request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
             Assert.Equal("https://cb/", request.CallbackUrl);
             Assert.Equal(true, request.UseChooseDevice);
             Assert.Equal(true, request.UseSameDevice);
@@ -50,29 +47,24 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
         }
 
         [Fact]
-        public async void
-            BankIdFederatedLoginAsync_WithSeviceKey_AndCallbackUrl_ShouldMap_ToBankIdFederatedLoginRequest_WithSeviceKey_AndCallbackUrl()
+        public async void BankIdFederatedLoginAsync_WithSeviceKey_AndCallbackUrl_ShouldMap_ToBankIdFederatedLoginRequest_WithSeviceKey_AndCallbackUrl()
         {
             // Arrange
             var grandIdApiClientMock = new Mock<IGrandIdApiClient>(MockBehavior.Strict);
-            grandIdApiClientMock.Setup(client =>
-                    client.BankIdFederatedLoginAsync(It.IsAny<BankIdFederatedLoginRequest>()))
+            grandIdApiClientMock.Setup(client => client.BankIdFederatedLoginAsync(It.IsAny<BankIdFederatedLoginRequest>()))
                 .ReturnsAsync(It.IsAny<BankIdFederatedLoginResponse>());
 
             // Act
-            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object, "ask",
-                "https://cb/");
+            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object, "ask", "https://cb/");
 
             // Assert
-            BankIdFederatedLoginRequest request = grandIdApiClientMock
-                .GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
+            BankIdFederatedLoginRequest request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
             Assert.Equal("https://cb/", request.CallbackUrl);
             Assert.Null(request.PersonalIdentityNumber);
         }
 
         [Fact]
-        public async void
-            BankIdGetSessionAsync_WithServiceKey_AndSessionId_ShouldMap_ToBankIdGetSessionRequest_WithServiceKey_AndSessionId()
+        public async void BankIdGetSessionAsync_WithServiceKey_AndSessionId_ShouldMap_ToBankIdGetSessionRequest_WithServiceKey_AndSessionId()
         {
             // Arrange
             var grandIdApiClientMock = new Mock<IGrandIdApiClient>(MockBehavior.Strict);
@@ -83,8 +75,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             await GrandIdApiClientExtensions.BankIdGetSessionAsync(grandIdApiClientMock.Object, "s");
 
             // Assert
-            BankIdGetSessionRequest request = grandIdApiClientMock
-                .GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdGetSessionRequest>();
+            BankIdGetSessionRequest request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdGetSessionRequest>();
             Assert.Equal("s", request.SessionId);
         }
 
@@ -100,8 +91,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             await GrandIdApiClientExtensions.LogoutAsync(grandIdApiClientMock.Object, "s");
 
             // Assert
-            LogoutRequest request =
-                grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, LogoutRequest>();
+            LogoutRequest request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, LogoutRequest>();
             Assert.Equal("s", request.SessionId);
         }
     }

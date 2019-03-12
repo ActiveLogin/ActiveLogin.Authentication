@@ -6,8 +6,7 @@ namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
 {
     public static class BankIdCertificatePolicies
     {
-        public static List<string> GetPoliciesForProductionEnvironment(
-            params BankIdCertificatePolicy[] certificatePolicies)
+        public static List<string> GetPoliciesForProductionEnvironment(params BankIdCertificatePolicy[] certificatePolicies)
         {
             return GetPolicies(certificatePolicies, GetPolicyForProductionEnvironment);
         }
@@ -17,8 +16,7 @@ namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
             return GetPolicies(certificatePolicies, GetPolicyForTestEnvironment);
         }
 
-        private static List<string> GetPolicies(BankIdCertificatePolicy[] certificatePolicies,
-            Func<BankIdCertificatePolicy, string> getPolicy)
+        private static List<string> GetPolicies(BankIdCertificatePolicy[] certificatePolicies, Func<BankIdCertificatePolicy, string> getPolicy)
         {
             return certificatePolicies == null
                 ? new List<string>()
@@ -31,9 +29,15 @@ namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
         {
             switch (certificatePolicy)
             {
-                case BankIdCertificatePolicy.BankIdOnFile: return BankIdCertificatePolicyConstants.BankIdOnFileProductionEnvironment;
-                case BankIdCertificatePolicy.BankIdOnSmartCard: return BankIdCertificatePolicyConstants.BankIdOnSmartCardProductionEnvironment;
-                case BankIdCertificatePolicy.MobileBankId: return BankIdCertificatePolicyConstants.MobileBankIdProductionEnvironment;
+                case BankIdCertificatePolicy.BankIdOnFile:
+                    return BankIdCertificatePolicyConstants.BankIdOnFileProductionEnvironment;
+
+                case BankIdCertificatePolicy.BankIdOnSmartCard:
+                    return BankIdCertificatePolicyConstants.BankIdOnSmartCardProductionEnvironment;
+
+                case BankIdCertificatePolicy.MobileBankId:
+                    return BankIdCertificatePolicyConstants.MobileBankIdProductionEnvironment;
+
                 case BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard:
                     return BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardProductionEnvironment;
             }
@@ -45,12 +49,20 @@ namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
         {
             switch (certificatePolicy)
             {
-                case BankIdCertificatePolicy.BankIdOnFile: return BankIdCertificatePolicyConstants.BankIdOnFileTestEnvironment;
-                case BankIdCertificatePolicy.BankIdOnSmartCard: return BankIdCertificatePolicyConstants.BankIdOnSmartCardTestEnvironment;
-                case BankIdCertificatePolicy.MobileBankId: return BankIdCertificatePolicyConstants.MobileBankIdTestEnvironment;
+                case BankIdCertificatePolicy.BankIdOnFile:
+                    return BankIdCertificatePolicyConstants.BankIdOnFileTestEnvironment;
+
+                case BankIdCertificatePolicy.BankIdOnSmartCard:
+                    return BankIdCertificatePolicyConstants.BankIdOnSmartCardTestEnvironment;
+
+                case BankIdCertificatePolicy.MobileBankId:
+                    return BankIdCertificatePolicyConstants.MobileBankIdTestEnvironment;
+
                 case BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard:
                     return BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardTestEnvironment;
-                case BankIdCertificatePolicy.TestBankId: return BankIdCertificatePolicyConstants.TestBankIdTestEnvironment;
+
+                case BankIdCertificatePolicy.TestBankId:
+                    return BankIdCertificatePolicyConstants.TestBankIdTestEnvironment;
             }
 
             return string.Empty;

@@ -29,7 +29,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                 using (var reader = new BinaryReader(memory))
                 {
                     if (reader.ReadInt32() != FormatVersion)
+                    {
                         return null;
+                    }
 
                     return new BankIdOrderRef(reader.ReadString());
                 }

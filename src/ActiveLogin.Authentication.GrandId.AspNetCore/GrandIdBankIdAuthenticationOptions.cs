@@ -4,8 +4,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public class GrandIdBankIdAuthenticationOptions : GrandIdAuthenticationOptions
     {
-        public override string AuthenticationMethodName { get; set; } =
-            GrandIdAuthenticationDefaults.BankIdAuthenticationMethodName;
+        public override string AuthenticationMethodName { get; set; } = GrandIdAuthenticationDefaults.BankIdAuthenticationMethodName;
 
         /// <summary>
         ///     What mode to use GrandID BankID in.

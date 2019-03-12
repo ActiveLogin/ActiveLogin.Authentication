@@ -6,8 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public abstract class
-        GrandIdAuthenticationPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions>
+    public abstract class GrandIdAuthenticationPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions>
         where TOptions : GrandIdAuthenticationOptions
     {
         private readonly IDataProtectionProvider _dp;

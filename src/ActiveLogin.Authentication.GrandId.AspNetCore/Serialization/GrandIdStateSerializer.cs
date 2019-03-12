@@ -11,30 +11,28 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
         public byte[] Serialize(GrandIdState model)
         {
             using (var memory = new MemoryStream())
+            using (var writer = new BinaryWriter(memory))
             {
-                using (var writer = new BinaryWriter(memory))
-                {
-                    writer.Write(FormatVersion);
-                    PropertiesSerializer.Default.Write(writer, model.AuthenticationProperties);
-                    writer.Flush();
-                    return memory.ToArray();
-                }
+                writer.Write(FormatVersion);
+                PropertiesSerializer.Default.Write(writer, model.AuthenticationProperties);
+                writer.Flush();
+                return memory.ToArray();
             }
         }
 
         public GrandIdState Deserialize(byte[] data)
         {
             using (var memory = new MemoryStream(data))
+            using (var reader = new BinaryReader(memory))
             {
-                using (var reader = new BinaryReader(memory))
+                if (reader.ReadInt32() != FormatVersion)
                 {
-                    if (reader.ReadInt32() != FormatVersion)
-                        return null;
-
-                    AuthenticationProperties authenticationProperties = PropertiesSerializer.Default.Read(reader);
-
-                    return new GrandIdState(authenticationProperties);
+                    return null;
                 }
+
+                AuthenticationProperties authenticationProperties = PropertiesSerializer.Default.Read(reader);
+
+                return new GrandIdState(authenticationProperties);
             }
         }
     }

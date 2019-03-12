@@ -20,13 +20,10 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public const string BankIdAuthenticationMethodName = "grandid-bankid";
         public static readonly TimeSpan MaximumSessionLifespan = TimeSpan.FromHours(1);
 
-        public static readonly PathString BankIdSameDeviceCallpackPath =
-            new PathString("/signin-grandid-bankid-samedevice");
+        public static readonly PathString BankIdSameDeviceCallpackPath = new PathString("/signin-grandid-bankid-samedevice");
 
-        public static readonly PathString BankIdOtherDeviceCallpackPath =
-            new PathString("/signin-grandid-bankid-otherdevice");
+        public static readonly PathString BankIdOtherDeviceCallpackPath = new PathString("/signin-grandid-bankid-otherdevice");
 
-        public static readonly PathString BankIdChooseDeviceCallpackPath =
-            new PathString("/signin-grandid-bankid-choosedevice");
+        public static readonly PathString BankIdChooseDeviceCallpackPath = new PathString("/signin-grandid-bankid-choosedevice");
     }
 }

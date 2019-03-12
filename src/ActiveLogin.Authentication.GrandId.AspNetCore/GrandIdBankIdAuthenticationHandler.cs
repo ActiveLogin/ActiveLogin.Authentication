@@ -15,8 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions,
-        BankIdGetSessionResponse>
+    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, BankIdGetSessionResponse>
     {
         private readonly IGrandIdApiClient _grandIdApiClient;
         private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
@@ -27,25 +26,21 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             UrlEncoder encoder,
             ISystemClock clock,
             ILogger<GrandIdBankIdAuthenticationHandler> logger,
-            IGrandIdApiClient grandIdApiClient
-        )
+            IGrandIdApiClient grandIdApiClient)
             : base(options, loggerFactory, encoder, clock)
         {
             _logger = logger;
             _grandIdApiClient = grandIdApiClient;
         }
 
-        protected override async Task<string> GetRedirectUrlAsync(AuthenticationProperties properties,
-            string absoluteReturnUrl)
+        protected override async Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl)
         {
             SwedishPersonalIdentityNumber swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
-            BankIdFederatedLoginRequest request =
-                GetBankIdFederatedLoginRequest(absoluteReturnUrl, Options, swedishPersonalIdentityNumber);
+            BankIdFederatedLoginRequest request = GetBankIdFederatedLoginRequest(absoluteReturnUrl, Options, swedishPersonalIdentityNumber);
 
             try
             {
-                BankIdFederatedLoginResponse federatedLoginResponse =
-                    await _grandIdApiClient.BankIdFederatedLoginAsync(request);
+                BankIdFederatedLoginResponse federatedLoginResponse = await _grandIdApiClient.BankIdFederatedLoginAsync(request);
                 _logger.GrandIdBankIdFederatedLoginSuccess(absoluteReturnUrl, federatedLoginResponse.SessionId);
                 return federatedLoginResponse.RedirectUrl;
             }
@@ -56,8 +51,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl,
-            GrandIdBankIdAuthenticationOptions options, SwedishPersonalIdentityNumber swedishPersonalIdentityNumber)
+        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdAuthenticationOptions options, SwedishPersonalIdentityNumber swedishPersonalIdentityNumber)
         {
             bool? useChooseDevice;
             bool? useSameDevice;
@@ -93,11 +87,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            if (properties.Items.TryGetValue(
-                GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber,
-                out string swedishPersonalIdentityNumber))
+            if (properties.Items.TryGetValue( GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out string swedishPersonalIdentityNumber))
+            {
                 if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+                {
                     return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                }
+            }
 
             return null;
         }
@@ -119,16 +115,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         protected override IEnumerable<Claim> GetClaims(BankIdGetSessionResponse loginResult)
         {
-            SwedishPersonalIdentityNumber personalIdentityNumber =
-                SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
+            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
                 new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
-
                 new Claim(GrandIdClaimTypes.Name, loginResult.UserAttributes.Name),
                 new Claim(GrandIdClaimTypes.FamilyName, loginResult.UserAttributes.Surname),
                 new Claim(GrandIdClaimTypes.GivenName, loginResult.UserAttributes.GivenName),
-
                 new Claim(GrandIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.To10DigitString())
             };
 
@@ -136,7 +129,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             {
                 string jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
                 if (!string.IsNullOrEmpty(jwtGender))
+                {
                     claims.Add(new Claim(GrandIdClaimTypes.Gender, jwtGender));
+                }
             }
 
             if (Options.IssueBirthdateClaim)

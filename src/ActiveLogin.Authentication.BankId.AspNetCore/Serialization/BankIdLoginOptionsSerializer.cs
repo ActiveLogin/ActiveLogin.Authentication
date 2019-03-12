@@ -40,15 +40,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                 using (var reader = new BinaryReader(memory))
                 {
                     if (reader.ReadInt32() != FormatVersion)
+                    {
                         return null;
+                    }
 
-                    List<string> certificatePolicies = reader.ReadString()
+                    var certificatePolicies = reader.ReadString()
                         .Split(new[] { CertificatePoliciesSeparator }, StringSplitOptions.RemoveEmptyEntries)
                         .ToList();
+
                     string personalIdentityNumberString = reader.ReadString();
                     SwedishPersonalIdentityNumber personalIdentityNumber = string.IsNullOrEmpty(personalIdentityNumberString)
                             ? null
                             : SwedishPersonalIdentityNumber.Parse(personalIdentityNumberString);
+
                     bool allowChangingPersonalIdentityNumber = reader.ReadBoolean();
                     bool autoLaunch = reader.ReadBoolean();
                     bool allowBiometric = reader.ReadBoolean();

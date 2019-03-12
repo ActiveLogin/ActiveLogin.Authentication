@@ -2,8 +2,7 @@
 {
     public class BankIdSupportedDevice
     {
-        public BankIdSupportedDevice(bool isMobile, bool isDesktop, bool isIos, bool isAndroid, bool isWindowsPhone,
-            bool isWindowsDekstop, bool isMacOs)
+        public BankIdSupportedDevice(bool isMobile, bool isDesktop, bool isIos, bool isAndroid, bool isWindowsPhone, bool isWindowsDekstop, bool isMacOs)
         {
             IsMobile = isMobile;
             IsDesktop = isDesktop;

@@ -20,8 +20,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             set
             {
                 if (value < MinimumRefreshIntervalMs)
-                    throw new ArgumentException("BankID does not allow collecting status more than once a second.",
-                        nameof(value));
+                {
+                    throw new ArgumentException("BankID does not allow collecting status more than once a second.", nameof(value));
+                }
 
                 _refreshIntervalMs = value;
             }

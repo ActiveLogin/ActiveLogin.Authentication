@@ -66,8 +66,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         ///     The personal number of the user. 12 digits, century must be included (YYYYMMDDSSSC).
         ///     If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </param>
-        public SignRequest(string endUserIp, string userVisibleData, byte[] userNonVisibleData,
-            string personalIdentityNumber)
+        public SignRequest(string endUserIp, string userVisibleData, byte[] userNonVisibleData, string personalIdentityNumber)
             : this(endUserIp, userVisibleData, userNonVisibleData, personalIdentityNumber, null)
         {
         }
@@ -92,8 +91,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         ///     If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </param>
         /// <param name="requirement">Requirements on how the auth or sign order must be performed.</param>
-        public SignRequest(string endUserIp, string userVisibleData, byte[] userNonVisibleData,
-            string personalIdentityNumber, Requirement requirement)
+        public SignRequest(string endUserIp, string userVisibleData, byte[] userNonVisibleData, string personalIdentityNumber, Requirement requirement)
         {
             EndUserIp = endUserIp;
             UserVisibleData = ToBase64EncodedString(userVisibleData);
@@ -140,18 +138,16 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
 
         private static string ToBase64EncodedString(string value)
         {
-            if (value == null)
-                return null;
-
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+            return value == null 
+                ? null 
+                : Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
 
         private static string ToBase64EncodedString(byte[] value)
         {
-            if (value == null)
-                return null;
-
-            return Convert.ToBase64String(value);
+            return value == null 
+                ? null 
+                : Convert.ToBase64String(value);
         }
     }
 }

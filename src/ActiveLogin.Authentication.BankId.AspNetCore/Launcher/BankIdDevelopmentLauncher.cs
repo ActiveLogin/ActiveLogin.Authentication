@@ -6,10 +6,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
     {
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
-            if (device.IsIos)
-                return request.RedirectUrl;
-
-            return "#";
+            return device.IsIos 
+                ? request.RedirectUrl 
+                : "#";
         }
     }
 }

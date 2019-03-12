@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.Common.Serialization;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.BankId.Api.Models;
-using ActiveLogin.Authentication.Common.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Errors
 {
@@ -10,8 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
     {
         public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage)
         {
-            Error error = await TryGetErrorAsync(httpResponseMessage)
-                .ConfigureAwait(false);
+            Error error = await TryGetErrorAsync(httpResponseMessage).ConfigureAwait(false);
 
             try
             {
@@ -29,16 +28,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
         private static async Task<Error> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
         {
             if (!httpResponseMessage.IsSuccessStatusCode)
+            {
                 try
                 {
-                    string content = await httpResponseMessage.Content.ReadAsStringAsync()
-                        .ConfigureAwait(false);
+                    string content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return SystemRuntimeJsonSerializer.Deserialize<Error>(content);
                 }
                 catch (Exception)
                 {
                     // Intentionally left empty
                 }
+            }
 
             return null;
         }

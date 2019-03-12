@@ -41,17 +41,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             BankIdState state = GetStateFromCookie();
             if (state == null)
+            {
                 return Task.FromResult(HandleRequestResult.Fail("Invalid state cookie."));
+            }
 
             DeleteStateCookie();
 
             StringValues loginResultProtected = Request.Query["loginResult"];
             if (string.IsNullOrEmpty(loginResultProtected))
+            {
                 return Task.FromResult(HandleRequestResult.Fail("Missing login result."));
+            }
 
             BankIdLoginResult loginResult = _loginResultProtector.Unprotect(loginResultProtected);
             if (loginResult == null || !loginResult.IsSuccessful)
+            {
                 return Task.FromResult(HandleRequestResult.Fail("Invalid login result."));
+            }
 
             AuthenticationProperties properties = state.AuthenticationProperties;
             AuthenticationTicket ticket = GetAuthenticationTicket(loginResult, properties);
@@ -61,8 +67,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return Task.FromResult(HandleRequestResult.Success(ticket));
         }
 
-        private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult,
-            AuthenticationProperties properties)
+        private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -80,16 +85,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private IEnumerable<Claim> GetClaims(BankIdLoginResult loginResult, DateTimeOffset? expiresUtc)
         {
-            SwedishPersonalIdentityNumber personalIdentityNumber =
-                SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
+            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
                 new Claim(BankIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
-
                 new Claim(BankIdClaimTypes.Name, loginResult.Name),
                 new Claim(BankIdClaimTypes.FamilyName, loginResult.Surname),
                 new Claim(BankIdClaimTypes.GivenName, loginResult.GivenName),
-
                 new Claim(BankIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.To10DigitString())
             };
 
@@ -98,23 +100,30 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return claims;
         }
 
-        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber,
-            DateTimeOffset? expiresUtc)
+        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
         {
             if (expiresUtc.HasValue)
+            {
                 claims.Add(new Claim(BankIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
+            }
 
             if (Options.IssueAuthenticationMethodClaim)
+            {
                 claims.Add(new Claim(BankIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
+            }
 
             if (Options.IssueIdentityProviderClaim)
+            {
                 claims.Add(new Claim(BankIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
+            }
 
             if (Options.IssueGenderClaim)
             {
                 string jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
                 if (!string.IsNullOrEmpty(jwtGender))
+                {
                     claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
+                }
             }
 
             if (Options.IssueBirthdateClaim)
@@ -135,20 +144,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdAutoLaunch,
                 Options.BankIdAllowBiometric
             );
+
             string loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 
             return Task.CompletedTask;
         }
 
-        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(
-            AuthenticationProperties properties)
+        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber( AuthenticationProperties properties)
         {
-            if (properties.Items.TryGetValue(
-                BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber,
-                out string swedishPersonalIdentityNumber))
+            if (properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out string swedishPersonalIdentityNumber))
+            {
                 if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+                {
                     return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                }
+            }
 
             return null;
         }
@@ -173,7 +184,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             string protectedState = Request.Cookies[Options.StateCookie.Name];
             if (string.IsNullOrEmpty(protectedState))
+            {
                 return null;
+            }
 
             BankIdState state = Options.StateDataFormat.Unprotect(protectedState);
             return state;

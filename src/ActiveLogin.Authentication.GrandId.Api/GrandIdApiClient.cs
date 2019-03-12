@@ -24,7 +24,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
             _bankIdServiceKey = configuration.BankIdServiceKey;
 
             if (string.IsNullOrEmpty(configuration.ApiKey))
+            {
                 throw new InvalidOperationException($"A valid '{nameof(configuration.ApiKey)}' must be provided.'");
+            }
         }
 
         /// <summary>
@@ -41,6 +43,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
                 { "apiKey", _apiKey },
                 { "authenticateServiceKey", _bankIdServiceKey }
             };
+
             string url = GetUrl("FederatedLogin", queryStringParams);
             var postData = new Dictionary<string, string>
             {
@@ -98,10 +101,11 @@ namespace ActiveLogin.Authentication.GrandId.Api
         private static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
         {
             if (!queryStringParams.Any())
+            {
                 return baseUrl;
+            }
 
-            string queryString = string.Join("&",
-                queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+            string queryString = string.Join("&", queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
             return $"{baseUrl}?{queryString}";
         }
 
@@ -110,47 +114,55 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             TResult fullResponse = await _httpClient.GetAsync<TResult>(url);
             if (fullResponse.ErrorObject != null)
+            {
                 throw new GrandIdApiException(fullResponse.ErrorObject);
+            }
 
             return fullResponse;
         }
 
-        private async Task<TResult> PostFullResponseAndEnsureSuccess<TResult>(string url, Dictionary<string, string> postData) 
+        private async Task<TResult> PostFullResponseAndEnsureSuccess<TResult>(string url, Dictionary<string, string> postData)
             where TResult : FullResponseBase
         {
-            Dictionary<string, string> postDataWithoutNullValues = postData
+            var postDataWithoutNullValues = postData
                 .Where(pair => pair.Value != null)
                 .ToDictionary(x => x.Key, x => x.Value);
 
             TResult fullResponse = await _httpClient.PostAsync<TResult>(url, postDataWithoutNullValues);
 
             if (fullResponse.ErrorObject != null)
+            {
                 throw new GrandIdApiException(fullResponse.ErrorObject);
+            }
 
             return fullResponse;
         }
 
         private static string GetBase64EncodedString(string value)
         {
-            return value == null 
-                ? null 
+            return value == null
+                ? null
                 : Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
 
         private static string GetBoolString(bool? value)
         {
             if (value == null)
+            {
                 return null;
+            }
 
-            return value.Value 
-                ? bool.TrueString.ToLower() 
+            return value.Value
+                ? bool.TrueString.ToLower()
                 : bool.FalseString.ToLower();
         }
 
         private void EnsureValidBankIdServiceKey()
         {
             if (string.IsNullOrEmpty(_bankIdServiceKey))
+            {
                 throw new InvalidOperationException("A valid 'bankIdServiceKey' must be provided.'");
+            }
         }
     }
 }

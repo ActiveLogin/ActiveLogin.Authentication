@@ -19,8 +19,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(ErrorCode.RequestTimeout, MessageShortName.RFA5)]
         [InlineData(ErrorCode.Maintenance, MessageShortName.RFA5)]
         [InlineData(ErrorCode.InternalError, MessageShortName.RFA5)]
-        public void GetMessageShortNameForErrorResponse_ShouldReturnShortMessage_When_Known(ErrorCode errorCode,
-            MessageShortName expected)
+        public void GetMessageShortNameForErrorResponse_ShouldReturnShortMessage_When_Known(ErrorCode errorCode, MessageShortName expected)
         {
             MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForErrorResponse(errorCode);
 

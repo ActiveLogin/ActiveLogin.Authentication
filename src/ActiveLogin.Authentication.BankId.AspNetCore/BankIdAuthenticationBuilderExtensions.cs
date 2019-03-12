@@ -28,13 +28,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddTransient<IBankIdResultStore, BankIdResultTraceLoggerStore>();
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
-            services.AddLocalization(options => { options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath; });
+            services.AddLocalization(options => options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath);
 
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseClientCertificate(this IBankIdAuthenticationBuilder builder,
-            Func<X509Certificate2> configureClientCertificate)
+        public static IBankIdAuthenticationBuilder UseClientCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureClientCertificate)
         {
             builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
@@ -46,8 +45,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder,
-            Func<X509Certificate2> configureRootCaCertificate)
+        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
         {
             builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
@@ -59,8 +57,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder,
-            string certificateFilePath)
+        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, string certificateFilePath)
         {
             builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
 

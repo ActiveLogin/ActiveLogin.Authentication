@@ -27,8 +27,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392"));
 
             // Assert
-            await Assert.ThrowsAsync<BankIdApiException>(() =>
-                _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "201801012392")));
+            await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "201801012392")));
         }
 
         [Fact]
@@ -48,8 +47,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             CollectResponse secondCollectResponse;
             do
             {
-                secondCollectResponse =
-                    await _bankIdClient.CollectAsync(new CollectRequest(secondAuthResponse.OrderRef));
+                secondCollectResponse = await _bankIdClient.CollectAsync(new CollectRequest(secondAuthResponse.OrderRef));
             } while (secondCollectResponse.GetCollectStatus() != CollectStatus.Complete);
 
             // Assert
@@ -61,8 +59,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Arange
             var statuses = new List<BankIdSimulatedApiClient.CollectState>
             {
-                new BankIdSimulatedApiClient.CollectState(CollectStatus.Pending,
-                    CollectHintCode.OutstandingTransaction),
+                new BankIdSimulatedApiClient.CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
                 new BankIdSimulatedApiClient.CollectState(CollectStatus.Pending, CollectHintCode.Started),
                 new BankIdSimulatedApiClient.CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
             };
@@ -106,8 +103,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async Task
-            CollectAsync_WithSpecifiedEndUserIp_AndPin_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
+        public async Task CollectAsync_WithSpecifiedEndUserIp_AndPin_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
         {
             // Arange
             var bankIdClient = new BankIdSimulatedApiClient("x", "x", "x", "x")

@@ -30,51 +30,53 @@ namespace Standalone.MvcSample
                 .AddCookie()
                 .AddBankId(builder =>
                 {
-                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme,
-                            "BankID (SameDevice)", options => { })
-                        .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme,
-                            "BankID (OtherDevice)", options => { });
+                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
+                        .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
+                    {
                         builder.UseSimulatedEnvironment();
+                    }
                     else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
+                    {
                         builder.UseTestEnvironment()
-                            .UseClientCertificate(() => new X509Certificate2(Path.Combine(_environment.ContentRootPath,
-                                Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate"))))
-                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath,
-                                Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                            .UseClientCertificate(() => new X509Certificate2(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:ClientCertificate"))))
+                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                    }
                     else
+                    {
                         builder.UseProductionEnvironment()
-                            .UseClientCertificateFromAzureKeyVault(
-                                Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath,
-                                Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                    }
                 })
                 .AddGrandId(builder =>
                 {
-                    builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme,
-                            "GrandID (SameDevice)", options => { })
-                        .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme,
-                            "GrandID (OtherDevice)", options => { })
-                        .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme,
-                            "GrandID (ChooseDevice)", options => { });
+                    builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
+                        .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
+                        .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseSimulatedEnvironment", false))
+                    {
                         builder.UseSimulatedEnvironment();
+                    }
                     else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
+                    {
                         builder.UseTestEnvironment(ConfigureEnvironment);
+                    }
                     else
+                    {
                         builder.UseProductionEnvironment(ConfigureEnvironment);
+                    }
 
                     void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
                     {
                         config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                        config.BankIdServiceKey =
-                            Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+                        config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
                     }
                 });
 
-            services.AddMvc(config => { config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); })
+            services.AddMvc(config => config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

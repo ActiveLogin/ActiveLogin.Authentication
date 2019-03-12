@@ -2,10 +2,16 @@
 {
     public class BankIdFederatedLoginRequest
     {
-        public BankIdFederatedLoginRequest(string callbackUrl = null, bool? useChooseDevice = null,
-            bool? useSameDevice = null, bool? askForPersonalIdentityNumber = null, string personalIdentityNumber = null,
-            bool? requireMobileBankId = null, string customerUrl = null, bool? showGui = null,
-            string signUserVisibleData = null, string signUserNonVisibleData = null)
+        public BankIdFederatedLoginRequest(string callbackUrl = null,
+            bool? useChooseDevice = null,
+            bool? useSameDevice = null,
+            bool? askForPersonalIdentityNumber = null,
+            string personalIdentityNumber = null,
+            bool? requireMobileBankId = null,
+            string customerUrl = null,
+            bool? showGui = null,
+            string signUserVisibleData = null,
+            string signUserNonVisibleData = null)
         {
             CallbackUrl = callbackUrl;
             UseChooseDevice = useChooseDevice;

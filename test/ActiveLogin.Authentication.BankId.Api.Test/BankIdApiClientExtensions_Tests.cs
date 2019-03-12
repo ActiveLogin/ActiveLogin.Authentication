@@ -40,8 +40,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1");
 
             // Assert
-            AuthRequest request =
-                bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
+            AuthRequest request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
             Assert.Equal("1.1.1.1", request.EndUserIp);
             Assert.Null(request.PersonalIdentityNumber);
         }
@@ -58,8 +57,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             await BankIdApiClientExtensions.CancelAsync(bankIdApiClientMock.Object, "or");
 
             // Assert
-            CancelRequest request =
-                bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CancelRequest>();
+            CancelRequest request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CancelRequest>();
             Assert.Equal("or", request.OrderRef);
         }
 
@@ -75,8 +73,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             await BankIdApiClientExtensions.CollectAsync(bankIdApiClientMock.Object, "or");
 
             // Assert
-            CollectRequest request =
-                bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CollectRequest>();
+            CollectRequest request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CollectRequest>();
             Assert.Equal("or", request.OrderRef);
         }
 
@@ -89,12 +86,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
                 .ReturnsAsync(It.IsAny<SignResponse>());
 
             // Act
-            await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", null,
-                "201801012392");
+            await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", null, "201801012392");
 
             // Assert
-            SignRequest request =
-                bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
+            SignRequest request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
             Assert.Equal("1.1.1.1", request.EndUserIp);
             Assert.Equal("201801012392", request.PersonalIdentityNumber);
         }
@@ -111,8 +106,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData");
 
             // Assert
-            SignRequest request =
-                bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
+            SignRequest request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
             Assert.Equal("1.1.1.1", request.EndUserIp);
             Assert.Null(request.PersonalIdentityNumber);
         }

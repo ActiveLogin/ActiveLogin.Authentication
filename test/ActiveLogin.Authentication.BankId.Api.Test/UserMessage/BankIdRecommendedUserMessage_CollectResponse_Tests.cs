@@ -19,16 +19,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.Started, MessageShortName.RFA15A)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void
-            GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_BankID_AutomaticallyStartBankIDAPP(
-                CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_BankID_AutomaticallyStartBankIDAPP(CollectHintCode collectHintCode, MessageShortName expected)
         {
-            var collectStatus = CollectStatus.Pending;
+            CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = false;
             bool accessedFromMobileDevice = false;
 
-            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(collectStatus,
-                collectHintCode, authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(
+                collectStatus,
+                collectHintCode,
+                authPersonalIdentityNumberProvided,
+                accessedFromMobileDevice);
 
             Assert.Equal(expected, result);
         }
@@ -39,16 +40,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.Started, MessageShortName.RFA14A)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void
-            GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_BankID_ManuallyStartBankIDApp(
-                CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_BankID_ManuallyStartBankIDApp( CollectHintCode collectHintCode, MessageShortName expected)
         {
-            var collectStatus = CollectStatus.Pending;
+            CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = true;
             bool accessedFromMobileDevice = false;
 
-            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(collectStatus,
-                collectHintCode, authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(
+                collectStatus,
+                collectHintCode,
+                authPersonalIdentityNumberProvided,
+                accessedFromMobileDevice);
 
             Assert.Equal(expected, result);
         }
@@ -59,16 +61,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.Started, MessageShortName.RFA15B)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void
-            GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_MobileBankID_AutomaticallyStartBankIDAPP(
-                CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_MobileBankID_AutomaticallyStartBankIDAPP( CollectHintCode collectHintCode, MessageShortName expected)
         {
-            var collectStatus = CollectStatus.Pending;
+            CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = false;
             bool accessedFromMobileDevice = true;
 
-            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(collectStatus,
-                collectHintCode, authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(
+                collectStatus,
+                collectHintCode,
+                authPersonalIdentityNumberProvided,
+                accessedFromMobileDevice);
 
             Assert.Equal(expected, result);
         }
@@ -79,16 +82,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.Started, MessageShortName.RFA14B)]
         [InlineData(CollectHintCode.UserSign, MessageShortName.RFA9)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void
-            GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_MobileBankID_ManuallyStartBankIDApp(
-                CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_PendingOrder_MobileBankID_ManuallyStartBankIDApp(CollectHintCode collectHintCode, MessageShortName expected)
         {
-            var collectStatus = CollectStatus.Pending;
+            CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = true;
             bool accessedFromMobileDevice = true;
 
-            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(collectStatus,
-                collectHintCode, authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(
+                collectStatus,
+                collectHintCode,
+                authPersonalIdentityNumberProvided,
+                accessedFromMobileDevice);
 
             Assert.Equal(expected, result);
         }
@@ -100,15 +104,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.CertificateErr, MessageShortName.RFA16)]
         [InlineData(CollectHintCode.StartFailed, MessageShortName.RFA17)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
-        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_FailedOrder(
-            CollectHintCode collectHintCode, MessageShortName expected)
+        public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_FailedOrder( CollectHintCode collectHintCode, MessageShortName expected)
         {
-            var collectStatus = CollectStatus.Pending;
+            CollectStatus collectStatus = CollectStatus.Pending;
             bool authPersonalIdentityNumberProvided = true;
             bool accessedFromMobileDevice = false;
 
-            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(collectStatus,
-                collectHintCode, authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(
+                collectStatus,
+                collectHintCode,
+                authPersonalIdentityNumberProvided,
+                accessedFromMobileDevice);
 
             Assert.Equal(expected, result);
         }
@@ -120,7 +126,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
             bool accessedFromMobileDevice = false;
 
             MessageShortName result = _bankIdRecommendedUserMessage.GetMessageShortNameForCollectResponse(
-                CollectStatus.Unknown, CollectHintCode.Unknown, authPersonalIdentityNumberProvided,
+                CollectStatus.Unknown,
+                CollectHintCode.Unknown,
+                authPersonalIdentityNumberProvided,
                 accessedFromMobileDevice);
 
             Assert.Equal(MessageShortName.RFA22, result);

@@ -14,8 +14,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
 {
     public class GrandId_Authentication_Tests
     {
-        private TestServer CreateServer(Action<IGrandIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath,
-            Action<IServiceCollection> configureServices = null)
+        private TestServer CreateServer(Action<IGrandIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath, Action<IServiceCollection> configureServices = null)
         {
             IWebHostBuilder webHostBuilder = new WebHostBuilder()
                 .Configure(app =>

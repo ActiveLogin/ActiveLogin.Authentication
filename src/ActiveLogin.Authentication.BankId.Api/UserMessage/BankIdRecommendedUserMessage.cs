@@ -11,20 +11,14 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             new CollectResponseMapping(MessageShortName.RFA1, CollectStatus.Pending, CollectHintCode.NoClient, true),
             new CollectResponseMapping(MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.NoClient, false),
 
-            new CollectResponseMapping(MessageShortName.RFA1, new[] { CollectStatus.Pending },
-                new[] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, true),
-            new CollectResponseMapping(MessageShortName.RFA13, new[] { CollectStatus.Pending },
-                new[] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, false),
+            new CollectResponseMapping(MessageShortName.RFA1, new[] { CollectStatus.Pending }, new[] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, true),
+            new CollectResponseMapping(MessageShortName.RFA13, new[] { CollectStatus.Pending }, new[] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, false),
 
             new CollectResponseMapping(MessageShortName.RFA9, CollectStatus.Pending, CollectHintCode.UserSign),
-            new CollectResponseMapping(MessageShortName.RFA14A, CollectStatus.Pending, CollectHintCode.Started, true,
-                false),
-            new CollectResponseMapping(MessageShortName.RFA14B, CollectStatus.Pending, CollectHintCode.Started, true,
-                true),
-            new CollectResponseMapping(MessageShortName.RFA15A, CollectStatus.Pending, CollectHintCode.Started, false,
-                false),
-            new CollectResponseMapping(MessageShortName.RFA15B, CollectStatus.Pending, CollectHintCode.Started, false,
-                true),
+            new CollectResponseMapping(MessageShortName.RFA14A, CollectStatus.Pending, CollectHintCode.Started, true, false),
+            new CollectResponseMapping(MessageShortName.RFA14B, CollectStatus.Pending, CollectHintCode.Started, true, true),
+            new CollectResponseMapping(MessageShortName.RFA15A, CollectStatus.Pending, CollectHintCode.Started, false, false),
+            new CollectResponseMapping(MessageShortName.RFA15B, CollectStatus.Pending, CollectHintCode.Started, false, true),
 
 
             new CollectResponseMapping(MessageShortName.RFA3, CollectHintCode.Cancelled),
@@ -41,8 +35,7 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
         {
             new ErrorResponseMapping(MessageShortName.RFA3, ErrorCode.Canceled),
             new ErrorResponseMapping(MessageShortName.RFA4, ErrorCode.AlreadyInProgress),
-            new ErrorResponseMapping(MessageShortName.RFA5, ErrorCode.RequestTimeout, ErrorCode.Maintenance,
-                ErrorCode.InternalError)
+            new ErrorResponseMapping(MessageShortName.RFA5, ErrorCode.RequestTimeout, ErrorCode.Maintenance, ErrorCode.InternalError)
         };
 
         public MessageShortName GetMessageShortNameForCollectResponse(CollectStatus collectStatus,
@@ -51,10 +44,8 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             CollectResponseMapping mapping = CollectResponseMappings
                 .Where(x => !x.CollectStatuses.Any() || x.CollectStatuses.Contains(collectStatus))
                 .Where(x => !x.CollectHintCodes.Any() || x.CollectHintCodes.Contains(hintCode))
-                .Where(x => x.AuthPersonalIdentityNumberProvided == null ||
-                            x.AuthPersonalIdentityNumberProvided == authPersonalIdentityNumberProvided)
-                .Where(x => x.AccessedFromMobileDevice == null ||
-                            x.AccessedFromMobileDevice == accessedFromMobileDevice)
+                .Where(x => x.AuthPersonalIdentityNumberProvided == null || x.AuthPersonalIdentityNumberProvided == authPersonalIdentityNumberProvided)
+                .Where(x => x.AccessedFromMobileDevice == null || x.AccessedFromMobileDevice == accessedFromMobileDevice)
                 .FirstOrDefault(x => x.MessageShortName != MessageShortName.Unknown);
 
             return mapping?.MessageShortName ?? MessageShortName.RFA22;
@@ -71,31 +62,28 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
 
         private class CollectResponseMapping
         {
-            public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus,
-                CollectHintCode collectHintCode, bool? authPersonalIdentityNumberProvided = null,
-                bool? accessedFromMobileDevice = null)
-                : this(messageShortName, new List<CollectStatus>
-                    { collectStatus }, new List<CollectHintCode>
-                    { collectHintCode }, authPersonalIdentityNumberProvided, accessedFromMobileDevice)
-            {
-            }
-
             public CollectResponseMapping(MessageShortName messageShortName, params CollectHintCode[] collectHintCodes)
                 : this(messageShortName, new List<CollectStatus>(), collectHintCodes.ToList())
             {
             }
 
-            public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus,
-                params CollectHintCode[] collectHintCodes)
-                : this(messageShortName, new List<CollectStatus>
-                    { collectStatus }, collectHintCodes.ToList())
+            public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, CollectHintCode collectHintCode, bool? authPersonalIdentityNumberProvided = null, bool? accessedFromMobileDevice = null)
+                : this(messageShortName, new List<CollectStatus> { collectStatus }, new List<CollectHintCode> { collectHintCode }, authPersonalIdentityNumberProvided, accessedFromMobileDevice)
             {
             }
 
-            public CollectResponseMapping(MessageShortName messageShortName, IEnumerable<CollectStatus> collectStatuses,
-                IEnumerable<CollectHintCode> collectHintCodes, bool? authPersonalIdentityNumberProvided = null,
-                bool? accessedFromMobileDevice = null)
+            public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, params CollectHintCode[] collectHintCodes)
+                : this(messageShortName, new List<CollectStatus> { collectStatus }, collectHintCodes.ToList())
             {
+            }
+
+            public CollectResponseMapping(
+                MessageShortName messageShortName,
+                IEnumerable<CollectStatus> collectStatuses,
+                IEnumerable<CollectHintCode> collectHintCodes,
+                bool? authPersonalIdentityNumberProvided = null,
+                bool? accessedFromMobileDevice = null
+            ){
                 MessageShortName = messageShortName;
                 CollectStatuses.AddRange(collectStatuses);
                 CollectHintCodes.AddRange(collectHintCodes);

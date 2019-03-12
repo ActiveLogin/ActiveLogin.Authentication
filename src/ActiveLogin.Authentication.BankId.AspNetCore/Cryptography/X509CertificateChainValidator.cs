@@ -14,8 +14,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Cryptography
             _certificateAuthority = certificateAuthority;
         }
 
-        public bool Validate(HttpRequestMessage httpRequestMessage, X509Certificate2 certificate, X509Chain chain,
-            SslPolicyErrors sslPolicyErrors)
+        public bool Validate(HttpRequestMessage httpRequestMessage, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             return IsValidChain(_certificateAuthority, certificate);
         }

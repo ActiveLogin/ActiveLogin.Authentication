@@ -13,41 +13,42 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static void BankIdAuthenticationTicketCreated(this ILogger logger, string personalIdentityNumber)
         {
-            logger.LogInformation(BankIdLoggingEvents.BankIdAuthenticationTicketCreated,
+            logger.LogInformation(BankIdLoggingEvents.BankIdAuthenticationTicketCreated, 
                 "BankID authentication ticket created");
-            logger.LogTrace(BankIdLoggingEvents.BankIdAuthenticationTicketCreated,
+
+            logger.LogTrace(BankIdLoggingEvents.BankIdAuthenticationTicketCreated, 
                 "BankID authentication ticket created for PersonalIdentityNumber '{PersonalIdentityNumber}'",
                 personalIdentityNumber ?? MissingPersonalIdentityNumber);
         }
 
         // BankID API - Auth
 
-        public static void BankIdAuthFailure(this ILogger logger, SwedishPersonalIdentityNumber personalIdentityNumber,
-            BankIdApiException bankIdApiException)
+        public static void BankIdAuthFailure(this ILogger logger, SwedishPersonalIdentityNumber personalIdentityNumber, BankIdApiException bankIdApiException)
         {
-            logger.LogError(bankIdApiException,
+            logger.LogError(bankIdApiException, 
                 "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'",
                 bankIdApiException.ErrorCode, bankIdApiException.ErrorDetails);
-            logger.LogTrace(BankIdLoggingEvents.BankIdAuthHardFailure,
+
+            logger.LogTrace(BankIdLoggingEvents.BankIdAuthHardFailure, 
                 "BankID auth failed for PersonalIdentityNumber '{PersonalIdentityNumber}' with the error '{ErrorCode}' and the details '{ErrorDetails}'",
                 personalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber,
                 bankIdApiException.ErrorCode, bankIdApiException.ErrorDetails);
         }
 
-        public static void BankIdAuthSuccess(this ILogger logger, SwedishPersonalIdentityNumber personalIdentityNumber,
-            string orderRef)
+        public static void BankIdAuthSuccess(this ILogger logger, SwedishPersonalIdentityNumber personalIdentityNumber, string orderRef)
         {
-            logger.LogInformation(BankIdLoggingEvents.BankIdAuthSuccess,
-                "BankID auth succedded with the OrderRef '{OrderRef}'", orderRef);
-            logger.LogTrace(BankIdLoggingEvents.BankIdAuthSuccess,
-                "BankID auth succedded for PersonalIdentityNumber '{PersonalIdentityNumber}' with the OrderRef '{OrderRef}'",
-                personalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, orderRef);
+            logger.LogInformation(BankIdLoggingEvents.BankIdAuthSuccess, 
+                "BankID auth succedded with the OrderRef '{OrderRef}'", 
+                orderRef);
+
+            logger.LogTrace(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth succedded for PersonalIdentityNumber '{PersonalIdentityNumber}' with the OrderRef '{OrderRef}'",
+                personalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, 
+                orderRef);
         }
 
         // BankID API - Collect
 
-        public static void BankIdCollectFailure(this ILogger logger, string orderRef,
-            BankIdApiException bankIdApiException)
+        public static void BankIdCollectFailure(this ILogger logger, string orderRef, BankIdApiException bankIdApiException)
         {
             logger.LogError(bankIdApiException,
                 "BankID collect failed for OrderRef '{OrderRef}' with the error '{ErrorCode}' and the details '{ErrorDetails}'",
@@ -72,6 +73,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             logger.LogInformation(BankIdLoggingEvents.BankIdCollectCompleted,
                 "BankID collect is completed for OrderRef '{OrderRef}'", orderRef);
+
             logger.LogTrace(BankIdLoggingEvents.BankIdCollectCompleted,
                 "BankID collect is completed for OrderRef '{OrderRef}' with User (PersonalIdentityNumber: '{UserPersonalIdentityNumber}'; GivenName: '{UserGivenName}'; Surname: '{UserSurname}'; Name: '{UserName}'), Signature '{Signature}' and OcspResponse '{OcspResponse}'",
                 orderRef, completionData.User.PersonalIdentityNumber, completionData.User.GivenName,

@@ -41,7 +41,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                         o.UseSimulatedEnvironment()
                             .AddSameDevice();
                     },
-                    async context => { await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme); })
+                    async context => await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme))
                 .CreateClient();
 
             // Act
@@ -79,8 +79,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 .CreateClient();
 
             // Act
-            HttpResponseMessage transaction =
-                await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            HttpResponseMessage transaction = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
@@ -95,13 +94,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                         o.UseSimulatedEnvironment()
                             .AddSameDevice();
                     },
-                    async context => { await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme); },
-                    services => { services.AddTransient(s => _bankIdLoginOptionsProtector.Object); })
+                    async context => await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme),
+                    services => services.AddTransient(s => _bankIdLoginOptionsProtector.Object))
                 .CreateClient();
 
             // Act
-            HttpResponseMessage transaction =
-                await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            HttpResponseMessage transaction = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
@@ -110,12 +108,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
 
-        private TestServer CreateServer(Action<IBankIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath,
-            Action<IServiceCollection> configureServices = null)
+        private TestServer CreateServer(Action<IBankIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath, Action<IServiceCollection> configureServices = null)
         {
             IWebHostBuilder webHostBuilder = new WebHostBuilder()
-                .UseSolutionRelativeContentRoot(Path.Combine("test",
-                    "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
+                .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
                 .Configure(app =>
                 {
                     app.UseAuthentication();

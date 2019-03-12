@@ -20,7 +20,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         private string GetPrefixPart(BankIdSupportedDevice device)
         {
             return device.IsIos
-                ? "https://app.bankid.com/" 
+                ? "https://app.bankid.com/"
                 : "bankid:///";
         }
 
@@ -29,10 +29,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
             var queryStringParams = new Dictionary<string, string>();
 
             if (!string.IsNullOrWhiteSpace(request.AutoStartToken))
+            {
                 queryStringParams.Add("autostarttoken", request.AutoStartToken);
+            }
 
             if (!string.IsNullOrWhiteSpace(request.RelyingPartyReference))
+            {
                 queryStringParams.Add("rpref", Base64Encode(request.RelyingPartyReference));
+            }
 
             queryStringParams.Add("redirect", GetRedirectUrl(device, request));
 

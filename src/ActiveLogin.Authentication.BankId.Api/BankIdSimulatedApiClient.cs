@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ActiveLogin.Authentication.BankId.Api.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
@@ -25,8 +25,8 @@ namespace ActiveLogin.Authentication.BankId.Api
             new CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
         };
 
-        private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
         private readonly List<CollectState> _collectStates;
+        private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
 
         private readonly string _givenName;
         private readonly string _name;
@@ -83,22 +83,19 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            OrderResponse response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
-                .ConfigureAwait(false);
+            OrderResponse response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
             return new AuthResponse(response.OrderRef, response.AutoStartToken);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
         {
-            OrderResponse response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp)
-                .ConfigureAwait(false);
+            OrderResponse response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
             return new SignResponse(response.OrderRef, response.AutoStartToken);
         }
 
         public async Task<CollectResponse> CollectAsync(CollectRequest request)
         {
-            await SimulateResponseDelay()
-                .ConfigureAwait(false);
+            await SimulateResponseDelay().ConfigureAwait(false);
 
             if (!_auths.ContainsKey(request.OrderRef))
                 throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found.");
@@ -113,7 +110,9 @@ namespace ActiveLogin.Authentication.BankId.Api
             if (status == CollectStatus.Complete)
             {
                 if (_auths.ContainsKey(request.OrderRef))
+                {
                     _auths.Remove(request.OrderRef);
+                }
             }
             else
             {
@@ -125,19 +124,19 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<CancelResponse> CancelAsync(CancelRequest request)
         {
-            await SimulateResponseDelay()
-                .ConfigureAwait(false);
+            await SimulateResponseDelay().ConfigureAwait(false);
 
             if (_auths.ContainsKey(request.OrderRef))
+            {
                 _auths.Remove(request.OrderRef);
+            }
 
             return new CancelResponse();
         }
 
         private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
         {
-            await SimulateResponseDelay()
-                .ConfigureAwait(false);
+            await SimulateResponseDelay().ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(personalIdentityNumber))
                 personalIdentityNumber = _personalIdentityNumber;
@@ -145,8 +144,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             await EnsureNoExistingAuth(personalIdentityNumber)
                 .ConfigureAwait(false);
 
-            string orderRef = Guid.NewGuid()
-                .ToString();
+            string orderRef = Guid.NewGuid().ToString();
             var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
@@ -161,9 +159,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
             if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
             {
-                string existingAuthOrderRef =
-                    _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber)
-                        .Key;
+                string existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
                 await CancelAsync(new CancelRequest(existingAuthOrderRef))
                     .ConfigureAwait(false);
 
@@ -200,15 +196,13 @@ namespace ActiveLogin.Authentication.BankId.Api
         private CollectStatus GetStatus(int collectCalls)
         {
             int index = GetStatusesToReturnIndex(collectCalls);
-            return _collectStates[index]
-                .Status;
+            return _collectStates[index].Status;
         }
 
         private CollectHintCode GetHintCode(int collectCalls)
         {
             int index = GetStatusesToReturnIndex(collectCalls);
-            return _collectStates[index]
-                .HintCode;
+            return _collectStates[index].HintCode;
         }
 
         private int GetStatusesToReturnIndex(int collectCalls)
@@ -218,8 +212,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private async Task SimulateResponseDelay()
         {
-            await Task.Delay(Delay)
-                .ConfigureAwait(false);
+            await Task.Delay(Delay).ConfigureAwait(false);
         }
 
         private class Auth

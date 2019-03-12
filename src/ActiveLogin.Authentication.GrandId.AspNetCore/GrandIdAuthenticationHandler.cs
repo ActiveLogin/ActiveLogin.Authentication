@@ -13,16 +13,14 @@ using Microsoft.Extensions.Primitives;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public abstract class
-        GrandIdAuthenticationHandler<TOptions, TGetSessionResponse> : RemoteAuthenticationHandler<TOptions>
+    public abstract class GrandIdAuthenticationHandler<TOptions, TGetSessionResponse> : RemoteAuthenticationHandler<TOptions>
         where TOptions : GrandIdAuthenticationOptions, new()
     {
         protected GrandIdAuthenticationHandler(
             IOptionsMonitor<TOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
-            ISystemClock clock
-        )
+            ISystemClock clock)
             : base(options, loggerFactory, encoder, clock)
         {
         }
@@ -31,13 +29,17 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             GrandIdState state = GetStateFromCookie();
             if (state == null)
+            {
                 return HandleRequestResult.Fail("Invalid state cookie.");
+            }
 
             DeleteStateCookie();
 
             StringValues sessionId = Request.Query["grandidsession"];
             if (string.IsNullOrEmpty(sessionId))
+            {
                 return HandleRequestResult.Fail("Missing grandidsession from GrandID.");
+            }
 
             try
             {
@@ -56,8 +58,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         protected abstract Task<TGetSessionResponse> GetSessionResponseAsync(string sessionId);
 
-        private AuthenticationTicket GetAuthenticationTicket(TGetSessionResponse loginResult,
-            AuthenticationProperties properties)
+        private AuthenticationTicket GetAuthenticationTicket(TGetSessionResponse loginResult, AuthenticationProperties properties)
         {
             DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
@@ -88,13 +89,19 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             var claims = new List<Claim>();
 
             if (expiresUtc.HasValue)
+            {
                 claims.Add(new Claim(GrandIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
+            }
 
             if (Options.IssueAuthenticationMethodClaim)
+            {
                 claims.Add(new Claim(GrandIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
+            }
 
             if (Options.IssueIdentityProviderClaim)
+            {
                 claims.Add(new Claim(GrandIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
+            }
 
             return claims;
         }
@@ -111,13 +118,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             Response.Redirect(redirectUrl);
         }
 
-        protected abstract Task<string> GetRedirectUrlAsync(AuthenticationProperties properties,
-            string absoluteReturnUrl);
+        protected abstract Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl);
 
         private string GetAbsoluteUrl(string returnUrl)
         {
-            string absoluteUri =
-                $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
+            string absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
             return absoluteUri + returnUrl;
         }
 
@@ -134,7 +139,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             string protectedState = Request.Cookies[Options.StateCookie.Name];
             if (string.IsNullOrEmpty(protectedState))
+            {
                 return null;
+            }
 
             GrandIdState state = Options.StateDataFormat.Unprotect(protectedState);
             return state;

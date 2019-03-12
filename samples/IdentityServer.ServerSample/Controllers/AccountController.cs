@@ -60,14 +60,15 @@ namespace IdentityServer.ServerSample.Controllers
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();
             if (result?.Succeeded != true)
+            {
                 throw new Exception("External authentication error");
+            }
 
             string returnUrl = result.Properties.Items["returnUrl"];
 
-            if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
-                return Redirect(returnUrl);
-
-            return Redirect("~/");
+            return _interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl) 
+                ? Redirect(returnUrl) 
+                : Redirect("~/");
         }
 
         [HttpGet]

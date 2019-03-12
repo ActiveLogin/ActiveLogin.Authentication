@@ -11,9 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     public class BankIdAuthenticationBuilder : IBankIdAuthenticationBuilder
     {
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
-
-        private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators =
-            new List<Action<HttpClientHandler>>();
+        private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators = new List<Action<HttpClientHandler>>();
 
         public BankIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder)
         {
@@ -37,10 +35,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public void EnableHttpClient()
         {
-            AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
-                {
-                    _httpClientConfigurators.ForEach(configurator => configurator(httpClient));
-                })
+            AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient => _httpClientConfigurators.ForEach(configurator => configurator(httpClient)))
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
                     var httpClientHandler = new HttpClientHandler();

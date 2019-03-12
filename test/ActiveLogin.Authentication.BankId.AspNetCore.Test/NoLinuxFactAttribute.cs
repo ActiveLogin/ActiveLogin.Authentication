@@ -8,7 +8,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public NoLinuxFactAttribute(string linuxSkipReason)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
                 Skip = linuxSkipReason;
+            }
         }
     }
 }

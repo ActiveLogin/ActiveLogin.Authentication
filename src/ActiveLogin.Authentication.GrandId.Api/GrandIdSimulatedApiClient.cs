@@ -42,7 +42,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
         public TimeSpan Delay
         {
             get => _delay;
-            set => _delay = value < TimeSpan.Zero ? TimeSpan.Zero : value;
+            set => _delay = value < TimeSpan.Zero 
+                ? TimeSpan.Zero 
+                : value;
         }
 
         public async Task<BankIdFederatedLoginResponse> BankIdFederatedLoginAsync(BankIdFederatedLoginRequest request)
@@ -52,11 +54,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
             string personalIdentityNumber = !string.IsNullOrEmpty(request.PersonalIdentityNumber)
                 ? request.PersonalIdentityNumber
                 : _personalIdentityNumber;
+
             await EnsureNoExistingLogin(personalIdentityNumber).ConfigureAwait(false);
 
             string sessionId = Guid.NewGuid()
                 .ToString()
                 .Replace("-", string.Empty);
+
             var response = new BankIdFederatedLoginResponse(sessionId, $"{request.CallbackUrl}?grandidsession={sessionId}");
             var extendedResponse = new ExtendedFederatedLoginResponse(response, personalIdentityNumber);
             _bankidFederatedLogins.Add(sessionId, extendedResponse);
@@ -69,19 +73,20 @@ namespace ActiveLogin.Authentication.GrandId.Api
             await SimulateResponseDelay().ConfigureAwait(false);
 
             if (!_bankidFederatedLogins.ContainsKey(request.SessionId))
+            {
                 throw new GrandIdApiException(ErrorCode.Unknown, "SessionId not found.");
+            }
 
             ExtendedFederatedLoginResponse auth = _bankidFederatedLogins[request.SessionId];
             _bankidFederatedLogins.Remove(request.SessionId);
 
             string personalIdentityNumber = auth.PersonalIdentityNumber;
             BankIdGetSessionUserAttributes userAttributes = GetUserAttributes(personalIdentityNumber);
-            var response = new BankIdGetSessionResponse(auth.BankIdFederatedLoginResponse.SessionId,
+
+            return new BankIdGetSessionResponse(auth.BankIdFederatedLoginResponse.SessionId,
                 userAttributes.PersonalIdentityNumber,
                 userAttributes
             );
-
-            return response;
         }
 
 
@@ -92,7 +97,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
             string sessionId = request.SessionId;
 
             if (_bankidFederatedLogins.ContainsKey(sessionId))
+            {
                 _bankidFederatedLogins.Remove(sessionId);
+            }
 
             return new LogoutResponse(true);
         }
@@ -113,8 +120,15 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         private BankIdGetSessionUserAttributes GetUserAttributes(string personalIdentityNumber)
         {
-            return new BankIdGetSessionUserAttributes(string.Empty, _givenName, _surname, $"{_givenName} {_surname}",
-                personalIdentityNumber, string.Empty, string.Empty, string.Empty);
+            return new BankIdGetSessionUserAttributes(
+                string.Empty,
+                _givenName,
+                _surname,
+                $"{_givenName} {_surname}",
+                personalIdentityNumber,
+                string.Empty,
+                string.Empty,
+                string.Empty);
         }
 
         private async Task SimulateResponseDelay()
@@ -124,8 +138,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         private class ExtendedFederatedLoginResponse
         {
-            public ExtendedFederatedLoginResponse(BankIdFederatedLoginResponse bankIdFederatedLoginResponse,
-                string personalIdentityNumber)
+            public ExtendedFederatedLoginResponse(BankIdFederatedLoginResponse bankIdFederatedLoginResponse, string personalIdentityNumber)
             {
                 BankIdFederatedLoginResponse = bankIdFederatedLoginResponse;
                 PersonalIdentityNumber = personalIdentityNumber;
