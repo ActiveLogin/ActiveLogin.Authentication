@@ -35,7 +35,7 @@ namespace IdentityServer.ServerSample
             services
                 .AddApplicationInsightsTelemetry(Configuration)
                 .AddOptions<ApplicationInsightsLoggerOptions>()
-                .Configure(options => { options.IncludeEventId = true; });
+                .Configure(options => options.IncludeEventId = true);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -44,9 +44,9 @@ namespace IdentityServer.ServerSample
                 options.Secure = CookieSecurePolicy.Always;
             });
 
-            services.AddMvc(config => { config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
+            services.AddMvc(config => config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
-            services.AddIdentityServer(x => { x.Authentication.CookieLifetime = TimeSpan.FromHours(1); })
+            services.AddIdentityServer(x => x.Authentication.CookieLifetime = TimeSpan.FromHours(1))
                 .AddDeveloperSigningCredential()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
@@ -106,19 +106,19 @@ namespace IdentityServer.ServerSample
                             options.IssueBirthdateClaim = true;
                             options.IssueGenderClaim = true;
                         })
-                        .AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme,
-                            "BankID (SameDevice)", options => { })
-                        .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme,
-                            "BankID (OtherDevice)", options => { });
+                        .AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
+                        .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
+                    {
                         builder.UseSimulatedEnvironment();
+                    }
                     else
+                    {
                         builder.UseProductionEnvironment()
-                            .UseClientCertificateFromAzureKeyVault(
-                                Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath,
-                                Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+                    }
                 })
                 .AddGrandId(builder =>
                 {
@@ -127,22 +127,22 @@ namespace IdentityServer.ServerSample
                             options.IssueBirthdateClaim = true;
                             options.IssueGenderClaim = true;
                         })
-                        .AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme,
-                            "GrandID (SameDevice)", options => { })
-                        .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme,
-                            "GrandID (OtherDevice)", options => { })
-                        .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme,
-                            "GrandID (ChooseDevice)", options => { });
+                        .AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
+                        .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
+                        .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseSimulatedEnvironment", false))
+                    {
                         builder.UseSimulatedEnvironment();
+                    }
                     else
+                    {
                         builder.UseProductionEnvironment(config =>
                         {
                             config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                            config.BankIdServiceKey =
-                                Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+                            config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
                         });
+                    }
                 });
         }
 
@@ -153,7 +153,9 @@ namespace IdentityServer.ServerSample
             app.UseHttpsRedirection();
 
             if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
+            }
 
             app.UseStaticFiles();
             app.UseCookiePolicy();

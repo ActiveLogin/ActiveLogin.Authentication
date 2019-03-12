@@ -10,6 +10,7 @@ root = true
 indent_size = 4
 indent_style = space
 tab_width = 4
+max_line_length = 120
 
 # New line preferences
 end_of_line = lf
@@ -124,7 +125,7 @@ csharp_style_conditional_delegate_call = true:suggestion
 csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async
 
 # Code-block preferences
-csharp_prefer_braces = when_multiline:suggestion
+csharp_prefer_braces = true:suggestion
 
 # Expression-level preferences
 csharp_prefer_simple_default_expression = true:suggestion
