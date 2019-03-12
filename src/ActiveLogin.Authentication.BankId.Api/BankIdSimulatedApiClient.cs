@@ -1,8 +1,8 @@
-﻿using ActiveLogin.Authentication.BankId.Api.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
@@ -54,8 +54,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
         }
 
-        public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber,
-            List<CollectState> collectStates)
+        public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
             : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, collectStates)
         {
         }
@@ -65,8 +64,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
         }
 
-        public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber,
-            List<CollectState> collectStates)
+        public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, List<CollectState> collectStates)
         {
             _givenName = givenName;
             _surname = surname;
@@ -78,7 +76,9 @@ namespace ActiveLogin.Authentication.BankId.Api
         public TimeSpan Delay
         {
             get => _delay;
-            set => _delay = value < TimeSpan.Zero ? TimeSpan.Zero : value;
+            set => _delay = value < TimeSpan.Zero 
+                ? TimeSpan.Zero 
+                : value;
         }
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
@@ -98,7 +98,9 @@ namespace ActiveLogin.Authentication.BankId.Api
             await SimulateResponseDelay().ConfigureAwait(false);
 
             if (!_auths.ContainsKey(request.OrderRef))
+            {
                 throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found.");
+            }
 
             Auth auth = _auths[request.OrderRef];
             CollectStatus status = GetStatus(auth.CollectCalls);
@@ -139,10 +141,11 @@ namespace ActiveLogin.Authentication.BankId.Api
             await SimulateResponseDelay().ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(personalIdentityNumber))
+            {
                 personalIdentityNumber = _personalIdentityNumber;
+            }
 
-            await EnsureNoExistingAuth(personalIdentityNumber)
-                .ConfigureAwait(false);
+            await EnsureNoExistingAuth(personalIdentityNumber) .ConfigureAwait(false);
 
             string orderRef = Guid.NewGuid().ToString();
             var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
@@ -160,18 +163,18 @@ namespace ActiveLogin.Authentication.BankId.Api
             if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
             {
                 string existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
-                await CancelAsync(new CancelRequest(existingAuthOrderRef))
-                    .ConfigureAwait(false);
+                await CancelAsync(new CancelRequest(existingAuthOrderRef)) .ConfigureAwait(false);
 
-                throw new BankIdApiException(ErrorCode.AlreadyInProgress,
-                    "A login for this user is already in progress.");
+                throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
             }
         }
 
         private CompletionData GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
         {
             if (status != CollectStatus.Complete)
+            {
                 return null;
+            }
 
             var user = new User(personalIdentityNumber, _name, _givenName, _surname);
             var device = new Device(endUserIp);

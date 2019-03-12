@@ -60,7 +60,9 @@ namespace Standalone.MvcSample.Controllers
         {
             AuthenticateResult result = await HttpContext.AuthenticateAsync();
             if (result?.Succeeded != true)
+            {
                 throw new Exception("External authentication error");
+            }
 
             return Redirect("~/");
         }
