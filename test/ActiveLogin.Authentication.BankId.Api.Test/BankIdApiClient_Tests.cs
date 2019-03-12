@@ -142,7 +142,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             // Act
             await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392",
-                new Requirement(new List<string> {"req1", "req2"}, true, true)));
+                new Requirement(new List<string> { "req1", "req2" }, true, true)));
 
             // Assert
             HttpRequestMessage request = _messageHandlerMock
@@ -435,7 +435,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Act
             await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData",
                 Encoding.UTF8.GetBytes("userNonVisibleData"), "201801012392",
-                new Requirement(new List<string> {"req1", "req2"}, true, true)));
+                new Requirement(new List<string> { "req1", "req2" }, true, true)));
 
             // Assert
             HttpRequestMessage request = _messageHandlerMock

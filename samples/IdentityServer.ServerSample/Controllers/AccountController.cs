@@ -47,8 +47,8 @@ namespace IdentityServer.ServerSample.Controllers
                 RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
                 Items =
                 {
-                    {"returnUrl", returnUrl},
-                    {"scheme", provider}
+                    { "returnUrl", returnUrl },
+                    { "scheme", provider }
                 }
             };
 
@@ -74,7 +74,7 @@ namespace IdentityServer.ServerSample.Controllers
             LogoutRequest logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
             string returnUrl = logoutRequest?.PostLogoutRedirectUri;
 
-            return await Logout(new LogoutModel {ReturnUrl = returnUrl});
+            return await Logout(new LogoutModel { ReturnUrl = returnUrl });
         }
 
         [HttpPost]

@@ -11,7 +11,7 @@ namespace IdentityServer.ClientSample.Controllers
         public IActionResult Logout()
         {
             return SignOut(
-                new AuthenticationProperties {RedirectUri = "/"},
+                new AuthenticationProperties { RedirectUri = "/" },
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme
             );

@@ -25,8 +25,8 @@ namespace IdentityServer.ServerSample
                     },
                     AlwaysIncludeUserClaimsInIdToken = true,
 
-                    RedirectUris = {clientsConfiguration["MvcClient:RedirectUri"]},
-                    PostLogoutRedirectUris = {clientsConfiguration["MvcClient:PostLogoutRedirectUri"]},
+                    RedirectUris = { clientsConfiguration["MvcClient:RedirectUri"] },
+                    PostLogoutRedirectUris = { clientsConfiguration["MvcClient:PostLogoutRedirectUri"] },
 
                     AllowedScopes = new List<string>
                     {

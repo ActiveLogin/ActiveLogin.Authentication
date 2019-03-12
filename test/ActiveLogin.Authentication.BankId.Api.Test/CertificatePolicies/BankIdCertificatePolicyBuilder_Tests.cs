@@ -14,7 +14,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.CertificatePolicies
                 BankIdCertificatePolicy.MobileBankId
             );
 
-            Assert.Equal(new[] {"1.2.752.78.1.1", "1.2.752.78.1.5"}, policies);
+            Assert.Equal(new[] { "1.2.752.78.1.1", "1.2.752.78.1.5" }, policies);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.CertificatePolicies
             List<string> policies =
                 BankIdCertificatePolicies.GetPoliciesForTestEnvironment(BankIdCertificatePolicy.TestBankId);
 
-            Assert.Equal(new[] {"1.2.752.60.1.6"}, policies);
+            Assert.Equal(new[] { "1.2.752.60.1.6" }, policies);
         }
     }
 }

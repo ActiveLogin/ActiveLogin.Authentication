@@ -38,22 +38,22 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var queryStringParams = new Dictionary<string, string>
             {
-                {"apiKey", _apiKey},
-                {"authenticateServiceKey", _bankIdServiceKey}
+                { "apiKey", _apiKey },
+                { "authenticateServiceKey", _bankIdServiceKey }
             };
             string url = GetUrl("FederatedLogin", queryStringParams);
             var postData = new Dictionary<string, string>
             {
-                {"callbackUrl", GetBase64EncodedString(request.CallbackUrl)},
-                {"deviceChoice", GetBoolString(request.UseChooseDevice)},
-                {"thisDevice", GetBoolString(request.UseSameDevice)},
-                {"askForSSN", GetBoolString(request.AskForPersonalIdentityNumber)},
-                {"personalNumber", request.PersonalIdentityNumber},
-                {"mobileBankId", GetBoolString(request.RequireMobileBankId)},
-                {"customerURL", GetBase64EncodedString(request.CustomerUrl)},
-                {"gui", GetBoolString(request.ShowGui)},
-                {"userVisibleData", GetBase64EncodedString(request.SignUserVisibleData)},
-                {"userNonVisibleData", GetBase64EncodedString(request.SignUserNonVisibleData)}
+                { "callbackUrl", GetBase64EncodedString(request.CallbackUrl) },
+                { "deviceChoice", GetBoolString(request.UseChooseDevice) },
+                { "thisDevice", GetBoolString(request.UseSameDevice) },
+                { "askForSSN", GetBoolString(request.AskForPersonalIdentityNumber) },
+                { "personalNumber", request.PersonalIdentityNumber },
+                { "mobileBankId", GetBoolString(request.RequireMobileBankId) },
+                { "customerURL", GetBase64EncodedString(request.CustomerUrl) },
+                { "gui", GetBoolString(request.ShowGui) },
+                { "userVisibleData", GetBase64EncodedString(request.SignUserVisibleData) },
+                { "userNonVisibleData", GetBase64EncodedString(request.SignUserNonVisibleData) }
             };
 
             BankIdFederatedLoginFullResponse fullResponse =
@@ -71,9 +71,9 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             string url = GetUrl("GetSession", new Dictionary<string, string>
             {
-                {"apiKey", _apiKey},
-                {"authenticateServiceKey", _bankIdServiceKey},
-                {"sessionid", request.SessionId}
+                { "apiKey", _apiKey },
+                { "authenticateServiceKey", _bankIdServiceKey },
+                { "sessionid", request.SessionId }
             });
 
             BankIdGetSessionFullResponse fullResponse =
@@ -88,8 +88,8 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             string url = GetUrl("Logout", new Dictionary<string, string>
             {
-                {"apiKey", _apiKey},
-                {"sessionid", request.SessionId}
+                { "apiKey", _apiKey },
+                { "sessionid", request.SessionId }
             });
 
             LogoutFullResponse fullResponse = await GetFullResponseAndEnsureSuccess<LogoutFullResponse>(url);

@@ -11,10 +11,10 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             new CollectResponseMapping(MessageShortName.RFA1, CollectStatus.Pending, CollectHintCode.NoClient, true),
             new CollectResponseMapping(MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.NoClient, false),
 
-            new CollectResponseMapping(MessageShortName.RFA1, new[] {CollectStatus.Pending},
-                new[] {CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient}, true),
-            new CollectResponseMapping(MessageShortName.RFA13, new[] {CollectStatus.Pending},
-                new[] {CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient}, false),
+            new CollectResponseMapping(MessageShortName.RFA1, new[] { CollectStatus.Pending },
+                new[] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, true),
+            new CollectResponseMapping(MessageShortName.RFA13, new[] { CollectStatus.Pending },
+                new[] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, false),
 
             new CollectResponseMapping(MessageShortName.RFA9, CollectStatus.Pending, CollectHintCode.UserSign),
             new CollectResponseMapping(MessageShortName.RFA14A, CollectStatus.Pending, CollectHintCode.Started, true,
@@ -75,8 +75,8 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
                 CollectHintCode collectHintCode, bool? authPersonalIdentityNumberProvided = null,
                 bool? accessedFromMobileDevice = null)
                 : this(messageShortName, new List<CollectStatus>
-                    {collectStatus}, new List<CollectHintCode>
-                    {collectHintCode}, authPersonalIdentityNumberProvided, accessedFromMobileDevice)
+                    { collectStatus }, new List<CollectHintCode>
+                    { collectHintCode }, authPersonalIdentityNumberProvided, accessedFromMobileDevice)
             {
             }
 
@@ -88,7 +88,7 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus,
                 params CollectHintCode[] collectHintCodes)
                 : this(messageShortName, new List<CollectStatus>
-                    {collectStatus}, collectHintCodes.ToList())
+                    { collectStatus }, collectHintCodes.ToList())
             {
             }
 

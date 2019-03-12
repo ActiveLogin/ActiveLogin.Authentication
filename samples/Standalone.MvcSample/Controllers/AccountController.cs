@@ -46,8 +46,8 @@ namespace Standalone.MvcSample.Controllers
                 RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
                 Items =
                 {
-                    {"returnUrl", "~/"},
-                    {"scheme", provider}
+                    { "returnUrl", "~/" },
+                    { "scheme", provider }
                 }
             };
 
