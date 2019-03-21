@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         public static async Task<TResult> PostAsync<TResult>(this HttpClient httpClient, string url, Dictionary<string, string> postData)
         {
-            var requestContent = GetFormUrlEncodedContent<TResult>(postData);
+            var requestContent = GetFormUrlEncodedContent(postData);
 
             var httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
             var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -26,7 +26,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
         }
 
-        private static FormUrlEncodedContent GetFormUrlEncodedContent<TResult>(Dictionary<string, string> postData)
+        private static FormUrlEncodedContent GetFormUrlEncodedContent(Dictionary<string, string> postData)
         {
             var requestContent = new FormUrlEncodedContent(postData);
 

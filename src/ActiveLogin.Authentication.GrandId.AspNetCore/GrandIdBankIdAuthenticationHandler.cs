@@ -72,7 +72,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                     useSameDevice = false;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(options.GrandIdBankIdMode), $"Unknown {nameof(options.GrandIdBankIdMode)}.");
             }
 
             var personalIdentityNumber = swedishPersonalIdentityNumber?.To12DigitString();
@@ -89,12 +89,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            if (properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
+            bool TryGetPinString(out string s)
             {
-                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
-                {
-                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
-                }
+                return properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
+            }
+
+            if (TryGetPinString(out var swedishPersonalIdentityNumber) && !string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+            {
+                return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
             }
 
             return null;

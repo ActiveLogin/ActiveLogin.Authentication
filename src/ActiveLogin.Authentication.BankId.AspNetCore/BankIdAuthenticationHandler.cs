@@ -152,12 +152,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            if (properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out var swedishPersonalIdentityNumber))
+            bool TryGetPinString(out string s)
             {
-                if (!string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
-                {
-                    return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
-                }
+                return properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
+            }
+
+            if (TryGetPinString(out var swedishPersonalIdentityNumber) && !string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+            {
+                return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
             }
 
             return null;

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer.ServerSample
 {
-    public class Config
+    public static class Config
     {
         private const string PersonaIidentityNumberScopeName = "personalidentitynumber";
 

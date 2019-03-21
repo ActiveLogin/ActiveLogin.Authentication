@@ -77,17 +77,31 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             return GetX509Certificate2(certificateBytes);
         }
 
-        public void Dispose()
-        {
-            _keyVaultClient?.Dispose();
-        }
-
         private X509Certificate2 GetX509Certificate2(byte[] certificate)
         {
             var exportedCertCollection = new X509Certificate2Collection();
             exportedCertCollection.Import(certificate, string.Empty, X509KeyStorageFlags.MachineKeySet);
 
             return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _keyVaultClient?.Dispose();
+            }
+        }
+
+        ~AzureKeyVaultCertificateClient()
+        {
+            Dispose(false);
         }
     }
 }

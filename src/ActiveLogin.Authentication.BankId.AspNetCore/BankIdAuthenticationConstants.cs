@@ -1,6 +1,6 @@
 ﻿namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdAuthenticationConstants
+    public static class BankIdAuthenticationConstants
     {
         internal const string AreaName = "BankIdAuthentication";
 
