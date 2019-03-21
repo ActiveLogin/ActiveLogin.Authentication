@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -123,9 +124,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = GetEndUserIp();
-            var certificatePolicies = loginOptions.CertificatePolicies?.Any() ?? false ? loginOptions.CertificatePolicies : null;
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
             var autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
+
+            List<string> certificatePolicies = null;
+            if (loginOptions.CertificatePolicies != null && loginOptions.CertificatePolicies.Any())
+            {
+                certificatePolicies = loginOptions.CertificatePolicies;
+            }
 
             var authRequestRequirement = new Requirement(certificatePolicies, autoStartTokenRequired, loginOptions.AllowBiometric);
 
