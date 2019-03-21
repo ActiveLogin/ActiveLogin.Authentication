@@ -16,6 +16,6 @@
         public const string Gender = "gender";
         public const string Birthdate = "birthdate";
 
-        public static string SwedishPersonalIdentityNumber = "swedish_personal_identity_number";
+        public const string SwedishPersonalIdentityNumber = "swedish_personal_identity_number";
     }
 }

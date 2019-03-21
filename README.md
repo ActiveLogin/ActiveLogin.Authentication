@@ -16,6 +16,10 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 
 [![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ActiveLogin_ActiveLogin.Authentication&metric=alert_status)](https://sonarcloud.io/dashboard?id=ActiveLogin_ActiveLogin.Authentication)
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ActiveLogin_ActiveLogin.Authentication&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ActiveLogin_ActiveLogin.Authentication)
+
 | Project | Description | NuGet |
 | ------- | ----------- | ----- |
 | [ActiveLogin.Authentication.BankId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.Api) | API client for Swedish BankID's REST API. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) |
