@@ -8,8 +8,13 @@ root = true
 indent_size = 4
 indent_style = space
 tab_width = 4
+charset = utf-8
 max_line_length = 120
 insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
 
 # C# files
 [*.cs]
