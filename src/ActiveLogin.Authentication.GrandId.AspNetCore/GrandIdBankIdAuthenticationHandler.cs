@@ -72,7 +72,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                     useSameDevice = false;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(options.GrandIdBankIdMode), $"Unknown {nameof(options.GrandIdBankIdMode)}.");
+                    throw new InvalidOperationException($"Unknown {nameof(options.GrandIdBankIdMode)}.");
             }
 
             var personalIdentityNumber = swedishPersonalIdentityNumber?.To12DigitString();
