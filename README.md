@@ -1,5 +1,7 @@
 # ActiveLogin.Authentication
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ActiveLogin_ActiveLogin.Authentication&metric=alert_status)](https://sonarcloud.io/dashboard?id=ActiveLogin_ActiveLogin.Authentication) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ActiveLogin_ActiveLogin.Authentication&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ActiveLogin_ActiveLogin.Authentication)
+
 ActiveLogin.Authentication enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms.
 
 ## Features
@@ -13,8 +15,6 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 - :wrench: Customizable UI
 
 ## Continuous integration & Packages overview
-
-[![Build status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=155) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ActiveLogin_ActiveLogin.Authentication&metric=alert_status)](https://sonarcloud.io/dashboard?id=ActiveLogin_ActiveLogin.Authentication) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ActiveLogin_ActiveLogin.Authentication&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ActiveLogin_ActiveLogin.Authentication)
 
 | Project | Description | NuGet |
 | ------- | ----------- | ----- |
