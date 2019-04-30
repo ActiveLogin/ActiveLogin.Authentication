@@ -66,6 +66,9 @@
     <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginStyle.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginScript.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

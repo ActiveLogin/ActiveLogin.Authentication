@@ -2,58 +2,7 @@
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
 
-<style>
-    .bankid-login {
-        width: 100%;
-        max-width: 320px;
-        margin: 0 auto;
-        text-align: center;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .status-icon {
-        animation: status-icon-spinner 1s infinite steps(10);
-    }
-
-    button .status-spinner .status-icon {
-        width: 20px;
-        height: 20px;
-        position: relative;
-        top: 2px;
-    }
-
-    button .status-spinner .spinner-component {
-        fill: #fff;
-    }
-
-    .card-body .status-spinner {
-        margin-bottom: 0.75rem;
-    }
-
-    .status-spinner .status-icon {
-        width: 40px;
-        height: 40px;
-        position: relative;
-        top: 4px;
-    }
-
-    .status-spinner .spinner-component {
-        fill: #212529;
-    }
-
-    @@keyframes status-icon-spinner {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-</style>
+<partial name="_LoginStyle" />
 
 <div class="bankid-login">
     @if (!string.IsNullOrEmpty(Localizer["SignIn_Header"]))
