@@ -2,13 +2,13 @@
 {
     public abstract class GetSessionResponseBase
     {
-        internal GetSessionResponseBase(GetSessionFullResponseBase fullResponse)
+        private protected GetSessionResponseBase(GetSessionFullResponseBase fullResponse)
         {
             SessionId = fullResponse.SessionId;
             Username = fullResponse.UserName;
         }
 
-        internal GetSessionResponseBase(string sessionId, string username)
+        private protected GetSessionResponseBase(string sessionId, string username)
         {
             SessionId = sessionId;
             Username = username;

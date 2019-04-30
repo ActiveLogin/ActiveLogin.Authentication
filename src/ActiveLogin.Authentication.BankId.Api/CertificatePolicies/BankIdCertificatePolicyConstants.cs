@@ -1,6 +1,6 @@
 ﻿namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
 {
-    internal class BankIdCertificatePolicyConstants
+    internal static class BankIdCertificatePolicyConstants
     {
         public const string BankIdOnFileProductionEnvironment = "1.2.752.78.1.1";
         public const string BankIdOnFileTestEnvironment = "1.2.3.4.5";

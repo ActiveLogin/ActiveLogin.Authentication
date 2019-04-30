@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdAuthenticationDefaults
+    public static class GrandIdAuthenticationDefaults
     {
         public const string IdentityProviderName = "GrandID";
         public static readonly TimeSpan MaximumSessionLifespan = TimeSpan.FromHours(1);

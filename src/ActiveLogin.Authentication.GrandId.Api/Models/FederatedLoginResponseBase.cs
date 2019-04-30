@@ -2,13 +2,13 @@
 {
     public abstract class FederatedLoginResponseBase
     {
-        internal FederatedLoginResponseBase(FederatedLoginFullResponseBase fullResponse)
+        private protected FederatedLoginResponseBase(FederatedLoginFullResponseBase fullResponse)
         {
             SessionId = fullResponse.SessionId;
             RedirectUrl = fullResponse.RedirectUrl;
         }
 
-        internal FederatedLoginResponseBase(string sessionId, string redirectUrl)
+        private protected FederatedLoginResponseBase(string sessionId, string redirectUrl)
         {
             SessionId = sessionId;
             RedirectUrl = redirectUrl;

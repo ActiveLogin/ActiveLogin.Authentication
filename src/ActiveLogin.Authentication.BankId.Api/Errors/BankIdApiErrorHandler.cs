@@ -6,7 +6,7 @@ using ActiveLogin.Authentication.Common.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Errors
 {
-    internal class BankIdApiErrorHandler
+    internal static class BankIdApiErrorHandler
     {
         public static async Task EnsureSuccessAsync(HttpResponseMessage httpResponseMessage)
         {

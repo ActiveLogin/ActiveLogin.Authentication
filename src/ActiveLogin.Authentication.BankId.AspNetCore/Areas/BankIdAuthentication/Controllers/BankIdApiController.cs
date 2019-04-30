@@ -109,7 +109,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             if (unprotectedLoginOptions.AutoLaunch)
             {
                 var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
-                var bankIdRedirectUri = GetBankIdRedirectUri(request, protectedOrderRef, authResponse, detectedDevice);
+                var bankIdRedirectUri = GetBankIdRedirectUri(request, authResponse, detectedDevice);
 
                 var response = detectedDevice.IsIos
                     ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
@@ -143,7 +143,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return HttpContext.Connection.RemoteIpAddress.ToString();
         }
 
-        private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, string protectedOrderRef, AuthResponse authResponse, BankIdSupportedDevice detectedDevice)
+        private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, AuthResponse authResponse, BankIdSupportedDevice detectedDevice)
         {
             var returnRedirectUri = GetAbsoluteUrl(Url.Action(nameof(BankIdController.Login), "BankId", new
             {

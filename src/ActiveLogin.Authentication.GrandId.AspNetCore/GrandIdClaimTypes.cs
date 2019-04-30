@@ -1,6 +1,6 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdClaimTypes
+    public static class GrandIdClaimTypes
     {
         public const string Role = "role";
 
