@@ -5,7 +5,6 @@ using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
-using Microsoft.ApplicationInsights.AspNetCore.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +13,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace IdentityServer.ServerSample
 {
@@ -33,12 +31,7 @@ namespace IdentityServer.ServerSample
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddApplicationInsightsTelemetry(Configuration)
-                .AddOptions<ApplicationInsightsLoggerOptions>()
-                .Configure(options =>
-                {
-                    options.IncludeEventId = true;
-                });
+                .AddApplicationInsightsTelemetry(Configuration);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -152,10 +145,8 @@ namespace IdentityServer.ServerSample
                 });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Information);
-
             app.UseHttpsRedirection();
 
             if (env.IsDevelopment())

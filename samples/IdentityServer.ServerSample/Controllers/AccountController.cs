@@ -21,10 +21,10 @@ namespace IdentityServer.ServerSample.Controllers
             _authenticationSchemeProvider = authenticationSchemeProvider;
         }
 
-        public IActionResult Login(string returnUrl)
+        public async Task<IActionResult> Login(string returnUrl)
         {
-            var schemes = _authenticationSchemeProvider.GetAllSchemesAsync();
-            var providers = schemes.Result
+            var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
+            var providers = schemes
                 .Where(x => x.DisplayName != null)
                 .Select(x => new ExternalProvider
                 {

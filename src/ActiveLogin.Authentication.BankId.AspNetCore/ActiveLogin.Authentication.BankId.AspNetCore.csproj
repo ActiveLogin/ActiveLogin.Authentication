@@ -12,8 +12,8 @@
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
 
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <!--<VersionSuffix>rc-1</VersionSuffix>-->
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionSuffix>rc-1</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ActiveLogin.Identity.Swedish" Version="2.0.1" />
+    <PackageReference Include="ActiveLogin.Identity.Swedish" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="2.2.0" />
@@ -64,6 +64,9 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginStyle.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginScript.cshtml">

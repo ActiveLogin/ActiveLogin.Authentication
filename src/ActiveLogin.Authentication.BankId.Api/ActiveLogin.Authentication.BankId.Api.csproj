@@ -12,8 +12,8 @@
     <AssemblyName>ActiveLogin.Authentication.BankId.Api</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.Api</PackageId>
 
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <!--<VersionSuffix>rc-1</VersionSuffix>-->
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionSuffix>rc-1</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>

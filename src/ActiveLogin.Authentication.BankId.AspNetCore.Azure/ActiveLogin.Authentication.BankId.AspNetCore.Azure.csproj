@@ -12,8 +12,8 @@
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.Azure</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.Azure</PackageId>
 
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <!--<VersionSuffix>rc-1</VersionSuffix>-->
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionSuffix>rc-1</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
@@ -47,7 +47,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.3" />
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.1" />
   </ItemGroup>
 
   <ItemGroup>
