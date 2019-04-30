@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Security.Cryptography.X509Certificates;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Azure.KeyVault;
 
 namespace Standalone.MvcSample
 {

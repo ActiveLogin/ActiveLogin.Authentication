@@ -61,43 +61,6 @@
             height: 60px;
             line-height: 60px; /* Vertically center the text there */
         }
-
-        .status-icon {
-            animation: status-icon-spinner 1s infinite steps(10);
-        }
-
-        button .status-spinner .status-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-
-        button .status-spinner .spinner-component {
-            fill: #fff;
-        }
-
-        .card-body .status-spinner {
-            margin-bottom: 0.75rem;
-        }
-
-        .status-spinner .status-icon {
-            width: 40px;
-            height: 40px;
-        }
-
-        .status-spinner .spinner-component {
-            fill: #212529;
-        }
-
-        @@keyframes status-icon-spinner {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
     </style>
 
     @RenderSection("Styles", required: false)

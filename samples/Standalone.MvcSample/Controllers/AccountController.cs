@@ -19,10 +19,10 @@ namespace Standalone.MvcSample.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
-            var schemes = _authenticationSchemeProvider.GetAllSchemesAsync();
-            var providers = schemes.Result
+            var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
+            var providers = schemes
                 .Where(x => x.DisplayName != null)
                 .Select(x => new ExternalProvider
                 {
