@@ -17,6 +17,9 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
             IpAddress = ipAddress;
         }
 
+        [DataMember(Name = "SPAR")]
+        public BankIdGetSessionUserAddressAttributes AddressAttributes { get; set; }
+
         [DataMember(Name = "signature")]
         public string Signature { get; private set; }
 
@@ -40,5 +43,36 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
 
         [DataMember(Name = "ipAddress")]
         public string IpAddress { get; private set; }
+
+        [DataContract]
+        public class BankIdGetSessionUserAddressAttributes
+        {
+            [DataMember(Name = "spakoDatumFrom")]
+            public string From { get; set; }
+
+            [DataMember(Name = "spakoDatumTill")]
+            public string To { get; set; }
+
+            [DataMember(Name = "spakoUtdelningsadress2")]
+            public string Address { get; set; }
+
+            [DataMember(Name = "spakoPostNr")]
+            public string ZipCode { get; set; }
+
+            [DataMember(Name = "spakoPostort")]
+            public string City { get; set; }
+
+            [DataMember(Name = "spakoFolkbokfordLanKod")]
+            public string County { get; set; }
+
+            [DataMember(Name = "spakoFolkbokfordKommunKod")]
+            public string Municipality { get; set; }
+
+            [DataMember(Name = "spakoFolkbokforingsdatum")]
+            public string Registered { get; set; }
+
+            [DataMember(Name = "spakoDistriktKod")]
+            public string District { get; set; }
+        }
     }
 }
