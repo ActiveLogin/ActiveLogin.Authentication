@@ -255,3 +255,7 @@ Active Login is built on or uses the following great open source products:
 * [IdentityServer](https://github.com/IdentityServer/)
 * [Bootstrap](https://github.com/twbs/bootstrap)
 * [Loading.io](https://loading.io/)
+
+## Support & Training
+If you need help with implementing Active Login, there are commercial support & training options available.
+See [ActiveLogin.net](https://activelogin.net#support) for more details.
