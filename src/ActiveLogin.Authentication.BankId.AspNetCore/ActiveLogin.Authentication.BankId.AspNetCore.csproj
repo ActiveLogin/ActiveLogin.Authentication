@@ -13,7 +13,7 @@
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
 
     <VersionPrefix>2.0.0</VersionPrefix>
-    <VersionSuffix>rc-1</VersionSuffix>
+    <!--<VersionSuffix>rc-1</VersionSuffix>-->
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
