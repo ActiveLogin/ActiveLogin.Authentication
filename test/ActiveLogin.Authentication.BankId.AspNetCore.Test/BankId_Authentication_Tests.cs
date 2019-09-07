@@ -72,7 +72,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                             .Build();
                         config.Filters.Add(new AuthorizeFilter(policy));
                     })
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
                     services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
                 }).CreateClient();
