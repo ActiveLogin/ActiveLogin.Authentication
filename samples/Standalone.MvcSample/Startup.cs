@@ -25,6 +25,11 @@ namespace Standalone.MvcSample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews(config =>
+            {
+                config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie()
                 .AddBankId(builder =>
@@ -74,25 +79,21 @@ namespace Standalone.MvcSample
                         config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
                     }
                 });
-
-            services.AddMvc(config =>
-            {
-                config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();
 
+            app.UseRouting();
+
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
