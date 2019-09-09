@@ -71,7 +71,7 @@ namespace IdentityServer.ClientSample
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseStaticFiles();
 
             app.UseRouting();
