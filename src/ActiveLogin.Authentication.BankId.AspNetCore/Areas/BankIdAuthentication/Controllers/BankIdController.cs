@@ -59,8 +59,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
                 UnsupportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"],
 
-                BankIdInitializeApiUrl = Url.Action(nameof(BankIdApiController.InitializeAsync), "BankIdApi"),
-                BankIdStatusApiUrl = Url.Action(nameof(BankIdApiController.StatusAsync), "BankIdApi")
+                BankIdInitializeApiUrl = Url.Action("Initialize", "BankIdApi"),
+                BankIdStatusApiUrl = Url.Action("Status", "BankIdApi")
             };
 
             return new BankIdLoginViewModel
