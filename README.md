@@ -157,6 +157,11 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 
 ## FAQ
 
+### Can I use Active Login from both .NET Core 2.2 and Core 3.0?
+
+Yes you can! It targets .NET Standard 2.0 and is tested from applicationns running both ASP.NET COre 2.2 and ASP.NET Core 3.0.
+Moving forward we will focus our efforts on Core 3.0. Samples of usage from Core 3.0 is available as a separate bransch at the moment.
+
 ### How do I run the samples?
 
 The samples are configured to run in simulated mode (no BankID certificates or GrandID keys required) by default. The _IdentityServer.ClientSample_ is using the _IdentityServer.ServerSample_ as its identity provider. So to run the _IdentityServer.ClientSample_, the _IdentityServer.ServerSample_ needs to be running first.
