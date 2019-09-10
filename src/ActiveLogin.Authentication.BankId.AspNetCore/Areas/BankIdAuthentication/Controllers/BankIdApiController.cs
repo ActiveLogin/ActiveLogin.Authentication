@@ -67,7 +67,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         [ValidateAntiForgeryToken]
         [HttpPost("Initialize")]
-        public async Task<ActionResult<BankIdLoginApiInitializeResponse>> InitializeAsync(BankIdLoginApiInitializeRequest request)
+        public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
         {
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
@@ -145,7 +145,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, AuthResponse authResponse, BankIdSupportedDevice detectedDevice)
         {
-            var returnRedirectUri = GetAbsoluteUrl(Url.Action(nameof(BankIdController.Login), "BankId", new
+            var returnRedirectUri = GetAbsoluteUrl(Url.Action("Login", "BankId", new
             {
                 returnUrl = request.ReturnUrl,
                 loginOptions = request.LoginOptions
@@ -164,7 +164,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         [ValidateAntiForgeryToken]
         [HttpPost("Status")]
-        public async Task<ActionResult> StatusAsync(BankIdLoginApiStatusRequest request)
+        public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
         {
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
