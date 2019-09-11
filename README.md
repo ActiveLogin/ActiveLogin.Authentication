@@ -160,7 +160,7 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 ### Can I use Active Login from both .NET Core 2.2 and Core 3.0?
 
 Yes you can! It targets .NET Standard 2.0 and is tested from applicationns running both ASP.NET COre 2.2 and ASP.NET Core 3.0.
-Moving forward we will focus our efforts on Core 3.0. Samples of usage from Core 3.0 is available as a separate bransch at the moment.
+Moving forward we will focus our efforts on Core 3.0. Samples of usage from Core 3.0 is available as a separate branch at the moment.
 
 ### How do I run the samples?
 
