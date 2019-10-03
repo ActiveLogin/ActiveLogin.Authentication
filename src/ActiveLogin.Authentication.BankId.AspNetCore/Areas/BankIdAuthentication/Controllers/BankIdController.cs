@@ -34,6 +34,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _localizer = localizer;
         }
     
+        [HttpGet]
         public ActionResult Login(string returnUrl, string loginOptions)
         {
             if (!Url.IsLocalUrl(returnUrl))
