@@ -120,7 +120,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 .Configure(app =>
                 {
                     app.UseAuthentication();
-                    app.UseMvcWithDefaultRoute();
+                    app.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapControllers();
+                        endpoints.MapDefaultControllerRoute();
+                    });
                     app.Use(async (context, next) =>
                     {
                         await testpath(context);
