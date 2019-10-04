@@ -15,7 +15,7 @@ namespace IdentityServer.ServerSample
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseApplicationInsights()
+                    webBuilder
                         .ConfigureLogging(builder =>
                         {
                             builder.AddApplicationInsights(options =>
