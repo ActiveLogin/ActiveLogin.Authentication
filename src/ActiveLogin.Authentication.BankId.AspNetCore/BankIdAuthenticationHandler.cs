@@ -9,6 +9,7 @@ using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -167,9 +168,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private string GetLoginUrl(BankIdLoginOptions loginOptions)
         {
-            return $"{Options.LoginPath}" +
-                   $"?returnUrl={UrlEncoder.Encode(Options.CallbackPath)}" +
-                   $"&loginOptions={UrlEncoder.Encode(_loginOptionsProtector.Protect(loginOptions))}";
+	        var pathBase = Context.Request.PathBase;
+	        var loginUrl = pathBase.Add(Options.LoginPath);
+	        var returnUrl = UrlEncoder.Encode(pathBase.Add(Options.CallbackPath));
+	        var protectedOptions = UrlEncoder.Encode(_loginOptionsProtector.Protect(loginOptions));
+
+	        return $"{loginUrl}" +
+                   $"?returnUrl={returnUrl}" +
+                   $"&loginOptions={protectedOptions}";
         }
 
         private void AppendStateCookie(AuthenticationProperties properties)
