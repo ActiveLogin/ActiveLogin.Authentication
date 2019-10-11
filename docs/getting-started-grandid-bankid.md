@@ -19,7 +19,7 @@
 
 ### Simulated environment
 
-For trying out quickly (without the need of keys) you can use an in-memory implementation of the API by using `.UseSimulatedEnvironment()`. This could also bee good when writing tests.
+For trying out quickly (without the need of keys) you can use an in-memory implementation of the API by using `.UseSimulatedEnvironment()`. This could also be good when writing tests.
 
 ### Simulated environment with no config
 
