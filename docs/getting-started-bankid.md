@@ -42,7 +42,7 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 
 ### Simulated environment
 
-For trying out quickly (without the need of certificates) you can use an in-memory implementation of the API by using `.UseSimulatedEnvironment()`. This could also bee good when writing tests.
+For trying out quickly (without the need of certificates) you can use an in-memory implementation of the API by using `.UseSimulatedEnvironment()`. This could also be good when writing tests.
 
 ### Simulated environment with no config
 
@@ -287,6 +287,6 @@ The messages are already localized to English and Swedish using the official rec
 ### What browsers do you support?
 
 We aim at supporting the latest version of all major browsers (Edge, Chrome, Firefox, Safari).
-If you aim to support IE11, you a polyfill for some JavaScript features we are using is needed.
+If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 
 * [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): https://github.com/github/fetch
