@@ -13,6 +13,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 - :cloud: Great support for Microsoft Azure
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable UI
+- :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Proivder for Azure AD B2C](#can-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 
 ## Continuous integration & Packages overview
 
@@ -234,6 +235,10 @@ public class GrandIdApiClient : IGrandIdApiClient
 
 It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
 We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
+
+### Can I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?
+
+Yes you can! Azure AD B2C supports using cusotm identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
 
 ## Active Login
 
