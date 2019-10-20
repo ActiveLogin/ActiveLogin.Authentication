@@ -25,15 +25,14 @@
     <Copyright>Copyright © ActiveLogin</Copyright>
 
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/docs/images/active-login-logo-fingerprint-blue-v2-256x256.png</PackageIconUrl>
-
-    <PackageLicenseUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/LICENSE.md</PackageLicenseUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
-
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -103,8 +102,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
+    <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Common\Serialization\" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\SystemRuntimeJsonSerializer.cs" Link="Common\Serialization\SystemRuntimeJsonSerializer.cs" />
     <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
