@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">netstandard2.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
-    <TargetFrameworkIdentifier Condition="'$(_ShortFrameworkIdentifier)'=='net'">.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkIdentifier Condition="'$(_ShortFrameworkIdentifier)'=='netstandard'">.NETStandard</TargetFrameworkIdentifier>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
     <NoWarn>1701;1702;1591;CS7035</NoWarn>
@@ -12,8 +9,8 @@
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.Azure</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.Azure</PackageId>
 
-    <VersionPrefix>2.0.1</VersionPrefix>
-    <!--<VersionSuffix>rc-1</VersionSuffix>-->
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionSuffix>alpha-1</VersionSuffix>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
@@ -26,28 +23,33 @@
     <Copyright>Copyright © ActiveLogin</Copyright>
 
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/docs/images/active-login-logo-fingerprint-blue-v2-256x256.png</PackageIconUrl>
-
-    <PackageLicenseUrl>https://raw.githubusercontent.com/ActiveLogin/ActiveLogin.Authentication/master/LICENSE.md</PackageLicenseUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
-
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.3.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.4" />
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.3.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
+    <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
   </ItemGroup>
 
   <ItemGroup>

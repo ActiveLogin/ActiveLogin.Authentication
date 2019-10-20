@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace IdentityServer.ServerSample
@@ -9,19 +8,21 @@ namespace IdentityServer.ServerSample
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                   .UseApplicationInsights()
-                   .ConfigureLogging(builder =>
-                   {
-                       builder.AddApplicationInsights(options =>
-                       {
-                           options.IncludeScopes = true;
-                       });
-                   })
-                   .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder
+                        .ConfigureLogging(builder =>
+                        {
+                            builder.AddApplicationInsights(options =>
+                            {
+                                options.IncludeScopes = true;
+                            });
+                        }).UseStartup<Startup>();
+                });
     }
 }

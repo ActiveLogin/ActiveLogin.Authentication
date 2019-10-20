@@ -13,9 +13,9 @@ namespace Standalone.MvcSample
 {
     public class Startup
     {
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _environment = environment;
             Configuration = configuration;
@@ -25,6 +25,11 @@ namespace Standalone.MvcSample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews(config =>
+            {
+                config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie()
                 .AddBankId(builder =>
@@ -74,25 +79,23 @@ namespace Standalone.MvcSample
                         config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
                     }
                 });
-
-            services.AddMvc(config =>
-            {
-                config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();
 
-            app.UseAuthentication();
+            app.UseStaticFiles();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
