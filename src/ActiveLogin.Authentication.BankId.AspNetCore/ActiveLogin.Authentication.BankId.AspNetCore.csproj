@@ -13,6 +13,7 @@
 
     <VersionPrefix>3.0.0</VersionPrefix>
     <VersionSuffix>alpha-1</VersionSuffix>
+    <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
