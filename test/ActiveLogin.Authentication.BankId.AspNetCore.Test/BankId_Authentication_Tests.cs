@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.WebEncoders.Testing;
 using Moq;
 using Xunit;
 
@@ -42,9 +41,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     o.UseSimulatedEnvironment()
                      .AddSameDevice();
                 },
-	            DefaultAppConfiguration(async context =>
+                DefaultAppConfiguration(async context =>
                 {
-	                await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
                 })).CreateClient();
 
             // Act
@@ -58,46 +57,50 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
         public async Task Challenge_Redirects_To_BankIdAuthentication_Login_With_Path_Base()
         {
-	        // Arrange
-	        var client = CreateServer(o =>
-		        {
-			        o.UseSimulatedEnvironment()
-				        .AddSameDevice();
-		        },
-		        app =>
-		        {
-			        app.Map("/PathBase", appBuilder =>
-			        {
-				        appBuilder.UseAuthentication();
-				        appBuilder.UseMvcWithDefaultRoute();
-				        appBuilder.Use(async (context, next) =>
-				        {
-					        await context.ChallengeAsync(
-						        BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
-					        await next();
-				        });
-				        appBuilder.Run(context => context.Response.WriteAsync(""));
-			        });
-		        }
-		        ,
-		        services =>
-		        {
-			        services.AddTransient<RemoteAuthenticationOptions, BankIdAuthenticationOptions>();
+            // Arrange
+            var client = CreateServer(o =>
+                {
+                    o.UseSimulatedEnvironment()
+                        .AddSameDevice();
+                },
+                app =>
+                {
+                    app.Map("/PathBase", appBuilder =>
+                    {
+                        app.UseRouting();
+                        app.UseEndpoints(endpoints =>
+                        {
+                            endpoints.MapControllers();
+                            endpoints.MapDefaultControllerRoute();
+                        });
+                        appBuilder.Use(async (context, next) =>
+                        {
+                            await context.ChallengeAsync(
+                                BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                            await next();
+                        });
+                        appBuilder.Run(context => context.Response.WriteAsync(""));
+                    });
+                }
+                ,
+                services =>
+                {
+                    services.AddTransient<RemoteAuthenticationOptions, BankIdAuthenticationOptions>();
 
-		        }).CreateClient();
+                }).CreateClient();
 
-	        // Act
-	        var transaction = await client.GetAsync("/PathBase");
+            // Act
+            var transaction = await client.GetAsync("/PathBase");
 
-	        // Assert
-	        Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
+            // Assert
+            Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
 
-	        var redirectUrl = transaction.Headers.Location.OriginalString;
-	        Assert.StartsWith("/PathBase/BankIdAuthentication/Login", redirectUrl);
+            var redirectUrl = transaction.Headers.Location.OriginalString;
+            Assert.StartsWith("/PathBase/BankIdAuthentication/Login", redirectUrl);
 
-	        var callbackUrl = UrlEncoder.Default.Encode("/PathBase/signin-bankid-samedevice");
-	        var callbackParameter = $"returnUrl={callbackUrl}";
-	        Assert.Contains(callbackParameter, redirectUrl);
+            var callbackUrl = UrlEncoder.Default.Encode("/PathBase/signin-bankid-samedevice");
+            var callbackParameter = $"returnUrl={callbackUrl}";
+            Assert.Contains(callbackParameter, redirectUrl);
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
@@ -109,19 +112,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     o.UseSimulatedEnvironment()
                      .AddSameDevice();
                 },
-	            DefaultAppConfiguration(context =>
-	            {
-		            return Task.CompletedTask;
-	            }),
-	            services =>
+                DefaultAppConfiguration(context => Task.CompletedTask),
+                services =>
                 {
-                    services.AddMvc(config => {
+                    services.AddMvc(config =>
+                    {
                         var policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
                             .Build();
                         config.Filters.Add(new AuthorizeFilter(policy));
                     })
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
                     services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
                 }).CreateClient();
@@ -142,10 +143,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     o.UseSimulatedEnvironment()
                         .AddSameDevice();
                 },
-            DefaultAppConfiguration(async context =>
-	            {
-		            await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
-	            }),
+                DefaultAppConfiguration(async context =>
+                {
+                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                }),
                 services =>
                 {
                     services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
@@ -163,15 +164,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 
 
         private TestServer CreateServer(
-	        Action<IBankIdAuthenticationBuilder> configureBankId,
-	        Action<IApplicationBuilder> configureApplication,
-	        Action<IServiceCollection> configureServices = null)
+            Action<IBankIdAuthenticationBuilder> configureBankId,
+            Action<IApplicationBuilder> configureApplication,
+            Action<IServiceCollection> configureServices = null)
         {
             var webHostBuilder = new WebHostBuilder()
                 .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
                 .Configure(app =>
                 {
-					configureApplication.Invoke(app);
+                    configureApplication.Invoke(app);
                 })
                 .ConfigureServices(services =>
                 {
@@ -185,17 +186,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 
         private static Action<IApplicationBuilder> DefaultAppConfiguration(Func<HttpContext, Task> testpath)
         {
-	        return app =>
-	        {
-		        app.UseAuthentication();
-		        app.UseMvcWithDefaultRoute();
-		        app.Use(async (context, next) =>
-		        {
-			        await testpath(context);
-			        await next();
-		        });
-		        app.Run(context => context.Response.WriteAsync(""));
-	        };
+            return app =>
+            {
+                app.UseAuthentication();
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                    endpoints.MapDefaultControllerRoute();
+                });
+                app.Use(async (context, next) =>
+                {
+                    await testpath(context);
+                    await next();
+                });
+                app.Run(context => context.Response.WriteAsync(""));
+            };
         }
     }
 }
