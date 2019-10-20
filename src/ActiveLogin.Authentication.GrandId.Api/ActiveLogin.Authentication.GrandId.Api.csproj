@@ -13,6 +13,7 @@
     <PackageId>ActiveLogin.Authentication.GrandId.Api</PackageId>
 
     <VersionPrefix>2.0.1</VersionPrefix>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
     <!--<VersionSuffix>beta-1</VersionSuffix>-->
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 

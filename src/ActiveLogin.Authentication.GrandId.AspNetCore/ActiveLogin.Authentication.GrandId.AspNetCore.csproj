@@ -4,7 +4,7 @@
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
-    <NoWarn>1701;1702;1591;CS7035</NoWarn>
+    <!--<NoWarn>1701;1702;1591;CS7035</NoWarn>-->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <AssemblyName>ActiveLogin.Authentication.GrandId.AspNetCore</AssemblyName>
@@ -12,6 +12,7 @@
 
     <VersionPrefix>3.0.0</VersionPrefix>
     <VersionSuffix>alpha-1</VersionSuffix>
+    <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
