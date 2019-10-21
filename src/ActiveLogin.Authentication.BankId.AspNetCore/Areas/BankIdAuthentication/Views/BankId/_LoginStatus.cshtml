@@ -2,13 +2,20 @@
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdAuthenticationHandler> Localizer
 
-<div class="card" id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
-    <div class="card-body">
-        <div class="status-spinner">
-            <partial name="_spinner" />
+
+<div id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
+    <div class="card">
+        <div class="card-body">
+            <div class="status-spinner">
+                <partial name="_spinner" />
+            </div>
+            <div class="status-message">@Model.LoginScriptOptions.InitialStatusMessage</div>
         </div>
-        <div class="status-message">@Model.LoginScriptOptions.InitialStatusMessage</div>
     </div>
+
+    <button type="button" class="btn btn-danger btn-block btn-cancel mt-2">
+        @Localizer["Cancel_Button"]
+    </button>
 </div>
 
 <button id="bankIdLoginStartApp" type="button" class="btn btn-primary btn-block mt-2" style="display: none;">

@@ -31,6 +31,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             logger.LogTrace(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth succedded for PersonalIdentityNumber '{PersonalIdentityNumber}' with the OrderRef '{OrderRef}'", personalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, orderRef);
         }
 
+        public static void BankIdAuthCancelled(this ILogger logger, string orderRef)
+        {
+            logger.LogInformation(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth was cancelled with the OrderRef '{OrderRef}'", orderRef);
+        }
+
         // BankID API - Collect
 
         public static void BankIdCollectFailure(this ILogger logger, string orderRef, BankIdApiException bankIdApiException)

@@ -4,8 +4,10 @@
     (function (options) {
         // Pre check
         var statusElement = document.querySelector('#bankIdLoginStatus');
+        var statusCardElement = statusElement.querySelector('.card');
         var statusSpinnerElement = statusElement.querySelector('.status-spinner');
         var statusMessageElement = statusElement.querySelector('.status-message');
+        var cancelButtonElement = statusElement.querySelector('.btn-cancel');
 
         var requiredFeatures = [window.fetch, window.sessionStorage];
         var isMissingSomeFeature = requiredFeatures.some(function(x) { return !x; });
@@ -78,7 +80,9 @@
 
         // BankID
 
+        var cancelled;
         function initialize(requestVerificationToken, returnUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
+            cancelled = false;
             formFieldsetElement.disabled = true;
             show(formSubmitButtonSpinnerElement);
             hide(formSubmitButtonTextElement);
@@ -116,6 +120,12 @@
                         if (data.checkStatus) {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
                         }
+
+                        cancelButtonElement.onclick = function(e) {
+                            e.preventDefault();
+                            cancel(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
+                            cancelButtonElement.onclick = undefined;
+                        };
                     }
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
@@ -126,6 +136,21 @@
                     hide(formSubmitButtonSpinnerElement);
                     formFieldsetElement.disabled = false;
                 });
+        }
+
+        function cancel(requestVerificationToken, returnUrl, loginOptions, orderRef) {
+            cancelled = true;
+            postJson(options.bankIdCancelApiUrl, requestVerificationToken, {
+                'orderRef': orderRef
+            }).then(function() {
+                hide(statusElement);
+                show(formElement);
+                formFieldsetElement.disabled = false;
+            }).catch(function(error) {
+                showStatus(error.message, 'danger', false);
+                hide(startBankIdAppButtonElement);
+                hide(cancelButtonElement);
+            });
         }
 
         function checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef) {
@@ -139,12 +164,14 @@
                     if (data.isFinished) {
                         window.location.href = data.redirectUri;
                     } else {
+                        if (cancelled) return;
                         showStatus(data.statusMessage, 'light', true);
                         setTimeout(function () {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
                         }, options.refreshIntervalMs);
                     }
                 }).catch(function (error) {
+                    if (cancelled) return;
                     showStatus(error.message, 'danger', false);
                     hide(startBankIdAppButtonElement);
                 });
@@ -186,7 +213,7 @@
                 textClass = '';
             }
 
-            statusElement.className = 'card bg-' + type + ' ' + textClass;
+            statusCardElement.className = 'card bg-' + type + ' ' + textClass;
             if (!!html) {
                 statusMessageElement.innerHTML = status;
             } else {

@@ -140,7 +140,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
-        public async Task BankIdAuthentication_Login_Returns_Form()
+        public async Task BankIdAuthentication_Login_Returns_Form_And_Status()
         {
             // Arrange
             var client = CreateServer(o =>
@@ -164,6 +164,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
             var content = await transaction.Content.ReadAsStringAsync();
             Assert.Contains("<form id=\"bankIdLoginForm\">", content);
+            Assert.Contains("<div id=\"bankIdLoginStatus\"", content);
         }
 
         [Fact]
