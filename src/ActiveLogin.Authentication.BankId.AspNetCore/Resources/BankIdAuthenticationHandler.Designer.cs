@@ -80,7 +80,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device..
+        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA14A {
             get {
@@ -89,7 +89,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this device. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device..
+        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this device. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA14B {
             get {
@@ -98,7 +98,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank..
+        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA15A {
             get {
@@ -107,7 +107,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this device. If you don’t have a BankID you can order one from your internet bank..
+        ///   Looks up a localized string similar to Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this device. If you don’t have a BankID you can order one from your internet bank..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA15B {
             get {
@@ -125,11 +125,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The BankID app couldn’t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from install.bankid.com..
+        ///   Looks up a localized string similar to The BankID app couldn’t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com..
         /// </summary>
-        internal static string BankIdUserMessage_ShortName_RFA17 {
+        internal static string BankIdUserMessage_ShortName_RFA17A {
             get {
-                return ResourceManager.GetString("BankIdUserMessage_ShortName_RFA17", resourceCulture);
+                return ResourceManager.GetString("BankIdUserMessage_ShortName_RFA17A", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to scan the QR code. Start the BankID app and scan the QR code. If you don&apos;t have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com..
+        /// </summary>
+        internal static string BankIdUserMessage_ShortName_RFA17B {
+            get {
+                return ResourceManager.GetString("BankIdUserMessage_ShortName_RFA17B", resourceCulture);
             }
         }
         
@@ -143,7 +152,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to login or sign with a BankID on this computer or with a Mobile BankID?.
+        ///   Looks up a localized string similar to Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?.
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA19 {
             get {
@@ -161,7 +170,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Would you like to login or sign with a BankID on this device or with a BankID on another device?.
+        ///   Looks up a localized string similar to Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?.
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA20 {
             get {
@@ -170,7 +179,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Login or signing in progress..
+        ///   Looks up a localized string similar to Identification or signing in progress..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA21 {
             get {

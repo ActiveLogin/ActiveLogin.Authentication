@@ -86,7 +86,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.UserMessage
         [InlineData(CollectHintCode.UserCancel, MessageShortName.RFA6)]
         [InlineData(CollectHintCode.ExpiredTransaction, MessageShortName.RFA8)]
         [InlineData(CollectHintCode.CertificateErr, MessageShortName.RFA16)]
-        [InlineData(CollectHintCode.StartFailed, MessageShortName.RFA17)]
+        [InlineData(CollectHintCode.StartFailed, MessageShortName.RFA17A)]
         [InlineData(CollectHintCode.Unknown, MessageShortName.RFA21)]
         public void GetMessageShortNameForCollectResponse_ShouldReturnReccomendedMessageForCollectResponse_FailedOrder(CollectHintCode collectHintCode, MessageShortName expected)
         {
