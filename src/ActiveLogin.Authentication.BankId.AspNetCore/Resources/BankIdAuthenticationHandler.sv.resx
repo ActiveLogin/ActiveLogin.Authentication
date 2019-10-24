@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -124,13 +124,13 @@
     <value>Försöker starta BankID-appen.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA14A" xml:space="preserve">
-    <value>Söker efter BankID, det kan ta en liten stund… Om det har gått några sekunder och inget BankID har hittats har du sannolikt inget BankID som går att använda för den aktuella inloggningen/underskriften i den här datorn. Om du har ett BankIDkort, sätt in det i kortläsaren. Om du inte har något BankID kan du hämta ett hos din internetbank. Om du har ett BankID på en annan enhet kan du starta din BankID-app där.</value>
+    <value>Söker efter BankID, det kan ta en liten stund… Om det har gått några sekunder och inget BankID har hittats har du sannolikt inget BankID som går att använda för den aktuella inloggningen/underskriften i den här datorn. Om du har ett BankID-kort, sätt in det i kortläsaren. Om du inte har något BankID kan du hämta ett hos din internetbank. Om du har ett BankID på en annan enhet kan du starta din BankID-app där.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA14B" xml:space="preserve">
     <value>Söker efter BankID, det kan ta en liten stund… Om det har gått några sekunder och inget BankID har hittats har du sannolikt inget BankID som går att använda för den aktuella inloggningen/underskriften i den här enheten. Om du inte har något BankID kan du hämta ett hos din internetbank. Om du har ett BankID på en annan enhet kan du starta din BankID-app där.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA15A" xml:space="preserve">
-    <value>Söker efter BankID, det kan ta en liten stund… Om det har gått några sekunder och inget BankID har hittats har du sannolikt inget BankID som går att använda för den aktuella inloggningen/underskriften i den här datorn. Om du har ett BankIDkort, sätt in det i kortläsaren. Om du inte har något BankID kan du hämta ett hos din internetbank.</value>
+    <value>Söker efter BankID, det kan ta en liten stund… Om det har gått några sekunder och inget BankID har hittats har du sannolikt inget BankID som går att använda för den aktuella inloggningen/underskriften i den här datorn. Om du har ett BankID-kort, sätt in det i kortläsaren. Om du inte har något BankID kan du hämta ett hos din internetbank.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA15B" xml:space="preserve">
     <value>Söker efter BankID, det kan ta en liten stund… Om det har gått några sekunder och inget BankID har hittats har du sannolikt inget BankID som går att använda för den aktuella inloggningen/underskriften i den här enheten. Om du inte har något BankID kan du hämta ett hos din internetbank.</value>
@@ -175,7 +175,7 @@
     <value>BankID-appen svarar inte. Kontrollera att den är startad och att du har internetanslutning. Om du inte har något giltigt BankID kan du hämta ett hos din Bank. Försök sedan igen.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA9" xml:space="preserve">
-    <value>Skriv in din säkerhetskod i BankIDappen och välj Legitimera eller Skriv under.</value>
+    <value>Skriv in din säkerhetskod i BankID-appen och välj Legitimera eller Skriv under.</value>
   </data>
   <data name="PersonalIdentityNumber_Label" xml:space="preserve">
     <value>Personnummer</value>
