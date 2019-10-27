@@ -6,18 +6,29 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
 {
     internal class FakeRemoteIpAddressMiddleware
     {
-        private readonly RequestDelegate next;
-        private readonly IPAddress fakeAddress = IPAddress.Parse("10.0.0.1");
+        private readonly RequestDelegate _next;
+        private readonly IPAddress _fakeAddress;
 
-        public FakeRemoteIpAddressMiddleware(RequestDelegate next)
+        /// <summary>
+        /// Sets up a middleware that will fake the remote ip
+        /// address of the request.
+        /// </summary>
+        /// <remarks>
+        /// 192.0.2.0/24 is the recommended range of addresses.
+        /// <see href="https://tools.ietf.org/html/rfc5737#section-1">RFC 5737</see>
+        /// </remarks>
+        /// <param name="next"></param>
+        /// <param name="fakeAddress"></param>
+        public FakeRemoteIpAddressMiddleware(RequestDelegate next, IPAddress fakeAddress)
         {
-            this.next = next;
+            this._next = next;
+            this._fakeAddress = fakeAddress;
         }
 
         public async Task Invoke(HttpContext httpContext)
         {
-            httpContext.Connection.RemoteIpAddress = fakeAddress;
-            await this.next(httpContext);
+            httpContext.Connection.RemoteIpAddress = _fakeAddress;
+            await this._next(httpContext);
         }
     }
 }

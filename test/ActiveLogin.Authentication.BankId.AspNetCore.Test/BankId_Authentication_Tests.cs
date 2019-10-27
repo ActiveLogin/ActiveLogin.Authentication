@@ -197,7 +197,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 	        var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 	        var loginCookies = loginResponse.Headers.GetValues("set-cookie");
 	        var loginContent = await loginResponse.Content.ReadAsStringAsync();
-	        var csrfToken = TokenHelper.ExtractToken(loginContent);
+	        var csrfToken = TokenExtractor.ExtractRequestVerificationTokenFromForm(loginContent);
 
 	        // Arrange acting request
 	        var testReturnUrl = "/TestReturnUrl";
@@ -246,7 +246,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         {
             return app =>
             {
-                app.UseMiddleware<FakeRemoteIpAddressMiddleware>();
+                app.UseMiddleware<FakeRemoteIpAddressMiddleware>(IPAddress.Parse("192.0.2.1"));
                 app.UseAuthentication();
                 app.UseRouting();
                 app.UseEndpoints(endpoints =>
