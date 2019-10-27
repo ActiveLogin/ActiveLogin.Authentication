@@ -159,6 +159,7 @@ namespace IdentityServer.ServerSample
             app.UseCookiePolicy();
             app.UseRouting();
 
+            app.UseAuthorization();
             app.UseIdentityServer();
 
             app.UseRequestLocalization(options =>
