@@ -15,9 +15,6 @@
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>StrongNameKey.snk</AssemblyOriginatorKeyFile>
-
     <Description>ASP.NET Core authentication module that enables an application to support GrandID's (Svensk E-identitet) authentication workflow.</Description>
     <PackageTags>grandid;bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 

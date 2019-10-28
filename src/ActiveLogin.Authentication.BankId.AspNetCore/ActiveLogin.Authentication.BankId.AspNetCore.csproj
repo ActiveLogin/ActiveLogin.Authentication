@@ -16,9 +16,6 @@
     <AssemblyVersion>3.0.0</AssemblyVersion>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>StrongNameKey.snk</AssemblyOriginatorKeyFile>
-
     <Description>ASP.NET Core middleware that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
     <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
