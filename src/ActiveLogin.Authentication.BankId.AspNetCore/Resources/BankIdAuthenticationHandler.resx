@@ -124,37 +124,40 @@
     <value>Trying to start your BankID app.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA14A" xml:space="preserve">
-    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.</value>
+    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA14B" xml:space="preserve">
-    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this device. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.</value>
+    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this device. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA15A" xml:space="preserve">
-    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank.</value>
+    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA15B" xml:space="preserve">
-    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this login/signature on this device. If you don’t have a BankID you can order one from your internet bank.</value>
+    <value>Searching for BankID:s, it may take a little while… If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this device. If you don’t have a BankID you can order one from your internet bank.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA16" xml:space="preserve">
     <value>The BankID you are trying to use is revoked or too old. Please use another BankID or order a new one from your internet bank.</value>
   </data>
-  <data name="BankIdUserMessage_ShortName_RFA17" xml:space="preserve">
-    <value>The BankID app couldn’t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from install.bankid.com.</value>
+  <data name="BankIdUserMessage_ShortName_RFA17A" xml:space="preserve">
+    <value>The BankID app couldn’t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.</value>
+  </data>
+  <data name="BankIdUserMessage_ShortName_RFA17B" xml:space="preserve">
+    <value>Failed to scan the QR code. Start the BankID app and scan the QR code. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA18" xml:space="preserve">
     <value>Start the BankID app</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA19" xml:space="preserve">
-    <value>Would you like to login or sign with a BankID on this computer or with a Mobile BankID?</value>
+    <value>Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA2" xml:space="preserve">
     <value>The BankID app is not installed. Please contact your internet bank.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA20" xml:space="preserve">
-    <value>Would you like to login or sign with a BankID on this device or with a BankID on another device?</value>
+    <value>Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA21" xml:space="preserve">
-    <value>Login or signing in progress.</value>
+    <value>Identification or signing in progress.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA22" xml:space="preserve">
     <value>Unknown error. Please try again.</value>

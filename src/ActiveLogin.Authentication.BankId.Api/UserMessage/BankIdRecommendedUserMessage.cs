@@ -25,7 +25,7 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             new CollectResponseMapping(MessageShortName.RFA6, CollectHintCode.UserCancel),
             new CollectResponseMapping(MessageShortName.RFA8, CollectHintCode.ExpiredTransaction),
             new CollectResponseMapping(MessageShortName.RFA16, CollectHintCode.CertificateErr),
-            new CollectResponseMapping(MessageShortName.RFA17, CollectHintCode.StartFailed),
+            new CollectResponseMapping(MessageShortName.RFA17A, CollectHintCode.StartFailed),
 
             new CollectResponseMapping(MessageShortName.RFA21, CollectStatus.Pending, CollectHintCode.Unknown),
             new CollectResponseMapping(MessageShortName.RFA22, CollectStatus.Failed, CollectHintCode.Unknown)
