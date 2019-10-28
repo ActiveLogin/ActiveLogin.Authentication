@@ -33,7 +33,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public static void BankIdAuthCancelled(this ILogger logger, string orderRef)
         {
-            logger.LogInformation(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth was cancelled with the OrderRef '{OrderRef}'", orderRef);
+            logger.LogInformation(BankIdLoggingEvents.BankIdAuthHardCancel, "BankID auth was cancelled with the OrderRef '{OrderRef}'", orderRef);
         }
 
         // BankID API - Collect

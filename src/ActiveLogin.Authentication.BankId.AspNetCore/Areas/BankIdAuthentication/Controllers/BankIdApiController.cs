@@ -265,14 +265,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         [ValidateAntiForgeryToken]
         [HttpPost("Cancel")]
-        public async Task<CancelResponse> Cancel(BankIdCancelApiStatusRequest request)
+        public async Task<ActionResult> Cancel(BankIdLoginApiCancelRequest request)
         {
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
-            var result = await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
+
+            await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
 
             _logger.BankIdAuthCancelled(orderRef.OrderRef);
 
-            return result;
+            return Ok(BankIdLoginApiCancelResponse.Cancelled());
         }
     }
 }

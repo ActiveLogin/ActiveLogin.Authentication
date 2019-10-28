@@ -4,7 +4,7 @@
 
 
 <div id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
-    <div class="card">
+    <div class="card status-wrapper">
         <div class="card-body">
             <div class="status-spinner">
                 <partial name="_spinner" />
@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <button type="button" class="btn btn-danger btn-block btn-cancel mt-2">
+    <button type="button" class="btn btn-link btn-block btn-cancel mt-2">
         @Localizer["Cancel_Button"]
     </button>
 </div>

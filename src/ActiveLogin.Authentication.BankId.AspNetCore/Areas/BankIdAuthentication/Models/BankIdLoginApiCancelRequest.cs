@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
-    public class BankIdCancelApiStatusRequest
+    public class BankIdLoginApiCancelRequest
     {
-        internal BankIdCancelApiStatusRequest()
+        internal BankIdLoginApiCancelRequest()
         {
 
         }
