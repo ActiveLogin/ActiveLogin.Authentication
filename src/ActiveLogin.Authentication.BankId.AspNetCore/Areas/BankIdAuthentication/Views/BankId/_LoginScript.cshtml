@@ -163,7 +163,7 @@
                 .then(function (data) {
                     if (data.isFinished) {
                         window.location.href = data.redirectUri;
-                    } else if(!loginIsCancelledByUser) {
+                    } else if (!loginIsCancelledByUser) {
                         showStatus(data.statusMessage, 'light', true);
                         setTimeout(function () {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
