@@ -34,7 +34,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             _bankIdLoginOptionsProtector = new Mock<IBankIdLoginOptionsProtector>();
             _bankIdLoginOptionsProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-                .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false));
+                .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false, false));
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
@@ -140,7 +140,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
-        public async Task BankIdAuthentication_Login_Returns_Form()
+        public async Task BankIdAuthentication_Login_Returns_Form_With_Qr()
         {
             // Arrange
             var client = CreateServer(o =>
@@ -164,6 +164,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
             var content = await transaction.Content.ReadAsStringAsync();
             Assert.Contains("<form id=\"bankIdLoginForm\">", content);
+            Assert.Contains("<img src=\"#\" title=\"qr-code\" alt=\"qr-code\" id=\"qr-code\"", content);
         }
 
         [Fact]

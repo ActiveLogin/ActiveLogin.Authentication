@@ -23,6 +23,7 @@
         // Elements
 
         var startBankIdAppButtonElement = document.querySelector('#bankIdLoginStartApp');
+        var qrCodeElement = document.querySelector("#qr-code");
 
         var formElement = document.querySelector('#bankIdLoginForm');
         var formFieldsetElement = formElement.querySelector('fieldset');
@@ -82,6 +83,7 @@
             formFieldsetElement.disabled = true;
             show(formSubmitButtonSpinnerElement);
             hide(formSubmitButtonTextElement);
+            hide(qrCodeElement);
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl,
@@ -106,6 +108,11 @@
                         }
                     }
 
+                    if (data.qrCodeAsBase64) {
+                        qrCodeElement.src = "data:image/png;base64, " + data.qrCodeAsBase64;
+                        show(qrCodeElement);
+                    }
+
                     if (!!data.personalIdentityNumber || !!data.PersonalIdentityNumber) {
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
@@ -121,6 +128,7 @@
                     hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
                     showStatus(error.message, 'danger', false);
+                    hide(qrCodeElement);
                     hide(startBankIdAppButtonElement);
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);

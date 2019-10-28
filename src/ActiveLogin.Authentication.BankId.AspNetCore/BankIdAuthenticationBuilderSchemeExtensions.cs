@@ -64,6 +64,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 options.CallbackPath = BankIdAuthenticationDefaults.OtherDeviceCallbackPath;
                 options.BankIdAutoLaunch = false;
                 options.BankIdAllowChangingPersonalIdentityNumber = true;
+                options.BankIdUseQrCode = true;
             });
     }
 }

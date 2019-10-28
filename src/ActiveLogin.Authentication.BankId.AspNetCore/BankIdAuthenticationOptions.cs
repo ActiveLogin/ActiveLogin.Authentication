@@ -67,5 +67,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             get => _stateCookieBuilder;
             set => _stateCookieBuilder = value ?? throw new ArgumentNullException(nameof(value));
         }
+
+        public bool BankIdUseQrCode { get; set; } = false;
     }
 }

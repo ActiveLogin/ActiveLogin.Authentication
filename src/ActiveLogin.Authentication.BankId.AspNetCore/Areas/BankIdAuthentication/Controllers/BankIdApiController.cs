@@ -38,6 +38,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdResultStore _bankIdResultStore;
+        private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
 
         public BankIdApiController(
             UrlEncoder urlEncoder,
@@ -50,7 +51,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdOrderRefProtector orderRefProtector,
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
-            IBankIdResultStore bankIdResultStore)
+            IBankIdResultStore bankIdResultStore,
+            IBankIdQrCodeGenerator qrCodeGenerator)
         {
             _urlEncoder = urlEncoder;
             _logger = logger;
@@ -63,6 +65,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
             _bankIdResultStore = bankIdResultStore;
+            _qrCodeGenerator = qrCodeGenerator;
         }
 
         [ValidateAntiForgeryToken]
@@ -116,6 +119,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                     : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, detectedDevice.IsAndroid);
 
                 return Ok(response);
+            }
+
+            if (unprotectedLoginOptions.BankIdUseQrCode)
+            {
+                var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(authResponse.AutoStartToken);
+                return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, qrCode));
             }
 
             return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));

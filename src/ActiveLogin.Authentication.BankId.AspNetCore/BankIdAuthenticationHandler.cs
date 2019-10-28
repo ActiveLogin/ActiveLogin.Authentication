@@ -9,7 +9,6 @@ using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -143,7 +142,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 GetSwedishPersonalIdentityNumber(properties),
                 Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdAutoLaunch,
-                Options.BankIdAllowBiometric
+                Options.BankIdAllowBiometric,
+                Options.BankIdUseQrCode
             );
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);

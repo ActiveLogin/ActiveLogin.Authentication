@@ -9,7 +9,7 @@
     <input name="AutoLogin" type="hidden" value="@(Model.AutoLogin ? "true" : "false")" />
 
     <fieldset>
-        @if (Model.UnprotectedLoginOptions.AllowChangingPersonalIdentityNumber)
+        @if (!Model.AutoLogin)
         {
             <div class="form-group mb-2">
                 <label for="bankIdLoginPersonalIdentityNumber">@Localizer["PersonalIdentityNumber_Label"]</label>
@@ -25,4 +25,5 @@
             </button>
         }
     </fieldset>
+
 </form>
