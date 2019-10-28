@@ -158,7 +158,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private string GetAbsoluteUrl(string returnUrl)
         {
-            var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
+            var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}";
             return absoluteUri + returnUrl;
         }
 
