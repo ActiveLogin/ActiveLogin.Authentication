@@ -11,14 +11,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
             bool allowChangingPersonalIdentityNumber,
             bool autoLaunch,
             bool allowBiometric,
-            bool idUseQrCode)
+            bool useQrCode)
         {
             CertificatePolicies = certificatePolicies;
             PersonalIdentityNumber = personalIdentityNumber;
             AllowChangingPersonalIdentityNumber = allowChangingPersonalIdentityNumber;
             AutoLaunch = autoLaunch;
             AllowBiometric = allowBiometric;
-            BankIdUseQrCode = idUseQrCode;
+            UseQrCode = useQrCode;
         }
 
         public List<string> CertificatePolicies { get; }
@@ -30,6 +30,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
 
         public bool AllowBiometric { get; }
 
-        public bool BankIdUseQrCode { get; set; }
+        public bool UseQrCode { get; set; }
     }
 }

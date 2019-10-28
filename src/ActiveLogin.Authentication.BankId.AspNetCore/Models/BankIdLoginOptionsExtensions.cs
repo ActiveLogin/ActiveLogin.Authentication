@@ -5,7 +5,7 @@
         public static bool IsAutoLogin(this BankIdLoginOptions bankIdLoginOptions)
         {
             return !bankIdLoginOptions.AllowChangingPersonalIdentityNumber ||
-                   bankIdLoginOptions.BankIdUseQrCode;
+                   bankIdLoginOptions.UseQrCode;
         }
     }
 }

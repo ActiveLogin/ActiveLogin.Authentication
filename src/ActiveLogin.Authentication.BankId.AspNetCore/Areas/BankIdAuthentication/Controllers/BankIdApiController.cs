@@ -121,7 +121,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 return Ok(response);
             }
 
-            if (unprotectedLoginOptions.BankIdUseQrCode)
+            if (unprotectedLoginOptions.UseQrCode)
             {
                 var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(authResponse.AutoStartToken);
                 return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, qrCode));

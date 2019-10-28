@@ -8,7 +8,7 @@
             bool checkStatus,
             string orderRef,
             string redirectUri,
-            string qrCodeAsBase64 = null)
+            string qrCodeAsBase64)
         {
             IsAutoLaunch = isAutoLaunch;
             ShowLaunchButton = showLaunchButton;
@@ -29,12 +29,12 @@
 
         public static BankIdLoginApiInitializeResponse AutoLaunch(string orderRef, string redirectUri, bool showLaunchButton)
         {
-            return new BankIdLoginApiInitializeResponse(true, showLaunchButton, false, orderRef, redirectUri);
+            return new BankIdLoginApiInitializeResponse(true, showLaunchButton, false, orderRef, redirectUri, null);
         }
 
         public static BankIdLoginApiInitializeResponse AutoLaunchAndCheckStatus(string orderRef, string redirectUri, bool showLaunchButton)
         {
-            return new BankIdLoginApiInitializeResponse(true, showLaunchButton, true, orderRef, redirectUri);
+            return new BankIdLoginApiInitializeResponse(true, showLaunchButton, true, orderRef, redirectUri, null);
         }
 
         public static BankIdLoginApiInitializeResponse ManualLaunch(string orderRef, string qrCodeAsBase64)
@@ -44,7 +44,7 @@
 
         public static BankIdLoginApiInitializeResponse ManualLaunch(string orderRef)
         {
-            return new BankIdLoginApiInitializeResponse(false, false, true, orderRef, null);
+            return new BankIdLoginApiInitializeResponse(false, false, true, orderRef, null, null);
         }
     }
 }
