@@ -164,7 +164,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
             var content = await transaction.Content.ReadAsStringAsync();
             Assert.Contains("<form id=\"bankIdLoginForm\">", content);
-            Assert.Contains("<img src=\"#\" alt=\"QR Code for BankID\" class=\"qr-code-image\" style=\"display: none;\" />", content);
+            Assert.Contains("<img src=\"\" alt=\"QR Code for BankID\" class=\"qr-code-image\" style=\"display: none;\" />", content);
         }
 
         [Fact]
