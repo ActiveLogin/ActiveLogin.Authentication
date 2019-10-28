@@ -10,12 +10,17 @@ using System.Net;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
@@ -161,7 +166,60 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Contains("<form id=\"bankIdLoginForm\">", content);
         }
 
+        [Fact]
+        public async Task AutoLaunch_Sets_Correct_RedirectUri()
+        {
+	        // Arrange mocks
+	        var identityNumber = "195008212226";
+	        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), SwedishPersonalIdentityNumber.Parse(identityNumber), false, true, false);
+	        var mockProtector =  new Mock<IBankIdLoginOptionsProtector>();
+	        mockProtector
+		        .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+		        .Returns(autoLaunchOptions);
 
+	        var client = CreateServer(
+			        o =>
+			        {
+				        o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();
+				        o.UseSimulatedEnvironment().AddSameDevice();
+			        },
+			        DefaultAppConfiguration(async context =>
+			        {
+				        await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+			        }),
+			        services =>
+			        {
+				        services.AddTransient(s => mockProtector.Object);
+			        })
+		        .CreateClient();
+
+	        // Arrange csrf info
+	        var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+	        var loginCookies = loginResponse.Headers.GetValues("set-cookie");
+	        var loginContent = await loginResponse.Content.ReadAsStringAsync();
+	        var csrfToken = TokenExtractor.ExtractRequestVerificationTokenFromForm(loginContent);
+
+	        // Arrange acting request
+	        var testReturnUrl = "/TestReturnUrl";
+	        var testOptions = "TestOptions";
+	        var initializeRequest = new JsonContent(new  { returnUrl = testReturnUrl, loginOptions = testOptions });
+	        initializeRequest.Headers.Add("Cookie", loginCookies);
+	        initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
+
+	        // Act
+	        var transaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
+
+	        // Assert
+	        Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+
+	        var responseContent = await transaction.Content.ReadAsStringAsync();
+	        var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
+	        Assert.True(responseObject.IsAutoLaunch);
+
+	        var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
+	        var expectedUrl = $"http://localhost/BankIdAuthentication/Login?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
+	        Assert.Equal(expectedUrl, responseObject.RedirectUri);
+        }
 
         private TestServer CreateServer(
             Action<IBankIdAuthenticationBuilder> configureBankId,
@@ -188,6 +246,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         {
             return app =>
             {
+                app.UseMiddleware<FakeRemoteIpAddressMiddleware>(IPAddress.Parse("192.0.2.1"));
                 app.UseAuthentication();
                 app.UseRouting();
                 app.UseEndpoints(endpoints =>
