@@ -33,7 +33,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _loginOptionsProtector = loginOptionsProtector;
             _localizer = localizer;
         }
-    
+
         [HttpGet]
         public ActionResult Login(string returnUrl, string loginOptions)
         {
@@ -48,7 +48,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
             return View(viewModel);
         }
-        
+
         private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
         {
             var loginScriptOptions = new BankIdLoginScriptOptions
@@ -61,7 +61,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 UnsupportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"],
 
                 BankIdInitializeApiUrl = Url.Action("Initialize", "BankIdApi"),
-                BankIdStatusApiUrl = Url.Action("Status", "BankIdApi")
+                BankIdStatusApiUrl = Url.Action("Status", "BankIdApi"),
+                BankIdCancelApiUrl = Url.Action("Cancel", "BankIdApi")
             };
 
             return new BankIdLoginViewModel

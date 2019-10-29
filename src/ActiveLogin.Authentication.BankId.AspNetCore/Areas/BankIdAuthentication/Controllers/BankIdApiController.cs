@@ -262,5 +262,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var delimiter = url.Contains("?") ? "&" : "?";
             return $"{url}{delimiter}{queryString}";
         }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost("Cancel")]
+        public async Task<ActionResult> Cancel(BankIdLoginApiCancelRequest request)
+        {
+            var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
+
+            await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
+
+            _logger.BankIdAuthCancelled(orderRef.OrderRef);
+
+            return Ok(BankIdLoginApiCancelResponse.Cancelled());
+        }
     }
 }

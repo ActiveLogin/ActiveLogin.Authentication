@@ -296,6 +296,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel_Button {
+            get {
+                return ResourceManager.GetString("Cancel_Button", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Your browser does not have the features required to use this login page..
         /// </summary>
         internal static string UnsupportedBrowser_ErrorMessage {
