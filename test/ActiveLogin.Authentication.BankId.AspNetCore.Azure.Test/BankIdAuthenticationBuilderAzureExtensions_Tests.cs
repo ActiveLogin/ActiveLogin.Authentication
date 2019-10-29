@@ -41,7 +41,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
 
                 var provider = SetupTest(config);
 
-                Assert.Throws<UriFormatException>(() => provider.GetService<IBankIdApiClient>());
+                Assert.Throws<ArgumentException>(() => provider.GetService<IBankIdApiClient>());
+            }
+
+            [Fact]
+            public void With_ManagedIdentity_With_MalformedCertificateIdentifier__Throws()
+            {
+                var config = new Dictionary<string, string>
+                {
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier", "somecertificate" },
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "true" }
+                };
+
+                var provider = SetupTest(config);
+
+                Assert.Throws<ArgumentException>(() => provider.GetService<IBankIdApiClient>());
             }
 
             [Fact]
