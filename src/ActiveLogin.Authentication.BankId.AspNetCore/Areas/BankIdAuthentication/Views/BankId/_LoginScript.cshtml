@@ -121,11 +121,11 @@
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
                         }
 
-                        cancelButtonElement.addEventListener('click', function (event) {
-                            event.preventDefault();
+                        var onCancelButtonClick = function(event) {
                             cancel(requestVerificationToken, data.orderRef);
-                            cancelButtonElement.onclick = undefined;
-                        });
+                            event.target.removeEventListener('click', onCancelButtonClick);
+                        };
+                        cancelButtonElement.addEventListener('click', onCancelButtonClick);
                     }
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
