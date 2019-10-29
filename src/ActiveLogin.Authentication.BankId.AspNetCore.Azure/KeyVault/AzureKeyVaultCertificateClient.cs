@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using static Microsoft.Azure.KeyVault.KeyVaultClient;
@@ -66,6 +67,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
 
         public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
         {
+            if (IsSecretIdentifier(keyVaultSecretIdentifier))
+            {
+                return await CertificateFromKeyVaultSecret(keyVaultSecretIdentifier);
+            }
+
+            if (IsCertificateIdentifier(keyVaultSecretIdentifier))
+            {
+                return await CertificateFromKeyVaultCertificate(keyVaultSecretIdentifier);
+            }
+
+            throw new ArgumentException($"The identifier did not match secrets or certificates");
+        }
+
+        private async Task<X509Certificate2> CertificateFromKeyVaultSecret(string keyVaultSecretIdentifier)
+        {
             var secret = await _keyVaultClient.GetSecretAsync(keyVaultSecretIdentifier).ConfigureAwait(false);
             if (secret.ContentType != CertificateContentType)
             {
@@ -75,6 +91,24 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             var certificateBytes = Convert.FromBase64String(secret.Value);
 
             return GetX509Certificate2(certificateBytes);
+        }
+
+        private async Task<X509Certificate2> CertificateFromKeyVaultCertificate(string keyVaultSecretIdentifier)
+        {
+            var bundle = await _keyVaultClient.GetCertificateAsync(keyVaultSecretIdentifier).ConfigureAwait(false);
+            var certificateBytes = bundle.Cer;
+
+            return GetX509Certificate2(certificateBytes);
+        }
+
+        private bool IsSecretIdentifier(string identifier)
+        {
+            return identifier.Contains("/secrets/");
+        }
+
+        private bool IsCertificateIdentifier(string identifier)
+        {
+            return identifier.Contains("/certificates/");
         }
 
         private X509Certificate2 GetX509Certificate2(byte[] certificate)
