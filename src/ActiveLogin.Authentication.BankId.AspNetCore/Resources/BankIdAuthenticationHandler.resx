@@ -198,6 +198,9 @@
   <data name="Qr_Code_Image" xml:space="preserve">
     <value>QR Code for BankID</value>
   </data>
+  <data name="Cancel_Button" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="UnsupportedBrowser_ErrorMessage" xml:space="preserve">
     <value>Your browser does not have the features required to use this login page.</value>
   </data>

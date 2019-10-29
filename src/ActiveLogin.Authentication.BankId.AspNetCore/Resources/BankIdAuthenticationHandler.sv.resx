@@ -198,6 +198,9 @@
   <data name="Qr_Code_Image" xml:space="preserve">
     <value>QR-kod för BankID</value>
   </data>
+  <data name="Cancel_Button" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
   <data name="UnsupportedBrowser_ErrorMessage" xml:space="preserve">
     <value>Din webbläsare saknar funktioner som krävs för att använda denna loginsida.</value>
   </data>

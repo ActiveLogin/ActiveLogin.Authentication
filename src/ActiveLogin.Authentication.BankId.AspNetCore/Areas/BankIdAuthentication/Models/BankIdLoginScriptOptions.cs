@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     {
         internal BankIdLoginScriptOptions()
         {
-            
+
         }
 
         private const int MinimumRefreshIntervalMs = 1000;
@@ -34,6 +34,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         [DataMember(Name = "bankIdStatusApiUrl")]
         public string BankIdStatusApiUrl { get; set; }
+
+        [DataMember(Name = "bankIdCancelApiUrl")]
+        public string BankIdCancelApiUrl { get; set; }
 
         [DataMember(Name = "initialStatusMessage")]
         public string InitialStatusMessage { get; set; } = string.Empty;

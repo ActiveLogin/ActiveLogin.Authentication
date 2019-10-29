@@ -10,8 +10,13 @@
         <div class="status-spinner">
             <partial name="_spinner"/>
         </div>
+
         <div class="status-message">@Model.LoginScriptOptions.InitialStatusMessage</div>
     </div>
+
+    <button type="button" class="btn btn-link btn-block btn-cancel mt-2">
+        @Localizer["Cancel_Button"]
+    </button>
 </div>
 
 <button id="bankIdLoginStartApp" type="button" class="btn btn-primary btn-block mt-2" style="display: none;">

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
@@ -6,14 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
-using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 {
@@ -140,7 +142,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
-        public async Task BankIdAuthentication_Login_Returns_Form_With_Qr()
+        public async Task BankIdAuthentication_Login_Returns_Form_And_Status()
         {
             // Arrange
             var client = CreateServer(o =>
@@ -162,8 +164,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+
             var content = await transaction.Content.ReadAsStringAsync();
             Assert.Contains("<form id=\"bankIdLoginForm\">", content);
+            Assert.Contains("<div id=\"bankIdLoginStatus\"", content);
             Assert.Contains("<img src=\"\" alt=\"QR Code for BankID\" class=\"qr-code-image\" style=\"display: none;\" />", content);
         }
 
@@ -171,8 +175,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task AutoLaunch_Sets_Correct_RedirectUri()
         {
 	        // Arrange mocks
-	        var identityNumber = "195008212226";
-	        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), SwedishPersonalIdentityNumber.Parse(identityNumber), false, true, false, true);
+	        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false);
 	        var mockProtector =  new Mock<IBankIdLoginOptionsProtector>();
 	        mockProtector
 		        .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -214,12 +217,70 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 	        Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
 	        var responseContent = await transaction.Content.ReadAsStringAsync();
-	        var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
+            var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
 	        Assert.True(responseObject.IsAutoLaunch);
 
 	        var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
 	        var expectedUrl = $"http://localhost/BankIdAuthentication/Login?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
 	        Assert.Equal(expectedUrl, responseObject.RedirectUri);
+        }
+
+        [Fact]
+        public async Task Cancel_Calls_CancelApi()
+        {
+            // Arrange mocks
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false);
+            var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+            mockProtector
+                .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+                .Returns(autoLaunchOptions);
+            var testBankIdApi = new TestBankIdApi(new BankIdSimulatedApiClient());
+
+            var client = CreateServer(
+                    o =>
+                    {
+                        o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                        o.UseSimulatedEnvironment().AddSameDevice();
+                    },
+                    DefaultAppConfiguration(async context =>
+                    {
+                        await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                    }),
+                    services =>
+                    {
+                        services.AddTransient(s => mockProtector.Object);
+                        services.AddSingleton<IBankIdApiClient>(s => testBankIdApi);
+                    })
+                .CreateClient();
+
+            // Arrange csrf info
+            var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            var loginCookies = loginResponse.Headers.GetValues("set-cookie").ToList();
+            var loginContent = await loginResponse.Content.ReadAsStringAsync();
+            var csrfToken = TokenExtractor.ExtractRequestVerificationTokenFromForm(loginContent);
+
+            // Arrange acting request
+            var testReturnUrl = "/TestReturnUrl";
+            var testOptions = "TestOptions";
+
+            var initializeRequest = new JsonContent(new { returnUrl = testReturnUrl, loginOptions = testOptions });
+            initializeRequest.Headers.Add("Cookie", loginCookies);
+            initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
+
+            var initializeTransaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
+            var initializeResponseContent = await initializeTransaction.Content.ReadAsStringAsync();
+            var initializeObject = JsonConvert.DeserializeAnonymousType(initializeResponseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
+
+            var cancelRequest = new JsonContent(new { orderRef = initializeObject.OrderRef });
+            cancelRequest.Headers.Add("Cookie", loginCookies);
+            cancelRequest.Headers.Add("RequestVerificationToken", csrfToken);
+
+            // Act
+            var cancelTransaction = await client.PostAsync("/BankIdAuthentication/Api/Cancel", cancelRequest);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, cancelTransaction.StatusCode);
+            Assert.True(testBankIdApi.CancelAsyncIsCalled);
         }
 
         private TestServer CreateServer(
@@ -262,6 +323,39 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 });
                 app.Run(context => context.Response.WriteAsync(""));
             };
+        }
+
+        private class TestBankIdApi : IBankIdApiClient
+        {
+            private readonly IBankIdApiClient _bankIdApiClient;
+
+            public bool CancelAsyncIsCalled { get; private set; }
+
+            public TestBankIdApi(IBankIdApiClient bankIdApiClient)
+            {
+                _bankIdApiClient = bankIdApiClient;
+            }
+
+            public Task<AuthResponse> AuthAsync(AuthRequest request)
+            {
+                return _bankIdApiClient.AuthAsync(request);
+            }
+
+            public Task<SignResponse> SignAsync(SignRequest request)
+            {
+                return _bankIdApiClient.SignAsync(request);
+            }
+
+            public Task<CollectResponse> CollectAsync(CollectRequest request)
+            {
+                return _bankIdApiClient.CollectAsync(request);
+            }
+
+            public Task<CancelResponse> CancelAsync(CancelRequest request)
+            {
+                CancelAsyncIsCalled = true;
+                return _bankIdApiClient.CancelAsync(request);
+            }
         }
     }
 }
