@@ -36,7 +36,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             _bankIdLoginOptionsProtector = new Mock<IBankIdLoginOptionsProtector>();
             _bankIdLoginOptionsProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-                .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false, false));
+
+                .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false, false, String.Empty));
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
@@ -175,7 +176,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task AutoLaunch_Sets_Correct_RedirectUri()
         {
 	        // Arrange mocks
-	        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
 	        var mockProtector =  new Mock<IBankIdLoginOptionsProtector>();
 	        mockProtector
 		        .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -229,7 +230,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Cancel_Calls_CancelApi()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))

@@ -143,7 +143,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdAutoLaunch,
                 Options.BankIdAllowBiometric,
-                Options.BankIdUseQrCode
+                Options.BankIdUseQrCode,
+                GetCancelUrl(properties)
             );
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
@@ -164,6 +165,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             }
 
             return null;
+        }
+
+        private string GetCancelUrl(AuthenticationProperties properties)
+        {
+            return properties.Items.TryGetValue("cancelReturnUrl", out var url) ? url : string.Empty;
         }
 
         private string GetLoginUrl(BankIdLoginOptions loginOptions)

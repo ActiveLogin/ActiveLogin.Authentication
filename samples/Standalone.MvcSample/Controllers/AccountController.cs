@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.BankId.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,11 @@ namespace Standalone.MvcSample.Controllers
                     {"scheme", provider}
                 }
             };
+
+            if (provider.Equals(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme))
+            {
+                props.Items["cancelReturnUrl"] = "~/";
+            }
 
             return Challenge(props, provider);
         }

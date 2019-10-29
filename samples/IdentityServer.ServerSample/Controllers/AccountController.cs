@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.BankId.AspNetCore;
 using IdentityServer.ServerSample.Models;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -50,6 +51,11 @@ namespace IdentityServer.ServerSample.Controllers
                     {"scheme", provider}
                 }
             };
+
+            if (provider.Equals(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme))
+            {
+                props.Items["cancelReturnUrl"] = returnUrl;
+            }
 
             return Challenge(props, provider);
         }
