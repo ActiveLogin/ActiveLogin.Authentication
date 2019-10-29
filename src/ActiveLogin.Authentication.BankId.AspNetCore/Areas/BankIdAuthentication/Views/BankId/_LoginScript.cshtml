@@ -163,6 +163,10 @@
         }
 
         function checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef) {
+            if (loginIsCancelledByUser) {
+                return;
+            }
+
             postJson(options.bankIdStatusApiUrl, requestVerificationToken,
                 {
                     'orderRef': orderRef,
