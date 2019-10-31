@@ -14,8 +14,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
     {
         public static AzureKeyVaultCertificateClient Create(ClientCertificateFromAzureKeyVaultOptions options)
         {
-            if (string.IsNullOrWhiteSpace(options.AzureKeyVaultSecretIdentifier))
-                throw new ArgumentException("AzureKeyVaultSecretIdentifier is required");
+            if (string.IsNullOrWhiteSpace(options.AzureKeyVaultIdentifier))
+                throw new ArgumentException("AzureKeyVaultIdentifier is required");
 
             if (!options.UseManagedIdentity)
             {
@@ -65,19 +65,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             _keyVaultClient = client;
         }
 
-        public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultSecretIdentifier)
+        public async Task<X509Certificate2> GetX509Certificate2Async(string keyVaultIdentifier)
         {
-            if (IsSecretIdentifier(keyVaultSecretIdentifier))
+            if (IsSecretIdentifier(keyVaultIdentifier))
             {
-                return await CertificateFromKeyVaultSecret(keyVaultSecretIdentifier);
+                return await CertificateFromKeyVaultSecret(keyVaultIdentifier);
             }
 
-            if (IsCertificateIdentifier(keyVaultSecretIdentifier))
+            if (IsCertificateIdentifier(keyVaultIdentifier))
             {
-                return await CertificateFromKeyVaultCertificate(keyVaultSecretIdentifier);
+                return await CertificateFromKeyVaultCertificate(keyVaultIdentifier);
             }
 
-            throw new ArgumentException($"The identifier did not match secrets or certificates");
+            throw new ArgumentException($"The identifier did not match secrets or certificates.");
         }
 
         private async Task<X509Certificate2> CertificateFromKeyVaultSecret(string keyVaultSecretIdentifier)

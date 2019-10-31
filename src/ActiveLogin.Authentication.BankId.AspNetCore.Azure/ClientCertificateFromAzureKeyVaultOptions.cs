@@ -4,7 +4,7 @@
     {
         public string AzureAdClientId { get; set; }
         public string AzureAdClientSecret { get; set; }
-        public string AzureKeyVaultSecretIdentifier { get; set; }
+        public string AzureKeyVaultIdentifier { get; set; }
         public bool UseManagedIdentity { get; set; }
     }
 }

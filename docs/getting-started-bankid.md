@@ -29,11 +29,11 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 
 1. Deploy Azure KeyVault to your subscription. The ARM-template available in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)  contains configuration that creates a KeyVault and enables [Managed Service Identity](https://azure.microsoft.com/en-us/resources/samples/app-service-msi-keyvault-dotnet/) for the App Service.
 1. [Import the certificates](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate) to your Azure Key Vault.
-1. Add the following to your config, the secret identifier is expected in the form of `"https://[keyvaultname].vault.azure.net/secrets/[keyidentifier]"` .
+1. Add the following to your config, the identifier is expected in the form of `"https://[keyvaultname].vault.azure.net/secrets/[keyidentifier]"` or  `"https://[keyvaultname].vault.azure.net/certificates/[certificateidentifier]"` depending on how you choose to store your certificate.
 
 ```json
 {
-  "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier": "TODO-ADD-YOUR-VALUE",
+  "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultIdentifier": "TODO-ADD-YOUR-VALUE",
   "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity": true
 }
 ```
