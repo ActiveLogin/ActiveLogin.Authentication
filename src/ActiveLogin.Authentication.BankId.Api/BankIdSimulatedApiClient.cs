@@ -14,6 +14,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         private const string DefaultGivenName = "GivenName";
         private const string DefaultSurname = "Surname";
         private const string DefaultPersonalIdentityNumber = "199908072391";
+        private const string DefaultEndUserIp = "127.0.0.1";
 
         private static readonly List<CollectState> DefaultCollectStates = new List<CollectState>
         {
@@ -91,19 +92,14 @@ namespace ActiveLogin.Authentication.BankId.Api
             return new SignResponse(response.OrderRef, response.AutoStartToken);
         }
 
-        private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
+        private async Task<OrderResponse> GetOrderReponseAsync(string? personalIdentityNumber, string? endUserIp)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(personalIdentityNumber))
-            {
-                personalIdentityNumber = _personalIdentityNumber;
-            }
-
-            await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
+            await EnsureNoExistingAuth(personalIdentityNumber ?? _personalIdentityNumber).ConfigureAwait(false);
 
             var orderRef = Guid.NewGuid().ToString();
-            var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
+            var auth = new Auth(endUserIp, orderRef, personalIdentityNumber ?? _personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
             var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
@@ -134,7 +130,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             var auth = _auths[request.OrderRef];
             var status = GetStatus(auth.CollectCalls);
             var hintCode = GetHintCode(auth.CollectCalls);
-            var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
+            var completionData = GetCompletionData(auth.EndUserIp ?? DefaultEndUserIp, auth.PersonalIdentityNumber ?? DefaultPersonalIdentityNumber);
 
             var response = new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
 
@@ -153,13 +149,8 @@ namespace ActiveLogin.Authentication.BankId.Api
             return response;
         }
 
-        private CompletionData GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
+        private CompletionData GetCompletionData(string endUserIp, string personalIdentityNumber)
         {
-            if (status != CollectStatus.Complete)
-            {
-                return null;
-            }
-
             var user = new User(personalIdentityNumber, _name, _givenName, _surname);
             var device = new Device(endUserIp);
 
@@ -216,18 +207,18 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private class Auth
         {
-            public Auth(string endUserIp, string orderRef, string personalIdentityNumber)
+            public Auth(string? endUserIp, string orderRef, string? personalIdentityNumber)
             {
                 EndUserIp = endUserIp;
                 OrderRef = orderRef;
                 PersonalIdentityNumber = personalIdentityNumber;
             }
 
-            public string EndUserIp { get; }
+            public string? EndUserIp { get; }
 
             public string OrderRef { get; }
 
-            public string PersonalIdentityNumber { get; }
+            public string? PersonalIdentityNumber { get; }
 
             public int CollectCalls { get; set; }
         }

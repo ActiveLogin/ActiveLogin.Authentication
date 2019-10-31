@@ -16,5 +16,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
 
         [DataMember(Name = "details")]
         public string Details { get; private set; }
+        
+        public static Error Empty => new Error(string.Empty, string.Empty);
     }
 }

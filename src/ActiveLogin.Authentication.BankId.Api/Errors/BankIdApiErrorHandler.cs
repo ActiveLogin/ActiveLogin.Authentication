@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
             catch (HttpRequestException e)
             {
-                if (error != null)
+                if (error != Error.Empty)
                 {
                     throw new BankIdApiException(error, e);
                 }
@@ -42,7 +42,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
                 }
             }
 
-            return null;
+            return Error.Empty;
         }
     }
 }

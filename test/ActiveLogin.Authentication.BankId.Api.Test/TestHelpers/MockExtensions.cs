@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test.TestHelpers
@@ -12,6 +13,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.TestHelpers
 
             Assert.NotEmpty(invocation.Arguments);
             var argument = invocation.Arguments[0] as TArgument;
+            
+            if (argument == null)
+            {
+                throw new NullReferenceException($"{nameof(argument)} is null");
+            }
 
             return argument;
         }

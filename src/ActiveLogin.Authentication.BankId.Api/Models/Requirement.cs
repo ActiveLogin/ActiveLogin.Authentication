@@ -26,7 +26,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If set to true, the users are allowed to use fingerprint.
         /// If set to false, the users are not allowed to use fingerprint.
         /// </param>
-        public Requirement(List<string> certificatePolicies = null, bool? autoStartTokenRequired = null, bool? allowFingerprint = null)
+        public Requirement(List<string>? certificatePolicies = null, bool? autoStartTokenRequired = null, bool? allowFingerprint = null)
         {
             CertificatePolicies = certificatePolicies;
             AutoStartTokenRequired = autoStartTokenRequired;
@@ -37,7 +37,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The oid in certificate policies in the user certificate. List of String.
         /// </summary>
         [DataMember(Name = "certificatePolicies", EmitDefaultValue = false)]
-        public List<string> CertificatePolicies { get; private set; }
+        public List<string>? CertificatePolicies { get; private set; }
 
         /// <summary>
         /// If set to true, the client must have been started using the AutoStartToken.
