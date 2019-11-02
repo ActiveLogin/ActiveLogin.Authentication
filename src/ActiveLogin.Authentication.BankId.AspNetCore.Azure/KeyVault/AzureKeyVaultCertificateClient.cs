@@ -93,9 +93,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
             return GetX509Certificate2(certificateBytes);
         }
 
-        private async Task<X509Certificate2> CertificateFromKeyVaultCertificate(string keyVaultSecretIdentifier)
+        private async Task<X509Certificate2> CertificateFromKeyVaultCertificate(string keyVaultCertificateIdentifier)
         {
-            var bundle = await _keyVaultClient.GetCertificateAsync(keyVaultSecretIdentifier).ConfigureAwait(false);
+            var bundle = await _keyVaultClient.GetCertificateAsync(keyVaultCertificateIdentifier).ConfigureAwait(false);
             var certificateBytes = bundle.Cer;
 
             return GetX509Certificate2(certificateBytes);
