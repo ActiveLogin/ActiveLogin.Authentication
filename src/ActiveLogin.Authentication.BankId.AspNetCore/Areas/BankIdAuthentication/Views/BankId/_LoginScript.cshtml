@@ -24,7 +24,7 @@
         // Elements
 
         var startBankIdAppButtonElement = document.querySelector('#bankIdLoginStartApp');
-        var qrCodeElement = statusElement.querySelector(".qr-code-image");
+        var qrCodeElement = statusElement.querySelector('.qr-code-image');
 
         var formElement = document.querySelector('#bankIdLoginForm');
         var formFieldsetElement = formElement.querySelector('fieldset');
@@ -111,8 +111,8 @@
                         }
                     }
 
-                    if (data.qrCodeAsBase64) {
-                        qrCodeElement.src = "data:image/png;base64, " + data.qrCodeAsBase64;
+                    if (!!data.qrCodeAsBase64) {
+                        qrCodeElement.src = 'data:image/png;base64, ' + data.qrCodeAsBase64;
                         show(qrCodeElement);
                     }
 
@@ -157,6 +157,7 @@
                 showStatus(error.message, 'danger', false);
                 hide(startBankIdAppButtonElement);
                 hide(cancelButtonElement);
+                hide(qrCodeElement);
             });
         }
 
@@ -181,6 +182,7 @@
                         showStatus(error.message, 'danger', false);
                         hide(startBankIdAppButtonElement);
                     }
+                    hide(qrCodeElement);
                 });
         }
 
@@ -220,7 +222,7 @@
                 textClass = '';
             }
 
-            statusElement.className = 'card status-wrapper bg-' + type + ' ' + textClass;
+            statusElement.className = 'bg-' + type + ' ' + textClass;
             if (!!html) {
                 statusMessageElement.innerHTML = status;
             } else {

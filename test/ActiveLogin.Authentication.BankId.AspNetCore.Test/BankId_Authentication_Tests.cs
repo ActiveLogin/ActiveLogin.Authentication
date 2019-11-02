@@ -167,8 +167,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 
             var content = await transaction.Content.ReadAsStringAsync();
             Assert.Contains("<form id=\"bankIdLoginForm\">", content);
-            Assert.Contains("<div class=\"card\" id=\"bankIdLoginStatus\" style=\"display: block;\">", content);
-            Assert.Contains("<img src=\"\" alt=\"QR Code for BankID\" class=\"qr-code-image\" style=\"display: none;\" />", content);
+            Assert.Contains("<div id=\"bankIdLoginStatus\" style=\"display: block;\">", content);
+            Assert.Contains("<img src=\"\" alt=\"QR Code for BankID\" class=\"qr-code-image img-thumbnail img-fluid\" style=\"display: none;\" />", content);
         }
 
         [Fact]

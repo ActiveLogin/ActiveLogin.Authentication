@@ -39,6 +39,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// </summary>
         public bool BankIdAllowBiometric { get; set; } = true;
 
+        /// <summary>
+        /// When using other device authentication it is possible to use a qr code
+        /// instead of personal identity number.
+        /// </summary>
+        public bool BankIdUseQrCode { get; set; } = false;
+
         public PathString LoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
         public TimeSpan? TokenExpiresIn { get; set; } = BankIdAuthenticationDefaults.MaximumSessionLifespan;
 
@@ -67,7 +73,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             get => _stateCookieBuilder;
             set => _stateCookieBuilder = value ?? throw new ArgumentNullException(nameof(value));
         }
-
-        public bool BankIdUseQrCode { get; set; } = false;
     }
 }
