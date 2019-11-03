@@ -64,7 +64,7 @@
             var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
 
             hide(formElement);
-            showStatus(options.initialStatusMessage, 'light', true);
+            showStatus(options.initialStatusMessage, 'white', true);
 
             checkStatus(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, orderRef);
         }
@@ -122,7 +122,7 @@
                         formFieldsetElement.disabled = false;
                     } else {
                         hide(formElement);
-                        showStatus(options.initialStatusMessage, 'light', true);
+                        showStatus(options.initialStatusMessage, 'white', true);
 
                         if (data.checkStatus) {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
@@ -173,7 +173,7 @@
                     if (data.isFinished) {
                         window.location.href = data.redirectUri;
                     } else if (!loginIsCancelledByUser) {
-                        showStatus(data.statusMessage, 'light', true);
+                        showStatus(data.statusMessage, 'white', true);
                         setTimeout(function () {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
                         }, options.refreshIntervalMs);
@@ -219,7 +219,7 @@
 
         function showStatus(status, type, spinner, html) {
             var textClass = 'text-white';
-            if (type === 'light') {
+            if (type === 'white') {
                 textClass = '';
             }
 
