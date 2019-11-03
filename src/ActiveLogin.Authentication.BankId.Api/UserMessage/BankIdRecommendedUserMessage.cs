@@ -25,7 +25,8 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             new CollectResponseMapping(MessageShortName.RFA6, CollectHintCode.UserCancel),
             new CollectResponseMapping(MessageShortName.RFA8, CollectHintCode.ExpiredTransaction),
             new CollectResponseMapping(MessageShortName.RFA16, CollectHintCode.CertificateErr),
-            new CollectResponseMapping(MessageShortName.RFA17A, CollectHintCode.StartFailed),
+            new CollectResponseMapping(MessageShortName.RFA17A, CollectHintCode.StartFailed, usingQrCode: false),
+            new CollectResponseMapping(MessageShortName.RFA17B, CollectHintCode.StartFailed, usingQrCode: true),
 
             new CollectResponseMapping(MessageShortName.RFA21, CollectStatus.Pending, CollectHintCode.Unknown),
             new CollectResponseMapping(MessageShortName.RFA22, CollectStatus.Failed, CollectHintCode.Unknown)
@@ -38,13 +39,19 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             new ErrorResponseMapping(MessageShortName.RFA5, ErrorCode.RequestTimeout, ErrorCode.Maintenance, ErrorCode.InternalError)
         };
 
-        public MessageShortName GetMessageShortNameForCollectResponse(CollectStatus collectStatus, CollectHintCode hintCode, bool authPersonalIdentityNumberProvided, bool accessedFromMobileDevice)
+        public MessageShortName GetMessageShortNameForCollectResponse(
+            CollectStatus collectStatus,
+            CollectHintCode hintCode,
+            bool authPersonalIdentityNumberProvided,
+            bool accessedFromMobileDevice,
+            bool usingQrCode)
         {
             var mapping = CollectResponseMappings
                             .Where(x => !x.CollectStatuses.Any() || x.CollectStatuses.Contains(collectStatus))
                             .Where(x => !x.CollectHintCodes.Any() || x.CollectHintCodes.Contains(hintCode))
                             .Where(x => x.AuthPersonalIdentityNumberProvided == null || x.AuthPersonalIdentityNumberProvided == authPersonalIdentityNumberProvided)
                             .Where(x => x.AccessedFromMobileDevice == null || x.AccessedFromMobileDevice == accessedFromMobileDevice)
+                            .Where(x => x.UsingQrCode == null || x.UsingQrCode == usingQrCode)
                             .FirstOrDefault(x => x.MessageShortName != MessageShortName.Unknown);
 
             return mapping?.MessageShortName ?? MessageShortName.RFA22;
@@ -67,7 +74,8 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             public List<CollectStatus> CollectStatuses { get; } = new List<CollectStatus>();
             public bool? AuthPersonalIdentityNumberProvided { get; }
             public bool? AccessedFromMobileDevice { get; }
-            
+            public bool? UsingQrCode { get; }
+
             public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, CollectHintCode collectHintCode, bool? authPersonalIdentityNumberProvided = null, bool? accessedFromMobileDevice = null)
                 : this(messageShortName, new List<CollectStatus>() { collectStatus }, new List<CollectHintCode>() { collectHintCode }, authPersonalIdentityNumberProvided, accessedFromMobileDevice)
             {
@@ -78,18 +86,30 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
             {
             }
 
+            public CollectResponseMapping(MessageShortName messageShortName, CollectHintCode collectHintCode, bool usingQrCode)
+                : this(messageShortName, new List<CollectStatus>() { }, new List<CollectHintCode>() { collectHintCode }, null, null, usingQrCode)
+            {
+            }
+
             public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, params CollectHintCode[] collectHintCodes)
                 : this(messageShortName, new List<CollectStatus>() { collectStatus }, collectHintCodes.ToList())
             {
             }
 
-            public CollectResponseMapping(MessageShortName messageShortName, IEnumerable<CollectStatus> collectStatuses, IEnumerable<CollectHintCode> collectHintCodes, bool? authPersonalIdentityNumberProvided = null, bool? accessedFromMobileDevice = null)
+            public CollectResponseMapping(
+                MessageShortName messageShortName,
+                IEnumerable<CollectStatus> collectStatuses,
+                IEnumerable<CollectHintCode> collectHintCodes,
+                bool? authPersonalIdentityNumberProvided = null,
+                bool? accessedFromMobileDevice = null,
+                bool? usingQrCode = null)
             {
                 MessageShortName = messageShortName;
                 CollectStatuses.AddRange(collectStatuses);
                 CollectHintCodes.AddRange(collectHintCodes);
                 AuthPersonalIdentityNumberProvided = authPersonalIdentityNumberProvided;
                 AccessedFromMobileDevice = accessedFromMobileDevice;
+                UsingQrCode = usingQrCode;
             }
         }
 
@@ -109,6 +129,6 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
                 MessageShortName = messageShortName;
                 ErrorCodes.AddRange(errorCodes);
             }
-        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+        }
     }
 }

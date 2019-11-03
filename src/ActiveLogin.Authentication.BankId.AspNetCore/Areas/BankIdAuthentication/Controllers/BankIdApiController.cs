@@ -236,8 +236,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var authPersonalIdentityNumberProvided = PersonalIdentityNumberProvided(unprotectedLoginOptions);
             var detectedDevice = _bankIdSupportedDeviceDetector.Detect(request.Headers["User-Agent"]);
             var accessedFromMobileDevice = detectedDevice.IsMobile;
+            var usingQrCode = unprotectedLoginOptions.UseQrCode;
 
-            var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(collectResponse.GetCollectStatus(), collectResponse.GetCollectHintCode(), authPersonalIdentityNumberProvided, accessedFromMobileDevice);
+            var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
+                collectResponse.GetCollectStatus(),
+                collectResponse.GetCollectHintCode(),
+                authPersonalIdentityNumberProvided,
+                accessedFromMobileDevice,
+                usingQrCode);
             var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
 
             return statusMessage;
