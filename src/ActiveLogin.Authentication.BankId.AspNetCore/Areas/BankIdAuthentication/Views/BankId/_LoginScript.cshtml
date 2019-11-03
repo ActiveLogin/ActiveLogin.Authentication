@@ -4,6 +4,7 @@
     (function (options) {
         // Pre check
         var statusElement = document.querySelector('#bankIdLoginStatus');
+        var statusWrapperElement = statusElement.querySelector('.status-wrapper');
         var statusSpinnerElement = statusElement.querySelector('.status-spinner');
         var statusMessageElement = statusElement.querySelector('.status-message');
         var cancelButtonElement = statusElement.querySelector('.btn-cancel');
@@ -222,7 +223,7 @@
                 textClass = '';
             }
 
-            statusElement.className = 'bg-' + type + ' ' + textClass;
+            statusWrapperElement.className = 'card status-wrapper bg-' + type + ' ' + textClass;
             if (!!html) {
                 statusMessageElement.innerHTML = status;
             } else {
