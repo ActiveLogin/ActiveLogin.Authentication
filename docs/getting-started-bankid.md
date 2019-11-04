@@ -38,6 +38,12 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 }
 ```
 
+#### Certificates are secrets
+
+Note that when configuring the AzureKeyVaultSecretIdentifier-url, the URL using `/secrets/` to identify the object is used. This is because key vault only exposes certificates with private keys as secrets.
+
+You can read more about the reasonind behind this [in this blog post](https://azidentity.azurewebsites.net/post/2018/07/03/azure-key-vault-certificates-are-secrets) or in the very extensive [official documentation](https://docs.microsoft.com/en-gb/azure/key-vault/about-keys-secrets-and-certificates#BKMK_CompositionOfCertificate).
+
 ## Environments
 
 ### Simulated environment
