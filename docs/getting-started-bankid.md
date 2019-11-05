@@ -217,8 +217,9 @@ BankId options allows you to set and override some options such as these.
     // Issue gender claim based on data extracted from the personal identity number
     options.IssueGenderClaim = true;
 
-    // Turn off qr code and use personal identity number instead
-    options.BankIdUseQrCode = false
+    // Turn off 
+    code and use personal identity number instead
+    options.BankIdUseQrCode = false;
 });
 ```
 
