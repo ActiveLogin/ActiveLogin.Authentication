@@ -73,5 +73,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             get => _stateCookieBuilder;
             set => _stateCookieBuilder = value ?? throw new ArgumentNullException(nameof(value));
         }
+
+        /// <summary>
+        /// When set to true it checks the forwarded for headers to find the users remote ip address.
+        /// </summary>
+        /// <remarks>
+        /// The priority is as follows. First header sets the value.
+        ///
+        ///    1. CF-Connecting-IP
+        ///    2. X-Original-Forwarded-For
+        ///    3. X-Forwarded-For
+        ///
+        /// If no header exists the ip address will be resolved from the HttpContext.Connection.RemoteIpAddress
+        /// </remarks>
+        public bool BankIdAllowForwardedHeaders { get; set; } = true;
     }
 }

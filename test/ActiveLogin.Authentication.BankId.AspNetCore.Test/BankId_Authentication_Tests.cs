@@ -36,7 +36,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             _bankIdLoginOptionsProtector = new Mock<IBankIdLoginOptionsProtector>();
             _bankIdLoginOptionsProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-                .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false, false));
+                .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false, false, true));
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
@@ -175,7 +175,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task AutoLaunch_Sets_Correct_RedirectUri()
         {
 	        // Arrange mocks
-	        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false);
+	        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, true);
 	        var mockProtector =  new Mock<IBankIdLoginOptionsProtector>();
 	        mockProtector
 		        .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -226,10 +226,61 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
         [Fact]
+        public async Task Initialize_With_Forwarded_Headers_Sets_Correct_Remote_Ip()
+        {
+            // Arrange mocks
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, true);
+            var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+            mockProtector
+                .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+                .Returns(autoLaunchOptions);
+            var testBankIdApi = new TestBankIdApi(new BankIdSimulatedApiClient());
+
+            var client = CreateServer(
+                    o =>
+                    {
+                        o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                        o.UseSimulatedEnvironment().AddSameDevice();
+                    },
+                    DefaultAppConfiguration(async context =>
+                    {
+                        await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                    }),
+                    services =>
+                    {
+                        services.AddTransient(s => mockProtector.Object);
+                        services.AddSingleton<IBankIdApiClient>(s => testBankIdApi);
+                    })
+                .CreateClient();
+
+            // Arrange csrf info
+            var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            var loginCookies = loginResponse.Headers.GetValues("set-cookie").ToList();
+            var loginContent = await loginResponse.Content.ReadAsStringAsync();
+            var csrfToken = TokenExtractor.ExtractRequestVerificationTokenFromForm(loginContent);
+
+            // Arrange acting request
+            var testReturnUrl = "/TestReturnUrl";
+            var testOptions = "TestOptions";
+
+            var request = new JsonContent(new { returnUrl = testReturnUrl, loginOptions = testOptions });
+            request.Headers.Add("Cookie", loginCookies);
+            request.Headers.Add("RequestVerificationToken", csrfToken);
+            request.Headers.Add("CF-Connecting-IP", "192.0.2.1");
+
+            // Act
+            var transaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+            Assert.Equal("192.0.2.1", testBankIdApi.EndUserIp);
+        }
+
+        [Fact]
         public async Task Cancel_Calls_CancelApi()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, true);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -331,6 +382,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 
             public bool CancelAsyncIsCalled { get; private set; }
 
+            public string EndUserIp { get; private set; }
+
             public TestBankIdApi(IBankIdApiClient bankIdApiClient)
             {
                 _bankIdApiClient = bankIdApiClient;
@@ -338,6 +391,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 
             public Task<AuthResponse> AuthAsync(AuthRequest request)
             {
+                EndUserIp = request.EndUserIp;
                 return _bankIdApiClient.AuthAsync(request);
             }
 

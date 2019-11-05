@@ -226,6 +226,9 @@ BankId options allows you to set and override some options such as these.
     // Turn off 
     code and use personal identity number instead
     options.BankIdUseQrCode = false;
+
+    // Disable forwarded headers
+    options.AllowForwardedHeaders = false;
 });
 ```
 

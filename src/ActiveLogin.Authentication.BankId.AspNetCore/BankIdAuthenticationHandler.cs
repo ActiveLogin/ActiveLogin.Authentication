@@ -143,7 +143,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdAutoLaunch,
                 Options.BankIdAllowBiometric,
-                Options.BankIdUseQrCode
+                Options.BankIdUseQrCode,
+                Options.BankIdAllowForwardedHeaders
             );
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);

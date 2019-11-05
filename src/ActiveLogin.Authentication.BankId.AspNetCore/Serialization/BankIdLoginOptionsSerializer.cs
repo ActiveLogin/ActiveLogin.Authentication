@@ -27,6 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     writer.Write(model.AutoLaunch);
                     writer.Write(model.AllowBiometric);
                     writer.Write(model.UseQrCode);
+                    writer.Write(model.AllowForwardedHeaders);
 
                     writer.Flush();
                     return memory.ToArray();
@@ -52,6 +53,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     var autoLaunch = reader.ReadBoolean();
                     var allowBiometric = reader.ReadBoolean();
                     var displayQrCode = reader.ReadBoolean();
+                    var allowForwardedHeaders = reader.ReadBoolean();
 
                     return new BankIdLoginOptions(
                         certificatePolicies,
@@ -59,7 +61,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                         allowChangingPersonalIdentityNumber,
                         autoLaunch,
                         allowBiometric,
-                        displayQrCode
+                        displayQrCode,
+                        allowForwardedHeaders
                     );
                 }
             }

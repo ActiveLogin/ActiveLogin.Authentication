@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
@@ -132,7 +133,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
-            var endUserIp = GetEndUserIp();
+            var endUserIp = GetEndUserIp(loginOptions.AllowForwardedHeaders);
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
             var autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
 
@@ -147,8 +148,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement);
         }
 
-        private string GetEndUserIp()
+        private string GetEndUserIp(bool allowForwardedHeaders)
         {
+            if (allowForwardedHeaders)
+            {
+                var header = HttpContext.Request.Headers["CF-Connecting-IP"].FirstOrDefault() ??
+                             HttpContext.Request.Headers["X-Original-Forwarded-For"].FirstOrDefault() ??
+                             HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ??
+                             string.Empty;
+                if (IPAddress.TryParse(header, out var ipAddress))
+                {
+                    return ipAddress.ToString();
+                }
+            }
             return HttpContext.Connection.RemoteIpAddress.ToString();
         }
 
