@@ -208,7 +208,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage)
         {
             _logger.BankIdCollectFailure(collectResponse.OrderRef, collectResponse.GetCollectHintCode());
-            return BadRequest(new BankIdLoginApiErrorResponse(statusMessage));
+            return BadRequest(new BankIdLoginApiErrorResponse(statusMessage, collectResponse.GetCollectHintCode()));
         }
 
         private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse)

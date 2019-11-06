@@ -82,6 +82,7 @@
 
         // BankID
 
+        var autoStartAttempts = 0;
         var loginIsCancelledByUser = false;
         function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
             loginIsCancelledByUser = false;
@@ -220,7 +221,14 @@
                     throw Error(options.unknownErrorMessage);
                 })
                 .then(function (data) {
-                    if (!!data.errorMessage) {
+                    if (data.hintCode === 'StartFailed') {
+                        if (autoStartAttempts++ < 5) {
+                            login();
+                            return;
+                        }
+                        autoStartAttempts = 0;
+                        return;
+                    } else if (!!data.errorMessage) {
                         throw Error(data.errorMessage);
                     }
                     return data;
