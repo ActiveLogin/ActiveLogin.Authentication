@@ -52,11 +52,6 @@ namespace IdentityServer.ServerSample.Controllers
                 }
             };
 
-            if (provider.Equals(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme))
-            {
-                props.Items["cancelReturnUrl"] = returnUrl;
-            }
-
             return Challenge(props, provider);
         }
 
