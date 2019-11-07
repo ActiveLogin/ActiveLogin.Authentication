@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
+    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Qr\ActiveLogin.Authentication.BankId.AspNetCore.Qr.csproj" />
     <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj" />
     <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />

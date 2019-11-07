@@ -181,6 +181,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 	        // Arrange mocks
             var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
 	        var mockProtector =  new Mock<IBankIdLoginOptionsProtector>();
+            var mockQrCodeGenerator = new Mock<IBankIdQrCodeGenerator>();
 	        mockProtector
 		        .Setup(protector => protector.Unprotect(It.IsAny<string>()))
 		        .Returns(autoLaunchOptions);
@@ -196,8 +197,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 				        await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
 			        }),
 			        services =>
-			        {
-				        services.AddTransient(s => mockProtector.Object);
+                    {
+                        services.AddTransient(s => mockProtector.Object);
+                        services.AddTransient(s => mockQrCodeGenerator.Object);
 			        })
 		        .CreateClient();
 
@@ -235,6 +237,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Arrange mocks
             var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+            var mockQrCodeGenerator = new Mock<IBankIdQrCodeGenerator>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
                 .Returns(autoLaunchOptions);
@@ -253,6 +256,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     services =>
                     {
                         services.AddTransient(s => mockProtector.Object);
+                        services.AddTransient(s => mockQrCodeGenerator.Object);
                         services.AddSingleton<IBankIdApiClient>(s => testBankIdApi);
                     })
                 .CreateClient();
