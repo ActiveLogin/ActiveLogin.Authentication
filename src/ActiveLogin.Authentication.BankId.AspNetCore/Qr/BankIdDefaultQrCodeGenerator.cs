@@ -1,11 +1,9 @@
 using System;
 using System.IO;
-using System.Net.Mime;
 using System.Reflection;
-using System.Text;
 using Microsoft.Extensions.Localization;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
 {
     internal class BankIdDefaultQrCodeGenerator : IBankIdQrCodeGenerator
     {

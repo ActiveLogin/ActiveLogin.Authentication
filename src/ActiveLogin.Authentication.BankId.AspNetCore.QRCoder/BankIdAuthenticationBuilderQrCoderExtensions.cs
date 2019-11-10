@@ -1,4 +1,4 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder

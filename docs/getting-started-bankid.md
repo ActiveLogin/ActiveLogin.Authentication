@@ -267,10 +267,9 @@ return Challenge(props, provider);
 
 ### Custom QR code generation
 
-By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is needed to
-generate QR codes using the `UseQrCoderQrCodeGenerator` extension method. If you wish
-to provide your own implementation of QR code generation simply implement the
-`IBankIdQrCodeGenerator` interface and add your implementation as a service.
+By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
+
+If you wish to provide your own implementation of QR code generation simply implement the `IBankIdQrCodeGenerator` interface and add your implementation as a service.
 
 ```c#
 services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();

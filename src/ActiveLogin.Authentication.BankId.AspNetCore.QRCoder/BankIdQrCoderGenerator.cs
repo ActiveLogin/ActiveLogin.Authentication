@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using Microsoft.AspNetCore.Http.Extensions;
 using QRCoder;
 
