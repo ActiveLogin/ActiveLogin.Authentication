@@ -221,7 +221,7 @@
                     throw Error(options.unknownErrorMessage);
                 })
                 .then(function (data) {
-                    if (data.hintCode === 'StartFailed') {
+                    if (data.retry) {
                         if (autoStartAttempts++ < 5) {
                             login();
                             return;

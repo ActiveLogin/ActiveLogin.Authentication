@@ -12,11 +12,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         public BankIdLoginApiErrorResponse(string errorMessage, CollectHintCode hintCode)
         {
             ErrorMessage = errorMessage;
-            HintCode = hintCode.ToString();
+            Retry = CollectHintCode.StartFailed.Equals(hintCode);
         }
 
         public string ErrorMessage { get; }
 
-        public string HintCode { get; }
+        public bool Retry { get; }
     }
 }
