@@ -157,7 +157,7 @@
                 show(formElement);
                 formFieldsetElement.disabled = false;
 
-                if (data.cancelReturnUrl) {
+                if (!!data.cancelReturnUrl) {
                     window.location.href = data.cancelReturnUrl;
                 }
             }).catch(function(error) {

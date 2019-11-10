@@ -33,6 +33,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
         public bool AllowBiometric { get; }
 
         public bool UseQrCode { get; set; }
+
         public string CancelReturnUrl { get; }
     }
 }

@@ -51,11 +51,6 @@ namespace Standalone.MvcSample.Controllers
                 }
             };
 
-            if (provider.Equals(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme))
-            {
-                props.Items["cancelReturnUrl"] = "~/";
-            }
-
             return Challenge(props, provider);
         }
 
