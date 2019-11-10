@@ -9,10 +9,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             ErrorMessage = errorMessage;
         }
 
-        public BankIdLoginApiErrorResponse(string errorMessage, CollectHintCode hintCode)
+        public BankIdLoginApiErrorResponse(string errorMessage, bool retry)
         {
             ErrorMessage = errorMessage;
-            Retry = CollectHintCode.StartFailed.Equals(hintCode);
+            Retry = retry;
         }
 
         public string ErrorMessage { get; }
