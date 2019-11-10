@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
-using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
+using ActiveLogin.Authentication.BankId.AspNetCore.QrCoder;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;

@@ -86,6 +86,14 @@
     <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.sv.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <None Remove="Resources\qr-default-en.png" />
+    <EmbeddedResource Include="Resources\qr-default-en.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Resources\qr-default-sv.png" />
+    <EmbeddedResource Include="Resources\qr-default-sv.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
