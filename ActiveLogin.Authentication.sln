@@ -63,7 +63,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test", "test\ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test\ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test.csproj", "{436397D0-EF12-45AC-BAD9-D4906C911763}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveLogin.Authentication.BankId.AspNetCore.Qr", "src\ActiveLogin.Authentication.BankId.AspNetCore.Qr\ActiveLogin.Authentication.BankId.AspNetCore.Qr.csproj", "{AC23B5F8-3B80-43F4-8FD1-2FA4436AF227}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveLogin.Authentication.BankId.AspNetCore.QRCoder", "src\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj", "{AC23B5F8-3B80-43F4-8FD1-2FA4436AF227}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

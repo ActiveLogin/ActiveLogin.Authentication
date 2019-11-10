@@ -102,7 +102,7 @@ namespace IdentityServer.ServerSample
             services.AddAuthentication()
                 .AddBankId(builder =>
                 {
-                    builder.UseDefaultQrCodeGenerator();
+                    builder.UseQrCoderQrCodeGenerator();
                     builder.Configure(options =>
                             {
                                 options.IssueBirthdateClaim = true;

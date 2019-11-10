@@ -1,11 +1,11 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
+namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
 {
-    public static class BankIdAuthenticationBuilderQrCodeExtensions
+    public static class BankIdAuthenticationBuilderQrCoderExtensions
     {
-        public static IBankIdAuthenticationBuilder UseDefaultQrCodeGenerator(this IBankIdAuthenticationBuilder builder)
+        public static IBankIdAuthenticationBuilder UseQrCoderQrCodeGenerator(this IBankIdAuthenticationBuilder builder)
         {
             var services = builder.AuthenticationBuilder.Services;
 

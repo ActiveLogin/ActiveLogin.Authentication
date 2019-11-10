@@ -3,7 +3,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using Microsoft.AspNetCore.Http.Extensions;
 using QRCoder;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
+namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
 {
     /// <summary>
     /// This class generates QR codes for BankID
