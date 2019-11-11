@@ -169,14 +169,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private string GetCancelReturnUrl(AuthenticationProperties properties)
         {
-            // If cancel url is set, it overrides any scheme specific redirection
-            if (properties.Items.TryGetValue("cancelReturnUrl", out var cancelUrl))
-            {
-                return cancelUrl;
-            }
-
             // Default to root if no return url is set
             var cancelReturnUrl = properties.Items.ContainsKey("returnUrl") ? properties.Items["returnUrl"] : "/";
+
+
+            // If cancel url is set, it overrides the regular return url
+            if (properties.Items.TryGetValue("cancelReturnUrl", out var cancelUrl))
+            {
+                cancelReturnUrl = cancelUrl;
+            }
 
             // If we are using other device authentication and manual PIN entry we do not redirect back to
             // returnUrl. Instead we let the GUI decide what to display. Preferably the PIN entry form.
