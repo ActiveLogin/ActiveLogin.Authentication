@@ -68,6 +68,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return new BankIdLoginViewModel
             {
                 ReturnUrl = returnUrl,
+                CancelReturnUrl = unprotectedLoginOptions.CancelReturnUrl,
 
                 AutoLogin = unprotectedLoginOptions.IsAutoLogin(),
                 PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,

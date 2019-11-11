@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
     internal class BankIdLoginOptionsSerializer : IDataSerializer<BankIdLoginOptions>
     {
-        private const int FormatVersion = 2;
+        private const int FormatVersion = 3;
         private const char CertificatePoliciesSeparator = ';';
 
         public byte[] Serialize(BankIdLoginOptions model)
@@ -27,6 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     writer.Write(model.AutoLaunch);
                     writer.Write(model.AllowBiometric);
                     writer.Write(model.UseQrCode);
+                    writer.Write(model.CancelReturnUrl ?? string.Empty);
 
                     writer.Flush();
                     return memory.ToArray();
@@ -52,6 +53,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                     var autoLaunch = reader.ReadBoolean();
                     var allowBiometric = reader.ReadBoolean();
                     var displayQrCode = reader.ReadBoolean();
+                    var cancelReturnUrl = reader.ReadString();
 
                     return new BankIdLoginOptions(
                         certificatePolicies,
@@ -59,7 +61,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
                         allowChangingPersonalIdentityNumber,
                         autoLaunch,
                         allowBiometric,
-                        displayQrCode
+                        displayQrCode,
+                        cancelReturnUrl
                     );
                 }
             }

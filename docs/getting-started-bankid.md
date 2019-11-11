@@ -238,6 +238,31 @@ If you want to apply some options for all BankID schemes, you can do so by using
 });
 ```
 
+### Setting the return URL for cancellation
+
+The defaults for cancellation are as follows:
+
+* Same Device Scheme returns to scheme selection
+* Other Device Scheme returns to scheme selection when using QR codes
+* Other Device Scheme returns to PIN input when using PIN input instead of QR codes
+
+It is possible to override the default navigation when cancelling an authentication request. The URL used for navigation is set through the `cancelReturnUrl` item in the `AuthenticationProperties` passed in the authentication challenge.
+
+```
+var props = new AuthenticationProperties
+{
+    RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
+    Items =
+    {
+        { "returnUrl", "~/" },
+        { "cancelReturnUrl", "~/some-custom-cancellation-url" },
+        { "scheme", provider }
+    }
+};
+
+return Challenge(props, provider);
+```
+
 ### BankID Certificate Policies
 
 BankId options allows you to set a list of certificate policies and there is a class available to help you out with this.

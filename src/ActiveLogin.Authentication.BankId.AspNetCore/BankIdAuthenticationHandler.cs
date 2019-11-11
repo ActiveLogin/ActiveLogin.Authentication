@@ -143,7 +143,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdAutoLaunch,
                 Options.BankIdAllowBiometric,
-                Options.BankIdUseQrCode
+                Options.BankIdUseQrCode,
+                GetCancelReturnUrl(properties)
             );
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
@@ -164,6 +165,28 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             }
 
             return null;
+        }
+
+        private string GetCancelReturnUrl(AuthenticationProperties properties)
+        {
+            // Default to root if no return url is set
+            var cancelReturnUrl = properties.Items.ContainsKey("returnUrl") ? properties.Items["returnUrl"] : "/";
+
+
+            // If cancel url is set, it overrides the regular return url
+            if (properties.Items.TryGetValue("cancelReturnUrl", out var cancelUrl))
+            {
+                cancelReturnUrl = cancelUrl;
+            }
+
+            // If we are using other device authentication and manual PIN entry we do not redirect back to
+            // returnUrl. Instead we let the GUI decide what to display. Preferably the PIN entry form.
+            if (Scheme.Name.Equals(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme) && !Options.BankIdUseQrCode)
+            {
+                cancelReturnUrl = string.Empty;
+            }
+
+            return cancelReturnUrl;
         }
 
         private string GetLoginUrl(BankIdLoginOptions loginOptions)

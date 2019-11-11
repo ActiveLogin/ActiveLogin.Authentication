@@ -288,7 +288,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             _logger.BankIdAuthCancelled(orderRef.OrderRef);
 
-            return Ok(BankIdLoginApiCancelResponse.Cancelled());
+            return Ok(BankIdLoginApiCancelResponse.Cancelled(request.CancelReturnUrl));
         }
     }
 }
