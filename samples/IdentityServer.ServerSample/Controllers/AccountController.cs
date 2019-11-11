@@ -49,13 +49,9 @@ namespace IdentityServer.ServerSample.Controllers
                 {
                     { "returnUrl", returnUrl },
                     { "scheme", provider },
+                    { "cancelReturnUrl", Url.ActionLink("Login", "Account", new { returnUrl }) }
                 }
             };
-
-            if (provider.Equals(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme))
-            {
-                props.Items.Add("cancelReturnUrl", Url.ActionLink("Login", "Account", new { returnUrl }));
-            }
 
             return Challenge(props, provider);
         }
