@@ -1,5 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
 {
@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
         {
             var services = builder.AuthenticationBuilder.Services;
 
-            services.TryAddTransient<IBankIdQrCodeGenerator, BankIdQrCoderGenerator>();
+            services.AddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
 
             return builder;
         }
