@@ -40,6 +40,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdResultStore _bankIdResultStore;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
 
+        private const int MaxRetryLoginAttempts = 5;
+
         public BankIdApiController(
             UrlEncoder urlEncoder,
             ILogger<BankIdApiController> logger,
@@ -202,14 +204,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 return await CollectComplete(request, collectResponse);
             }
 
-            return CollectFailure(collectResponse, statusMessage);
+            return CollectFailure(collectResponse, statusMessage, request.AutoStartAttempts);
         }
 
-        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage)
+        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage, int autoStartAttempts)
         {
             _logger.BankIdCollectFailure(collectResponse.OrderRef, collectResponse.GetCollectHintCode());
-            var retry = CollectHintCode.StartFailed.Equals(collectResponse.GetCollectHintCode());
-            return BadRequest(new BankIdLoginApiErrorResponse(statusMessage, retry));
+
+            var retryLogin = autoStartAttempts < MaxRetryLoginAttempts
+                             && CollectHintCode.StartFailed.Equals(collectResponse.GetCollectHintCode());
+
+            return BadRequest(new BankIdLoginApiErrorResponse(statusMessage, retryLogin));
         }
 
         private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse)

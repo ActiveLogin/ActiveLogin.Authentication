@@ -9,14 +9,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             ErrorMessage = errorMessage;
         }
 
-        public BankIdLoginApiErrorResponse(string errorMessage, bool retry)
+        public BankIdLoginApiErrorResponse(string errorMessage, bool retryLogin)
         {
             ErrorMessage = errorMessage;
-            Retry = retry;
+            RetryLogin = retryLogin;
         }
 
         public string ErrorMessage { get; }
 
-        public bool Retry { get; }
+        public bool RetryLogin { get; }
     }
 }

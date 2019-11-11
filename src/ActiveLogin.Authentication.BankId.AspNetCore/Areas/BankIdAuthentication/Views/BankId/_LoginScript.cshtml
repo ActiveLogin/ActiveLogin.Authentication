@@ -178,12 +178,17 @@
                 {
                     'orderRef': orderRef,
                     'returnUrl': returnUrl,
-                    'loginOptions': loginOptions
+                    'loginOptions': loginOptions,
+                    'autoStartAttempts': autoStartAttempts
                 })
                 .then(function (data) {
-                    if (data.isFinished) {
+                    if (data.retryLogin) {
+                        autoStartAttempts++;
+                        login();
+                    } else if (data.isFinished) {
                         window.location.href = data.redirectUri;
                     } else if (!loginIsCancelledByUser) {
+                        autoStartAttempts = 0;
                         showStatus(data.statusMessage, 'white', true);
                         setTimeout(function () {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
@@ -221,14 +226,7 @@
                     throw Error(options.unknownErrorMessage);
                 })
                 .then(function (data) {
-                    if (data.retry) {
-                        if (autoStartAttempts++ < 5) {
-                            login();
-                            return;
-                        }
-                        autoStartAttempts = 0;
-                        return;
-                    } else if (!!data.errorMessage) {
+                    if (!!data.errorMessage) {
                         throw Error(data.errorMessage);
                     }
                     return data;
