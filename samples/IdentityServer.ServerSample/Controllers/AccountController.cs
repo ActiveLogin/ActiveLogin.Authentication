@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveLogin.Authentication.BankId.AspNetCore;
 using IdentityServer.ServerSample.Models;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -46,8 +47,9 @@ namespace IdentityServer.ServerSample.Controllers
                 RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
                 Items =
                 {
-                    {"returnUrl", returnUrl},
-                    {"scheme", provider}
+                    { "returnUrl", returnUrl },
+                    { "scheme", provider },
+                    { "cancelReturnUrl", Url.ActionLink("Login", "Account", new { returnUrl }) }
                 }
             };
 

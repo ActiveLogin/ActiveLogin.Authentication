@@ -5,6 +5,7 @@
 <form id="bankIdLoginForm">
     <input name="RequestVerificationToken" type="hidden" value="@Model.AntiXsrfRequestToken">
     <input name="ReturnUrl" type="hidden" value="@Model.ReturnUrl" />
+    <input name="CancelReturnUrl" type="hidden" value="@Model.CancelReturnUrl" />
     <input name="LoginOptions" type="hidden" value="@Model.LoginOptions" />
     <input name="AutoLogin" type="hidden" value="@(Model.AutoLogin ? "true" : "false")" />
 
@@ -25,5 +26,4 @@
             </button>
         }
     </fieldset>
-
 </form>

@@ -11,7 +11,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
             bool allowChangingPersonalIdentityNumber,
             bool autoLaunch,
             bool allowBiometric,
-            bool useQrCode)
+            bool useQrCode,
+            string cancelReturnUrl)
         {
             CertificatePolicies = certificatePolicies;
             PersonalIdentityNumber = personalIdentityNumber;
@@ -19,6 +20,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
             AutoLaunch = autoLaunch;
             AllowBiometric = allowBiometric;
             UseQrCode = useQrCode;
+            CancelReturnUrl = cancelReturnUrl;
         }
 
         public List<string> CertificatePolicies { get; }
@@ -31,5 +33,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
         public bool AllowBiometric { get; }
 
         public bool UseQrCode { get; set; }
+
+        public string CancelReturnUrl { get; }
     }
 }
