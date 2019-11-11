@@ -153,12 +153,12 @@
                 'orderRef': orderRef,
                 'cancelReturnUrl': cancelReturnUrl
             }).then(function(data) {
-                hide(statusElement);
-                show(formElement);
-                formFieldsetElement.disabled = false;
-
                 if (!!data.cancelReturnUrl) {
                     window.location.href = data.cancelReturnUrl;
+                } else {
+                    hide(statusElement);
+                    show(formElement);
+                    formFieldsetElement.disabled = false;
                 }
             }).catch(function(error) {
                 showStatus(error.message, 'danger', false);
