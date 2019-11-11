@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -13,10 +14,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<BankIdAuthenticationOptions>, BankIdAuthenticationPostConfigureOptions>());
 
             var bankIdAuthenticationBuilder = new BankIdAuthenticationBuilder(builder);
+
             bankIdAuthenticationBuilder.AddDefaultServices();
+            bankIdAuthenticationBuilder.UseUserAgent(GetActiveLoginUserAgent());
+
             bankId(bankIdAuthenticationBuilder);
 
             return builder;
+        }
+
+        private static ProductInfoHeaderValue GetActiveLoginUserAgent()
+        {
+            var productName = BankIdAuthenticationConstants.ProductName;
+            var productAssembly = typeof(BankIdAuthenticationExtensions).Assembly;
+            var productVersion = productAssembly.GetName().Version.ToString();
+
+            return new ProductInfoHeaderValue(productName, productVersion);
         }
     }
 }

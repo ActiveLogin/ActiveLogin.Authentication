@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
@@ -34,6 +35,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.AddLocalization(options =>
             {
                 options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath;
+            });
+
+            return builder;
+        }
+
+        internal static IBankIdAuthenticationBuilder UseUserAgent(this IBankIdAuthenticationBuilder builder, ProductInfoHeaderValue productInfoHeaderValue)
+        {
+            builder.ConfigureHttpClient(httpClient =>
+            {
+                httpClient.DefaultRequestHeaders.UserAgent.Clear();
+                httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
             });
 
             return builder;
