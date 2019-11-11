@@ -204,17 +204,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 return await CollectComplete(request, collectResponse);
             }
 
-            return CollectFailure(collectResponse, statusMessage, request.AutoStartAttempts);
+            var hintCode = collectResponse.GetCollectHintCode();
+            if (hintCode.Equals(CollectHintCode.StartFailed)
+                && request.AutoStartAttempts < MaxRetryLoginAttempts)
+            {
+                return Ok(BankIdLoginApiStatusResponse.Retry(statusMessage));
+            }
+
+            return CollectFailure(collectResponse, statusMessage);
         }
 
-        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage, int autoStartAttempts)
+        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage)
         {
             _logger.BankIdCollectFailure(collectResponse.OrderRef, collectResponse.GetCollectHintCode());
-
-            var retryLogin = autoStartAttempts < MaxRetryLoginAttempts
-                             && CollectHintCode.StartFailed.Equals(collectResponse.GetCollectHintCode());
-
-            return BadRequest(new BankIdLoginApiErrorResponse(statusMessage, retryLogin));
+            return BadRequest(new BankIdLoginApiErrorResponse(statusMessage));
         }
 
         private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse)

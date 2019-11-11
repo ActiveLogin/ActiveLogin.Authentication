@@ -1,6 +1,4 @@
-﻿using ActiveLogin.Authentication.BankId.Api.Models;
-
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
     public class BankIdLoginApiErrorResponse
     {
@@ -9,14 +7,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             ErrorMessage = errorMessage;
         }
 
-        public BankIdLoginApiErrorResponse(string errorMessage, bool retryLogin)
-        {
-            ErrorMessage = errorMessage;
-            RetryLogin = retryLogin;
-        }
-
         public string ErrorMessage { get; }
-
-        public bool RetryLogin { get; }
     }
 }
