@@ -47,10 +47,15 @@ namespace IdentityServer.ServerSample.Controllers
                 RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
                 Items =
                 {
-                    {"returnUrl", returnUrl},
-                    {"scheme", provider}
+                    { "returnUrl", returnUrl },
+                    { "scheme", provider },
                 }
             };
+
+            if (provider.Equals(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme))
+            {
+                props.Items.Add("cancelReturnUrl", Url.ActionLink("Login", "Account", new { returnUrl }));
+            }
 
             return Challenge(props, provider);
         }
