@@ -183,6 +183,10 @@ Yes! They are available here. Please note that IdentityServer.ClientSample uses 
 * IdentityServer.ClientSample: [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net)
 * IdentityServer.ServerSample: [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net)
 
+### Can I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?
+
+Yes you can! Azure AD B2C supports using cusotm identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
+
 ### Can I prepopulate the personal identity number for the user?
 
 Yes you can! If you provide an authentication property item named `swedishPersonalIdentityNumber` (available as constants `BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber` or `GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber`) that value will be used and sent to BankID/GrandID.
@@ -233,14 +237,27 @@ public class GrandIdApiClient : IGrandIdApiClient
 }
 ```
 
+### Do Active Login Issue any cookies?
+
+Yes, the `*.AspNetCore` packages will issue cookies to make the auth flow work.
+
+The cookies are called:
+
+- BankId: `__ActiveLogin.BankIdState`
+- GrandId: `__ActiveLogin.GrandIdState`
+
+The cookies are there to store state during the auth process, as the user will/might be redirected during the flow. The cookies are session based only and will be deleted once the auth process is finished and/or when the user closes the browser.
+
+Because they are strictly related to temp storage during auth, you should not have to inform the user about these specific cookies (according to the [EU "cookie law"](https://www.cookielaw.org/the-cookie-law/)).
+
+With the current implementaiton (following the convention from Microsoft ASP.NET Core) the usage of cookies is not optional.
+
+A more technical deep dive of the cookies can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
+
 ### Why are the names sometimes capitalized?
 
 It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
 We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
-
-### Can I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?
-
-Yes you can! Azure AD B2C supports using cusotm identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
 
 ## Active Login
 
