@@ -2,7 +2,7 @@
 {
     public static class BankIdAuthenticationConstants
     {
-        internal const string ProductName = "ActiveLogin_BankId_AspNetCore";
+        internal const string ProductName = "ActiveLogin-BankId-AspNetCore";
 
         internal const string AreaName = "BankIdAuthentication";
 
