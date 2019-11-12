@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using Microsoft.AspNetCore.Http.Extensions;
 using QRCoder;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
+namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
 {
     /// <summary>
     /// This class generates QR codes for BankID
@@ -10,7 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
     /// <remarks>
     /// It uses the QR Coder library to generate the codes
     /// </remarks>
-    public class QRCoderBankIdQrCodeGenerator : IBankIdQrCodeGenerator
+    public class QrCoderBankIdQrCodeGenerator : IBankIdQrCodeGenerator
     {
         private const int PixelsPerModule = 20;
 

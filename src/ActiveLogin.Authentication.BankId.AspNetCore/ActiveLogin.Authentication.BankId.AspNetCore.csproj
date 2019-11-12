@@ -38,7 +38,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="all" />
-    <PackageReference Include="QRCoder" Version="1.3.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,6 +85,14 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.sv.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <None Remove="Resources\qr-default-en.png" />
+    <EmbeddedResource Include="Resources\qr-default-en.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Resources\qr-default-sv.png" />
+    <EmbeddedResource Include="Resources\qr-default-sv.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 

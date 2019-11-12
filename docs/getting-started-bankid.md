@@ -60,8 +60,9 @@ services
         builder
             .UseSimulatedEnvironment()
             .AddSameDevice()
-            .AddOtherDevice();
-    });
+            .AddOtherDevice()
+            .UseQrCoderQrCodeGenerator();
+    })
 ```
 
 ### Development environment with custom person info
@@ -76,7 +77,8 @@ services
         builder
             .UseSimulatedEnvironment("Alice", "Smith", "199908072391")
             .AddSameDevice()
-            .AddOtherDevice();
+            .AddOtherDevice()
+            .UseQrCoderQrCodeGenerator();
     });
 ```
 
@@ -248,7 +250,7 @@ The defaults for cancellation are as follows:
 
 It is possible to override the default navigation when cancelling an authentication request. The URL used for navigation is set through the `cancelReturnUrl` item in the `AuthenticationProperties` passed in the authentication challenge.
 
-```
+```c#
 var props = new AuthenticationProperties
 {
     RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
@@ -261,6 +263,16 @@ var props = new AuthenticationProperties
 };
 
 return Challenge(props, provider);
+```
+
+### Custom QR code generation
+
+By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
+
+If you wish to provide your own implementation of QR code generation simply implement the `IBankIdQrCodeGenerator` interface and add your implementation as a service.
+
+```c#
+services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();
 ```
 
 ### BankID Certificate Policies
@@ -304,7 +316,8 @@ services
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddOtherDevice(options => { })
+            .UseQrCoderQrCodeGenerator();
     });
 ```
 

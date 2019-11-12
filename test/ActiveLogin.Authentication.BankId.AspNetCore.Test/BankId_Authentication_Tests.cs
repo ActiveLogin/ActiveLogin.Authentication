@@ -181,7 +181,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 	        // Arrange mocks
             var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
 	        var mockProtector =  new Mock<IBankIdLoginOptionsProtector>();
-	        mockProtector
+            mockProtector
 		        .Setup(protector => protector.Unprotect(It.IsAny<string>()))
 		        .Returns(autoLaunchOptions);
 
@@ -196,8 +196,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 				        await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
 			        }),
 			        services =>
-			        {
-				        services.AddTransient(s => mockProtector.Object);
+                    {
+                        services.AddTransient(s => mockProtector.Object);
 			        })
 		        .CreateClient();
 

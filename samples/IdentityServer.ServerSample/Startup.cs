@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
+using ActiveLogin.Authentication.BankId.AspNetCore.QrCoder;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -101,6 +102,7 @@ namespace IdentityServer.ServerSample
             services.AddAuthentication()
                 .AddBankId(builder =>
                 {
+                    builder.UseQrCoderQrCodeGenerator();
                     builder.Configure(options =>
                             {
                                 options.IssueBirthdateClaim = true;

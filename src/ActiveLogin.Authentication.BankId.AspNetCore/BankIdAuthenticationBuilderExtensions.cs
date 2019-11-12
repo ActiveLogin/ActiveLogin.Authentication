@@ -4,8 +4,8 @@ using System.Security.Cryptography.X509Certificates;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
+using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +29,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddTransient<IBankIdResultStore, BankIdResultTraceLoggerStore>();
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
-            services.TryAddTransient<IBankIdQrCodeGenerator, QRCoderBankIdQrCodeGenerator>();
+            services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
 
             services.AddLocalization(options =>
             {
