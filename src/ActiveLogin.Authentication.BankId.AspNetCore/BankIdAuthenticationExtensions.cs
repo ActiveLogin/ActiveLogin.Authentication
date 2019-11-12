@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http.Headers;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,7 +28,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             var productName = BankIdAuthenticationConstants.ProductName;
             var productAssembly = typeof(BankIdAuthenticationExtensions).Assembly;
-            var productVersion = productAssembly.GetName().Version.ToString();
+            var productVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 
             return new ProductInfoHeaderValue(productName, productVersion);
         }
