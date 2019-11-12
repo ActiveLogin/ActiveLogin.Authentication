@@ -11,7 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
     /// <remarks>
     /// It uses the QR Coder library to generate the codes
     /// </remarks>
-    public class QRCoderBankIdQrCodeGenerator : IBankIdQrCodeGenerator
+    public class QrCoderBankIdQrCodeGenerator : IBankIdQrCodeGenerator
     {
         private const int PixelsPerModule = 20;
 
