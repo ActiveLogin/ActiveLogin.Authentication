@@ -5,11 +5,11 @@ using Microsoft.Extensions.Localization;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
 {
-    internal class BankIdDefaultQrCodeGenerator : IBankIdQrCodeGenerator
+    internal class BankIdMissingQrCodeGenerator : IBankIdQrCodeGenerator
     {
         private readonly IStringLocalizer<BankIdAuthenticationHandler> _localizer;
 
-        public BankIdDefaultQrCodeGenerator(IStringLocalizer<BankIdAuthenticationHandler> localizer)
+        public BankIdMissingQrCodeGenerator(IStringLocalizer<BankIdAuthenticationHandler> localizer)
         {
             _localizer = localizer;
         }
@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
         public string GenerateQrCodeAsBase64(string autoStartToken)
         {
             var fileName = _localizer["Qr_Code_Default_Image"];
-            var assembly = typeof(BankIdDefaultQrCodeGenerator).GetTypeInfo().Assembly;
+            var assembly = typeof(BankIdMissingQrCodeGenerator).GetTypeInfo().Assembly;
             var resourceStream = assembly.GetManifestResourceStream($"ActiveLogin.Authentication.BankId.AspNetCore.Resources.{ fileName }");
             var base64EncodedImage = ConvertToBase64(resourceStream);
 

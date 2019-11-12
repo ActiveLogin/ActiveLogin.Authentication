@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
         {
             var services = builder.AuthenticationBuilder.Services;
 
-            services.AddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
+            services.AddTransient<IBankIdQrCodeGenerator, QRCoderBankIdQrCodeGenerator>();
 
             return builder;
         }

@@ -29,7 +29,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddTransient<IBankIdResultStore, BankIdResultTraceLoggerStore>();
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
-            services.TryAddTransient<IBankIdQrCodeGenerator, BankIdDefaultQrCodeGenerator>();
+            services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
 
             services.AddLocalization(options =>
             {
