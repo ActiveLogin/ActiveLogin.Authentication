@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
+using ActiveLogin.Authentication.BankId.AspNetCore.QrCoder;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +35,7 @@ namespace Standalone.MvcSample
                 .AddCookie()
                 .AddBankId(builder =>
                 {
+                    builder.UseQrCoderQrCodeGenerator();
                     builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
                            .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 

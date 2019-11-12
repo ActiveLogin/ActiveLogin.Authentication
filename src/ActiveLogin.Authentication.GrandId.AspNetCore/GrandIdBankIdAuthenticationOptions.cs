@@ -1,5 +1,4 @@
-﻿using System;
-using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
+﻿using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
