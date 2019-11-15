@@ -11,7 +11,7 @@ trigger:
 
 stages:
 - stage: BuildNuget
-  displayName:  'Build, test and package NuGet packages'
+  displayName:  'Build NuGet packages'
   jobs:
   - job: BuildTestPackageNuGet
     displayName: 'Build'
@@ -139,7 +139,7 @@ stages:
       artifact: '$(targetArtifactName)'
 
 - stage: BuildSamples
-  displayName:  'Build and package samples'
+  displayName:  'Build samples'
   jobs:
   - job: BuildTestPackageSamples
     displayName: 'Build'
