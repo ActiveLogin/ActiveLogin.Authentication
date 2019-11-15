@@ -140,6 +140,7 @@ stages:
 
 - stage: BuildSamples
   displayName:  'Build samples'
+  dependsOn: []
   jobs:
   - job: BuildTestPackageSamples
     displayName: 'Build'
