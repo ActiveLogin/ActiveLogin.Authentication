@@ -1,0 +1,138 @@
+# Azure DevOps Pipeline
+
+name: $(Date:yyyyMMdd)$(Rev:r)
+
+trigger:
+- master
+
+stages:
+- stage: Build
+  displayName:  'Build, test and package NuGet packages'
+  jobs:
+  - job: BuildTestPackageNuGet
+    displayName: 'Build'
+    strategy:
+      matrix:
+        Windows:
+          vmImage: 'windows-latest'
+          artifactName: 'nuget-windows'
+        macOS:
+          vmImage: 'macOS-latest'
+          artifactName: 'nuget-macos'
+        Linux:
+          vmImage: 'ubuntu-latest'
+          artifactName: 'nuget-linux'
+      maxParallel: 3
+
+    pool:
+      vmImage: '$(vmImage)'
+
+    variables:
+      dotnetBuildConfiguration: 'Release'
+      dotnetVerbosity: 'Detailed'
+
+      pathToBuildProjects: '**/**/*.*sproj'
+      pathToTestProjects: '**/test/**/*.Test.*sproj'
+      pathToPackProjects: '**/src/**/*.*sproj'
+      pathToNugetPackages: '**/*.nupkg'
+
+      sourceRepositoryBranch: '$(Build.SourceBranchName)'
+      sourceRepositoryCommit: '$(Build.SourceVersion)'
+
+      codesigningTimestamperUrl: 'http://timestamp.digicert.com'
+
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Install: .NET Core SDK'
+      inputs:
+        useGlobalJson: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '$(pathToBuildProjects)'
+        arguments: '--verbosity $(dotnetVerbosity)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: build
+        projects: '$(pathToBuildProjects)'
+        arguments: '--configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet pack: ci'
+      inputs:
+        command: custom
+        custom: pack
+        projects: '$(pathToPackProjects)'
+        arguments: '--output "$(Build.ArtifactStagingDirectory)/ci" --configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity) /p:Configuration=$(dotnetBuildConfiguration) /p:RepositoryBranch=$(sourceRepositoryBranch) /p:RepositoryCommit=$(sourceRepositoryCommit) /p:VersionSuffix=ci-$(Build.BuildNumber)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet pack: release'
+      inputs:
+        command: custom
+        custom: pack
+        projects: '$(pathToPackProjects)'
+        arguments: '--output "$(Build.ArtifactStagingDirectory)/release" --configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity) /p:Configuration=$(dotnetBuildConfiguration) /p:RepositoryBranch=$(sourceRepositoryBranch) /p:RepositoryCommit=$(sourceRepositoryCommit)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet test'
+      inputs:
+        command: test
+        projects: '$(pathToTestProjects)'
+        arguments: '--configuration $(dotnetBuildConfiguration) --collect "Code coverage"'
+
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      artifact: '$(artifactName)'
+
+- stage: Sign
+  displayName: 'Sign NuGet packages'
+  dependsOn: Build
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+  - job: SignNuGet
+    displayName: 'Sign Windows'
+    pool:
+        vmImage: 'windows-latest'
+
+    variables:
+    - group: Active Login   # Contains codesigningCertPassword: Password for code signing cert
+
+    - name: sourceArtifactName
+      value: 'nuget-windows'
+
+    - name: targetArtifactName
+      value: 'nuget-windows-signed'
+
+    - name: pathToNugetPackages
+      value: '**/*.nupkg'
+
+    - name: codesigningTimestamperUrl
+      value: 'http://timestamp.digicert.com'
+
+    steps:
+    - download: current
+      artifact: '$(sourceArtifactName)'
+
+    - task: DownloadSecureFile@1
+      displayName: 'Download secure file: activesolution-codesigning-cert.pfx'
+      name: codesigningCert
+      inputs:
+        secureFile: 'activesolution-codesigning-cert.pfx'
+
+    - task: NuGetToolInstaller@0
+      displayName: 'Install: NuGet'
+      inputs:
+        versionSpec: 5.3.0
+
+    - task: NuGetCommand@2
+      displayName: 'nuget sign'
+      inputs:
+        command: custom
+        arguments: 'sign "$(Pipeline.Workspace)/$(pathToNugetPackages)" -CertificatePath "$(codesigningCert.secureFilePath)" -CertificatePassword "$(codesigningCertPassword)" -Timestamper "$(codesigningTimestamperUrl)"'
+
+    - publish: '$(Pipeline.Workspace)/$(sourceArtifactName)'
+      artifact: '$(targetArtifactName)'
