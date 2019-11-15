@@ -160,9 +160,6 @@ stages:
     pool:
       vmImage: '$(vmImage)'
 
-    variables:
-      pathToBuildProjects: '**/samples/*.*sproj'
-
     steps:
 
     - task: DownloadSecureFile@1
@@ -195,23 +192,11 @@ stages:
         useGlobalJson: true
 
     - task: DotNetCoreCLI@2
-      displayName: 'dotnet restore'
-      inputs:
-        command: restore
-        projects: '$(pathToBuildProjects)'
-        arguments: '--verbosity $(dotnetVerbosity)'
-
-    - task: DotNetCoreCLI@2
-      displayName: 'dotnet build'
-      inputs:
-        command: build
-        projects: '$(pathToBuildProjects)'
-        arguments: '--configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity)'
-
-    - task: DotNetCoreCLI@2
       displayName: 'dotnet publish'
       inputs:
         command: publish
+        publishWebProjects: True
+        zipAfterPublish: True
         arguments: '--configuration $(dotnetBuildConfiguration) --output $(build.artifactstagingdirectory) --no-build'
 
     - task: CopyFiles@2
