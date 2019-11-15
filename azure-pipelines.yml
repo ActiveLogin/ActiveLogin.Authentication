@@ -1,0 +1,209 @@
+# Azure DevOps Pipeline
+
+name: $(Date:yyyyMMdd)$(Rev:r)
+
+variables:
+  dotnetBuildConfiguration: 'Release'
+  dotnetVerbosity: 'Detailed'
+
+trigger:
+- master
+
+stages:
+- stage: BuildNuget
+  displayName:  'Build NuGet packages'
+  jobs:
+  - job: BuildTestPackageNuGet
+    displayName: 'Build'
+    strategy:
+      matrix:
+        Windows:
+          vmImage: 'windows-latest'
+          artifactName: 'nuget-windows'
+        macOS:
+          vmImage: 'macOS-latest'
+          artifactName: 'nuget-macos'
+        Linux:
+          vmImage: 'ubuntu-latest'
+          artifactName: 'nuget-linux'
+      maxParallel: 3
+
+    pool:
+      vmImage: '$(vmImage)'
+
+    variables:
+      pathToBuildProjects: '**/**/*.*sproj'
+      pathToTestProjects: '**/test/**/*.Test.*sproj'
+      pathToPackProjects: '**/src/**/*.*sproj'
+      pathToNugetPackages: '**/*.nupkg'
+
+      sourceRepositoryBranch: '$(Build.SourceBranchName)'
+      sourceRepositoryCommit: '$(Build.SourceVersion)'
+
+      codesigningTimestamperUrl: 'http://timestamp.digicert.com'
+
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Install: .NET Core SDK'
+      inputs:
+        useGlobalJson: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '$(pathToBuildProjects)'
+        arguments: '--verbosity $(dotnetVerbosity)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: build
+        projects: '$(pathToBuildProjects)'
+        arguments: '--configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet pack: ci'
+      inputs:
+        command: custom
+        custom: pack
+        projects: '$(pathToPackProjects)'
+        arguments: '--output "$(Build.ArtifactStagingDirectory)/ci" --configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity) /p:Configuration=$(dotnetBuildConfiguration) /p:RepositoryBranch=$(sourceRepositoryBranch) /p:RepositoryCommit=$(sourceRepositoryCommit) /p:VersionSuffix=ci-$(Build.BuildNumber)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet pack: release'
+      inputs:
+        command: custom
+        custom: pack
+        projects: '$(pathToPackProjects)'
+        arguments: '--output "$(Build.ArtifactStagingDirectory)/release" --configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity) /p:Configuration=$(dotnetBuildConfiguration) /p:RepositoryBranch=$(sourceRepositoryBranch) /p:RepositoryCommit=$(sourceRepositoryCommit)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet test'
+      inputs:
+        command: test
+        projects: '$(pathToTestProjects)'
+        arguments: '--configuration $(dotnetBuildConfiguration) --collect "Code coverage"'
+
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      artifact: '$(artifactName)'
+
+- stage: SignNuget
+  displayName: 'Sign NuGet packages'
+  dependsOn: BuildNuget
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+  - job: SignNuGet
+    displayName: 'Sign Windows'
+    pool:
+        vmImage: 'windows-latest'
+
+    variables:
+    - group: Active Login   # Contains codesigningCertPassword: Password for code signing cert
+
+    - name: sourceArtifactName
+      value: 'nuget-windows'
+
+    - name: targetArtifactName
+      value: 'nuget-windows-signed'
+
+    - name: pathToNugetPackages
+      value: '**/*.nupkg'
+
+    - name: codesigningTimestamperUrl
+      value: 'http://timestamp.digicert.com'
+
+    steps:
+    - download: current
+      artifact: '$(sourceArtifactName)'
+
+    - task: DownloadSecureFile@1
+      displayName: 'Download secure file: activesolution-codesigning-cert.pfx'
+      name: codesigningCert
+      inputs:
+        secureFile: 'activesolution-codesigning-cert.pfx'
+
+    - task: NuGetToolInstaller@0
+      displayName: 'Install: NuGet'
+      inputs:
+        versionSpec: 5.3.0
+
+    - task: NuGetCommand@2
+      displayName: 'nuget sign'
+      inputs:
+        command: custom
+        arguments: 'sign "$(Pipeline.Workspace)/$(pathToNugetPackages)" -CertificatePath "$(codesigningCert.secureFilePath)" -CertificatePassword "$(codesigningCertPassword)" -Timestamper "$(codesigningTimestamperUrl)"'
+
+    - publish: '$(Pipeline.Workspace)/$(sourceArtifactName)'
+      artifact: '$(targetArtifactName)'
+
+- stage: BuildSamples
+  displayName:  'Build samples'
+  dependsOn: []
+  jobs:
+  - job: BuildTestPackageSamples
+    displayName: 'Build'
+    strategy:
+      matrix:
+        Windows:
+          vmImage: 'windows-latest'
+          artifactName: 'samples-windows'
+        macOS:
+          vmImage: 'macOS-latest'
+          artifactName: 'samples-macos'
+        Linux:
+          vmImage: 'ubuntu-latest'
+          artifactName: 'samples-linux'
+      maxParallel: 3
+
+    pool:
+      vmImage: '$(vmImage)'
+
+    steps:
+
+    - task: DownloadSecureFile@1
+      displayName: 'Download secure file: BankIdRootCertificate-Prod.crt'
+      inputs:
+        secureFile: 'BankIdRootCertificate-Prod.crt'
+
+    - task: CopyFiles@2
+      displayName: 'Copy secure file: BankIdRootCertificate-Prod.crt'
+      inputs:
+        SourceFolder: '$(Agent.TempDirectory)'
+        Contents: 'BankIdRootCertificate-Prod.crt'
+        TargetFolder: samples/IdentityServer.ServerSample/Certificates
+
+    - task: DownloadSecureFile@1
+      displayName: 'Download secure file: BankIdRootCertificate-Test.crt'
+      inputs:
+        secureFile: 'BankIdRootCertificate-Test.crt'
+
+    - task: CopyFiles@2
+      displayName: 'Copy secure file: BankIdRootCertificate-Test.crt'
+      inputs:
+        SourceFolder: '$(Agent.TempDirectory)'
+        Contents: 'BankIdRootCertificate-Test.crt'
+        TargetFolder: samples/IdentityServer.ServerSample/Certificates
+
+    - task: UseDotNet@2
+      displayName: 'Install: .NET Core SDK'
+      inputs:
+        useGlobalJson: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish'
+      inputs:
+        command: publish
+        publishWebProjects: True
+        zipAfterPublish: True
+        arguments: '--configuration $(dotnetBuildConfiguration) --output $(build.artifactstagingdirectory)'
+
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: AzureProvisioningSample'
+      inputs:
+        SourceFolder: samples/AzureProvisioningSample
+        TargetFolder: '$(build.artifactstagingdirectory)\AzureProvisioningSample'
+
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      artifact: '$(artifactName)'
