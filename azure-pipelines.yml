@@ -2,11 +2,15 @@
 
 name: $(Date:yyyyMMdd)$(Rev:r)
 
+variables:
+  dotnetBuildConfiguration: 'Release'
+  dotnetVerbosity: 'Detailed'
+
 trigger:
 - master
 
 stages:
-- stage: Build
+- stage: BuildNuget
   displayName:  'Build, test and package NuGet packages'
   jobs:
   - job: BuildTestPackageNuGet
@@ -28,9 +32,6 @@ stages:
       vmImage: '$(vmImage)'
 
     variables:
-      dotnetBuildConfiguration: 'Release'
-      dotnetVerbosity: 'Detailed'
-
       pathToBuildProjects: '**/**/*.*sproj'
       pathToTestProjects: '**/test/**/*.Test.*sproj'
       pathToPackProjects: '**/src/**/*.*sproj'
@@ -88,7 +89,7 @@ stages:
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: '$(artifactName)'
 
-- stage: Sign
+- stage: SignNuget
   displayName: 'Sign NuGet packages'
   dependsOn: Build
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
@@ -136,3 +137,87 @@ stages:
 
     - publish: '$(Pipeline.Workspace)/$(sourceArtifactName)'
       artifact: '$(targetArtifactName)'
+
+- stage: BuildSamples
+  displayName:  'Build and package samples'
+  jobs:
+  - job: BuildTestPackageSamples
+    displayName: 'Build'
+    strategy:
+      matrix:
+        Windows:
+          vmImage: 'windows-latest'
+          artifactName: 'samples-windows'
+        macOS:
+          vmImage: 'macOS-latest'
+          artifactName: 'samples-macos'
+        Linux:
+          vmImage: 'ubuntu-latest'
+          artifactName: 'samples-linux'
+      maxParallel: 3
+
+    pool:
+      vmImage: '$(vmImage)'
+
+    variables:
+      pathToBuildProjects: '**/samples/*.*sproj'
+
+    steps:
+
+    - task: DownloadSecureFile@1
+      displayName: 'Download secure file: BankIdRootCertificate-Prod.crt'
+      inputs:
+        secureFile: 'BankIdRootCertificate-Prod.crt'
+
+    - task: CopyFiles@2
+      displayName: 'Copy secure file: BankIdRootCertificate-Prod.crt'
+      inputs:
+        SourceFolder: '$(Agent.TempDirectory)'
+        Contents: 'BankIdRootCertificate-Prod.crt'
+        TargetFolder: samples/IdentityServer.ServerSample/Certificates
+
+    - task: DownloadSecureFile@1
+      displayName: 'Download secure file: BankIdRootCertificate-Test.crt'
+      inputs:
+        secureFile: 'BankIdRootCertificate-Test.crt'
+
+    - task: CopyFiles@2
+      displayName: 'Copy secure file: BankIdRootCertificate-Test.crt'
+      inputs:
+        SourceFolder: '$(Agent.TempDirectory)'
+        Contents: 'BankIdRootCertificate-Test.crt'
+        TargetFolder: samples/IdentityServer.ServerSample/Certificates
+
+    - task: UseDotNet@2
+      displayName: 'Install: .NET Core SDK'
+      inputs:
+        useGlobalJson: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: '$(pathToBuildProjects)'
+        arguments: '--verbosity $(dotnetVerbosity)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: build
+        projects: '$(pathToBuildProjects)'
+        arguments: '--configuration $(dotnetBuildConfiguration) --verbosity $(dotnetVerbosity)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish'
+      inputs:
+        command: publish
+        arguments: '--configuration $(dotnetBuildConfiguration) --output $(build.artifactstagingdirectory) --no-build'
+
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: AzureProvisioningSample'
+      inputs:
+        SourceFolder: samples/AzureProvisioningSample
+        TargetFolder: '$(build.artifactstagingdirectory)\AzureProvisioningSample'
+
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      artifact: '$(artifactName)'
