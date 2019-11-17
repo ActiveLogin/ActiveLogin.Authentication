@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">netstandard2.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
-    <TargetFrameworkIdentifier Condition="'$(_ShortFrameworkIdentifier)'=='net'">.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkIdentifier Condition="'$(_ShortFrameworkIdentifier)'=='netstandard'">.NETStandard</TargetFrameworkIdentifier>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
     <NoWarn>1701;1702;1591;CS7035</NoWarn>
@@ -12,9 +9,10 @@
     <AssemblyName>ActiveLogin.Authentication.GrandId.Api</AssemblyName>
     <PackageId>ActiveLogin.Authentication.GrandId.Api</PackageId>
 
-    <VersionPrefix>2.0.1</VersionPrefix>
-    <AssemblyVersion>2.0.0</AssemblyVersion>
-    <!--<VersionSuffix>beta-1</VersionSuffix>-->
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionSuffix>alpha-1</VersionSuffix>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
     <SignAssembly>true</SignAssembly>
@@ -23,7 +21,7 @@
     <Description>API client that enables an application to call GrandID's (Svensk E-identitet) REST API in .NET.</Description>
     <PackageTags>grandid;bankid;swedish;sweden;apiclient;netstandard</PackageTags>
 
-    <Authors>Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
+    <Authors>Active Solution;Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
     <Copyright>Copyright © ActiveLogin</Copyright>
 
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
@@ -41,11 +39,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19554-01" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

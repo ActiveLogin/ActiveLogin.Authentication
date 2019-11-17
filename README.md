@@ -8,7 +8,6 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 
 - :id: Supports BankID both natively and through GrandID
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Framework 4.6.1
-- :heavy_check_mark: Strong named
 - :lock: GDPR Compliant
 - :cloud: Great support for Microsoft Azure
 - :earth_americas: Multi language support with English and Swedish out of the box
@@ -160,10 +159,13 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 
 ## FAQ
 
-### Can I use Active Login from both .NET Core 2.2 and Core 3.0?
+### What versions of .NET is supported?
 
-Yes you can! It targets .NET Standard 2.0 and is tested from applicationns running both ASP.NET COre 2.2 and ASP.NET Core 3.0.
-Moving forward we will focus our efforts on Core 3.0. Samples of usage from Core 3.0 is available as a separate branch at the moment.
+The API-wrappers (*.Api) target .NET Standard 2.0, so they can be used from .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The packages that target .NET Standard are strong named as they can be used from .NET Framework where strong naming can be relevant.
+
+The authentication modules (*.AspNetCore), and related packages, depend on ASP.NET Core MVC 3.1 and therefore require .NET Core 3.1.
+
+Our samples target .NET Core 3.1.
 
 ### How do I run the samples?
 
