@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
-    <NoWarn>1701;1702;1591</NoWarn>
+    <NoWarn>1701;1702;1591;CS7035</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 
     <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
     <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
