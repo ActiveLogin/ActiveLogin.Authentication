@@ -105,7 +105,6 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            var personalIdentityNumberOrDefault = _personalIdentityNumber;
             if (personalIdentityNumber == null || string.IsNullOrWhiteSpace(personalIdentityNumber))
             {
                 personalIdentityNumber = _personalIdentityNumber;
