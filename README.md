@@ -159,10 +159,13 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 
 ## FAQ
 
-### Can I use Active Login from both .NET Core 2.2 and Core 3.0?
+### What versions of .NET is supported?
 
-Yes you can! It targets .NET Standard 2.0 and is tested from applicationns running both ASP.NET COre 2.2 and ASP.NET Core 3.0.
-Moving forward we will focus our efforts on Core 3.0. Samples of usage from Core 3.0 is available as a separate branch at the moment.
+The API-wrappers (*.Api) targets .NET Standard 2.0, so they can be used from .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full teference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). These packages are strong named, which might be a requirement in .NET Framework scenarios.
+
+The authentication modules (*.AspNetCore), and related packages, depends on ASP.NET Core MVC 3.1 and therefore requires .NET Core 3.1.
+
+Our samples targets .NET Core 3.1.
 
 ### How do I run the samples?
 
