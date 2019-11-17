@@ -6,6 +6,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     internal class LogoutFullResponse : FullResponseBase
     {
         [DataMember(Name = "sessiondeleted")]
-        public string SessionDeleted { get; private set; }
+        public string? SessionDeleted { get; private set; }
     }
 }

@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
         }
 
-        private static async Task<Error> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
+        private static async Task<Error?> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
         {
             if (!httpResponseMessage.IsSuccessStatusCode)
             {

@@ -24,7 +24,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// </param>
         ///
         public SignRequest(string endUserIp, string userVisibleData)
-            : this(endUserIp, userVisibleData, null, null)
+            : this(endUserIp, userVisibleData, null, null, null)
         {
         }
 
@@ -44,7 +44,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// Data not displayed to the user.
         /// </param>
         public SignRequest(string endUserIp, string userVisibleData, byte[] userNonVisibleData)
-            : this(endUserIp, userVisibleData, userNonVisibleData, null)
+            : this(endUserIp, userVisibleData, userNonVisibleData, null, null)
         {
         }
 
@@ -92,8 +92,18 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </param>
         /// <param name="requirement">Requirements on how the auth or sign order must be performed.</param>
-        public SignRequest(string endUserIp, string userVisibleData, byte[] userNonVisibleData, string personalIdentityNumber, Requirement requirement)
+        public SignRequest(string endUserIp, string userVisibleData, byte[]? userNonVisibleData, string? personalIdentityNumber, Requirement? requirement)
         {
+            if (endUserIp == null)
+            {
+                throw new ArgumentNullException(nameof(endUserIp));
+            }
+
+            if (userVisibleData == null)
+            {
+                throw new ArgumentNullException(nameof(userVisibleData));
+            }
+
             EndUserIp = endUserIp;
             UserVisibleData = ToBase64EncodedString(userVisibleData);
             PersonalIdentityNumber = personalIdentityNumber;
@@ -117,7 +127,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </summary>
         [DataMember(Name = "personalNumber", EmitDefaultValue = false)]
-        public string PersonalIdentityNumber { get; private set; }
+        public string? PersonalIdentityNumber { get; private set; }
 
         /// <summary>
         /// Requirements on how the auth or sign order must be performed.
@@ -135,19 +145,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// Data not displayed to the user.
         /// </summary>
         [DataMember(Name = "userNonVisibleData", EmitDefaultValue = false)]
-        public string UserNonVisibleData { get; private set; }
+        public string? UserNonVisibleData { get; private set; }
 
         private static string ToBase64EncodedString(string value)
         {
-            if (value == null)
-            {
-                return null;
-            }
-
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
 
-        private static string ToBase64EncodedString(byte[] value)
+        private static string? ToBase64EncodedString(byte[]? value)
         {
             if (value == null)
             {

@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
-        private readonly string _bankIdServiceKey;
+        private readonly string? _bankIdServiceKey;
 
         public GrandIdApiClient(HttpClient httpClient, GrandIdApiClientConfiguration configuration)
         {
@@ -38,13 +38,13 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             EnsureValidBankIdServiceKey();
 
-            var queryStringParams = new Dictionary<string, string>
+            var queryStringParams = new Dictionary<string, string?>
             {
                 { "apiKey", _apiKey },
                 { "authenticateServiceKey", _bankIdServiceKey }
             };
             var url = GetUrl("FederatedLogin", queryStringParams);
-            var postData = new Dictionary<string, string>
+            var postData = new Dictionary<string, string?>
             {
                 { "callbackUrl", GetBase64EncodedString(request.CallbackUrl) },
                 { "deviceChoice", GetBoolString(request.UseChooseDevice) },
@@ -70,7 +70,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             EnsureValidBankIdServiceKey();
 
-            var url = GetUrl("GetSession", new Dictionary<string, string>
+            var url = GetUrl("GetSession", new Dictionary<string, string?>
             {
                 { "apiKey", _apiKey },
                 { "authenticateServiceKey", _bankIdServiceKey },
@@ -86,7 +86,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         /// </summary>
         public async Task<LogoutResponse> LogoutAsync(LogoutRequest request)
         {
-            var url = GetUrl("Logout", new Dictionary<string, string>
+            var url = GetUrl("Logout", new Dictionary<string, string?>
             {
                 { "apiKey", _apiKey },
                 { "sessionid", request.SessionId }
@@ -97,14 +97,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
         }
 
 
-        private static string GetUrl(string baseUrl, Dictionary<string, string> queryStringParams)
+        private static string GetUrl(string baseUrl, Dictionary<string, string?> queryStringParams)
         {
             if (!queryStringParams.Any())
             {
                 return baseUrl;
             }
 
-            var queryString = string.Join("&", queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+            var queryString = string.Join("&", queryStringParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value ?? string.Empty)}"));
             return $"{baseUrl}?{queryString}";
         }
 
@@ -119,7 +119,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return fullResponse;
         }
 
-        private async Task<TResult> PostFullResponseAndEnsureSuccess<TResult>(string url, Dictionary<string, string> postData) where TResult : FullResponseBase
+        private async Task<TResult> PostFullResponseAndEnsureSuccess<TResult>(string url, Dictionary<string, string?> postData) where TResult : FullResponseBase
         {
             var postDataWithoutNullValues = postData.Where(pair => pair.Value != null).ToDictionary(x => x.Key, x => x.Value);
             var fullResponse = await _httpClient.PostAsync<TResult>(url, postDataWithoutNullValues);
@@ -131,7 +131,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return fullResponse;
         }
 
-        private static string GetBase64EncodedString(string value)
+        private static string? GetBase64EncodedString(string? value)
         {
             if (value == null)
             {
@@ -141,7 +141,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
         }
 
-        private static string GetBoolString(bool? value)
+        private static string? GetBoolString(bool? value)
         {
             if (value == null)
             {

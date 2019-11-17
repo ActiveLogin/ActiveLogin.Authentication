@@ -2,13 +2,13 @@
 {
     public class GrandIdApiClientConfiguration
     {
-        public GrandIdApiClientConfiguration(string apiKey, string bankIdServiceKey = null)
+        public GrandIdApiClientConfiguration(string apiKey, string? bankIdServiceKey = null)
         {
             ApiKey = apiKey;
             BankIdServiceKey = bankIdServiceKey;
         }
 
         public string ApiKey { get; }
-        public string BankIdServiceKey { get; }
+        public string? BankIdServiceKey { get; }
     }
 }

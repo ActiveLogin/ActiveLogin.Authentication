@@ -81,21 +81,32 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
             return new AuthResponse(response.OrderRef, response.AutoStartToken);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
         {
-            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
             return new SignResponse(response.OrderRef, response.AutoStartToken);
         }
 
-        private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
+        private async Task<OrderResponse> GetOrderResponseAsync(string? personalIdentityNumber, string endUserIp)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(personalIdentityNumber))
+            var personalIdentityNumberOrDefault = _personalIdentityNumber;
+            if (personalIdentityNumber == null || string.IsNullOrWhiteSpace(personalIdentityNumber))
             {
                 personalIdentityNumber = _personalIdentityNumber;
             }
@@ -153,7 +164,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             return response;
         }
 
-        private CompletionData GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
+        private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
         {
             if (status != CollectStatus.Complete)
             {

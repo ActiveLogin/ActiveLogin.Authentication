@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class CollectResponse
     {
-        internal CollectResponse(string orderRef, string status, string hintCode, CompletionData completionData)
+        internal CollectResponse(string orderRef, string status, string hintCode, CompletionData? completionData)
         {
             OrderRef = orderRef;
             Status = status;
@@ -43,6 +43,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// </summary>
         /// <remarks>Only present for complete orders.</remarks>
         [DataMember(Name = "completionData")]
-        public CompletionData CompletionData { get; private set; }
+        public CompletionData? CompletionData { get; private set; }
     }
 }
