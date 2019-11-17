@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
     {
         public BankIdLoginOptions(
             List<string> certificatePolicies,
-            SwedishPersonalIdentityNumber personalIdentityNumber,
+            SwedishPersonalIdentityNumber? personalIdentityNumber,
             bool allowChangingPersonalIdentityNumber,
             bool autoLaunch,
             bool allowBiometric,
@@ -25,7 +25,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
 
         public List<string> CertificatePolicies { get; }
 
-        public SwedishPersonalIdentityNumber PersonalIdentityNumber { get; }
+        public SwedishPersonalIdentityNumber? PersonalIdentityNumber { get; }
         public bool AllowChangingPersonalIdentityNumber { get; }
 
         public bool AutoLaunch { get; }

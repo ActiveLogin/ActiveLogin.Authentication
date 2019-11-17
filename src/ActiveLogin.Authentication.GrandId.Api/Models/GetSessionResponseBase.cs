@@ -8,13 +8,13 @@
             Username = fullResponse.UserName;
         }
 
-        private protected GetSessionResponseBase(string sessionId, string username)
+        private protected GetSessionResponseBase(string? sessionId, string? username)
         {
             SessionId = sessionId;
             Username = username;
         }
 
-        public string SessionId { get; }
-        public string Username { get; }
+        public string? SessionId { get; }
+        public string? Username { get; }
     }
 }

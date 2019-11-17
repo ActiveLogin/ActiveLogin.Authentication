@@ -28,7 +28,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             var productName = BankIdAuthenticationConstants.ProductName;
             var productAssembly = typeof(BankIdAuthenticationExtensions).Assembly;
-            var productVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+            var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+            var productVersion = assemblyFileVersion?.Version ?? "Unknown";
 
             return new ProductInfoHeaderValue(productName, productVersion);
         }

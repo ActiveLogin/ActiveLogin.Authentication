@@ -7,7 +7,7 @@
         {
         }
 
-        internal LaunchUrlRequest(string redirectUrl, string autoStartToken, string relyingPartyReference)
+        internal LaunchUrlRequest(string redirectUrl, string autoStartToken, string? relyingPartyReference)
         {
             RedirectUrl = redirectUrl;
             AutoStartToken = autoStartToken;
@@ -16,6 +16,6 @@
 
         public string RedirectUrl { get; }
         public string AutoStartToken { get; }
-        public string RelyingPartyReference { get; }
+        public string? RelyingPartyReference { get; }
     }
 }

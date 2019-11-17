@@ -26,7 +26,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public bool IssueIdentityProviderClaim { get; set; } = true;
         public string IdentityProviderName { get; set; } = GrandIdAuthenticationDefaults.IdentityProviderName;
 
-        public ISecureDataFormat<GrandIdState> StateDataFormat { get; set; }
+        public ISecureDataFormat<GrandIdState>? StateDataFormat { get; set; }
 
         public CookieBuilder StateCookie
         {

@@ -71,7 +71,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             return builder;
         }
 
-        private static IGrandIdAuthenticationBuilder AddGrandIdApiClient(this IGrandIdAuthenticationBuilder builder, string apiKey, string bankIdServiceKey)
+        private static IGrandIdAuthenticationBuilder AddGrandIdApiClient(this IGrandIdAuthenticationBuilder builder, string apiKey, string? bankIdServiceKey)
         {
             builder.AuthenticationBuilder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey, bankIdServiceKey));
             builder.AuthenticationBuilder.Services.TryAddTransient<IGrandIdApiClient, GrandIdApiClient>();

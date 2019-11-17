@@ -10,32 +10,27 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 
         public byte[] Serialize(BankIdOrderRef model)
         {
-            using (var memory = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(memory))
-                {
-                    writer.Write(FormatVersion);
-                    writer.Write(model.OrderRef);
-                    writer.Flush();
-                    return memory.ToArray();
-                }
-            }
+            using var memory = new MemoryStream();
+            using var writer = new BinaryWriter(memory);
+
+            writer.Write(FormatVersion);
+            writer.Write(model.OrderRef);
+            writer.Flush();
+
+            return memory.ToArray();
         }
 
         public BankIdOrderRef Deserialize(byte[] data)
         {
-            using (var memory = new MemoryStream(data))
-            {
-                using (var reader = new BinaryReader(memory))
-                {
-                    if (reader.ReadInt32() != FormatVersion)
-                    {
-                        return null;
-                    }
+            using var memory = new MemoryStream(data);
+            using var reader = new BinaryReader(memory);
 
-                    return new BankIdOrderRef(reader.ReadString());
-                }
+            if (reader.ReadInt32() != FormatVersion)
+            {
+                throw new IncompatibleSerializationVersion(nameof(BankIdOrderRef));
             }
+
+            return new BankIdOrderRef(reader.ReadString());
         }
     }
 }

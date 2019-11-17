@@ -75,9 +75,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Initialize")]
         public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
         {
+            if (request.LoginOptions == null)
+            {
+                throw new ArgumentNullException(nameof(request.LoginOptions));
+            }
+
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
-            SwedishPersonalIdentityNumber personalIdentityNumber;
+            SwedishPersonalIdentityNumber? personalIdentityNumber;
             if (unprotectedLoginOptions.IsAutoLogin())
             {
                 personalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber;
@@ -133,13 +138,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
 
-        private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber personalIdentityNumber, BankIdLoginOptions loginOptions)
+        private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = GetEndUserIp();
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
             var autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
 
-            List<string> certificatePolicies = null;
+            List<string>? certificatePolicies = null;
             if (loginOptions.CertificatePolicies != null && loginOptions.CertificatePolicies.Any())
             {
                 certificatePolicies = loginOptions.CertificatePolicies;
@@ -178,6 +183,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Status")]
         public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
         {
+            if (request.LoginOptions == null)
+            {
+                throw new ArgumentNullException(nameof(request.LoginOptions));
+            }
+
+            if (request.OrderRef == null)
+            {
+                throw new ArgumentNullException(nameof(request.OrderRef));
+            }
+
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
 
@@ -223,6 +238,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse)
         {
+            if (collectResponse.CompletionData == null)
+            {
+                throw new ArgumentNullException(nameof(collectResponse.CompletionData));
+            }
+
+            if (request.ReturnUrl == null)
+            {
+                throw new ArgumentNullException(nameof(request.ReturnUrl));
+            }
+
             _logger.BankIdCollectCompleted(collectResponse.OrderRef, collectResponse.CompletionData);
             await _bankIdResultStore.StoreCollectCompletedCompletionData(collectResponse.OrderRef, collectResponse.CompletionData);
 
@@ -292,6 +317,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Cancel")]
         public async Task<ActionResult> Cancel(BankIdLoginApiCancelRequest request)
         {
+            if (request.OrderRef == null)
+            {
+                throw new ArgumentNullException(nameof(request.OrderRef));
+            }
+
+            if (request.CancelReturnUrl == null)
+            {
+                throw new ArgumentNullException(nameof(request.CancelReturnUrl));
+            }
+
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
 
             await _bankIdApiClient.CancelAsync(orderRef.OrderRef);

@@ -5,9 +5,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 {
     public class BankIdLoginViewModel
     {
-        internal BankIdLoginViewModel()
+        internal BankIdLoginViewModel(string returnUrl, string cancelReturnUrl, bool autoLogin, string personalIdentityNumber, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, BankIdLoginScriptOptions loginScriptOptions, string loginScriptOptionsJson, string antiXsrfRequestToken)
         {
-
+            ReturnUrl = returnUrl;
+            CancelReturnUrl = cancelReturnUrl;
+            AutoLogin = autoLogin;
+            PersonalIdentityNumber = personalIdentityNumber;
+            LoginOptions = loginOptions;
+            UnprotectedLoginOptions = unprotectedLoginOptions;
+            LoginScriptOptions = loginScriptOptions;
+            LoginScriptOptionsJson = loginScriptOptionsJson;
+            AntiXsrfRequestToken = antiXsrfRequestToken;
         }
 
         public string ReturnUrl { get; set; }

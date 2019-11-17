@@ -5,11 +5,11 @@
         /// <summary>
         /// The apiKey obtained from GrandID (Svensk E-identitet).
         /// </summary>
-        public string ApiKey { get; set; }
+        public string? ApiKey { get; set; }
 
         /// <summary>
         /// The authenticateServiceKey for BankID obtained from GrandID (Svensk E-identitet).
         /// </summary>
-        public string BankIdServiceKey { get; set; } = null;
+        public string? BankIdServiceKey { get; set; } = null;
     }
 }

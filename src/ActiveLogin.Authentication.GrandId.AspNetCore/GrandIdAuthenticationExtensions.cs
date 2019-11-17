@@ -22,7 +22,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             var productName = GrandIdAuthenticationConstants.ProductName;
             var productAssembly = typeof(GrandIdAuthenticationExtensions).Assembly;
-            var productVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+            var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+            var productVersion = assemblyFileVersion?.Version ?? "Unknown";
 
             return new ProductInfoHeaderValue(productName, productVersion);
         }

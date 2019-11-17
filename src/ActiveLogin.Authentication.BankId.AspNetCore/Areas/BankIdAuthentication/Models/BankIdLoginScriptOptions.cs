@@ -6,9 +6,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     [DataContract]
     public class BankIdLoginScriptOptions
     {
-        internal BankIdLoginScriptOptions()
+        internal BankIdLoginScriptOptions(string bankIdInitializeApiUrl, string bankIdStatusApiUrl, string bankIdCancelApiUrl)
         {
-
+            BankIdInitializeApiUrl = bankIdInitializeApiUrl;
+            BankIdStatusApiUrl = bankIdStatusApiUrl;
+            BankIdCancelApiUrl = bankIdCancelApiUrl;
         }
 
         private const int MinimumRefreshIntervalMs = 1000;

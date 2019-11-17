@@ -51,35 +51,31 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
         {
-            var loginScriptOptions = new BankIdLoginScriptOptions
+            var loginScriptOptions = new BankIdLoginScriptOptions(
+                Url.Action("Initialize", "BankIdApi"),
+                Url.Action("Status", "BankIdApi"),
+                Url.Action("Cancel", "BankIdApi")
+                )
             {
                 RefreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs,
 
                 InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA13),
                 UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
 
-                UnsupportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"],
-
-                BankIdInitializeApiUrl = Url.Action("Initialize", "BankIdApi"),
-                BankIdStatusApiUrl = Url.Action("Status", "BankIdApi"),
-                BankIdCancelApiUrl = Url.Action("Cancel", "BankIdApi")
+                UnsupportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"]
             };
 
-            return new BankIdLoginViewModel
-            {
-                ReturnUrl = returnUrl,
-                CancelReturnUrl = unprotectedLoginOptions.CancelReturnUrl,
-
-                AutoLogin = unprotectedLoginOptions.IsAutoLogin(),
-                PersonalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
-
-                LoginOptions = loginOptions,
-                UnprotectedLoginOptions = unprotectedLoginOptions,
-
-                AntiXsrfRequestToken = antiforgeryTokens.RequestToken,
-                LoginScriptOptions = loginScriptOptions,
-                LoginScriptOptionsJson = SystemRuntimeJsonSerializer.Serialize(loginScriptOptions)
-            };
+            return new BankIdLoginViewModel(
+                returnUrl,
+                unprotectedLoginOptions.CancelReturnUrl,
+                unprotectedLoginOptions.IsAutoLogin(),
+                unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
+                loginOptions,
+                unprotectedLoginOptions,
+                loginScriptOptions,
+                SystemRuntimeJsonSerializer.Serialize(loginScriptOptions),
+                antiforgeryTokens.RequestToken
+            );
         }
     }
 }

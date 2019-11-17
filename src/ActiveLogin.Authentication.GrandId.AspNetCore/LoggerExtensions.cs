@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static void GrandIdBankIdFederatedLoginSuccess(this ILogger logger, string returnUrl, string sessionId)
         {
-            logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginSuccess, "GrandId (BankId) federated login succedded with the returnUrl '{returnUrl}'", returnUrl);
+            logger.LogInformation(GrandIdLoggingEvents.GrandIdBankIdFederatedLoginSuccess, "GrandId (BankId) federated login succeeded for the sessionId '{SessionId}' with the returnUrl '{returnUrl}'", sessionId, returnUrl);
         }
 
         public static void GrandIdBankIdFederatedLoginFailure(this ILogger logger, string returnUrl, Exception exception)
