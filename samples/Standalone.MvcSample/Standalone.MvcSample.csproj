@@ -25,8 +25,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Analyzers" Version="3.0.0-preview3-19153-02" />
-  </ItemGroup>
-
 </Project>
