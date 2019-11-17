@@ -161,11 +161,11 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 
 ### What versions of .NET is supported?
 
-The API-wrappers (*.Api) targets .NET Standard 2.0, so they can be used from .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full teference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). These packages are strong named, which might be a requirement in .NET Framework scenarios.
+The API-wrappers (*.Api) target .NET Standard 2.0, so they can be used from .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). These packages are strong named, which might be a requirement in .NET Framework scenarios.
 
-The authentication modules (*.AspNetCore), and related packages, depends on ASP.NET Core MVC 3.1 and therefore requires .NET Core 3.1.
+The authentication modules (*.AspNetCore), and related packages, depend on ASP.NET Core MVC 3.1 and therefore require .NET Core 3.1.
 
-Our samples targets .NET Core 3.1.
+Our samples target .NET Core 3.1.
 
 ### How do I run the samples?
 
