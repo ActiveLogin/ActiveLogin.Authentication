@@ -27,17 +27,10 @@ namespace IdentityServer.ServerSample.Controllers
             var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
             var providers = schemes
                 .Where(x => x.DisplayName != null)
-                .Select(x => new ExternalProvider
-                {
-                    DisplayName = x.DisplayName,
-                    AuthenticationScheme = x.Name
-                });
+                .Select(x => new ExternalProvider(x.DisplayName, x.Name));
+            var viewModel = new AccountLoginViewModel(providers, returnUrl);
 
-            return View(new AccountLoginViewModel
-            {
-                ExternalProviders = providers,
-                ReturnUrl = returnUrl
-            });
+            return View(viewModel);
         }
 
         public IActionResult ExternalLogin(string provider, string returnUrl)
@@ -81,7 +74,7 @@ namespace IdentityServer.ServerSample.Controllers
             LogoutRequest logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
             var returnUrl = logoutRequest?.PostLogoutRedirectUri;
 
-            return await Logout(new LogoutModel { ReturnUrl = returnUrl });
+            return await Logout(new LogoutModel(returnUrl));
         }
 
         [HttpPost]
@@ -94,7 +87,12 @@ namespace IdentityServer.ServerSample.Controllers
 
         public class LogoutModel
         {
-            public string ReturnUrl { get; set; }
+            public LogoutModel(string? returnUrl)
+            {
+                ReturnUrl = returnUrl;
+            }
+
+            public string? ReturnUrl { get; }
         }
     }
 }

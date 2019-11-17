@@ -25,17 +25,10 @@ namespace Standalone.MvcSample.Controllers
             var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
             var providers = schemes
                 .Where(x => x.DisplayName != null)
-                .Select(x => new ExternalProvider
-                {
-                    DisplayName = x.DisplayName,
-                    AuthenticationScheme = x.Name
-                });
+                .Select(x => new ExternalProvider(x.DisplayName, x.Name));
+            var viewModel = new AccountLoginViewModel(providers, "~/");
 
-            return View(new AccountLoginViewModel
-            {
-                ExternalProviders = providers,
-                ReturnUrl = "~/"
-            });
+            return View(viewModel);
         }
 
         [AllowAnonymous]

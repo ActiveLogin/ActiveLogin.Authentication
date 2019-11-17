@@ -13,16 +13,17 @@ namespace IdentityServer.ServerSample.Controllers
         public IActionResult Index()
         {
             var claims = User.Claims.ToList();
-            return View(new HomeIndexViewModel()
-            {
-                Name = GetClaimValue(claims, "name"),
-                GivenName = GetClaimValue(claims, "given_name"),
-                FamilyName = GetClaimValue(claims, "family_name"),
-                SwedishPersonalIdentityNumber = GetClaimValue(claims, "swedish_personal_identity_number"),
-                Birthdate = GetClaimValue(claims, "birthdate"),
-                Gender = GetClaimValue(claims, "gender"),
-                Claims = claims
-            });
+            var viewModel = new HomeIndexViewModel(
+                GetClaimValue(claims, "given_name"),
+                GetClaimValue(claims, "family_name"),
+                GetClaimValue(claims, "name"),
+                GetClaimValue(claims, "swedish_personal_identity_number"),
+                GetClaimValue(claims, "birthdate"),
+                GetClaimValue(claims, "gender"),
+                claims
+            );
+
+            return View(viewModel);
         }
 
         private string GetClaimValue(IEnumerable<Claim> claims, string type, string fallback = "-")

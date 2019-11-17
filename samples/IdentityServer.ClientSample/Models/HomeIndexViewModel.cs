@@ -5,13 +5,24 @@ namespace IdentityServer.ClientSample.Models
 {
     public class HomeIndexViewModel
     {
-        public string GivenName { get; set; }
-        public string FamilyName { get; set; }
-        public string Name { get; set; }
-        public string SwedishPersonalIdentityNumber { get; set; }
-        public string Birthdate { get; set; }
-        public string Gender { get; set; }
+        public HomeIndexViewModel(string givenName, string familyName, string name, string swedishPersonalIdentityNumber, string birthdate, string gender, IEnumerable<Claim> claims)
+        {
+            GivenName = givenName;
+            FamilyName = familyName;
+            Name = name;
+            SwedishPersonalIdentityNumber = swedishPersonalIdentityNumber;
+            Birthdate = birthdate;
+            Gender = gender;
+            Claims = claims;
+        }
 
-        public IEnumerable<Claim> Claims { get; set; }
+        public string GivenName { get; }
+        public string FamilyName { get; }
+        public string Name { get; }
+        public string SwedishPersonalIdentityNumber { get; }
+        public string Birthdate { get; }
+        public string Gender { get; }
+
+        public IEnumerable<Claim> Claims { get; }
     }
 }
