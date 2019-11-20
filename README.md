@@ -261,11 +261,13 @@ A more technical deep dive of the cookies can be found in [this issue](https://g
 It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
 We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
 
+---
+
 ## Active Login
 
 _Integrating your systems with market leading authentication services._
 
-Active Login is an Open Source project built on .NET Standard that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
+Active Login is an Open Source project built on .NET Core that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
 It also provide examples of how to use it with the popular OpenID Connect & OAuth 2.0 Framework [IdentityServer](https://identityserver.io/) and provides a template for hosting the solution in Microsoft Azure.
 In addition, Active Login also contain convenient modules that help you work with and handle validation of Swedish Personal Identity Number (svenskt personnummer).
@@ -280,13 +282,25 @@ Active Login is licensed under the very permissive [MIT license](https://opensou
 
 Active Login is built on or uses the following great open source products:
 
-* [.NET Standard](https://github.com/dotnet/standard)
+* [.NET Core](https://github.com/dotnet/core)
 * [ASP.NET Core](https://github.com/aspnet/Home)
-* [XUnit](https://github.com/xunit/xunit)
 * [IdentityServer](https://github.com/IdentityServer/)
+* [XUnit](https://github.com/xunit/xunit)
+* [QRCoder](https://github.com/codebude/QRCoder)
 * [Bootstrap](https://github.com/twbs/bootstrap)
 * [Loading.io](https://loading.io/)
 
-## Support & Training
+### Sponsors
+
+Active Solution is the main sponsor of Active Login.
+
+![Active Solution](https://activese-assets-prod.azureedge.net/graphics/activesolution-logo.svg)
+
+_We deliver tomorrow's cloud solutions, today. Our costumers choose us because we are engaged, flexible and efficient. We attract the brightest talent and are one of Microsoft's most valued partners._
+
+[https://www.activesolution.se/](https://www.activesolution.se/)
+
+### Support & Training
+
 If you need help with implementing Active Login, there are commercial support & training options available.
 See [ActiveLogin.net](https://activelogin.net#support) for more details.
