@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// In this case, the internal representation of those systems IP address is ok to use.
         /// </param>
         public AuthRequest(string endUserIp)
-            : this(endUserIp, null)
+            : this(endUserIp, null, new Requirement())
         {
         }
 
