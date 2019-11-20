@@ -35,7 +35,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The personal number of the user. 12 digits, century must be included (YYYYMMDDSSSC).
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </param>
-        public AuthRequest(string endUserIp, string? personalIdentityNumber)
+        public AuthRequest(string endUserIp, string personalIdentityNumber)
             : this(endUserIp, personalIdentityNumber, new Requirement())
         {
         }
