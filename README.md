@@ -7,7 +7,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 ## Features
 
 - :id: Supports BankID both natively and through GrandID
-- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Framework 4.6.1
+- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Core 3.1
 - :lock: GDPR Compliant
 - :cloud: Great support for Microsoft Azure
 - :earth_americas: Multi language support with English and Swedish out of the box
@@ -21,6 +21,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 | [ActiveLogin.Authentication.BankId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.Api) | API client for Swedish BankID's REST API. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) |
 | [ActiveLogin.Authentication.BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore) | ASP.NET Core authentication module for Swedish BankID. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) |
 | [ActiveLogin.Authentication.BankId.AspNetCore.Azure](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.Azure) | Azure integrations for ActiveLogin.Authentication.BankId.AspNetCore. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) |
+| [ActiveLogin.Authentication.BankId.AspNetCore.QRCoder](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder) | QR code generation using QRCoder for ActiveLogin.Authentication.BankId.AspNetCore. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) |
 | [ActiveLogin.Authentication.GrandId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.Api) | API client for GrandID (Svensk E-identitet) REST API. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.Api/) |
 | [ActiveLogin.Authentication.GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore) | ASP.NET Core authentication module for GrandID (Svensk E-identitet). | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) |
 
@@ -261,11 +262,13 @@ A more technical deep dive of the cookies can be found in [this issue](https://g
 It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
 We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
 
+---
+
 ## Active Login
 
 _Integrating your systems with market leading authentication services._
 
-Active Login is an Open Source project built on .NET Standard that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
+Active Login is an Open Source project built on .NET Core that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
 It also provide examples of how to use it with the popular OpenID Connect & OAuth 2.0 Framework [IdentityServer](https://identityserver.io/) and provides a template for hosting the solution in Microsoft Azure.
 In addition, Active Login also contain convenient modules that help you work with and handle validation of Swedish Personal Identity Number (svenskt personnummer).
@@ -280,13 +283,25 @@ Active Login is licensed under the very permissive [MIT license](https://opensou
 
 Active Login is built on or uses the following great open source products:
 
-* [.NET Standard](https://github.com/dotnet/standard)
+* [.NET Core](https://github.com/dotnet/core)
 * [ASP.NET Core](https://github.com/aspnet/Home)
-* [XUnit](https://github.com/xunit/xunit)
 * [IdentityServer](https://github.com/IdentityServer/)
+* [XUnit](https://github.com/xunit/xunit)
+* [QRCoder](https://github.com/codebude/QRCoder)
 * [Bootstrap](https://github.com/twbs/bootstrap)
 * [Loading.io](https://loading.io/)
 
-## Support & Training
+### Sponsors
+
+Active Solution is the main sponsor of Active Login.
+
+![Active Solution](https://activese-assets-prod.azureedge.net/graphics/activesolution-logo.svg)
+
+_We deliver tomorrow's cloud solutions, today. Our costumers choose us because we are engaged, flexible and efficient. We attract the brightest talent and are one of Microsoft's most valued partners._
+
+[https://www.activesolution.se/](https://www.activesolution.se/)
+
+### Support & Training
+
 If you need help with implementing Active Login, there are commercial support & training options available.
 See [ActiveLogin.net](https://activelogin.net#support) for more details.
