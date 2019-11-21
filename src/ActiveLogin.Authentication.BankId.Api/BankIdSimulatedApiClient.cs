@@ -144,23 +144,21 @@ namespace ActiveLogin.Authentication.BankId.Api
             var auth = _auths[request.OrderRef];
             var status = GetStatus(auth.CollectCalls);
             var hintCode = GetHintCode(auth.CollectCalls);
-            var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
 
-            var response = new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
-
-            if (status == CollectStatus.Complete)
-            {
-                if (_auths.ContainsKey(request.OrderRef))
-                {
-                    _auths.Remove(request.OrderRef);
-                }
-            }
-            else
+            if (status != CollectStatus.Complete)
             {
                 auth.CollectCalls += 1;
+                return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString());
             }
 
-            return response;
+            if (_auths.ContainsKey(request.OrderRef))
+            {
+                _auths.Remove(request.OrderRef);
+            }
+
+            var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
+
+            return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
         }
 
         private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
