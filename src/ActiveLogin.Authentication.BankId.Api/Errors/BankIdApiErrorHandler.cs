@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
             catch (HttpRequestException e)
             {
-                if (error != null)
+                if (error != Error.Empty)
                 {
                     throw new BankIdApiException(error, e);
                 }
@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             }
         }
 
-        private static async Task<Error?> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
+        private static async Task<Error> TryGetErrorAsync(HttpResponseMessage httpResponseMessage)
         {
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -42,7 +42,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
                 }
             }
 
-            return null;
+            return Error.Empty;
         }
     }
 }
