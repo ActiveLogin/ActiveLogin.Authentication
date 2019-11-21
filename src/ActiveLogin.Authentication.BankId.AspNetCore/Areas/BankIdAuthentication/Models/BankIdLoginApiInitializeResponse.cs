@@ -7,8 +7,8 @@
             bool showLaunchButton,
             bool checkStatus,
             string orderRef,
-            string redirectUri,
-            string qrCodeAsBase64)
+            string? redirectUri,
+            string? qrCodeAsBase64)
         {
             IsAutoLaunch = isAutoLaunch;
             ShowLaunchButton = showLaunchButton;
@@ -23,8 +23,8 @@
         public bool ShowLaunchButton { get; }
         public bool CheckStatus { get; }
         public string OrderRef { get; }
-        public string RedirectUri { get; }
-        public string QrCodeAsBase64 { get; set; }
+        public string? RedirectUri { get; }
+        public string? QrCodeAsBase64 { get; set; }
 
 
         public static BankIdLoginApiInitializeResponse AutoLaunch(string orderRef, string redirectUri, bool showLaunchButton)

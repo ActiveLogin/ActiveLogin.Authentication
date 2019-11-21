@@ -275,7 +275,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             var initializeResponseContent = await initializeTransaction.Content.ReadAsStringAsync();
             var initializeObject = JsonConvert.DeserializeAnonymousType(initializeResponseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
 
-            var cancelRequest = new JsonContent(new { orderRef = initializeObject.OrderRef });
+            var cancelRequest = new JsonContent(new
+            {
+                orderRef = initializeObject.OrderRef,
+                cancelReturnUrl = "/"
+            });
             cancelRequest.Headers.Add("Cookie", loginCookies);
             cancelRequest.Headers.Add("RequestVerificationToken", csrfToken);
 

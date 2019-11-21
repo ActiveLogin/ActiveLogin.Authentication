@@ -49,7 +49,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            var personalIdentityNumber = !string.IsNullOrEmpty(request.PersonalIdentityNumber) ? request.PersonalIdentityNumber : _personalIdentityNumber;
+            string personalIdentityNumber = request.PersonalIdentityNumber ?? _personalIdentityNumber;
             await EnsureNoExistingLogin(personalIdentityNumber).ConfigureAwait(false);
 
             var sessionId = Guid.NewGuid().ToString().Replace("-", string.Empty);

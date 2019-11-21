@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// In this case, the internal representation of those systems IP address is ok to use.
         /// </param>
         public AuthRequest(string endUserIp)
-            : this(endUserIp, null)
+            : this(endUserIp, null, new Requirement())
         {
         }
 
@@ -54,7 +54,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </param>
         /// <param name="requirement">Requirements on how the auth or sign order must be performed.</param>
-        public AuthRequest(string endUserIp, string personalIdentityNumber, Requirement requirement)
+        public AuthRequest(string endUserIp, string? personalIdentityNumber, Requirement requirement)
         {
             EndUserIp = endUserIp;
             PersonalIdentityNumber = personalIdentityNumber;
@@ -77,7 +77,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </summary>
         [DataMember(Name = "personalNumber", EmitDefaultValue = false)]
-        public string PersonalIdentityNumber { get; private set; }
+        public string? PersonalIdentityNumber { get; private set; }
 
         /// <summary>
         /// Requirements on how the auth or sign order must be performed.

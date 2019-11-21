@@ -2,7 +2,7 @@
 {
     public class BankIdFederatedLoginRequest
     {
-        public BankIdFederatedLoginRequest(string callbackUrl = null, bool? useChooseDevice = null, bool? useSameDevice = null, bool? askForPersonalIdentityNumber = null, string personalIdentityNumber = null, bool? requireMobileBankId = null, string customerUrl = null, bool? showGui = null, string signUserVisibleData = null, string signUserNonVisibleData = null)
+        public BankIdFederatedLoginRequest(string? callbackUrl = null, bool? useChooseDevice = null, bool? useSameDevice = null, bool? askForPersonalIdentityNumber = null, string? personalIdentityNumber = null, bool? requireMobileBankId = null, string? customerUrl = null, bool? showGui = null, string? signUserVisibleData = null, string? signUserNonVisibleData = null)
         {
             CallbackUrl = callbackUrl;
             UseChooseDevice = useChooseDevice;
@@ -19,7 +19,7 @@
         /// <summary>
         /// The url to return the user to.
         /// </summary>
-        public string CallbackUrl { get; }
+        public string? CallbackUrl { get; }
 
         /// <summary>
         /// Present the user with a menu choice between "this device" and "other device" (this corresponds to setting "UseSameDevice" to true or false).
@@ -39,7 +39,7 @@
         /// <summary>
         /// The users 12 digit personal number without spaces, dashes or extra characters. Will be validated by checksum before proceeding.
         /// </summary>
-        public string PersonalIdentityNumber { get; }
+        public string? PersonalIdentityNumber { get; }
 
         /// <summary>
         /// If set to true, only mobile certificates will be allowed to be used (mobile apps).
@@ -49,7 +49,7 @@
         /// <summary>
         /// If wanted, this parameter can be set to a URL that will be shown as the "backwards" link on all screens.
         /// </summary>
-        public string CustomerUrl { get; }
+        public string? CustomerUrl { get; }
 
         /// <summary>
         /// When set to false instead of a redirectUrl, returns "autoStartToken" which is used to (possibly) start BankId yourself.
@@ -61,12 +61,12 @@
         /// A string to show the user when signing.
         /// If set signing is enabled if available instead of authentication.
         /// </summary>
-        public string SignUserVisibleData { get; }
+        public string? SignUserVisibleData { get; }
 
         /// <summary>
         /// The string to actually sign in the background.
         /// If not set, the value in userVisibleData is copied.
         /// </summary>
-        public string SignUserNonVisibleData { get; }
+        public string? SignUserNonVisibleData { get; }
     }
 }

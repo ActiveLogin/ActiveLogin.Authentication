@@ -42,6 +42,17 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             try
             {
                 var federatedLoginResponse = await _grandIdApiClient.BankIdFederatedLoginAsync(request);
+
+                if (federatedLoginResponse.SessionId == null)
+                {
+                    throw new ArgumentNullException(nameof(federatedLoginResponse.SessionId));
+                }
+
+                if (federatedLoginResponse.RedirectUrl == null)
+                {
+                    throw new ArgumentNullException(nameof(federatedLoginResponse.RedirectUrl));
+                }
+
                 _logger.GrandIdBankIdFederatedLoginSuccess(absoluteReturnUrl, federatedLoginResponse.SessionId);
                 return federatedLoginResponse.RedirectUrl;
             }
@@ -52,7 +63,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdAuthenticationOptions options, SwedishPersonalIdentityNumber swedishPersonalIdentityNumber)
+        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdAuthenticationOptions options, SwedishPersonalIdentityNumber? swedishPersonalIdentityNumber)
         {
             bool? useChooseDevice;
             bool? useSameDevice;
@@ -87,9 +98,9 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             );
         }
 
-        private SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        private SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            bool TryGetPinString(out string s)
+            bool TryGetPinString(out string? s)
             {
                 return properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
             }
@@ -107,6 +118,12 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             try
             {
                 var sessionResponse = await _grandIdApiClient.BankIdGetSessionAsync(sessionId);
+
+                if (sessionResponse.SessionId == null)
+                {
+                    throw new ArgumentNullException(nameof(sessionResponse.SessionId));
+                }
+
                 _logger.GrandIdBankIdGetSessionSuccess(sessionResponse.SessionId);
                 return sessionResponse;
             }
@@ -119,6 +136,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         protected override IEnumerable<Claim> GetClaims(BankIdGetSessionResponse loginResult)
         {
+            if (loginResult.UserAttributes == null)
+            {
+                throw new ArgumentNullException(nameof(loginResult.UserAttributes));
+            }
+
             var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>
             {

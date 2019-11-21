@@ -8,7 +8,7 @@
             RetryLogin = retryLogin;
         }
 
-        internal BankIdLoginApiStatusResponse(bool isFinished, string statusMessage, string redirectUri)
+        internal BankIdLoginApiStatusResponse(bool isFinished, string? statusMessage, string? redirectUri)
         {
             IsFinished = isFinished;
             StatusMessage = statusMessage;
@@ -16,8 +16,8 @@
         }
 
         public bool IsFinished { get; }
-        public string StatusMessage { get; }
-        public string RedirectUri { get; }
+        public string? StatusMessage { get; }
+        public string? RedirectUri { get; }
         public bool RetryLogin { get; }
 
 

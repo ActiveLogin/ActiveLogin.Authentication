@@ -10,46 +10,41 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 
         public byte[] Serialize(BankIdLoginResult model)
         {
-            using (var memory = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(memory))
-                {
-                    writer.Write(FormatVersion);
+            using var memory = new MemoryStream();
+            using var writer = new BinaryWriter(memory);
 
-                    writer.Write(model.IsSuccessful);
+            writer.Write(FormatVersion);
 
-                    writer.Write(model.PersonalIdentityNumber);
+            writer.Write(model.IsSuccessful);
 
-                    writer.Write(model.Name);
-                    writer.Write(model.GivenName);
-                    writer.Write(model.Surname);
+            writer.Write(model.PersonalIdentityNumber);
 
-                    writer.Flush();
-                    return memory.ToArray();
-                }
-            }
+            writer.Write(model.Name);
+            writer.Write(model.GivenName);
+            writer.Write(model.Surname);
+
+            writer.Flush();
+
+            return memory.ToArray();
         }
 
         public BankIdLoginResult Deserialize(byte[] data)
         {
-            using (var memory = new MemoryStream(data))
-            {
-                using (var reader = new BinaryReader(memory))
-                {
-                    if (reader.ReadInt32() != FormatVersion)
-                    {
-                        return null;
-                    }
+            using var memory = new MemoryStream(data);
+            using var reader = new BinaryReader(memory);
 
-                    return new BankIdLoginResult(
-                        reader.ReadBoolean(),
-                        reader.ReadString(),
-                        reader.ReadString(),
-                        reader.ReadString(),
-                        reader.ReadString()
-                    );
-                }
+            if (reader.ReadInt32() != FormatVersion)
+            {
+                throw new IncompatibleSerializationVersion(nameof(BankIdLoginResult));
             }
+
+            return new BankIdLoginResult(
+                reader.ReadBoolean(),
+                reader.ReadString(),
+                reader.ReadString(),
+                reader.ReadString(),
+                reader.ReadString()
+            );
         }
     }
 }

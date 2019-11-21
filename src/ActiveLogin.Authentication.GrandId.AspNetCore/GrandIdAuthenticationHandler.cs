@@ -126,6 +126,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
+            if (Options.StateDataFormat == null)
+            {
+                throw new ArgumentNullException(nameof(Options.StateDataFormat));
+            }
+
             var state = new GrandIdState(properties);
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
             var cookieValue = Options.StateDataFormat.Protect(state);
@@ -133,8 +138,13 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
         }
 
-        private GrandIdState GetStateFromCookie()
+        private GrandIdState? GetStateFromCookie()
         {
+            if (Options.StateDataFormat == null)
+            {
+                throw new ArgumentNullException(nameof(Options.StateDataFormat));
+            }
+
             var protectedState = Request.Cookies[Options.StateCookie.Name];
             if (string.IsNullOrEmpty(protectedState))
             {

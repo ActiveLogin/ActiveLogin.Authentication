@@ -4,7 +4,13 @@ namespace Standalone.MvcSample.Models
 {
     public class AccountLoginViewModel
     {
-        public IEnumerable<ExternalProvider> ExternalProviders { get; set; }
-        public string ReturnUrl { get; set; }
+        public AccountLoginViewModel(IEnumerable<ExternalProvider> externalProviders, string returnUrl)
+        {
+            ExternalProviders = externalProviders;
+            ReturnUrl = returnUrl;
+        }
+
+        public IEnumerable<ExternalProvider> ExternalProviders { get; }
+        public string ReturnUrl { get; }
     }
 }

@@ -2,7 +2,7 @@
 {
     public interface IGrandIdEnvironmentConfiguration
     {
-        string ApiKey { get; set; }
-        string BankIdServiceKey { get; set; }
+        string? ApiKey { get; set; }
+        string? BankIdServiceKey { get; set; }
     }
 }

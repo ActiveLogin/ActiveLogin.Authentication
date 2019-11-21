@@ -81,21 +81,31 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public async Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
             return new AuthResponse(response.OrderRef, response.AutoStartToken);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
         {
-            var response = await GetOrderReponseAsync(request?.PersonalIdentityNumber, request?.EndUserIp).ConfigureAwait(false);
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
             return new SignResponse(response.OrderRef, response.AutoStartToken);
         }
 
-        private async Task<OrderResponse> GetOrderReponseAsync(string personalIdentityNumber, string endUserIp)
+        private async Task<OrderResponse> GetOrderResponseAsync(string? personalIdentityNumber, string endUserIp)
         {
             await SimulateResponseDelay().ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(personalIdentityNumber))
+            if (personalIdentityNumber == null || string.IsNullOrWhiteSpace(personalIdentityNumber))
             {
                 personalIdentityNumber = _personalIdentityNumber;
             }
@@ -134,26 +144,24 @@ namespace ActiveLogin.Authentication.BankId.Api
             var auth = _auths[request.OrderRef];
             var status = GetStatus(auth.CollectCalls);
             var hintCode = GetHintCode(auth.CollectCalls);
-            var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
 
-            var response = new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
-
-            if (status == CollectStatus.Complete)
-            {
-                if (_auths.ContainsKey(request.OrderRef))
-                {
-                    _auths.Remove(request.OrderRef);
-                }
-            }
-            else
+            if (status != CollectStatus.Complete)
             {
                 auth.CollectCalls += 1;
+                return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString());
             }
 
-            return response;
+            if (_auths.ContainsKey(request.OrderRef))
+            {
+                _auths.Remove(request.OrderRef);
+            }
+
+            var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
+
+            return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
         }
 
-        private CompletionData GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
+        private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
         {
             if (status != CollectStatus.Complete)
             {

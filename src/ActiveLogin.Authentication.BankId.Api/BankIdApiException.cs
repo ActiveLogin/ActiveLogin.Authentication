@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
         }
 
-        internal BankIdApiException(ErrorCode errorCode, string errorDetails, Exception inner)
+        internal BankIdApiException(ErrorCode errorCode, string errorDetails, Exception? inner)
             : base($"{errorCode}: {errorDetails}", inner)
         {
             ErrorCode = errorCode;

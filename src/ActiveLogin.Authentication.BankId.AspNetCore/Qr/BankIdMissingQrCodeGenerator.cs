@@ -18,7 +18,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
         {
             var fileName = _localizer["Qr_Code_Default_Image"];
             var assembly = typeof(BankIdMissingQrCodeGenerator).GetTypeInfo().Assembly;
-            var resourceStream = assembly.GetManifestResourceStream($"ActiveLogin.Authentication.BankId.AspNetCore.Resources.{ fileName }");
+            var resourceStream = assembly.GetManifestResourceStream($"ActiveLogin.Authentication.BankId.AspNetCore.Resources.{fileName}");
+
+            if (resourceStream == null)
+            {
+                throw new Exception( $"Can't find QR Code image: ActiveLogin.Authentication.BankId.AspNetCore.Resources.{fileName}");
+            }
+
             var base64EncodedImage = ConvertToBase64(resourceStream);
 
             return base64EncodedImage;

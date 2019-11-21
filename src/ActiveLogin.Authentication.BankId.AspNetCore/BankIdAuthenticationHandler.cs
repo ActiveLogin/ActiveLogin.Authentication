@@ -152,9 +152,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return Task.CompletedTask;
         }
 
-        private static SwedishPersonalIdentityNumber GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        private static SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
-            bool TryGetPinString(out string s)
+            bool TryGetPinString(out string? s)
             {
                 return properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
             }
@@ -203,6 +203,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
+            if (Options.StateDataFormat == null)
+            {
+                throw new ArgumentNullException(nameof(Options.StateDataFormat));
+            }
+
             var state = new BankIdState(properties);
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
             var cookieValue = Options.StateDataFormat.Protect(state);
@@ -210,8 +215,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
         }
 
-        private BankIdState GetStateFromCookie()
+        private BankIdState? GetStateFromCookie()
         {
+            if (Options.StateDataFormat == null)
+            {
+                throw new ArgumentNullException(nameof(Options.StateDataFormat));
+            }
+
             var protectedState = Request.Cookies[Options.StateCookie.Name];
             if (string.IsNullOrEmpty(protectedState))
             {

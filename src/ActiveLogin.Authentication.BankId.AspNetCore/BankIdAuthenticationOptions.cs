@@ -66,7 +66,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// </summary>
         public bool IssueBirthdateClaim { get; set; } = false;
 
-        public ISecureDataFormat<BankIdState> StateDataFormat { get; set; }
+        public ISecureDataFormat<BankIdState>? StateDataFormat { get; set; }
 
         public CookieBuilder StateCookie
         {

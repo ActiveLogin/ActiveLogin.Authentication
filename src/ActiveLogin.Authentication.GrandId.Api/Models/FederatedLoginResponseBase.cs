@@ -14,8 +14,8 @@
             RedirectUrl = redirectUrl;
         }
 
-        public string SessionId { get; }
+        public string? SessionId { get; }
 
-        public string RedirectUrl { get; }
+        public string? RedirectUrl { get; }
     }
 }
