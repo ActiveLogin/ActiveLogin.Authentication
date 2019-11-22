@@ -16,7 +16,11 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 
 ## Continuous integration & Packages overview
 
+CI-builds from master of all packages are available in [our Azure DevOps Artifacts feed](https://dev.azure.com/activesolution/ActiveLogin/_packaging?_a=feed&feed=ActiveLogin-CI).
+
 ### ActiveLogin.Authentication.BankId.*
+
+Packages for Swedish BankID.
 
 | Project | Description | NuGet |
 | ------- | ----------- | ----- |
@@ -27,14 +31,12 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 
 ### ActiveLogin.Authentication.GrandId.*
 
+Packages for GrandID (Svensk E-identitet).
+
 | Project | Description | NuGet |
 | ------- | ----------- | ----- |
 | [GrandId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.Api) | API client for the GrandID (Svensk E-identitet) REST API. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.Api/) |
 | [GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore) | ASP.NET Core authentication module for GrandID (Svensk E-identitet). | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) |
-
-### CI/Nightly builds
-
-CI-builds from master of all packages are available in [our Azure DevOps Artifacts feed](https://dev.azure.com/activesolution/ActiveLogin/_packaging?_a=feed&feed=ActiveLogin-CI).
 
 ## Getting started
 
