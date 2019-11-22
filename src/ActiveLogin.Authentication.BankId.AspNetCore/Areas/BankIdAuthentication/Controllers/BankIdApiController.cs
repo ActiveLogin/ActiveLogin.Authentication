@@ -83,9 +83,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
             SwedishPersonalIdentityNumber? personalIdentityNumber;
-            if (!unprotectedLoginOptions.AllowChangingPersonalIdentityNumber)
+            if (unprotectedLoginOptions.AutoLaunch)
             {
-                personalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber;
+                if(!unprotectedLoginOptions.AllowChangingPersonalIdentityNumber) {
+                    personalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber;
+                }
             }
             else
             {
