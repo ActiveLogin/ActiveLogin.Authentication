@@ -197,7 +197,7 @@ stages:
         command: publish
         publishWebProjects: True
         zipAfterPublish: True
-        arguments: '--configuration $(dotnetBuildConfiguration) --output $(build.artifactstagingdirectory)'
+        arguments: '--configuration $(dotnetBuildConfiguration) --output $(build.artifactstagingdirectory) --self-contained --runtime win-x86'
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: AzureProvisioningSample'
