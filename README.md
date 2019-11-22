@@ -1,6 +1,6 @@
 # ActiveLogin.Authentication
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/twitter/follow/ActiveLoginSE?style=social)](https://twitter.com/ActiveLoginSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankIDs) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C.
 
@@ -27,7 +27,11 @@ services
 - :wrench: Customizable UI
 - :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Proivder for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 
-## Continuous integration & Packages overview
+_Screenshots on how the default UI for Native BankID looks._
+
+![Active Login Screenshots](docs/images/activelogin-screenshots.png)
+
+## Project & Packages overview
 
 CI-builds from master of all packages are available in [our Azure DevOps Artifacts feed](https://dev.azure.com/activesolution/ActiveLogin/_packaging?_a=feed&feed=ActiveLogin-CI).
 
@@ -51,16 +55,38 @@ Packages for GrandID (Svensk E-identitet).
 | [GrandId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.Api) | API client for the GrandID (Svensk E-identitet) REST API. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.Api/) |
 | [GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore) | ASP.NET Core authentication module for GrandID (Svensk E-identitet). | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) |
 
+## Table of contents
+
+* [Getting started](#getting-started)
+	+ [1. Install the NuGet package](#1-install-the-nuget-package)
+	+ [2. Prepare your project](#2-prepare-your-project)
+	+ [3. Get started in development](#3-get-started-in-development)
+	+ [4. Use test or production environments](#4-use-test-or-production-environments)
+* [Live demo](#live-demo)
+* [Browse code for samples and tests](#browse-code-for-samples-and-tests)
+* [Contribute](#contribute)
+* [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
+* [FAQ](#faq)
+	+ [What versions of .NET is supported?](#what-versions-of-net-is-supported-)
+	+ [How do I build the solution locally?](#how-do-i-build-the-solution-locally-)
+	+ [How do I run the samples locally?](#how-do-i-run-the-samples-locally-)
+	+ [How do I override the default UI?](#how-do-i-override-the-default-ui-)
+	+ [How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad--active-directory--b2c-)
+	+ [How do I prepopulate the personal identity number for the user?](#how-do-i-prepopulate-the-personal-identity-number-for-the-user-)
+	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api-)
+	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies-)
+	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized-)
+* [Active Login](#active-login)
+	+ [License & acknowledgements](#license---acknowledgements)
+	+ [Sponsors](#sponsors)
+	+ [Support & Training](#support---training)
+
 ## Getting started
 
 First of all, you need to decide if you want to use [native BankID](https://www.bankid.com/bankid-i-dina-tjanster/sa-kommer-du-igang) or BankID through [GrandID (Svensk E-identitet)](https://e-identitet.se/tjanster/inloggningsmetoder/bankid/).
 
 * _Native BankID_ gives you full flexibility, including custom UI but requires issuing a certificate through a bank and usually takes some time to sort out.
 * _GrandID (Svensk E-identitet)_ uses a predefined UI and does not support all functionalities of the BankID API, but is really easy to get started with and does not require any certificates.
-
-_Screenshots on how the default UI for Native BankID looks._
-
-![Active Login Screenshots](docs/images/activelogin-screenshots.png)
 
 ### 1. Install the NuGet package
 
@@ -187,12 +213,12 @@ For more use cases, samples and inspiration; feel free to browse our unit tests 
 * [ActiveLogin.Authentication.GrandId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.Api.Test)
 * [ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test)
 
-### Contribute
+## Contribute
 
 We are very open to community contributions to Active Login.
 Please see our [contribution guidelines](CONTRIBUTING.md) before getting started.
 
-### Stay updated and join the discussion
+## Stay updated and join the discussion
 
 The three primary ways to interact and stay updated with Active Login is:
 
@@ -233,7 +259,7 @@ The easiest way to try the sample out is to:
 
 There is also a standalone sample called _Standalone.MvcSample_ which uses only AspNetCore MVC with minimum of code.
 
-## How do I override the default UI?
+### How do I override the default UI?
 
 Active Login comes with predefined views that you can use, but maybe you'd rather use your own views to customize layout or behavior.
 
