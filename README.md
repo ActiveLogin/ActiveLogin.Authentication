@@ -1,6 +1,6 @@
 # ActiveLogin.Authentication
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/twitter/follow/ActiveLoginSE?style=social)](https://twitter.com/ActiveLoginSE)
 
 ActiveLogin.Authentication enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms.
 
