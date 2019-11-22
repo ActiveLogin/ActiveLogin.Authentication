@@ -62,10 +62,9 @@ Packages for GrandID (Svensk E-identitet).
 	+ [2. Prepare your project](#2-prepare-your-project)
 	+ [3. Get started in development](#3-get-started-in-development)
 	+ [4. Use test or production environments](#4-use-test-or-production-environments)
-* [Live demo](#live-demo)
-* [Browse code for samples and tests](#browse-code-for-samples-and-tests)
-* [Contribute](#contribute)
-* [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
+* [Samples](#samples)
+	+ [Live demo](#live-demo)
+	+ [Browse code for samples and tests](#browse-code-for-samples-and-tests)
 * [FAQ](#faq)
 	+ [What versions of .NET is supported?](#what-versions-of-net-is-supported-)
 	+ [How do I build the solution locally?](#how-do-i-build-the-solution-locally-)
@@ -77,6 +76,8 @@ Packages for GrandID (Svensk E-identitet).
 	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies-)
 	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized-)
 * [Active Login](#active-login)
+	+ [Contribute](#contribute)
+	+ [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
 	+ [License & acknowledgements](#license---acknowledgements)
 	+ [Sponsors](#sponsors)
 	+ [Support & Training](#support---training)
@@ -185,7 +186,9 @@ services
 
 ---
 
-## Live demo
+## Samples
+
+### Live demo
 
 Our samples are deployed with the latest version from master and available for you to try out:
 
@@ -194,37 +197,24 @@ Our samples are deployed with the latest version from master and available for y
 
 _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
 
-## Browse code for samples and tests
+### Browse code for samples and tests
 
 For more use cases, samples and inspiration; feel free to browse our unit tests and samples:
 
-### Samples
+#### Samples
 
 * [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ServerSample)
 * [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ClientSample)
 * [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample)
 * [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)
 
-### Tests
+#### Tests
 
 * [ActiveLogin.Authentication.BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
 * [ActiveLogin.Authentication.BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.TestActiveLogin.Authentication.BankId.Api.Test)
 * [ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test)
 * [ActiveLogin.Authentication.GrandId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.Api.Test)
 * [ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test)
-
-## Contribute
-
-We are very open to community contributions to Active Login.
-Please see our [contribution guidelines](CONTRIBUTING.md) before getting started.
-
-## Stay updated and join the discussion
-
-The three primary ways to interact and stay updated with Active Login is:
-
-- [Watch our GitHub repo}(https://github.com/ActiveLogin/ActiveLogin.Authentication/watchers)
-- [Slack](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
-- [Twitter](https://twitter.com/ActiveLoginSE)
 
 ---
 
@@ -279,6 +269,8 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 ### How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?
 
 Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
+
+Please [reach out](#support---training) if you need assistance in seting this up.
 
 ### How do I prepopulate the personal identity number for the user?
 
@@ -367,6 +359,19 @@ Active Login is an Open Source project built on .NET Core that makes it easy to 
 It also provide examples of how to use it with the popular OpenID Connect & OAuth 2.0 Framework [IdentityServer](https://identityserver.io/) and provides a template for hosting the solution in Microsoft Azure.
 
 In addition, Active Login also contain convenient modules that help you work with and handle validation of Swedish Personal Identity Number (svenskt personnummer).
+
+### Contribute
+
+We are very open to community contributions to Active Login.
+Please see our [contribution guidelines](CONTRIBUTING.md) before getting started.
+
+### Stay updated and join the discussion
+
+The three primary ways to interact and stay updated with Active Login is:
+
+- [Watch our GitHub repo](https://github.com/ActiveLogin/ActiveLogin.Authentication/watchers)
+- [Slack](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
+- [Twitter](https://twitter.com/ActiveLoginSE)
 
 ### License & acknowledgements
 
