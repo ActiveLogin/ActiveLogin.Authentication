@@ -2,7 +2,20 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/twitter/follow/ActiveLoginSE?style=social)](https://twitter.com/ActiveLoginSE)
 
-ActiveLogin.Authentication enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms.
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankIDs) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C.
+
+The simpliest setup is only a few lines of code:
+
+```c#
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            .UseSimulatedEnvironment()
+            .AddSameDevice();
+    });
+```
 
 ## Features
 
@@ -12,7 +25,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID's (s
 - :cloud: Great support for Microsoft Azure
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable UI
-- :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Proivder for Azure AD B2C](#can-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
+- :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Proivder for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 
 ## Continuous integration & Packages overview
 
@@ -84,8 +97,7 @@ services
     {
         builder
             .UseSimulatedEnvironment()
-            .AddSameDevice()
-            .AddOtherDevice();
+            .AddSameDevice();
     });
 ```
 
@@ -145,29 +157,50 @@ services
     });
 ```
 
-## Browse tests and samples
+---
+
+## Live demo
+
+Our samples are deployed with the latest version from master and available for you to try out:
+
+* IdentityServer.ClientSample: [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net)
+* IdentityServer.ServerSample: [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net)
+
+_Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
+
+## Browse code for samples and tests
 
 For more use cases, samples and inspiration; feel free to browse our unit tests and samples:
+
+### Samples
 
 * [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ServerSample)
 * [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ClientSample)
 * [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample)
 * [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)
+
+### Tests
+
 * [ActiveLogin.Authentication.BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
+* [ActiveLogin.Authentication.BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.TestActiveLogin.Authentication.BankId.Api.Test)
+* [ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test)
+* [ActiveLogin.Authentication.GrandId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.Api.Test)
+* [ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test)
 
-## Overriding partial views
+### Contribute
 
-ActiveLogin comes with predefined views that you can use, but maybe you'd rather use your own views to customize layout or behavior.
-In your web project, create the following folder:
-```Areas/BankIdAuthentication/Views/BankId```
-In this folder, you can then create any of the partials and MVC will then discover your partials and use any of them before ours. It's still possible to call our partials if you still want to use them.
+We are very open to community contributions to Active Login.
+Please see our [contribution guidelines](CONTRIBUTING.md) before getting started.
 
-* `_Login.cshtml`
-* `_LoginForm.cshtml`
-* `_LoginScript.cshtml`
-* `_LoginStatus.cshtml`
+### Stay updated and join the discussion
 
-See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample/Areas/BankIdAuthentication/Views/BankId/_Login.cshtml).
+The three primary ways to interact and stay updated with Active Login is:
+
+- [Watch our GitHub repo}(https://github.com/ActiveLogin/ActiveLogin.Authentication/watchers)
+- [Slack](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
+- [Twitter](https://twitter.com/ActiveLoginSE)
+
+---
 
 ## FAQ
 
@@ -179,7 +212,17 @@ The authentication modules (*.AspNetCore), and related packages, depend on ASP.N
 
 Our samples target .NET Core 3.1.
 
-### How do I run the samples?
+### How do I build the solution locally?
+
+Active Login is built using .NET Core, make sure you have the relevant version of the SDK and runtime installed.
+
+Run the following command in the root to build all projects:
+
+```powershell
+dotnet build
+```
+
+### How do I run the samples locally?
 
 The samples are configured to run in simulated mode (no BankID certificates or GrandID keys required) by default. The _IdentityServer.ClientSample_ is using the _IdentityServer.ServerSample_ as its identity provider. So to run the _IdentityServer.ClientSample_, the _IdentityServer.ServerSample_ needs to be running first.
 
@@ -190,20 +233,32 @@ The easiest way to try the sample out is to:
 
 There is also a standalone sample called _Standalone.MvcSample_ which uses only AspNetCore MVC with minimum of code.
 
-### Can I try out a live demo of the samples?
+## How do I override the default UI?
 
-Yes! They are available here. Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start.
+Active Login comes with predefined views that you can use, but maybe you'd rather use your own views to customize layout or behavior.
 
-* IdentityServer.ClientSample: [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net)
-* IdentityServer.ServerSample: [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net)
+In your web project, create the following folder:
+```Areas/BankIdAuthentication/Views/BankId```
 
-### Can I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?
+In this folder, you can then create any of the partials and MVC will then discover your partials and use any of them before ours. It's still possible to call our partials if you still want to use them.
 
-Yes you can! Azure AD B2C supports using cusotm identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
+* `_Login.cshtml`
+* `_LoginForm.cshtml`
+* `_LoginScript.cshtml`
+* `_LoginStatus.cshtml`
+* `_LoginStyle.cshtml`
 
-### Can I prepopulate the personal identity number for the user?
+See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample/Areas/BankIdAuthentication/Views/BankId/_Login.cshtml).
 
-Yes you can! If you provide an authentication property item named `swedishPersonalIdentityNumber` (available as constants `BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber` or `GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber`) that value will be used and sent to BankID/GrandID.
+### How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?
+
+Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
+
+### How do I prepopulate the personal identity number for the user?
+
+For legacy reasons, we do support this. But note that the recomendation from BankID is to notuse personal identity numbers, but rather launch the BankID app on the same device or use QR-codes. This is the default behaviour for Active Login.
+
+If you have a usecase for this, you provide an authentication property item named `swedishPersonalIdentityNumber` (available as constants `BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber` or `GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber`) that value will be used and sent to BankID/GrandID.
 
 _Example usage:_
 
@@ -224,9 +279,10 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
     return Challenge(props, provider);
 }
 ```
+
 ### Do I need to use your ASP.NET Core Auth provider, or can just use the API?
 
-No, it's optional :) We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. The look like this and are both well documented using XML-comments.
+We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. The look like this and are both well documented using XML-comments.
 
 #### ActiveLogin.Authentication.BankId.Api
 
@@ -268,9 +324,10 @@ With the current implementaiton (following the convention from Microsoft ASP.NET
 
 A more technical deep dive of the cookies can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
 
-### Why are the names sometimes capitalized?
+### Why are the names of the person sometimes capitalized?
 
-It seems that the name for some persons are returned in all capitalized letters (like `ALICE SMITH`), the data is probably stored that way at BankID.
+The names comes from the bank that the end user has, and some banks (due to legacy) stores all of the names in all caps (like `ALICE SMITH`).
+
 We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
 
 ---
@@ -282,20 +339,8 @@ _Integrating your systems with market leading authentication services._
 Active Login is an Open Source project built on .NET Core that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
 It also provide examples of how to use it with the popular OpenID Connect & OAuth 2.0 Framework [IdentityServer](https://identityserver.io/) and provides a template for hosting the solution in Microsoft Azure.
+
 In addition, Active Login also contain convenient modules that help you work with and handle validation of Swedish Personal Identity Number (svenskt personnummer).
-
-### Contribute
-
-We are very open to community contributions to Active Login.
-Please see our [contribution guidelines](CONTRIBUTING.md) before getting started.
-
-### Stay updated and join the discussion
-
-The three primary ways to interact and stay updated with Active Login is:
-
-- GitHub Issues
-- [Slack](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
-- [Twitter](https://twitter.com/ActiveLoginSE)
 
 ### License & acknowledgements
 

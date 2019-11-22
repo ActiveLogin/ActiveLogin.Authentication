@@ -27,12 +27,3 @@ Remember, if you contribute to code, always follow this:
 You can join our discussions on Slack:
 
 [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
-
-## How to build the project
-
-Active Login is built using dotne core.
-Run the following command in the root to build all projects:
-
-```powershell
-dotnet build
-```
