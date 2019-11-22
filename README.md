@@ -275,7 +275,8 @@ In addition, Active Login also contain convenient modules that help you work wit
 
 ### Contribute
 
-We are very open to community contributions to Active Login. You'll need a basic understanding of Git and GitHub to get started. The easiest way to contribute is to open an issue and start a discussion. If you make code changes, submit a pull request with the changes and a description. Don’t forget to always provide tests that cover the code changes.
+We are very open to community contributions to Active Login.
+Please see our [contribution guidelines](CONTRIBUTING.md) before getting started.
 
 ### License & acknowledgements
 
