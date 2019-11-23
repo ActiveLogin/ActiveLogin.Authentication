@@ -4,18 +4,7 @@
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C.
 
-The simpliest setup is only a few lines of code:
-
-```c#
-services
-    .AddAuthentication()
-    .AddBankId(builder =>
-    {
-        builder
-            .UseSimulatedEnvironment()
-            .AddSameDevice();
-    });
-```
+Free to use and [commercial support/traning](#support--training) available. 
 
 ## Features
 
