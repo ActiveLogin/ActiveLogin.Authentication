@@ -79,9 +79,9 @@ Packages for GrandID (Svensk E-identitet).
 * [Active Login](#active-login)
 	+ [Contribute](#contribute)
 	+ [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
-	+ [License & acknowledgements](#license-acknowledgements)
+	+ [License & acknowledgements](#license--acknowledgements)
 	+ [Sponsors](#sponsors)
-	+ [Support & Training](#support-training)
+	+ [Support & Training](#support--training)
 
 ## Getting started
 
