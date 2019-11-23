@@ -390,4 +390,16 @@ _We deliver tomorrow's cloud solutions, today. Our costumers choose us because w
 ### Support & Training
 
 If you need help with implementing Active Login, there are commercial support & training options available.
-See [ActiveLogin.net](https://activelogin.net#support) for more details.
+
+We can help you out with:
+
+- Education and training on
+	- Active Login
+	- Identity Server
+	- Azure AD B2C
+	- Authentication on the .NET platform in general
+- Hands on implementing BankID using Active Login
+- Implement BankID as a custom Identity Provider for Azure AD B2C
+- Continious support for Active Login
+
+See [ActiveLogin.net](https://activelogin.net#support) for more details on how to get in touch with us.
