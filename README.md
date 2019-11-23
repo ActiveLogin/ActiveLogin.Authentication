@@ -255,6 +255,8 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 
 Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
 
+![Active Login with Azure AD B2C](docs/images/activelogin-setup-azuread-b2c.png)
+
 Please [reach out](#support--training) if you need assistance in seting this up.
 
 ### How do I prepopulate the personal identity number for the user?
