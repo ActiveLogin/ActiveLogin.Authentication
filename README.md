@@ -397,6 +397,6 @@ We can help you out with:
 	- Authentication on the .NET platform in general
 - Hands on implementing BankID using Active Login
 - Implement BankID as a custom Identity Provider for Azure AD B2C
-- Continious support for Active Login
+- Continuous support for Active Login
 
 See [ActiveLogin.net](https://activelogin.net#support) for more details on how to get in touch with us.
