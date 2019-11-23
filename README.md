@@ -25,6 +25,7 @@ services
 - :cloud: Great support for Microsoft Azure
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable UI
+- :white_square_button: BankID QR code support
 - :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Proivder for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 
 _Screenshots on how the default UI for Native BankID looks._
