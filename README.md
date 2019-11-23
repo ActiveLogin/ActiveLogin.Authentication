@@ -28,6 +28,8 @@ services
 - :white_square_button: BankID QR code support
 - :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Proivder for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 
+## Screenshots
+
 _Screenshots on how the default UI for Native BankID looks on different devices._
 
 ![Active Login Screenshots](docs/images/activelogin-screenshots-v2.png)
