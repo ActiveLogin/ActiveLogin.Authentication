@@ -8,7 +8,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 
 - :id: Supports BankID both natively and through GrandID
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Core 3.1
-- :lock: GDPR Compliant
+- :lock: GDPR: Security by design
 - :cloud: Great support for Microsoft Azure
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable UI
@@ -393,7 +393,7 @@ If you need help with implementing Active Login, there are commercial support & 
 
 We can help you out with:
 
-- Education and training on
+- Education and training on:
 	- Active Login
 	- Identity Server
 	- Azure AD B2C
