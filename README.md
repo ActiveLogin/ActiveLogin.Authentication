@@ -53,8 +53,8 @@ Packages for GrandID (Svensk E-identitet).
 	+ [3. Get started in development](#3-get-started-in-development)
 	+ [4. Use test or production environments](#4-use-test-or-production-environments)
 * [Samples](#samples)
-	+ [Live demo](#live-demo)
-	+ [Browse code for samples and tests](#browse-code-for-samples-and-tests)
+	+ [Projects and live demos](#projects-and-live-demos)
+	+ [Tests](#tests)
 * [FAQ](#faq)
 	+ [What versions of .NET is supported?](#what-versions-of-net-is-supported)
 	+ [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
@@ -178,29 +178,22 @@ services
 
 ## Samples
 
-### Live demo
+For more use cases, samples and inspiration; feel free to browse our unit tests and samples:
+
+## Projects and live demos
 
 Our samples are deployed with the latest version from master and available for you to try out:
 
-* IdentityServer.ClientSample: [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net)
-* IdentityServer.ServerSample: [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net)
+| Project | Live demo | Description |
+| ------- | --------- | ----------- |
+| [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ClientSample) | [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net) | ASP.NET MVC Core site using the IdentityServer.ServerSample as auth provider. |
+| [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ServerSample) | [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net) | IdentityServer with Active Login as auth provider for BankID and GrandID. |
+| [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample) | Not available | ASP.NET MVC Core with Active Login as auth provider for BankID and GrandID. |
+| [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample) | [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FActiveLogin%2FActiveLogin.Authentication%2Fmaster%2Fsamples%2FAzureProvisioningSample%2FActiveLogin.json%23) | ARM template with Azure KeyVault, Azure App Service, Azure Monitor / Application Insights etc. |
 
 _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
 
-_The Azure environment for the samples are provisioned using the ARM template found in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)._
-
-### Browse code for samples and tests
-
-For more use cases, samples and inspiration; feel free to browse our unit tests and samples:
-
-#### Samples
-
-* [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ServerSample)
-* [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/IdentityServer.ClientSample)
-* [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/Standalone.MvcSample)
-* [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)
-
-#### Tests
+## Tests
 
 * [BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
 * [BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.TestActiveLogin.Authentication.BankId.Api.Test)
