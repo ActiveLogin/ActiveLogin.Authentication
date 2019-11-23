@@ -354,7 +354,7 @@ Please see our [contribution guidelines](CONTRIBUTING.md) before getting started
 
 ### Stay updated and join the discussion
 
-The three primary ways to interact and stay updated with Active Login is:
+The three primary ways to interact and stay updated with Active Login are:
 
 - [Watch our GitHub repo](https://github.com/ActiveLogin/ActiveLogin.Authentication/watchers)
 - [Slack](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
