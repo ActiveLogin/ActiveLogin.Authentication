@@ -376,7 +376,7 @@ Active Login is built on or uses the following great open source products:
 
 ### Sponsors
 
-Active Solution is the main sponsor of Active Login.
+Active Solution is the main sponsor of Active Login. Active Solution is located in Stockholm (Sweden) and provides IT consulting with focus on web, cloud and AI.
 
 ![Active Solution](https://activese-assets-prod.azureedge.net/graphics/activesolution-logo.svg)
 
