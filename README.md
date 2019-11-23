@@ -187,6 +187,8 @@ Our samples are deployed with the latest version from master and available for y
 
 _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
 
+_The Azure environment for the samples are provisioned using the ARM template found in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)._
+
 ### Browse code for samples and tests
 
 For more use cases, samples and inspiration; feel free to browse our unit tests and samples:
@@ -200,11 +202,11 @@ For more use cases, samples and inspiration; feel free to browse our unit tests 
 
 #### Tests
 
-* [ActiveLogin.Authentication.BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
-* [ActiveLogin.Authentication.BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.TestActiveLogin.Authentication.BankId.Api.Test)
-* [ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test)
-* [ActiveLogin.Authentication.GrandId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.Api.Test)
-* [ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test)
+* [BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.Api.Test)
+* [BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.TestActiveLogin.Authentication.BankId.Api.Test)
+* [BankId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test)
+* [GrandId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.Api.Test)
+* [GrandId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/test/ActiveLogin.Authentication.GrandId.AspNetCore.Azure.Test)
 
 ---
 
