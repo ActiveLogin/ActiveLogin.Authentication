@@ -30,7 +30,7 @@ services
 
 _Screenshots on how the default UI for Native BankID looks._
 
-![Active Login Screenshots](docs/images/activelogin-screenshots.png)
+![Active Login Screenshots](docs/images/activelogin-screenshots-v2.png)
 
 ## Project & Packages overview
 
