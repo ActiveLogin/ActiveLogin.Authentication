@@ -18,17 +18,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             AntiXsrfRequestToken = antiXsrfRequestToken;
         }
 
-        public string ReturnUrl { get; set; }
-        public string CancelReturnUrl { get; set; }
+        public string ReturnUrl { get; }
+        public string CancelReturnUrl { get; }
 
-        public bool AutoLogin { get; set; }
-        public string PersonalIdentityNumber { get; set; }
+        public bool AutoLogin { get; }
+        public string PersonalIdentityNumber { get; }
 
-        public string LoginOptions { get; set; }
-        public BankIdLoginOptions UnprotectedLoginOptions { get; set; }
+        public string LoginOptions { get; }
+        public BankIdLoginOptions UnprotectedLoginOptions { get; }
 
-        public BankIdLoginScriptOptions LoginScriptOptions { get; set; }
-        public string LoginScriptOptionsJson { get; set; }
-        public string AntiXsrfRequestToken { get; set; }
+        public BankIdLoginScriptOptions LoginScriptOptions { get; }
+        public string LoginScriptOptionsJson { get; }
+        public string AntiXsrfRequestToken { get; }
     }
 }
