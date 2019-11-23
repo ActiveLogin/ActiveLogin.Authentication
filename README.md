@@ -85,13 +85,13 @@ ActiveLogin.Authentication is distributed as [packages on NuGet](https://www.nug
 
 #### BankID
 
-```powershell
+```console
 dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
 ```
 
 #### GrandID
 
-```powershell
+```console
 dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore
 ```
 
@@ -219,7 +219,7 @@ Active Login is built using .NET Core, make sure you have the relevant version o
 
 Run the following command in the root to build all projects:
 
-```powershell
+```console
 dotnet build
 ```
 
