@@ -142,6 +142,40 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
         [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
+        public async Task BankIdAuthentication_Login_Returns_Form_With_Resolved_Cancel_Url()
+        {
+            // Arrange
+            var options = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, "~/cru");
+            var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+            mockProtector
+                .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+                .Returns(options);
+            var client = CreateServer(o =>
+                {
+                    o.UseSimulatedEnvironment()
+                        .AddSameDevice();
+                },
+                DefaultAppConfiguration(async context =>
+                {
+                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                }),
+                services =>
+                {
+                    services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
+                }).CreateClient();
+
+            // Act
+            var transaction = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+
+            var content = await transaction.Content.ReadAsStringAsync();
+            Assert.Contains("<input name=\"CancelReturnUrl\" type=\"hidden\" value=\"/cru\" />", content);
+        }
+
+
+        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
         public async Task BankIdAuthentication_Login_Returns_Form_And_Status()
         {
             // Arrange
