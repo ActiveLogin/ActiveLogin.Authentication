@@ -1,8 +1,8 @@
 # ActiveLogin.Authentication
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-blue.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankIDs) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C.
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C.
 
 The simpliest setup is only a few lines of code:
 
@@ -66,21 +66,21 @@ Packages for GrandID (Svensk E-identitet).
 	+ [Live demo](#live-demo)
 	+ [Browse code for samples and tests](#browse-code-for-samples-and-tests)
 * [FAQ](#faq)
-	+ [What versions of .NET is supported?](#what-versions-of-net-is-supported-)
-	+ [How do I build the solution locally?](#how-do-i-build-the-solution-locally-)
-	+ [How do I run the samples locally?](#how-do-i-run-the-samples-locally-)
-	+ [How do I override the default UI?](#how-do-i-override-the-default-ui-)
-	+ [How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad--active-directory--b2c-)
-	+ [How do I prepopulate the personal identity number for the user?](#how-do-i-prepopulate-the-personal-identity-number-for-the-user-)
-	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api-)
-	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies-)
-	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized-)
+	+ [What versions of .NET is supported?](#what-versions-of-net-is-supported)
+	+ [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
+	+ [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
+	+ [How do I override the default UI?](#how-do-i-override-the-default-ui)
+	+ [How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
+	+ [How do I prepopulate the personal identity number for the user?](#how-do-i-prepopulate-the-personal-identity-number-for-the-user)
+	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api)
+	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies)
+	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized)
 * [Active Login](#active-login)
 	+ [Contribute](#contribute)
 	+ [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
-	+ [License & acknowledgements](#license---acknowledgements)
+	+ [License & acknowledgements](#license-acknowledgements)
 	+ [Sponsors](#sponsors)
-	+ [Support & Training](#support---training)
+	+ [Support & Training](#support-training)
 
 ## Getting started
 
