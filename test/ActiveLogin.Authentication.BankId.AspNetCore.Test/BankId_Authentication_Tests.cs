@@ -161,7 +161,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 }),
                 services =>
                 {
-                    services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
+                    services.AddTransient(s => mockProtector.Object);
                 }).CreateClient();
 
             // Act
