@@ -5,7 +5,7 @@ You'll need a basic understanding of Git and GitHub to get started.
 
 ## Ways to contribute 
 
-You can contribute in many different ways:
+You can contribute in many different ways, for example:
 
 - Find bugs and file issues
 - Write documentation
@@ -22,8 +22,10 @@ Remember, if you contribute to code, always follow this:
 3. Update documentation when relevant.
 4. Make a PR.
 
+We might(and probably will) reject PR:s that does not follow the requirements above.
+
 ## Discussion
 
-You can join our discussions on Slack:
+You can join our discussions on Slack to dicuss ideas and get early feedback:
 
 [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
