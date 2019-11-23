@@ -3,8 +3,6 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
 
-    // Meta
-
     "environment_name": {
       "defaultValue": "",
       "type": "string",
@@ -22,8 +20,6 @@
         "description": "Application name. Login for example."
       }
     },
-
-    // KeyVault
 
     "keyvault_resource_name": {
       "defaultValue": "",
@@ -43,8 +39,6 @@
       }
     },
 
-    // Insights
-
     "insights_resource_name": {
       "defaultValue": "",
       "type": "string",
@@ -53,8 +47,6 @@
         "description": "Application Insights resource name."
       }
     },
-
-    // Web server
 
     "web_server_resource_name": {
       "defaultValue": "",
@@ -93,8 +85,6 @@
         "description": "Web server instances."
       }
     },
-
-    // Web site
 
     "web_serversite_resource_name": {
       "defaultValue": "",
@@ -164,29 +154,20 @@
   },
   "variables": {
 
-    // Meta
-
     "resource_location": "[resourceGroup().location]",
     "environment_name": "[parameters('environment_name')]",
     "application_name": "[parameters('application_name')]",
     "identityResourceId": "[concat(resourceId('Microsoft.Web/sites', parameters('web_serversite_resource_name')),'/providers/Microsoft.ManagedIdentity/Identities/default')]",
 
-    // KeyVault
 
     "keyvault_resource_name": "[parameters('keyvault_resource_name')]",
     "keyvault_tenantid": "[parameters('keyvault_tenantid')]",
-
-    // Insights
-
     "insights_resource_name": "[parameters('insights_resource_name')]",
-
-    // Web server
 
     "web_server_resource_name": "[parameters('web_server_resource_name')]",
     "web_server_size": "[parameters('web_server_size')]",
     "web_server_instances": "[parameters('web_server_instances')]",
 
-    // Web site
 
     "web_serversite_resource_name": "[parameters('web_serversite_resource_name')]",
     "web_serversite_stagingslot_enabled": "[parameters('web_serversite_stagingslot_enabled')]",
@@ -233,8 +214,6 @@
   },
   "resources": [
 
-    // KeyVault,
-
     {
       "type": "Microsoft.KeyVault/vaults",
       "name": "[variables('keyvault_resource_name')]",
@@ -268,7 +247,6 @@
       }
     },
 
-    // Insights
 
     {
       "type": "Microsoft.Insights/components",
@@ -292,7 +270,6 @@
       "dependsOn": []
     },
 
-    // Web server
 
     {
       "type": "Microsoft.Web/serverfarms",
@@ -315,7 +292,6 @@
       "dependsOn": []
     },
 
-    // Web sites
 
     {
       "type": "Microsoft.Web/sites",
@@ -464,8 +440,6 @@
   ],
   "outputs": {
 
-    // Web site
-
     "web_serversite_url": {
       "type": "string",
       "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))).hostNames[0], '/')]"
@@ -474,8 +448,6 @@
       "type": "string",
       "value": "[if(variables('web_clientsite_enabled'), concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))).hostNames[0], '/'), '')]"
     },
-
-    // Insights
 
     "insights_instrumentationkey": {
       "type": "string",
