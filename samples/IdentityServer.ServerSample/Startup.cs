@@ -184,7 +184,7 @@ namespace IdentityServer.ServerSample
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                //endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
         }

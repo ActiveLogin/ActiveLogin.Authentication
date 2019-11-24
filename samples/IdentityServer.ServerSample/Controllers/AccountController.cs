@@ -87,6 +87,10 @@ namespace IdentityServer.ServerSample.Controllers
 
         public class LogoutModel
         {
+            public LogoutModel() : this(null)
+            {
+            }
+
             public LogoutModel(string? returnUrl)
             {
                 ReturnUrl = returnUrl;
