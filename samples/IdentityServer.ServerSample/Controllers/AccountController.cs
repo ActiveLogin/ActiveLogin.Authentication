@@ -42,7 +42,7 @@ namespace IdentityServer.ServerSample.Controllers
                 {
                     { "returnUrl", returnUrl },
                     { "scheme", provider },
-                    { "cancelReturnUrl", Url.ActionLink("Login", "Account", new { returnUrl }) }
+                    { "cancelReturnUrl", Url.Action("Login", "Account", new { returnUrl }) }
                 }
             };
 
@@ -87,6 +87,10 @@ namespace IdentityServer.ServerSample.Controllers
 
         public class LogoutModel
         {
+            public LogoutModel() : this(null)
+            {
+            }
+
             public LogoutModel(string? returnUrl)
             {
                 ReturnUrl = returnUrl;

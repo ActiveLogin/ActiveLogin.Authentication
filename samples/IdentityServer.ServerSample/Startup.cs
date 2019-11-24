@@ -32,8 +32,7 @@ namespace IdentityServer.ServerSample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddApplicationInsightsTelemetry(Configuration);
+            services.AddApplicationInsightsTelemetry(Configuration);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -42,7 +41,7 @@ namespace IdentityServer.ServerSample
                 options.Secure = CookieSecurePolicy.Always;
             });
 
-            services.AddMvc(config =>
+            services.AddControllersWithViews(config =>
             {
                 config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
@@ -156,13 +155,12 @@ namespace IdentityServer.ServerSample
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
-            app.UseRouting();
-
-            app.UseAuthorization();
-            app.UseIdentityServer();
 
             app.UseRequestLocalization(options =>
             {
@@ -179,9 +177,13 @@ namespace IdentityServer.ServerSample
                 options.SupportedUICultures = supportedCultures;
             });
 
+            app.UseRouting();
+
+            app.UseIdentityServer();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
         }

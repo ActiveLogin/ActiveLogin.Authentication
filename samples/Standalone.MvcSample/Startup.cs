@@ -1,14 +1,20 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using ActiveLogin.Authentication.BankId.AspNetCore.QrCoder;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Standalone.MvcSample
 {
@@ -26,6 +32,13 @@ namespace Standalone.MvcSample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.HttpOnly = HttpOnlyPolicy.Always;
+                options.Secure = CookieSecurePolicy.Always;
+            });
+
             services.AddControllersWithViews(config =>
             {
                 config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -85,9 +98,33 @@ namespace Standalone.MvcSample
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
+            app.UseHttpsRedirection();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseStaticFiles();
+
+            app.UseRequestLocalization(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("en"),
+                    new CultureInfo("sv-SE"),
+                    new CultureInfo("sv")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             app.UseRouting();
 
@@ -96,7 +133,6 @@ namespace Standalone.MvcSample
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
         }

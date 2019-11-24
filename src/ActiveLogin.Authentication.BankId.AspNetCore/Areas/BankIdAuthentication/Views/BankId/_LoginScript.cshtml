@@ -102,11 +102,12 @@
                         }
 
                         if (data.showLaunchButton) {
-                            startBankIdAppButtonElement.onclick = function() {
+                            var startBankIdAppButtonOnClick = function(event) {
                                 window.location.href = data.redirectUri;
                                 hide(startBankIdAppButtonElement);
-                                startBankIdAppButtonElement.onclick = undefined;
+                                event.target.removeEventListener('click', startBankIdAppButtonOnClick);
                             };
+                            startBankIdAppButtonElement.addEventListener('click', startBankIdAppButtonOnClick);
 
                             show(startBankIdAppButtonElement);
                         } else {

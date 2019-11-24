@@ -52,7 +52,7 @@ For trying out quickly (without the need of certificates) you can use an in-memo
 
 ### Simulated environment with no config
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -69,7 +69,7 @@ services
 
 The faked name and personal identity number can also be customized like this.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -86,7 +86,7 @@ services
 
 This will use the real REST API for BankID, connecting to either the Test or Production environment. It requires you to have the certificates described under _Preparation_ above.
 
-```c#
+```csharp
 services.AddAuthentication()
         .AddBankId(builder =>
     {
@@ -100,7 +100,7 @@ services.AddAuthentication()
 
 These samples uses the production environment, to use the test environment, simply swap `.UseProductionEnvironment()` with `.UseTestEnvironment()`. You will also have to use a different client and root certificate, see info under _Preparation_ above.
 
-```c#
+```csharp
 services.AddAuthentication()
         .AddBankId(builder =>
     {
@@ -114,7 +114,7 @@ services.AddAuthentication()
 
 ### Using client certificate from Azure KeyVault
 
-```c#
+```csharp
 services.AddAuthentication()
         .AddBankId(builder =>
     {
@@ -127,7 +127,7 @@ services.AddAuthentication()
 
 ### Using client certificate from custom source
 
-```c#
+```csharp
 services.AddAuthentication()
         .AddBankId(builder =>
     {
@@ -142,7 +142,7 @@ services.AddAuthentication()
 
 BankID uses a self signed root ca certificate that you need to trust. This is not possible in all scenarios, like in Azure App Service. To solve this there is an extension available to trust a custom root certificate using code. It can be used like this.
 
-```c#
+```csharp
 services.AddAuthentication()
         .AddBankId(builder =>
     {
@@ -158,7 +158,7 @@ services.AddAuthentication()
 * *Same device*: Launches the BankID app on the same device, no need to enter any personal identity number.
 * *Other device*: You enter your personal identity number and can manually launch the app on your smartphone.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -175,7 +175,7 @@ services
 
 By default, `Add*Device` will use predefined schemas and display names, but they can be changed.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -192,7 +192,7 @@ services
 
 If you want to roll your own, complete custom config, that can be done using `.AddCustom()`.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -210,7 +210,7 @@ services
 
 BankId options allows you to set and override some options such as these.
 
-```c#
+```csharp
 .AddOtherDevice(options =>
 {
     // If the user can use biometric identification such as fingerprint or face recognition
@@ -232,7 +232,7 @@ BankId options allows you to set and override some options such as these.
 
 If you want to apply some options for all BankID schemes, you can do so by using `.Configure(...)`.
 
-```c#
+```csharp
 .Configure(options =>
 {
     options.IssueBirthdateClaim = true;
@@ -250,7 +250,7 @@ The defaults for cancellation are as follows:
 
 It is possible to override the default navigation when cancelling an authentication request. The URL used for navigation is set through the `cancelReturnUrl` item in the `AuthenticationProperties` passed in the authentication challenge.
 
-```c#
+```csharp
 var props = new AuthenticationProperties
 {
     RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
@@ -271,7 +271,7 @@ By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is need
 
 If you wish to provide your own implementation of QR code generation simply implement the `IBankIdQrCodeGenerator` interface and add your implementation as a service.
 
-```c#
+```csharp
 services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();
 ```
 
@@ -279,7 +279,7 @@ services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();
 
 BankId options allows you to set a list of certificate policies and there is a class available to help you out with this.
 
-```c#
+```csharp
 .AddOtherDevice(options =>
 {
 	options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId);
@@ -290,7 +290,7 @@ Because the policies have different values for test and production environment, 
 
 Example:
 
-```c#
+```csharp
 .AddOtherDevice(options =>
 {
 	var policies = new[] { BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId };
@@ -306,7 +306,7 @@ Example:
 
 Finally, a full sample on how to use BankID in production with client certificate from Azure KeyVault and trusting a custom root certificate.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>

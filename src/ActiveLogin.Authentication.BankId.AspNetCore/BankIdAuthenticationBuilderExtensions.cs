@@ -20,6 +20,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             var services = builder.AuthenticationBuilder.Services;
 
+            services.AddControllersWithViews();
+
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath;
+            });
+
             services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
             services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
             services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
@@ -31,11 +38,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
             services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
-
-            services.AddLocalization(options =>
-            {
-                options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath;
-            });
 
             return builder;
         }
