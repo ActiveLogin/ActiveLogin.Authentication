@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-blue.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. [Commercial support and traning](#support--training) is available if you need assistance or a quick start. 
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Totally free to use! [Commercial support and traning](#support--training) is available if you need assistance or a quick start. 
 
 ## Features
 
@@ -20,6 +20,35 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 _Screenshots on how the default UI for Native BankID looks on different devices._
 
 ![Active Login Screenshots](docs/images/activelogin-screenshots-v2.png)
+
+## Table of contents
+* [Project & Packages overview](#project--packages-overview)
+	+ [ActiveLogin.Authentication.BankId.*](#activeloginauthenticationbankid)
+	+ [ActiveLogin.Authentication.GrandId.*](#activeloginauthenticationgrandid)
+* [Getting started](#getting-started)
+	+ [1. Install the NuGet package](#1-install-the-nuget-package)
+	+ [2. Prepare your project](#2-prepare-your-project)
+	+ [3. Get started in development](#3-get-started-in-development)
+	+ [4. Use test or production environments](#4-use-test-or-production-environments)
+* [Samples](#samples)
+	+ [Projects and live demos](#projects-and-live-demos)
+	+ [Tests](#tests)
+* [FAQ](#faq)
+	+ [What version of .NET is supported?](#what-version-of-net-is-supported)
+	+ [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
+	+ [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
+	+ [How do I override the default UI?](#how-do-i-override-the-default-ui)
+	+ [How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
+	+ [How do I prepopulate the personal identity number for the user?](#how-do-i-prepopulate-the-personal-identity-number-for-the-user)
+	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api)
+	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies)
+	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized)
+* [Active Login](#active-login)
+	+ [Contribute](#contribute)
+	+ [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
+	+ [License & acknowledgements](#license--acknowledgements)
+	+ [Sponsors](#sponsors)
+	+ [Support & Training](#support--training)
 
 ## Project & Packages overview
 
@@ -44,33 +73,6 @@ Packages for GrandID (Svensk E-identitet).
 | ------- | ----------- | ----- |
 | [GrandId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.Api) | API client for the GrandID (Svensk E-identitet) REST API. | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.Api/) |
 | [GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore) | ASP.NET Core authentication module for GrandID (Svensk E-identitet). | [![NuGet](https://img.shields.io/nuget/v/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) |
-
-## Table of contents
-
-* [Getting started](#getting-started)
-	+ [1. Install the NuGet package](#1-install-the-nuget-package)
-	+ [2. Prepare your project](#2-prepare-your-project)
-	+ [3. Get started in development](#3-get-started-in-development)
-	+ [4. Use test or production environments](#4-use-test-or-production-environments)
-* [Samples](#samples)
-	+ [Projects and live demos](#projects-and-live-demos)
-	+ [Tests](#tests)
-* [FAQ](#faq)
-	+ [What versions of .NET is supported?](#what-versions-of-net-is-supported)
-	+ [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
-	+ [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
-	+ [How do I override the default UI?](#how-do-i-override-the-default-ui)
-	+ [How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
-	+ [How do I prepopulate the personal identity number for the user?](#how-do-i-prepopulate-the-personal-identity-number-for-the-user)
-	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api)
-	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies)
-	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized)
-* [Active Login](#active-login)
-	+ [Contribute](#contribute)
-	+ [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
-	+ [License & acknowledgements](#license--acknowledgements)
-	+ [Sponsors](#sponsors)
-	+ [Support & Training](#support--training)
 
 ## Getting started
 
@@ -205,7 +207,7 @@ _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample a
 
 ## FAQ
 
-### What versions of .NET is supported?
+### What version of .NET is supported?
 
 The API-wrappers (*.Api) target .NET Standard 2.0, so they can be used from .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The packages that target .NET Standard are strong named as they can be used from .NET Framework where strong naming can be relevant.
 
