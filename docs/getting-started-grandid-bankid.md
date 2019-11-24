@@ -23,7 +23,7 @@ For trying out quickly (without the need of keys) you can use an in-memory imple
 
 ### Simulated environment with no config
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddGrandId(builder =>
@@ -39,7 +39,7 @@ services
 
 The faked name and personal identity number can also be customized like this.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddGrandId(builder =>
@@ -55,7 +55,7 @@ services
 
 This will use the real REST API for GrandID, connecting to either the Test or Production environment. It requires you to have the API keys described under _Preparation_ above.
 
-```c#
+```csharp
 services.AddAuthentication()
         .AddGrandId(builder =>
     {
@@ -71,7 +71,7 @@ services.AddAuthentication()
 
 These samples uses the production environment, to use the test environment, simply swap `.UseProductionEnvironment()` with `.UseTestEnvironment()`.
 
-```c#
+```csharp
 services.AddAuthentication()
         .AddGrandId(builder =>
     {
@@ -91,7 +91,7 @@ services.AddAuthentication()
 * *Same device*: Launches the BankID app on the same device, no need to enter any personal identity number.
 * *Other device*: You enter your personal identity number and can manually launch the app on your smartphone.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddGrandId(builder =>
@@ -110,7 +110,7 @@ services
 
 This option will display a UI at GrandID where the user can choose between same or other device.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddGrandId(builder =>
@@ -128,7 +128,7 @@ services
 
 By default, `Add*Device` will use predefined schemas and display names, but they can be changed.
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddGrandId(builder =>
@@ -147,7 +147,7 @@ services
 
 GrandId options allows you to set and override some options such as these.
 
-```c#
+```csharp
 .AddBankIdOtherDevice(options =>
 {
 	// Issue birthdate claim based on data extracted from the personal identity number
@@ -160,7 +160,7 @@ GrandId options allows you to set and override some options such as these.
 
 If you want to apply some options for all BankID schemes, you can do so by using `.ConfigureBankId(...)`.
 
-```c#
+```csharp
 .ConfigureBankId(options =>
 {
     options.IssueBirthdateClaim = true;

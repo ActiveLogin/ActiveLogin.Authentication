@@ -109,7 +109,7 @@ Both BankID and GrandID requires you to receive either certificates or API-keys,
 
 #### BankID
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -122,7 +122,7 @@ services
 
 #### GrandID
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddGrandId(builder =>
@@ -133,6 +133,17 @@ services
             .AddBankIdOtherDevice(options => { });
     });
 ```
+
+#### Routes
+
+Also make sure that you map the controller route in ASP.NET Endpoint routing, like this:
+
+'''csharp
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapDefaultControllerRoute();
+});
+'''
 
 ### 4. Use test or production environments
 
@@ -145,7 +156,7 @@ Samples on how to use them in production are:
 
 #### [BankID](docs/getting-started-bankid.md)
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -161,7 +172,7 @@ services
 
 #### [GrandID](docs/getting-started-grandid-bankid.md)
 
-```c#
+```csharp
 services
     .AddAuthentication()
     .AddGrandId(builder =>

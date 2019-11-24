@@ -133,7 +133,6 @@ namespace Standalone.MvcSample
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
         }
