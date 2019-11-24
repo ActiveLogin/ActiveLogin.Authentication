@@ -42,7 +42,7 @@ namespace IdentityServer.ServerSample.Controllers
                 {
                     { "returnUrl", returnUrl },
                     { "scheme", provider },
-                    { "cancelReturnUrl", Url.ActionLink("Login", "Account", new { returnUrl }) }
+                    { "cancelReturnUrl", Url.Action("Login", "Account", new { returnUrl }) }
                 }
             };
 
