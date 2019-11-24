@@ -351,13 +351,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             return app =>
             {
                 app.UseMiddleware<FakeRemoteIpAddressMiddleware>(IPAddress.Parse("192.0.2.1"));
-                app.UseAuthentication();
                 app.UseRouting();
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
                     endpoints.MapDefaultControllerRoute();
                 });
+
                 app.Use(async (context, next) =>
                 {
                     await testpath(context);
