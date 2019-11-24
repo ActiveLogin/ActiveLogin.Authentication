@@ -32,8 +32,7 @@ namespace IdentityServer.ServerSample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddApplicationInsightsTelemetry(Configuration);
+            services.AddApplicationInsightsTelemetry(Configuration);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -155,6 +154,10 @@ namespace IdentityServer.ServerSample
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
             }
 
             app.UseStaticFiles();

@@ -104,6 +104,10 @@ namespace Standalone.MvcSample
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseStaticFiles();
 
