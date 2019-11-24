@@ -42,7 +42,7 @@ namespace IdentityServer.ServerSample
                 options.Secure = CookieSecurePolicy.Always;
             });
 
-            services.AddMvc(config =>
+            services.AddControllersWithViews(config =>
             {
                 config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
@@ -158,11 +158,6 @@ namespace IdentityServer.ServerSample
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
-            app.UseRouting();
-
-            app.UseAuthorization();
-            app.UseIdentityServer();
 
             app.UseRequestLocalization(options =>
             {
@@ -178,6 +173,11 @@ namespace IdentityServer.ServerSample
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
+
+            app.UseRouting();
+
+            app.UseIdentityServer();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
