@@ -20,6 +20,9 @@
     <meta name="application-name" content="Active Login">
     <meta name="msapplication-TileColor" content="#008bc3">
     <meta name="theme-color" content="#ffffff">
+    
+    <!-- Polyfills -->
+    <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.0.0/dist/fetch.umd.min.js"></script>
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -62,8 +65,6 @@
     @RenderBody()
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.0.0/dist/fetch.umd.min.js"></script>
-
     @RenderSection("Scripts", required: false)
 </body>
 </html>
