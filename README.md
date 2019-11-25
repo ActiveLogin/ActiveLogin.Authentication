@@ -138,12 +138,12 @@ services
 
 Also make sure that you map the controller route in ASP.NET Endpoint routing, like this:
 
-'''csharp
+```csharp
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapDefaultControllerRoute();
 });
-'''
+```
 
 ### 4. Use test or production environments
 
@@ -166,9 +166,12 @@ services
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             .AddSameDevice()
-            .AddOtherDevice();
+            .AddOtherDevice()
+			.UseQrCoderQrCodeGenerator();
     });
 ```
+
+_Note: `.UseQrCoderQrCodeGenerator()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.QRCoder](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) package._
 
 #### [GrandID](docs/getting-started-grandid-bankid.md)
 
