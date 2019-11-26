@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
@@ -21,6 +20,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var services = builder.AuthenticationBuilder.Services;
 
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
 
             services.AddLocalization(options =>
             {
@@ -58,8 +58,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
                 var clientCertificate = configureClientCertificate();
-                httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                httpClientHandler.ClientCertificates.Add(clientCertificate);
+                httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
+                httpClientHandler.SslOptions.ClientCertificates.Add(clientCertificate);
+            });
+
+            return builder;
+        }
+
+        public static IBankIdAuthenticationBuilder UseClientCertificateResolver(this IBankIdAuthenticationBuilder builder, Func<ServiceProvider, X509CertificateCollection, string, X509Certificate> configureClientCertificateResolver)
+        {
+            builder.ConfigureHttpClientHandler(httpClientHandler =>
+            {
+                var services = builder.AuthenticationBuilder.Services;
+                var serviceProvider = services.BuildServiceProvider();
+
+                httpClientHandler.SslOptions.LocalCertificateSelectionCallback =
+                    (sender, host, certificates, certificate, issuers) => configureClientCertificateResolver(serviceProvider, certificates, host);
             });
 
             return builder;
@@ -71,7 +85,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             {
                 var rootCaCertificate = configureRootCaCertificate();
                 var validator = new X509CertificateChainValidator(rootCaCertificate);
-                httpClientHandler.ServerCertificateCustomValidationCallback = validator.Validate;
+                httpClientHandler.SslOptions.RemoteCertificateValidationCallback = validator.Validate;
             });
 
             return builder;
