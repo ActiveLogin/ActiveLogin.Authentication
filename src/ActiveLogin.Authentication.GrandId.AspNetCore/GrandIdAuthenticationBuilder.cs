@@ -13,14 +13,14 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public AuthenticationBuilder AuthenticationBuilder { get; }
 
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
-        private readonly List<Action<HttpClientHandler>> _httpClientHandlerConfigurators = new List<Action<HttpClientHandler>>();
+        private readonly List<Action<SocketsHttpHandler>> _httpClientHandlerConfigurators = new List<Action<SocketsHttpHandler>>();
 
         public GrandIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder)
         {
             AuthenticationBuilder = authenticationBuilder;
 
             ConfigureHttpClient(httpClient => httpClient.BaseAddress = GrandIdUrls.ProductionApiBaseUrl);
-            ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslProtocols = SslProtocols.Tls12);
+            ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
         }
 
         public void ConfigureHttpClient(Action<HttpClient> configureHttpClient)
@@ -28,7 +28,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             _httpClientConfigurators.Add(configureHttpClient);
         }
 
-        public void ConfigureHttpClientHandler(Action<HttpClientHandler> configureHttpClientHandler)
+        public void ConfigureHttpClientHandler(Action<SocketsHttpHandler> configureHttpClientHandler)
         {
             _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
         }
@@ -41,7 +41,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
-                    var httpClientHandler = new HttpClientHandler();
+                    var httpClientHandler = new SocketsHttpHandler();
                     _httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
                     return httpClientHandler;
                 });
