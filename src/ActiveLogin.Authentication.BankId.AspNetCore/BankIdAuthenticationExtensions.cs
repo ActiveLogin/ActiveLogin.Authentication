@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net.Http.Headers;
 using System.Reflection;
+using ActiveLogin.Authentication.BankId.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class BankIdAuthenticationExtensions
     {

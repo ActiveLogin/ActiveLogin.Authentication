@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net.Http.Headers;
 using System.Reflection;
+using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class GrandIdAuthenticationExtensions
     {

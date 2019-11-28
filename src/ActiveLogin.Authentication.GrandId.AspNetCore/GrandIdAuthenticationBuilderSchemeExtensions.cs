@@ -1,11 +1,11 @@
 ﻿using System;
+using ActiveLogin.Authentication.GrandId.AspNetCore;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class GrandIdAuthenticationBuilderSchemeExtensions
     {
