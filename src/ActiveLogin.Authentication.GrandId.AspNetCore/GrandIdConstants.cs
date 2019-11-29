@@ -1,6 +1,6 @@
 ﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public static class GrandIdAuthenticationConstants
+    public static class GrandIdConstants
     {
         internal const string ProductName = "ActiveLogin-GrandId-AspNetCore";
 

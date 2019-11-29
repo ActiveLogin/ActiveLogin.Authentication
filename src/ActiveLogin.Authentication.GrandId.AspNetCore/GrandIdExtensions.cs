@@ -6,23 +6,23 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class GrandIdAuthenticationExtensions
+    public static class GrandIdExtensions
     {
-        public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdAuthenticationBuilder> grandId)
+        public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdBuilder> grandId)
         {
-            var grandIdAuthenticationBuilder = new GrandIdAuthenticationBuilder(builder);
+            var grandIdBuilder = new GrandIdBuilder(builder);
 
-            grandIdAuthenticationBuilder.UseUserAgent(GetActiveLoginUserAgent());
+            grandIdBuilder.UseUserAgent(GetActiveLoginUserAgent());
 
-            grandId(grandIdAuthenticationBuilder);
+            grandId(grandIdBuilder);
 
             return builder;
         }
 
         private static ProductInfoHeaderValue GetActiveLoginUserAgent()
         {
-            var productName = GrandIdAuthenticationConstants.ProductName;
-            var productAssembly = typeof(GrandIdAuthenticationExtensions).Assembly;
+            var productName = GrandIdConstants.ProductName;
+            var productAssembly = typeof(GrandIdExtensions).Assembly;
             var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
             var productVersion = assemblyFileVersion?.Version ?? "Unknown";
 

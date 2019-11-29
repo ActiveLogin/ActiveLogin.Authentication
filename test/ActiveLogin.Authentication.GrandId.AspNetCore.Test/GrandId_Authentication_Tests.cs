@@ -24,7 +24,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
                 },
                 async context =>
                 {
-                    await context.ChallengeAsync(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme);
+                    await context.ChallengeAsync(GrandIdDefaults.BankIdSameDeviceAuthenticationScheme);
                 }).CreateClient();
 
             // Act
@@ -35,7 +35,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
             Assert.Equal("/signin-grandid-bankid-samedevice", transaction.Headers.Location.LocalPath);
         }
 
-        private TestServer CreateServer(Action<IGrandIdAuthenticationBuilder> builder, Func<HttpContext, Task> testpath, Action<IServiceCollection> configureServices = null)
+        private TestServer CreateServer(Action<IGrandIdBuilder> builder, Func<HttpContext, Task> testpath, Action<IServiceCollection> configureServices = null)
         {
             var webHostBuilder = new WebHostBuilder()
                 .Configure(app =>
