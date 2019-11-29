@@ -1,7 +1,8 @@
 ﻿
 using System.Net.Http.Headers;
+using ActiveLogin.Authentication.GrandId.AspNetCore;
 
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace Microsoft.Extensions.DependencyInjection
 {
     internal static class GrandIdAuthenticationBuilderExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+using ActiveLogin.Authentication.BankId.AspNetCore;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class BankIdAuthenticationBuilderSchemeExtensions
     {

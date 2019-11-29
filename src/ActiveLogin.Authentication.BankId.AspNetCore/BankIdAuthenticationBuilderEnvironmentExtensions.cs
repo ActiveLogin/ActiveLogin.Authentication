@@ -1,9 +1,10 @@
 ﻿using System;
 using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class BankIdAuthenticationBuilderEnvironmentExtensions
     {
