@@ -22,14 +22,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class BankIdAuthenticationHandler {
+    internal class BankIdHandler {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal BankIdAuthenticationHandler() {
+        internal BankIdHandler() {
         }
         
         /// <summary>
@@ -39,8 +39,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ActiveLogin.Authentication.BankId.AspNetCore.Resources.BankIdAuthenticationHandle" +
-                            "r", typeof(BankIdAuthenticationHandler).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ActiveLogin.Authentication.BankId.AspNetCore.Resources.BankIdHandler", typeof(BankIdHandler).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -251,11 +250,38 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel_Button {
+            get {
+                return ResourceManager.GetString("Cancel_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Personal Identity Number.
         /// </summary>
         internal static string PersonalIdentityNumber_Label {
             get {
                 return ResourceManager.GetString("PersonalIdentityNumber_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to qr-default-en.png.
+        /// </summary>
+        internal static string Qr_Code_Default_Image {
+            get {
+                return ResourceManager.GetString("Qr_Code_Default_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to QR Code for BankID.
+        /// </summary>
+        internal static string Qr_Code_Image {
+            get {
+                return ResourceManager.GetString("Qr_Code_Image", resourceCulture);
             }
         }
         
@@ -295,15 +321,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Cancel.
-        /// </summary>
-        internal static string Cancel_Button {
-            get {
-                return ResourceManager.GetString("Cancel_Button", resourceCulture);
-            }
-        }
-
         /// <summary>
         ///   Looks up a localized string similar to Your browser does not have the features required to use this login page..
         /// </summary>

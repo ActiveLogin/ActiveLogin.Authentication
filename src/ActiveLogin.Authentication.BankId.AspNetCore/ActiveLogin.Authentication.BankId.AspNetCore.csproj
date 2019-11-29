@@ -81,11 +81,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.resx">
+    <EmbeddedResource Update="Resources\BankIdHandler.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>BankIdAuthenticationHandler.Designer.cs</LastGenOutput>
+      <LastGenOutput>BankIdHandler.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\BankIdAuthenticationHandler.sv.resx">
+    <EmbeddedResource Update="Resources\BankIdHandler.sv.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <None Remove="Resources\qr-default-en.png" />
@@ -99,11 +99,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\BankIdAuthenticationHandler.Designer.cs">
-      <DependentUpon>BankIdAuthenticationHandler.sv.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\BankIdAuthenticationHandler.Designer.cs">
-      <DependentUpon>BankIdAuthenticationHandler.resx</DependentUpon>
+    <Compile Update="Resources\BankIdHandler.Designer.cs">
+      <DependentUpon>BankIdHandler.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
