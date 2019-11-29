@@ -7,9 +7,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
 {
     internal class BankIdMissingQrCodeGenerator : IBankIdQrCodeGenerator
     {
-        private readonly IStringLocalizer<BankIdAuthenticationHandler> _localizer;
+        private readonly IStringLocalizer<BankIdHandler> _localizer;
 
-        public BankIdMissingQrCodeGenerator(IStringLocalizer<BankIdAuthenticationHandler> localizer)
+        public BankIdMissingQrCodeGenerator(IStringLocalizer<BankIdHandler> localizer)
         {
             _localizer = localizer;
         }

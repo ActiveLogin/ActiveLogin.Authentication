@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdAuthenticationOptions : RemoteAuthenticationOptions
+    public class BankIdOptions : RemoteAuthenticationOptions
     {
         private const string DefaultStateCookieName = "__ActiveLogin.BankIdState";
 
@@ -45,14 +45,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// </summary>
         public bool BankIdUseQrCode { get; set; } = false;
 
-        public PathString LoginPath { get; set; } = new PathString($"/{BankIdAuthenticationConstants.AreaName}/Login");
-        public TimeSpan? TokenExpiresIn { get; set; } = BankIdAuthenticationDefaults.MaximumSessionLifespan;
+        public PathString LoginPath { get; set; } = new PathString($"/{BankIdConstants.AreaName}/Login");
+        public TimeSpan? TokenExpiresIn { get; set; } = BankIdDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;
-        public string AuthenticationMethodName { get; set; } = BankIdAuthenticationDefaults.AuthenticationMethodName;
+        public string AuthenticationMethodName { get; set; } = BankIdDefaults.AuthenticationMethodName;
 
         public bool IssueIdentityProviderClaim { get; set; } = true;
-        public string IdentityProviderName { get; set; } = BankIdAuthenticationDefaults.IdentityProviderName;
+        public string IdentityProviderName { get; set; } = BankIdDefaults.IdentityProviderName;
 
         /// <summary>
         /// Whether or not to issue gender claim based on Swedish Personal Identity Number.

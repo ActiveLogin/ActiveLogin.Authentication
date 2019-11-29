@@ -4,9 +4,9 @@ using ActiveLogin.Authentication.BankId.AspNetCore.QrCoder;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BankIdAuthenticationBuilderQrCoderExtensions
+    public static class BankIdBuilderQrCoderExtensions
     {
-        public static IBankIdAuthenticationBuilder UseQrCoderQrCodeGenerator(this IBankIdAuthenticationBuilder builder)
+        public static IBankIdBuilder UseQrCoderQrCodeGenerator(this IBankIdBuilder builder)
         {
             var services = builder.AuthenticationBuilder.Services;
 

@@ -279,7 +279,7 @@ Please [reach out](#support--training) if you need assistance in seting this up.
 
 For legacy reasons, we do support this. But note that the recomendation from BankID is to notuse personal identity numbers, but rather launch the BankID app on the same device or use QR-codes. This is the default behaviour for Active Login.
 
-If you have a usecase for this, you provide an authentication property item named `swedishPersonalIdentityNumber` (available as constants `BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber` or `GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber`) that value will be used and sent to BankID/GrandID.
+If you have a usecase for this, you provide an authentication property item named `swedishPersonalIdentityNumber` (available as constants `BankIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber` or `GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber`) that value will be used and sent to BankID/GrandID.
 
 _Example usage:_
 
@@ -293,7 +293,7 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
         {
             {"returnUrl", returnUrl},
             {"scheme", provider},
-            { BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, personalIdentityNumber }
+            { BankIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, personalIdentityNumber }
         }
     };
 

@@ -7,23 +7,23 @@ using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BankIdAuthenticationBuilderAzureExtensions
+    public static class BankIdBuilderAzureExtensions
     {
-        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, IConfigurationSection configurationSection)
+        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, IConfigurationSection configurationSection)
         {
             builder.AuthenticationBuilder.Services.Configure<ClientCertificateFromAzureKeyVaultOptions>(configurationSection.Bind);
 
             return UseClientCertificateFromAzureKeyVault(builder);
         }
 
-        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
+        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
         {
             builder.AuthenticationBuilder.Services.Configure(configureOptions);
 
             return UseClientCertificateFromAzureKeyVault(builder);
         }
 
-        public static IBankIdAuthenticationBuilder UseClientCertificateFromAzureKeyVault(this IBankIdAuthenticationBuilder builder)
+        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder)
         {
             builder.UseClientCertificate(() =>
             {
