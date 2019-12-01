@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public interface IGrandIdAuthenticationBuilder
+    public interface IGrandIdBuilder
     {
         AuthenticationBuilder AuthenticationBuilder { get; }
 

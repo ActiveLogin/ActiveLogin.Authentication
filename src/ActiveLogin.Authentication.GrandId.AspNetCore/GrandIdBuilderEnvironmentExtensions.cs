@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class GrandIdAuthenticationBuilderEnvironmentExtensions
+    public static class GrandIdBuilderEnvironmentExtensions
     {
-        private static IGrandIdAuthenticationBuilder UseEnvironment(this IGrandIdAuthenticationBuilder builder, Uri apiBaseUrl, Action<IGrandIdEnvironmentConfiguration> configuration)
+        private static IGrandIdBuilder UseEnvironment(this IGrandIdBuilder builder, Uri apiBaseUrl, Action<IGrandIdEnvironmentConfiguration> configuration)
         {
             var environmentConfiguration = new GrandIdEnvironmentConfiguration();
             configuration(environmentConfiguration);
@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder"></param>
         /// <param name="configuration">Configure GrandID.</param>
         /// <returns></returns>
-        public static IGrandIdAuthenticationBuilder UseTestEnvironment(this IGrandIdAuthenticationBuilder builder, Action<IGrandIdEnvironmentConfiguration> configuration)
+        public static IGrandIdBuilder UseTestEnvironment(this IGrandIdBuilder builder, Action<IGrandIdEnvironmentConfiguration> configuration)
         {
             return builder.UseEnvironment(GrandIdUrls.TestApiBaseUrl, configuration);
         }
@@ -45,7 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder"></param>
         /// <param name="configuration">Configure GrandID.</param>
         /// <returns></returns>
-        public static IGrandIdAuthenticationBuilder UseProductionEnvironment(this IGrandIdAuthenticationBuilder builder, Action<IGrandIdEnvironmentConfiguration> configuration)
+        public static IGrandIdBuilder UseProductionEnvironment(this IGrandIdBuilder builder, Action<IGrandIdEnvironmentConfiguration> configuration)
         {
             return builder.UseEnvironment(GrandIdUrls.ProductionApiBaseUrl, configuration);
         }
@@ -55,24 +55,24 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder)
+        public static IGrandIdBuilder UseSimulatedEnvironment(this IGrandIdBuilder builder)
             => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient());
 
-        public static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname)
+        public static IGrandIdBuilder UseSimulatedEnvironment(this IGrandIdBuilder builder, string givenName, string surname)
             => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient(givenName, surname));
 
-        public static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
+        public static IGrandIdBuilder UseSimulatedEnvironment(this IGrandIdBuilder builder, string givenName, string surname, string personalIdentityNumber)
             => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
             
 
-        private static IGrandIdAuthenticationBuilder UseSimulatedEnvironment(this IGrandIdAuthenticationBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
+        private static IGrandIdBuilder UseSimulatedEnvironment(this IGrandIdBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {
             builder.AuthenticationBuilder.Services.TryAddSingleton(grandIdDevelopmentApiClient);
 
             return builder;
         }
 
-        private static IGrandIdAuthenticationBuilder AddGrandIdApiClient(this IGrandIdAuthenticationBuilder builder, string apiKey, string? bankIdServiceKey)
+        private static IGrandIdBuilder AddGrandIdApiClient(this IGrandIdBuilder builder, string apiKey, string? bankIdServiceKey)
         {
             builder.AuthenticationBuilder.Services.TryAddTransient(x => new GrandIdApiClientConfiguration(apiKey, bankIdServiceKey));
             builder.AuthenticationBuilder.Services.TryAddTransient<IGrandIdApiClient, GrandIdApiClient>();

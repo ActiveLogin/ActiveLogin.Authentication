@@ -8,14 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdAuthenticationBuilder : IBankIdAuthenticationBuilder
+    public class BankIdBuilder : IBankIdBuilder
     {
         public AuthenticationBuilder AuthenticationBuilder { get; }
 
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
         private readonly List<Action<SocketsHttpHandler>> _httpClientHandlerConfigurators = new List<Action<SocketsHttpHandler>>();
 
-        public BankIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder)
+        public BankIdBuilder(AuthenticationBuilder authenticationBuilder)
         {
             AuthenticationBuilder = authenticationBuilder;
 

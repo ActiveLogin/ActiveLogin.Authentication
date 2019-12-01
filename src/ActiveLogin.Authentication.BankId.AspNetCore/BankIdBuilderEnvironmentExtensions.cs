@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BankIdAuthenticationBuilderEnvironmentExtensions
+    public static class BankIdBuilderEnvironmentExtensions
     {
-        internal static IBankIdAuthenticationBuilder UseEnvironment(this IBankIdAuthenticationBuilder builder, Uri apiBaseUrl)
+        internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl)
         {
             builder.EnableHttpClient();
             builder.ConfigureHttpClient(httpClient =>
@@ -22,26 +22,26 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseTestEnvironment(this IBankIdAuthenticationBuilder builder)
+        public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder)
         {
             return builder.UseEnvironment(BankIdUrls.TestApiBaseUrl);
         }
 
-        public static IBankIdAuthenticationBuilder UseProductionEnvironment(this IBankIdAuthenticationBuilder builder)
+        public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder)
         {
             return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl);
         }
 
-        public static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder)
+        public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder)
             => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient());
 
-        public static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname)
+        public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname)
             => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname));
 
-        public static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder, string givenName, string surname, string personalIdentityNumber)
+        public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname, string personalIdentityNumber)
             => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
 
-        private static IBankIdAuthenticationBuilder UseSimulatedEnvironment(this IBankIdAuthenticationBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
+        private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
         {
             builder.AuthenticationBuilder.Services.TryAddSingleton(bankIdDevelopmentApiClient);
             builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, BankIdDevelopmentLauncher>();

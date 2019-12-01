@@ -139,7 +139,7 @@ services
                 config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
 	    })
             .AddBankIdSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
-            .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
+            .AddBankIdOtherDevice(GrandIdDefaults.BankIdOtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });
 ```
 

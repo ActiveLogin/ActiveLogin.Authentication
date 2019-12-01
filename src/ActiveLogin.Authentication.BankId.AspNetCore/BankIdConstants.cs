@@ -1,6 +1,6 @@
 ﻿namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public static class BankIdAuthenticationConstants
+    public static class BankIdConstants
     {
         internal const string ProductName = "ActiveLogin-BankId-AspNetCore";
 

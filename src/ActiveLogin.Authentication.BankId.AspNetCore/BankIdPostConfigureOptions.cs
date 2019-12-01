@@ -6,23 +6,23 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdAuthenticationPostConfigureOptions : IPostConfigureOptions<BankIdAuthenticationOptions>
+    public class BankIdPostConfigureOptions : IPostConfigureOptions<BankIdOptions>
     {
         private readonly IDataProtectionProvider _dp;
 
-        public BankIdAuthenticationPostConfigureOptions(IDataProtectionProvider dataProtection)
+        public BankIdPostConfigureOptions(IDataProtectionProvider dataProtection)
         {
             _dp = dataProtection;
         }
 
-        public void PostConfigure(string name, BankIdAuthenticationOptions options)
+        public void PostConfigure(string name, BankIdOptions options)
         {
             options.DataProtectionProvider = options.DataProtectionProvider ?? _dp;
 
             if (options.StateDataFormat == null)
             {
                 var dataProtector = options.DataProtectionProvider.CreateProtector(
-                    typeof(BankIdAuthenticationHandler).FullName,
+                    typeof(BankIdHandler).FullName,
                     name,
                     "v1"
                 );

@@ -105,8 +105,8 @@ namespace IdentityServer.ServerSample
                                 options.IssueBirthdateClaim = true;
                                 options.IssueGenderClaim = true;
                             })
-                            .AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
-                            .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+                            .AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
+                            .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
                     {
@@ -126,9 +126,9 @@ namespace IdentityServer.ServerSample
                                options.IssueBirthdateClaim = true;
                                options.IssueGenderClaim = true;
                            })
-                           .AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
-                           .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
-                           .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
+                           .AddBankIdSameDevice(GrandIdDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
+                           .AddBankIdOtherDevice(GrandIdDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
+                           .AddBankIdChooseDevice(GrandIdDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseSimulatedEnvironment", false))
                     {
