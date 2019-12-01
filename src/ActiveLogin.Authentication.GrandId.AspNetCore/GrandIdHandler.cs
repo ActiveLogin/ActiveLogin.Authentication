@@ -11,9 +11,9 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public abstract class GrandIdAuthenticationHandler<TOptions, TGetSessionResponse> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdAuthenticationOptions, new()
+    public abstract class GrandIdHandler<TOptions, TGetSessionResponse> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdOptions, new()
     {
-        protected GrandIdAuthenticationHandler(
+        protected GrandIdHandler(
             IOptionsMonitor<TOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,

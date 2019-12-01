@@ -13,9 +13,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BankIdAuthenticationBuilderExtensions
+    public static class BankIdBuilderExtensions
     {
-        internal static IBankIdAuthenticationBuilder AddDefaultServices(this IBankIdAuthenticationBuilder builder)
+        internal static IBankIdBuilder AddDefaultServices(this IBankIdBuilder builder)
         {
             var services = builder.AuthenticationBuilder.Services;
 
@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddLocalization(options =>
             {
-                options.ResourcesPath = BankIdAuthenticationDefaults.ResourcesPath;
+                options.ResourcesPath = BankIdDefaults.ResourcesPath;
             });
 
             services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        internal static IBankIdAuthenticationBuilder UseUserAgent(this IBankIdAuthenticationBuilder builder, ProductInfoHeaderValue productInfoHeaderValue)
+        internal static IBankIdBuilder UseUserAgent(this IBankIdBuilder builder, ProductInfoHeaderValue productInfoHeaderValue)
         {
             builder.ConfigureHttpClient(httpClient =>
             {
@@ -53,7 +53,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseClientCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureClientCertificate)
+        public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
         {
             builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseClientCertificateResolver(this IBankIdAuthenticationBuilder builder, Func<ServiceProvider, X509CertificateCollection, string, X509Certificate> configureClientCertificateResolver)
+        public static IBankIdBuilder UseClientCertificateResolver(this IBankIdBuilder builder, Func<ServiceProvider, X509CertificateCollection, string, X509Certificate> configureClientCertificateResolver)
         {
             builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
+        public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
         {
             builder.ConfigureHttpClientHandler(httpClientHandler =>
             {
@@ -91,7 +91,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IBankIdAuthenticationBuilder UseRootCaCertificate(this IBankIdAuthenticationBuilder builder, string certificateFilePath)
+        public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
         {
             builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public static class BankIdAuthenticationDefaults
+    public static class BankIdDefaults
     {
         public const string IdentityProviderName = "BankID";
         public const string AuthenticationMethodName = "bankid";

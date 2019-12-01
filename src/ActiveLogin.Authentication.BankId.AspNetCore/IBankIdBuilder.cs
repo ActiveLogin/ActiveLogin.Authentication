@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public interface IBankIdAuthenticationBuilder
+    public interface IBankIdBuilder
     {
         AuthenticationBuilder AuthenticationBuilder { get; }
 

@@ -12,7 +12,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
-    [Area(BankIdAuthenticationConstants.AreaName)]
+    [Area(BankIdConstants.AreaName)]
     [Route("/[area]/[action]")]
     [AllowAnonymous]
     public class BankIdController : Controller
@@ -20,13 +20,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IAntiforgery _antiforgery;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
-        private readonly IStringLocalizer<BankIdAuthenticationHandler> _localizer;
+        private readonly IStringLocalizer<BankIdHandler> _localizer;
 
         public BankIdController(
             IAntiforgery antiforgery,
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
             IBankIdLoginOptionsProtector loginOptionsProtector,
-            IStringLocalizer<BankIdAuthenticationHandler> localizer)
+            IStringLocalizer<BankIdHandler> localizer)
         {
             _antiforgery = antiforgery;
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
@@ -39,7 +39,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             if (!Url.IsLocalUrl(returnUrl))
             {
-                throw new Exception(BankIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
+                throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
             }
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
@@ -57,7 +57,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 Url.Action("Cancel", "BankIdApi")
                 )
             {
-                RefreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs,
+                RefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs,
 
                 InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA13),
                 UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),

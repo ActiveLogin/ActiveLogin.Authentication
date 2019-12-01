@@ -14,7 +14,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         }
 
         private const int MinimumRefreshIntervalMs = 1000;
-        private int _refreshIntervalMs = BankIdAuthenticationDefaults.StatusRefreshIntervalMs;
+        private int _refreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs;
 
         [DataMember(Name = "refreshIntervalMs")]
         public int RefreshIntervalMs

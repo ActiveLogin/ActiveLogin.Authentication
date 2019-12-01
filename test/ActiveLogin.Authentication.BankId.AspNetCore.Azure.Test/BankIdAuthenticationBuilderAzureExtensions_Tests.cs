@@ -9,7 +9,7 @@ using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
 {
-    public class BankIdAuthenticationBuilderAzureExtension
+    public class BankIdBuilderAzureExtension
     {
         public class UseClientCertificateFromAzureKeyVault
         {

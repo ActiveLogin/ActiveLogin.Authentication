@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
-    [Area(BankIdAuthenticationConstants.AreaName)]
+    [Area(BankIdConstants.AreaName)]
     [Route("/[area]/Api/")]
     [ApiController]
     [AllowAnonymous]
@@ -257,7 +257,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
             if (!Url.IsLocalUrl(returnUri))
             {
-                throw new Exception(BankIdAuthenticationConstants.InvalidReturnUrlErrorMessage);
+                throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
             }
 
             return Ok(BankIdLoginApiStatusResponse.Finished(returnUri));
@@ -332,7 +332,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (!Url.IsLocalUrl(request.CancelReturnUrl))
             {
-                throw new Exception(BankIdAuthenticationConstants.InvalidCancelReturnUrlErrorMessage);
+                throw new Exception(BankIdConstants.InvalidCancelReturnUrlErrorMessage);
             }
 
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);

@@ -6,11 +6,11 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public abstract class GrandIdAuthenticationPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : GrandIdAuthenticationOptions
+    public abstract class GrandIdPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : GrandIdOptions
     {
         private readonly IDataProtectionProvider _dp;
 
-        protected GrandIdAuthenticationPostConfigureOptions(IDataProtectionProvider dataProtection)
+        protected GrandIdPostConfigureOptions(IDataProtectionProvider dataProtection)
         {
             _dp = dataProtection;
         }

@@ -8,14 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdAuthenticationBuilder : IGrandIdAuthenticationBuilder
+    public class GrandIdBuilder : IGrandIdBuilder
     {
         public AuthenticationBuilder AuthenticationBuilder { get; }
 
         private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
         private readonly List<Action<SocketsHttpHandler>> _httpClientHandlerConfigurators = new List<Action<SocketsHttpHandler>>();
 
-        public GrandIdAuthenticationBuilder(AuthenticationBuilder authenticationBuilder)
+        public GrandIdBuilder(AuthenticationBuilder authenticationBuilder)
         {
             AuthenticationBuilder = authenticationBuilder;
 

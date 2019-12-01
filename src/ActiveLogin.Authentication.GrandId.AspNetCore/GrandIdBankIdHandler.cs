@@ -15,17 +15,17 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
-    public class GrandIdBankIdAuthenticationHandler : GrandIdAuthenticationHandler<GrandIdBankIdAuthenticationOptions, BankIdGetSessionResponse>
+    public class GrandIdBankIdHandler : GrandIdHandler<GrandIdBankIdOptions, BankIdGetSessionResponse>
     {
-        private readonly ILogger<GrandIdBankIdAuthenticationHandler> _logger;
+        private readonly ILogger<GrandIdBankIdHandler> _logger;
         private readonly IGrandIdApiClient _grandIdApiClient;
 
-        public GrandIdBankIdAuthenticationHandler(
-            IOptionsMonitor<GrandIdBankIdAuthenticationOptions> options,
+        public GrandIdBankIdHandler(
+            IOptionsMonitor<GrandIdBankIdOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
             ISystemClock clock,
-            ILogger<GrandIdBankIdAuthenticationHandler> logger,
+            ILogger<GrandIdBankIdHandler> logger,
             IGrandIdApiClient grandIdApiClient
             )
             : base(options, loggerFactory, encoder, clock)
@@ -63,7 +63,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdAuthenticationOptions options, SwedishPersonalIdentityNumber? swedishPersonalIdentityNumber)
+        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdOptions options, SwedishPersonalIdentityNumber? swedishPersonalIdentityNumber)
         {
             bool? useChooseDevice;
             bool? useSameDevice;
@@ -102,7 +102,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         {
             bool TryGetPinString(out string? s)
             {
-                return properties.Items.TryGetValue(GrandIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
+                return properties.Items.TryGetValue(GrandIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
             }
 
             if (TryGetPinString(out var swedishPersonalIdentityNumber) && !string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))

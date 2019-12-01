@@ -184,7 +184,7 @@ services
             .UseProductionEnvironment()
             ...
             .AddSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
-            .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
+            .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });
 ```
 

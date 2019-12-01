@@ -47,8 +47,8 @@ namespace Standalone.MvcSample
                 .AddBankId(builder =>
                 {
                     builder.UseQrCoderQrCodeGenerator();
-                    builder.AddSameDevice(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
-                           .AddOtherDevice(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+                    builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
+                           .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
                     {
@@ -69,9 +69,9 @@ namespace Standalone.MvcSample
                 })
                 .AddGrandId(builder =>
                 {
-                    builder.AddBankIdSameDevice(GrandIdAuthenticationDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
-                           .AddBankIdOtherDevice(GrandIdAuthenticationDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
-                           .AddBankIdChooseDevice(GrandIdAuthenticationDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
+                    builder.AddBankIdSameDevice(GrandIdDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
+                           .AddBankIdOtherDevice(GrandIdDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
+                           .AddBankIdChooseDevice(GrandIdDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:GrandId:UseSimulatedEnvironment", false))
                     {

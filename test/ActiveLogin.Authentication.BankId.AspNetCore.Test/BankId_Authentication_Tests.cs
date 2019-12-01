@@ -50,7 +50,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 },
                 DefaultAppConfiguration(async context =>
                 {
-                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                    await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
                 })).CreateClient();
 
             // Act
@@ -83,7 +83,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                         appBuilder.Use(async (context, next) =>
                         {
                             await context.ChallengeAsync(
-                                BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                                BankIdDefaults.SameDeviceAuthenticationScheme);
                             await next();
                         });
                         appBuilder.Run(context => context.Response.WriteAsync(""));
@@ -92,7 +92,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 ,
                 services =>
                 {
-                    services.AddTransient<RemoteAuthenticationOptions, BankIdAuthenticationOptions>();
+                    services.AddTransient<RemoteAuthenticationOptions, BankIdOptions>();
 
                 }).CreateClient();
 
@@ -157,7 +157,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 },
                 DefaultAppConfiguration(async context =>
                 {
-                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                    await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
                 }),
                 services =>
                 {
@@ -186,7 +186,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 },
                 DefaultAppConfiguration(async context =>
                 {
-                    await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                    await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
                 }),
                 services =>
                 {
@@ -227,7 +227,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 			        },
 			        DefaultAppConfiguration(async context =>
 			        {
-				        await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+				        await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
 			        }),
 			        services =>
                     {
@@ -282,7 +282,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     },
                     DefaultAppConfiguration(async context =>
                     {
-                        await context.ChallengeAsync(BankIdAuthenticationDefaults.SameDeviceAuthenticationScheme);
+                        await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
                     }),
                     services =>
                     {
@@ -326,7 +326,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
         private TestServer CreateServer(
-            Action<IBankIdAuthenticationBuilder> configureBankId,
+            Action<IBankIdBuilder> configureBankId,
             Action<IApplicationBuilder> configureApplication,
             Action<IServiceCollection> configureServices = null)
         {

@@ -14,18 +14,18 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdAuthenticationHandler : RemoteAuthenticationHandler<BankIdAuthenticationOptions>
+    public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     {
-        private readonly ILogger<BankIdAuthenticationHandler> _logger;
+        private readonly ILogger<BankIdHandler> _logger;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
 
-        public BankIdAuthenticationHandler(
-            IOptionsMonitor<BankIdAuthenticationOptions> options,
+        public BankIdHandler(
+            IOptionsMonitor<BankIdOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
             ISystemClock clock,
-            ILogger<BankIdAuthenticationHandler> logger,
+            ILogger<BankIdHandler> logger,
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector)
             : base(options, loggerFactory, encoder, clock)
@@ -156,7 +156,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             bool TryGetPinString(out string? s)
             {
-                return properties.Items.TryGetValue(BankIdAuthenticationConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
+                return properties.Items.TryGetValue(BankIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
             }
 
             if (TryGetPinString(out var swedishPersonalIdentityNumber) && !string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
@@ -181,7 +181,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             // If we are using other device authentication and manual PIN entry we do not redirect back to
             // returnUrl. Instead we let the GUI decide what to display. Preferably the PIN entry form.
-            if (Scheme.Name.Equals(BankIdAuthenticationDefaults.OtherDeviceAuthenticationScheme) && !Options.BankIdUseQrCode)
+            if (Scheme.Name.Equals(BankIdDefaults.OtherDeviceAuthenticationScheme) && !Options.BankIdUseQrCode)
             {
                 cancelReturnUrl = string.Empty;
             }
