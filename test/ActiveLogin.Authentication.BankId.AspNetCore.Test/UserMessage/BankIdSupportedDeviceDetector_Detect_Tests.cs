@@ -21,11 +21,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.True(detectedDevice.IsIos);
             Assert.False(detectedDevice.IsAndroid);
             Assert.False(detectedDevice.IsWindowsPhone);
-            Assert.False(detectedDevice.IsWindowsDekstop);
+            Assert.False(detectedDevice.IsWindowsDesktop);
             Assert.False(detectedDevice.IsMacOs);
 
             Assert.True(detectedDevice.IsMobile);
             Assert.False(detectedDevice.IsDesktop);
+
+            Assert.True(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
         }
 
         [Fact]
@@ -37,11 +42,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.True(detectedDevice.IsIos);
             Assert.False(detectedDevice.IsAndroid);
             Assert.False(detectedDevice.IsWindowsPhone);
-            Assert.False(detectedDevice.IsWindowsDekstop);
+            Assert.False(detectedDevice.IsWindowsDesktop);
             Assert.False(detectedDevice.IsMacOs);
 
             Assert.True(detectedDevice.IsMobile);
             Assert.False(detectedDevice.IsDesktop);
+
+            Assert.True(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
         }
 
         [Theory]
@@ -54,11 +64,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.False(detectedDevice.IsIos);
             Assert.True(detectedDevice.IsAndroid);
             Assert.False(detectedDevice.IsWindowsPhone);
-            Assert.False(detectedDevice.IsWindowsDekstop);
+            Assert.False(detectedDevice.IsWindowsDesktop);
             Assert.False(detectedDevice.IsMacOs);
 
             Assert.True(detectedDevice.IsMobile);
             Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.True(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
         }
 
 
@@ -71,11 +86,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.False(detectedDevice.IsIos);
             Assert.False(detectedDevice.IsAndroid);
             Assert.True(detectedDevice.IsWindowsPhone);
-            Assert.False(detectedDevice.IsWindowsDekstop);
+            Assert.False(detectedDevice.IsWindowsDesktop);
             Assert.False(detectedDevice.IsMacOs);
 
             Assert.True(detectedDevice.IsMobile);
             Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.True(detectedDevice.IsEdge);
         }
 
         [Fact]
@@ -87,11 +107,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.False(detectedDevice.IsIos);
             Assert.False(detectedDevice.IsAndroid);
             Assert.False(detectedDevice.IsWindowsPhone);
-            Assert.True(detectedDevice.IsWindowsDekstop);
+            Assert.True(detectedDevice.IsWindowsDesktop);
             Assert.False(detectedDevice.IsMacOs);
 
             Assert.False(detectedDevice.IsMobile);
             Assert.True(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.True(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
         }
 
         [Fact]
@@ -103,11 +128,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.False(detectedDevice.IsIos);
             Assert.False(detectedDevice.IsAndroid);
             Assert.False(detectedDevice.IsWindowsPhone);
-            Assert.False(detectedDevice.IsWindowsDekstop);
+            Assert.False(detectedDevice.IsWindowsDesktop);
             Assert.True(detectedDevice.IsMacOs);
 
             Assert.False(detectedDevice.IsMobile);
             Assert.True(detectedDevice.IsDesktop);
+
+            Assert.True(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
         }
     }
 }
