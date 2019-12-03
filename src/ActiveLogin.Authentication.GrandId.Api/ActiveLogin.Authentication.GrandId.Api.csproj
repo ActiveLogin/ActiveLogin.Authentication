@@ -11,7 +11,7 @@
     <PackageId>ActiveLogin.Authentication.GrandId.Api</PackageId>
 
     <VersionPrefix>3.0.0</VersionPrefix>
-    <VersionSuffix>alpha-1</VersionSuffix>
+    <VersionSuffix>beta-1</VersionSuffix>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
     <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
@@ -28,7 +28,6 @@
     <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
