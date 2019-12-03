@@ -165,15 +165,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     services.AddTransient(s => mockProtector.Object);
                 }).CreateClient();
 
-            // Act
+            // Act  
             var transaction = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-            var document = await HtmlDocumentHelper.FromContent(await transaction.Content.ReadAsStringAsync());
-            var cancelButtonValue = document.GetInputValue("input[name='CancelReturnUrl']");
-            Assert.Equal("/cru", cancelButtonValue);
+            var document = await HtmlDocumentHelper.FromContent(transaction.Content);
+            Assert.Equal("/cru", document.GetInputValue("input[name='CancelReturnUrl']"));
         }
 
 
@@ -201,28 +200,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-            var document = await HtmlDocumentHelper.FromContent(await transaction.Content.ReadAsStringAsync());
+            var document = await HtmlDocumentHelper.FromContent(transaction.Content);
 
-            var loginForm = document.GetElement<IHtmlFormElement>("form[id='bankIdLoginForm']");
-            Assert.NotNull(loginForm);
-
-            var loginStatus = document.GetElement<IHtmlDivElement>("div[id='bankIdLoginStatus']");
-            Assert.NotNull(loginStatus);
-
-            var qrCode = document.GetElement<IHtmlImageElement>("img[alt='QR Code for BankID']");
-            Assert.NotNull(qrCode);
-
-            var returnUrlValue = document.GetInputValue("input[name='ReturnUrl']");
-            Assert.Equal("/", returnUrlValue);
-
-            var cancelUrlValue = document.GetInputValue("input[name='CancelReturnUrl']");
-            Assert.Equal("/", cancelUrlValue);
-
-            var loginOptionValue = document.GetInputValue("input[name='LoginOptions']");
-            Assert.Equal("X", loginOptionValue);
-
-            var autoLoginValue = document.GetInputValue("input[name='AutoLogin']");
-            Assert.Equal("true", autoLoginValue);
+            Assert.NotNull(document.GetElement<IHtmlFormElement>("form[id='bankIdLoginForm']"));
+            Assert.NotNull(document.GetElement<IHtmlDivElement>("div[id='bankIdLoginStatus']"));
+            Assert.NotNull(document.GetElement<IHtmlImageElement>("img.qr-code-image"));
+            Assert.Equal("/", document.GetInputValue("input[name='ReturnUrl']"));
+            Assert.Equal("/", document.GetInputValue("input[name='CancelReturnUrl']"));
+            Assert.Equal("X", document.GetInputValue("input[name='LoginOptions']"));
+            Assert.Equal("true", document.GetInputValue("input[name='AutoLogin']"));
         }
 
         [Fact]
@@ -255,8 +241,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 	        var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 	        var loginCookies = loginResponse.Headers.GetValues("set-cookie");
 	        var loginContent = await loginResponse.Content.ReadAsStringAsync();
-            var document = await HtmlDocumentHelper.FromContent(loginContent);
-            var csrfToken = document.GetInputValue("input[name='RequestVerificationToken']");
+            var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
+            var csrfToken = document.GetRequestVerificationToken();
 
             // Arrange acting request
             var testReturnUrl = "/TestReturnUrl";
@@ -311,10 +297,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Arrange csrf info
             var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
             var loginCookies = loginResponse.Headers.GetValues("set-cookie").ToList();
-            var loginContent = await loginResponse.Content.ReadAsStringAsync();
 
-            var document = await HtmlDocumentHelper.FromContent(loginContent);
-            var csrfToken = document.GetInputValue("input[name='RequestVerificationToken']");
+            var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
+            var csrfToken = document.GetRequestVerificationToken();
 
             // Arrange acting request
             var testReturnUrl = "/TestReturnUrl";
