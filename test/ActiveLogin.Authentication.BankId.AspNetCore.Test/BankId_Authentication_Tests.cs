@@ -215,7 +215,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task AutoLaunch_Sets_Correct_RedirectUri()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -270,7 +270,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Cancel_Calls_CancelApi()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
