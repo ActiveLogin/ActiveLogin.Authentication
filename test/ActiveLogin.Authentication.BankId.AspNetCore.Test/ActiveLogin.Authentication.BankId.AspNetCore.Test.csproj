@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.13.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.0-preview3.19555.2" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.0-preview3.19555.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
