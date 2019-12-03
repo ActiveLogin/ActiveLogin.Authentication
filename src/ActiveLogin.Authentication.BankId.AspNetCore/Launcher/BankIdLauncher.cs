@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     internal class BankIdLauncher : IBankIdLauncher
     {
+        private const string BankIdScheme = "bankid:///";
+
+        private const string IosUrlPrefix = "https://app.bankid.com/";
+        private const string AndroidNullRedirectUrl = "null";
+
+        private const string IosChromeSchemePrefix = "googlechromes://";
+        private const string IosEdgeSchemePrefix = "microsoft-edge-https://";
+        private const string IosFirefoxSchemePrefix = "firefox://open-url?url=";
+
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
             var prefix = GetPrefixPart(device);
@@ -21,10 +30,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         {
             if (device.IsIos)
             {
-                return "https://app.bankid.com/";
+                return IosUrlPrefix;
             }
 
-            return "bankid:///";
+            return BankIdScheme;
         }
 
         private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request)
@@ -50,8 +59,33 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         {
             // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2
             return device.IsIos
-                ? request.RedirectUrl
-                : "null";
+                ? GetIOsBrowserSpecificRedirectUrl(device, request.RedirectUrl)
+                : AndroidNullRedirectUrl;
+        }
+
+        private static string GetIOsBrowserSpecificRedirectUrl(BankIdSupportedDevice device, string redirectUrl)
+        {
+            if (device.IsChrome || device.IsEdge)
+            {
+                var redirectUrlWithoutHttpsScheme = redirectUrl.Substring(8);
+
+                if (device.IsChrome)
+                {
+                    return IosChromeSchemePrefix + redirectUrlWithoutHttpsScheme;
+                }
+
+                if (device.IsEdge)
+                {
+                    return IosEdgeSchemePrefix + redirectUrlWithoutHttpsScheme;
+                }
+            }
+
+            if (device.IsFirefox)
+            {
+                return IosFirefoxSchemePrefix + Uri.EscapeDataString(redirectUrl);
+            }
+
+            return redirectUrl;
         }
 
         private static string Base64Encode(string value)
