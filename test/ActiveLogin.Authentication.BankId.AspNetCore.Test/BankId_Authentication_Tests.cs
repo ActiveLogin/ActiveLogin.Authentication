@@ -24,6 +24,7 @@ using Moq;
 using Newtonsoft.Json;
 using Xunit;
 using ActiveLogin.Authentication.BankId.Api.Models;
+using AngleSharp.Html.Dom;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 {
@@ -170,8 +171,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-            var content = await transaction.Content.ReadAsStringAsync();
-            Assert.Contains("<input name=\"CancelReturnUrl\" type=\"hidden\" value=\"/cru\" />", content);
+            var document = await HtmlDocumentHelper.FromContent(transaction.Content);
+            Assert.Equal("/cru", document.GetInputValue("input[name='CancelReturnUrl']"));
         }
 
 
@@ -199,14 +200,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Assert
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-            var content = await transaction.Content.ReadAsStringAsync();
-            Assert.Contains("<form id=\"bankIdLoginForm\">", content);
-            Assert.Contains("<div id=\"bankIdLoginStatus\" style=\"display: block;\">", content);
-            Assert.Contains("<img src=\"\" alt=\"QR Code for BankID\" class=\"qr-code-image img-thumbnail img-fluid mb-2\" style=\"display: none;\" />", content);
-            Assert.Contains("<input name=\"ReturnUrl\" type=\"hidden\" value=\"/\" />", content);
-            Assert.Contains("<input name=\"CancelReturnUrl\" type=\"hidden\" value=\"/\" />", content);
-            Assert.Contains("<input name=\"LoginOptions\" type=\"hidden\" value=\"X\" />", content);
-            Assert.Contains("<input name=\"AutoLogin\" type=\"hidden\" value=\"true\" />", content);
+            var document = await HtmlDocumentHelper.FromContent(transaction.Content);
+
+            Assert.NotNull(document.GetElement<IHtmlFormElement>("form[id='bankIdLoginForm']"));
+            Assert.NotNull(document.GetElement<IHtmlDivElement>("div[id='bankIdLoginStatus']"));
+            Assert.NotNull(document.GetElement<IHtmlImageElement>("img.qr-code-image"));
+            Assert.Equal("/", document.GetInputValue("input[name='ReturnUrl']"));
+            Assert.Equal("/", document.GetInputValue("input[name='CancelReturnUrl']"));
+            Assert.Equal("X", document.GetInputValue("input[name='LoginOptions']"));
+            Assert.Equal("true", document.GetInputValue("input[name='AutoLogin']"));
         }
 
         [Fact]
@@ -239,10 +241,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 	        var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 	        var loginCookies = loginResponse.Headers.GetValues("set-cookie");
 	        var loginContent = await loginResponse.Content.ReadAsStringAsync();
-	        var csrfToken = TokenExtractor.ExtractRequestVerificationTokenFromForm(loginContent);
+            var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
+            var csrfToken = document.GetRequestVerificationToken();
 
-	        // Arrange acting request
-	        var testReturnUrl = "/TestReturnUrl";
+            // Arrange acting request
+            var testReturnUrl = "/TestReturnUrl";
 	        var testOptions = "TestOptions";
 	        var initializeRequest = new JsonContent(new  { returnUrl = testReturnUrl, loginOptions = testOptions });
 	        initializeRequest.Headers.Add("Cookie", loginCookies);
@@ -294,8 +297,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Arrange csrf info
             var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
             var loginCookies = loginResponse.Headers.GetValues("set-cookie").ToList();
-            var loginContent = await loginResponse.Content.ReadAsStringAsync();
-            var csrfToken = TokenExtractor.ExtractRequestVerificationTokenFromForm(loginContent);
+
+            var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
+            var csrfToken = document.GetRequestVerificationToken();
 
             // Arrange acting request
             var testReturnUrl = "/TestReturnUrl";
