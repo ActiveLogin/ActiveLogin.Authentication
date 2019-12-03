@@ -139,5 +139,152 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.False(detectedDevice.IsFirefox);
             Assert.False(detectedDevice.IsEdge);
         }
+
+        [Fact]
+        public void Should_Detect_Safari_On_IOS()
+        {
+            var userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.True(detectedDevice.IsIos);
+            Assert.False(detectedDevice.IsAndroid);
+            Assert.False(detectedDevice.IsWindowsPhone);
+            Assert.False(detectedDevice.IsWindowsDesktop);
+            Assert.False(detectedDevice.IsMacOs);
+
+            Assert.True(detectedDevice.IsMobile);
+            Assert.False(detectedDevice.IsDesktop);
+
+            Assert.True(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
+        }
+
+        [Fact]
+        public void Should_Detect_Chrome_On_IOS()
+        {
+            var userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.True(detectedDevice.IsIos);
+            Assert.False(detectedDevice.IsAndroid);
+            Assert.False(detectedDevice.IsWindowsPhone);
+            Assert.False(detectedDevice.IsWindowsDesktop);
+            Assert.False(detectedDevice.IsMacOs);
+
+            Assert.True(detectedDevice.IsMobile);
+            Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.True(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
+        }
+
+        [Fact]
+        public void Should_Detect_Firefox_On_IOS()
+        {
+            var userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) FxiOS/1.0 Mobile/12F69 Safari/600.1.4";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.True(detectedDevice.IsIos);
+            Assert.False(detectedDevice.IsAndroid);
+            Assert.False(detectedDevice.IsWindowsPhone);
+            Assert.False(detectedDevice.IsWindowsDesktop);
+            Assert.False(detectedDevice.IsMacOs);
+
+            Assert.True(detectedDevice.IsMobile);
+            Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.True(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
+        }
+
+        [Fact]
+        public void Should_Detect_Edge_On_IOS()
+        {
+            var userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/603.2.4 (KHTML, like Gecko) Mobile/14F89 Safari/603.2.4 EdgiOS/41.1.35.1";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.True(detectedDevice.IsIos);
+            Assert.False(detectedDevice.IsAndroid);
+            Assert.False(detectedDevice.IsWindowsPhone);
+            Assert.False(detectedDevice.IsWindowsDesktop);
+            Assert.False(detectedDevice.IsMacOs);
+
+            Assert.True(detectedDevice.IsMobile);
+            Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.True(detectedDevice.IsEdge);
+        }
+
+        [Fact]
+        public void Should_Detect_Chrome_On_Android()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.False(detectedDevice.IsIos);
+            Assert.True(detectedDevice.IsAndroid);
+            Assert.False(detectedDevice.IsWindowsPhone);
+            Assert.False(detectedDevice.IsWindowsDesktop);
+            Assert.False(detectedDevice.IsMacOs);
+
+            Assert.True(detectedDevice.IsMobile);
+            Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.True(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
+        }
+
+        [Fact]
+        public void Should_Detect_Firefox_On_Android()
+        {
+            var userAgent = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.False(detectedDevice.IsIos);
+            Assert.True(detectedDevice.IsAndroid);
+            Assert.False(detectedDevice.IsWindowsPhone);
+            Assert.False(detectedDevice.IsWindowsDesktop);
+            Assert.False(detectedDevice.IsMacOs);
+
+            Assert.True(detectedDevice.IsMobile);
+            Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.True(detectedDevice.IsFirefox);
+            Assert.False(detectedDevice.IsEdge);
+        }
+
+        [Fact]
+        public void Should_Detect_Edge_On_Android()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.0 Mobile Safari/537.36 EdgA/41.1.35.1";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.False(detectedDevice.IsIos);
+            Assert.True(detectedDevice.IsAndroid);
+            Assert.False(detectedDevice.IsWindowsPhone);
+            Assert.False(detectedDevice.IsWindowsDesktop);
+            Assert.False(detectedDevice.IsMacOs);
+
+            Assert.True(detectedDevice.IsMobile);
+            Assert.False(detectedDevice.IsDesktop);
+
+            Assert.False(detectedDevice.IsSafari);
+            Assert.False(detectedDevice.IsChrome);
+            Assert.False(detectedDevice.IsFirefox);
+            Assert.True(detectedDevice.IsEdge);
+        }
     }
 }
