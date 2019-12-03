@@ -20,6 +20,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
         {
             return document.GetInputValue("input[name='RequestVerificationToken']");
         }
-        
     }
 }

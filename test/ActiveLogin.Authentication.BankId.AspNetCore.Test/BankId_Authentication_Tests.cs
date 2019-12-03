@@ -165,7 +165,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     services.AddTransient(s => mockProtector.Object);
                 }).CreateClient();
 
-            // Act  
+            // Act
             var transaction = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
 
             // Assert
