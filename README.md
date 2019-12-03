@@ -1,6 +1,9 @@
 # ActiveLogin.Authentication
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master) [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-blue.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg) [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=master)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=master)
+[![Slack](https://img.shields.io/badge/slack-@ActiveLogin-blue.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
+[![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Totally free to use! [Commercial support and traning](#support--training) is available if you need assistance or a quick start. 
 
@@ -42,6 +45,7 @@ _Screenshots on how the default UI for Native BankID looks on different devices.
 	+ [How do I prepopulate the personal identity number for the user?](#how-do-i-prepopulate-the-personal-identity-number-for-the-user)
 	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api)
 	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies)
+	+ [What browsers do you support?](#what-browsers-do-you-support)
 	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized)
 * [Active Login](#active-login)
 	+ [Contribute](#contribute)
@@ -305,6 +309,8 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
 
 We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. The look like this and are both well documented using XML-comments.
 
+The constructor for these ApiClients takes an `HttpClient` and you need to configure that `HttpClient` with a `BaseAddress`, `Tls12`, client certificates etc. depending on your needs.
+
 #### ActiveLogin.Authentication.BankId.Api
 
 ```csharp
@@ -344,6 +350,19 @@ Because they are strictly related to temp storage during auth, you should not ha
 With the current implementaiton (following the convention from Microsoft ASP.NET Core) the usage of cookies is not optional.
 
 A more technical deep dive of the cookies can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
+
+### What browsers do you support?
+
+We aim at supporting the latest version of all major browsers (Edge, Chrome, Firefox, Safari) both on desktop and on mobile.
+
+We even support third party browsers on iOS by using their unique schemes:
+- [Chrome on iOS](https://developer.chrome.com/multidevice/ios/links): googlechromes://
+- [Firefox on iOS](https://github.com/mozilla-mobile/firefox-ios-open-in-client): firefox://open-url?url=
+- [Edge on iOS](https://stackoverflow.com/a/51109646/105581): microsoft-edge-https://
+
+If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
+
+* [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): https://github.com/github/fetch
 
 ### Why are the names of the person sometimes capitalized?
 
