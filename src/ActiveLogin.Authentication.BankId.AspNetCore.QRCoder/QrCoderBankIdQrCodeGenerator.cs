@@ -29,18 +29,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
             var queryPart = GetQueryPart(autoStartToken);
             var qrUrl = $"bankid:///{queryPart}";
 
-            var qrGenerator = new QRCodeGenerator();
-            var qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q);
+            using (var qrGenerator = new QRCodeGenerator())
+            {
+                var qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q);
 
-            var qrCode = new Base64QRCode(qrCodeData);
-
-            return qrCode.GetGraphic(PixelsPerModule);
+                using (var qrCode = new Base64QRCode(qrCodeData))
+                {
+                    return qrCode.GetGraphic(PixelsPerModule);
+                }
+            }
         }
 
         private string GetQueryPart(string autoStartToken)
         {
-            var queryStringParams = new Dictionary<string, string>();
-            queryStringParams.Add("autostarttoken", autoStartToken);
+            var queryStringParams = new Dictionary<string, string>
+            {
+                { "autostarttoken", autoStartToken }
+            };
             var queryBuilder = new QueryBuilder(queryStringParams);
             return queryBuilder.ToQueryString().ToString();
         }

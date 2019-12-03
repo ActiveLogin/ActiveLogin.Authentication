@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,38 +23,29 @@ namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies
 
         public static string GetPolicyForProductionEnvironment(BankIdCertificatePolicy certificatePolicy)
         {
-            switch (certificatePolicy)
+            return certificatePolicy switch
             {
-                case BankIdCertificatePolicy.BankIdOnFile:
-                    return BankIdCertificatePolicyConstants.BankIdOnFileProductionEnvironment;
-                case BankIdCertificatePolicy.BankIdOnSmartCard:
-                    return BankIdCertificatePolicyConstants.BankIdOnSmartCardProductionEnvironment;
-                case BankIdCertificatePolicy.MobileBankId:
-                    return BankIdCertificatePolicyConstants.MobileBankIdProductionEnvironment;
-                case BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard:
-                    return BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardProductionEnvironment;
-            }
+                BankIdCertificatePolicy.BankIdOnFile => BankIdCertificatePolicyConstants.BankIdOnFileProductionEnvironment,
+                BankIdCertificatePolicy.BankIdOnSmartCard => BankIdCertificatePolicyConstants.BankIdOnSmartCardProductionEnvironment,
+                BankIdCertificatePolicy.MobileBankId => BankIdCertificatePolicyConstants.MobileBankIdProductionEnvironment,
+                BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard => BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardProductionEnvironment,
 
-            return string.Empty;
+                _ => string.Empty,
+            };
         }
 
         public static string GetPolicyForTestEnvironment(BankIdCertificatePolicy certificatePolicy)
         {
-            switch (certificatePolicy)
+            return certificatePolicy switch
             {
-                case BankIdCertificatePolicy.BankIdOnFile:
-                    return BankIdCertificatePolicyConstants.BankIdOnFileTestEnvironment;
-                case BankIdCertificatePolicy.BankIdOnSmartCard:
-                    return BankIdCertificatePolicyConstants.BankIdOnSmartCardTestEnvironment;
-                case BankIdCertificatePolicy.MobileBankId:
-                    return BankIdCertificatePolicyConstants.MobileBankIdTestEnvironment;
-                case BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard:
-                    return BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardTestEnvironment;
-                case BankIdCertificatePolicy.TestBankId:
-                    return BankIdCertificatePolicyConstants.TestBankIdTestEnvironment;
-            }
+                BankIdCertificatePolicy.BankIdOnFile => BankIdCertificatePolicyConstants.BankIdOnFileTestEnvironment,
+                BankIdCertificatePolicy.BankIdOnSmartCard => BankIdCertificatePolicyConstants.BankIdOnSmartCardTestEnvironment,
+                BankIdCertificatePolicy.MobileBankId => BankIdCertificatePolicyConstants.MobileBankIdTestEnvironment,
+                BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard => BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardTestEnvironment,
+                BankIdCertificatePolicy.TestBankId => BankIdCertificatePolicyConstants.TestBankIdTestEnvironment,
 
-            return string.Empty;
+                _ => string.Empty,
+            };
         }
     }
 }

@@ -21,14 +21,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
         /// <param name="fakeAddress"></param>
         public FakeRemoteIpAddressMiddleware(RequestDelegate next, IPAddress fakeAddress)
         {
-            this._next = next;
-            this._fakeAddress = fakeAddress;
+            _next = next;
+            _fakeAddress = fakeAddress;
         }
 
         public async Task Invoke(HttpContext httpContext)
         {
             httpContext.Connection.RemoteIpAddress = _fakeAddress;
-            await this._next(httpContext);
+            await _next(httpContext);
         }
     }
 }

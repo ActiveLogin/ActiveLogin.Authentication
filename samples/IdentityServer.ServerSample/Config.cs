@@ -35,7 +35,7 @@ namespace IdentityServer.ServerSample
                         PersonaIidentityNumberScopeName
                     },
 
-                    RequireConsent = false          
+                    RequireConsent = false
                 }
             };
         }

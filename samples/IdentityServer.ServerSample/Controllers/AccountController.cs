@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.BankId.AspNetCore;
 using IdentityServer.ServerSample.Models;
 using IdentityServer4.Models;
 using IdentityServer4.Services;

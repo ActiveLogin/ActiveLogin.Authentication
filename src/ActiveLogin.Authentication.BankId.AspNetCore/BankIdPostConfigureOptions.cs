@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         public void PostConfigure(string name, BankIdOptions options)
         {
-            options.DataProtectionProvider = options.DataProtectionProvider ?? _dp;
+            options.DataProtectionProvider ??= _dp;
 
             if (options.StateDataFormat == null)
             {

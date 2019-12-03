@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
 using ActiveLogin.Authentication.BankId.Api;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
