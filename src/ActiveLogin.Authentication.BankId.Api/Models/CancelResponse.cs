@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     {
         internal CancelResponse()
         {
-            
+
         }
     }
 }

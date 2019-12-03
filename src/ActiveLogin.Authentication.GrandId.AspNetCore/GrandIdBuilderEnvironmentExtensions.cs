@@ -63,7 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IGrandIdBuilder UseSimulatedEnvironment(this IGrandIdBuilder builder, string givenName, string surname, string personalIdentityNumber)
             => UseSimulatedEnvironment(builder, x => new GrandIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
-            
+
 
         private static IGrandIdBuilder UseSimulatedEnvironment(this IGrandIdBuilder builder, Func<IServiceProvider, IGrandIdApiClient> grandIdDevelopmentApiClient)
         {

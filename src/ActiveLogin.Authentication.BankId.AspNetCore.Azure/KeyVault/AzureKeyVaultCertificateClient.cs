@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -14,14 +14,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault
         public static AzureKeyVaultCertificateClient Create(ClientCertificateFromAzureKeyVaultOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.AzureKeyVaultSecretIdentifier))
+            {
                 throw new ArgumentException("AzureKeyVaultSecretIdentifier is required");
+            }
 
             if (!options.UseManagedIdentity)
             {
                 if (string.IsNullOrWhiteSpace(options.AzureAdClientId))
+                {
                     throw new ArgumentException("AzureAdClientId is required when not using ManagedIdentity");
+                }
+
                 if (string.IsNullOrWhiteSpace(options.AzureAdClientSecret))
+                {
                     throw new ArgumentException("AzureAdClientSecret is required when not using ManagedIdentity");
+                }
             }
 
             KeyVaultClient client;

@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,20 +6,25 @@ using System.Net;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+using AngleSharp.Html.Dom;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
-using ActiveLogin.Authentication.BankId.Api.Models;
-using AngleSharp.Html.Dom;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 {
@@ -44,15 +44,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Challenge_Redirects_To_BankIdAuthentication_Login()
         {
             // Arrange
-            var client = CreateServer(o =>
-                {
-                    o.UseSimulatedEnvironment()
-                     .AddSameDevice();
-                },
-                DefaultAppConfiguration(async context =>
-                {
-                    await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
-                })).CreateClient();
+            using var client = CreateServer(o =>
+                 {
+                     o.UseSimulatedEnvironment()
+                      .AddSameDevice();
+                 },
+                 DefaultAppConfiguration(async context =>
+                 {
+                     await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                 })).CreateClient();
 
             // Act
             var transaction = await client.GetAsync("/");
@@ -66,7 +66,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Challenge_Redirects_To_BankIdAuthentication_Login_With_Path_Base()
         {
             // Arrange
-            var client = CreateServer(o =>
+            using var client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
                         .AddSameDevice();
@@ -115,7 +115,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Authentication_UI_Should_Be_Accessible_Even_When_Site_Requires_Auth()
         {
             // Arrange
-            var client = CreateServer(o =>
+            using var client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
                      .AddSameDevice();
@@ -151,7 +151,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
                 .Returns(options);
-            var client = CreateServer(o =>
+            using var client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
                         .AddSameDevice();
@@ -180,7 +180,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task BankIdAuthentication_Login_Returns_Form_And_Status()
         {
             // Arrange
-            var client = CreateServer(o =>
+            using var client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
                         .AddSameDevice();
@@ -214,70 +214,70 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         [Fact]
         public async Task AutoLaunch_Sets_Correct_RedirectUri()
         {
-	        // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
-	        var mockProtector =  new Mock<IBankIdLoginOptionsProtector>();
+            // Arrange mocks
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty);
+            var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
-		        .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-		        .Returns(autoLaunchOptions);
+                .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+                .Returns(autoLaunchOptions);
 
-	        var client = CreateServer(
-			        o =>
-			        {
-				        o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();
-				        o.UseSimulatedEnvironment().AddSameDevice();
-			        },
-			        DefaultAppConfiguration(async context =>
-			        {
-				        await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
-			        }),
-			        services =>
+            using var client = CreateServer(
+                    o =>
+                    {
+                        o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                        o.UseSimulatedEnvironment().AddSameDevice();
+                    },
+                    DefaultAppConfiguration(async context =>
+                    {
+                        await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                    }),
+                    services =>
                     {
                         services.AddTransient(s => mockProtector.Object);
-			        })
-		        .CreateClient();
+                    })
+                .CreateClient();
 
-	        // Arrange csrf info
-	        var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
-	        var loginCookies = loginResponse.Headers.GetValues("set-cookie");
-	        var loginContent = await loginResponse.Content.ReadAsStringAsync();
+            // Arrange csrf info
+            var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            var loginCookies = loginResponse.Headers.GetValues("set-cookie");
+            var loginContent = await loginResponse.Content.ReadAsStringAsync();
             var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
             var csrfToken = document.GetRequestVerificationToken();
 
             // Arrange acting request
             var testReturnUrl = "/TestReturnUrl";
-	        var testOptions = "TestOptions";
-	        var initializeRequest = new JsonContent(new  { returnUrl = testReturnUrl, loginOptions = testOptions });
-	        initializeRequest.Headers.Add("Cookie", loginCookies);
-	        initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
+            var testOptions = "TestOptions";
+            var initializeRequest = new JsonContent(new { returnUrl = testReturnUrl, loginOptions = testOptions });
+            initializeRequest.Headers.Add("Cookie", loginCookies);
+            initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
-	        // Act
-	        var transaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
+            // Act
+            var transaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
 
-	        // Assert
-	        Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-	        var responseContent = await transaction.Content.ReadAsStringAsync();
+            var responseContent = await transaction.Content.ReadAsStringAsync();
             var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
-	        Assert.True(responseObject.IsAutoLaunch);
+            Assert.True(responseObject.IsAutoLaunch);
 
-	        var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
-	        var expectedUrl = $"http://localhost/BankIdAuthentication/Login?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
-	        Assert.Equal(expectedUrl, responseObject.RedirectUri);
+            var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
+            var expectedUrl = $"http://localhost/BankIdAuthentication/Login?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
+            Assert.Equal(expectedUrl, responseObject.RedirectUri);
         }
 
         [Fact]
         public async Task Cancel_Calls_CancelApi()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, String.Empty);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
                 .Returns(autoLaunchOptions);
             var testBankIdApi = new TestBankIdApi(new BankIdSimulatedApiClient());
 
-            var client = CreateServer(
+            using var client = CreateServer(
                     o =>
                     {
                         o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();

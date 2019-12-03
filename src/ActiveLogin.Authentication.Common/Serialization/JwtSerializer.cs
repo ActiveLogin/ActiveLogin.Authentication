@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.Common.Serialization
@@ -12,15 +12,13 @@ namespace ActiveLogin.Authentication.Common.Serialization
         /// <returns></returns>
         public static string GetGender(Gender gender)
         {
-            switch (gender)
+            return gender switch
             {
-                case Gender.Female:
-                    return "female";
-                case Gender.Male:
-                    return "male";
-            }
+                Gender.Female => "female",
+                Gender.Male => "male",
 
-            return string.Empty;
+                _ => string.Empty,
+            };
         }
 
         /// <summary>

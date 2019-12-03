@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
         public IncompatibleSerializationVersion(string type)
         : base($"Can't deserialize {type} because it was serialized with another version.")
         {
-            
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AngleSharp.Dom;
+using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
@@ -12,8 +12,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
 
         public static string GetInputValue(this IDocument document, string selector)
         {
-            var input = document.QuerySelector(selector) as IHtmlInputElement;
-            return input != null ? input.Value : "";
+            return document.QuerySelector(selector) is IHtmlInputElement input ? input.Value : "";
         }
 
         public static string GetRequestVerificationToken(this IDocument document)

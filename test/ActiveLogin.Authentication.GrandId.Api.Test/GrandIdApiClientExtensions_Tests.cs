@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.GrandId.Api.Models;
+using ActiveLogin.Authentication.GrandId.Api.Models;
 using ActiveLogin.Authentication.GrandId.Api.Test.TestHelpers;
 using Moq;
 using Xunit;
@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
                                .ReturnsAsync(It.IsAny<BankIdFederatedLoginResponse>());
 
             // Act
-            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object, "ask", "https://cb/");
+            await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object, "https://cb/");
 
             // Assert
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdFederatedLoginRequest>();
@@ -35,7 +35,6 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
 
             // Act
             await GrandIdApiClientExtensions.BankIdFederatedLoginAsync(grandIdApiClientMock.Object,
-                "ask",
                 "https://cb/",
                 true,
                 true,
@@ -77,7 +76,7 @@ namespace ActiveLogin.Authentication.GrandId.Api.Test
             var request = grandIdApiClientMock.GetFirstArgumentOfFirstInvocation<IGrandIdApiClient, BankIdGetSessionRequest>();
             Assert.Equal("s", request.SessionId);
         }
-        
+
         [Fact]
         public async void LogoutAsync_WithSessionId_ShouldMap_ToLogoutRequest_WithSessionId()
         {

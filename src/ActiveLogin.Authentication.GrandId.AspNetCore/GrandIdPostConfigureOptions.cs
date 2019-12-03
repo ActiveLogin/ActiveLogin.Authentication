@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
+using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public void PostConfigure(string name, TOptions options)
         {
-            options.DataProtectionProvider = options.DataProtectionProvider ?? _dp;
+            options.DataProtectionProvider ??= _dp;
 
             if (options.StateDataFormat == null)
             {

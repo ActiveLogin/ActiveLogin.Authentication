@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     public class CollectResponse
     {
         internal CollectResponse(string orderRef, string status, string hintCode)
-        : this(orderRef, status, hintCode, null) 
+        : this(orderRef, status, hintCode, null)
         {
         }
 

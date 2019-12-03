@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
         public async Task Challange_Redirects_To_SignIn()
         {
             // Arrange
-            var client = CreateServer(o =>
+            using var client = CreateServer(o =>
                 {
                     o.UseSimulatedEnvironment()
                      .AddBankIdSameDevice(options => { });

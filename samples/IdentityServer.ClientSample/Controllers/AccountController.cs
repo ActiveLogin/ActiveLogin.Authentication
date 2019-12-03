@@ -12,7 +12,7 @@ namespace IdentityServer.ClientSample.Controllers
         {
             return SignOut(
                 new AuthenticationProperties { RedirectUri = "/" },
-                CookieAuthenticationDefaults.AuthenticationScheme, 
+                CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme
             );
         }

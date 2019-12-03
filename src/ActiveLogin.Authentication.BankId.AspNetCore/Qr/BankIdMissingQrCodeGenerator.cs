@@ -22,7 +22,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
 
             if (resourceStream == null)
             {
-                throw new Exception( $"Can't find QR Code image: ActiveLogin.Authentication.BankId.AspNetCore.Resources.{fileName}");
+                throw new Exception($"Can't find QR Code image: ActiveLogin.Authentication.BankId.AspNetCore.Resources.{fileName}");
             }
 
             var base64EncodedImage = ConvertToBase64(resourceStream);
