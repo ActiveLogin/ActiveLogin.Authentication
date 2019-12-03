@@ -94,7 +94,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 
         private static bool IsEdge(string userAgent)
         {
-            return IsUserAgent(userAgent, "edge", "edgios", "edga");
+            return IsUserAgent(userAgent, "edg", "edge", "edgios", "edga");
         }
 
         private static bool IsUserAgent(string userAgent, params string[] keys)
@@ -106,21 +106,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
         {
             var fullKey = key + "/";
             return userAgent.Contains(fullKey, StringComparison.InvariantCulture);
-        }
-
-        private static bool IsLastUserAgent(string userAgent, string key)
-        {
-            var fullKey = key + "/";
-            var fullKeyLastIndex = userAgent.LastIndexOf(fullKey, StringComparison.InvariantCulture);
-
-            if (fullKeyLastIndex < 0)
-            {
-                return false;
-            }
-
-            var slashLastIndex = userAgent.LastIndexOf("/", StringComparison.InvariantCulture);
-
-            return fullKeyLastIndex + key.Length == slashLastIndex;
         }
     }
 }
