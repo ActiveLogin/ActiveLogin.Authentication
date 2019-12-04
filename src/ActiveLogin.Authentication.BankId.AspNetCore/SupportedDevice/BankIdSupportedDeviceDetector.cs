@@ -9,22 +9,81 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
         {
             var normalizedUserAgent = userAgent?.ToLower().Trim() ?? string.Empty;
 
-            var isIos = IsIos(normalizedUserAgent);
-            var isAndroid = IsAndroid(normalizedUserAgent);
-            var isWindowsPhone = IsWindowsPhone(normalizedUserAgent);
+            var deviceOs = GetDeviceOs(normalizedUserAgent);
+            var deviceBrowser = GetDeviceBrowser(normalizedUserAgent);
+            var deviceType = GetDeviceType(deviceOs);
 
-            var isWindowsDesktop = IsWindowsDesktop(normalizedUserAgent);
-            var isMacOs = IsMacOs(normalizedUserAgent);
+            return new BankIdSupportedDevice(deviceType, deviceOs, deviceBrowser);
+        }
 
-            var isMobile = isIos || isAndroid || isWindowsPhone;
-            var isDesktop = isWindowsDesktop || isMacOs;
+        private static BankIdSupportedDeviceType GetDeviceType(BankIdSupportedDeviceOs deviceOs)
+        {
+            return deviceOs switch
+            {
+                BankIdSupportedDeviceOs.Windows => BankIdSupportedDeviceType.Desktop,
+                BankIdSupportedDeviceOs.MacOs => BankIdSupportedDeviceType.Desktop,
 
-            var isSafari = IsSafari(normalizedUserAgent);
-            var isChrome = IsChrome(normalizedUserAgent);
-            var isFirefox = IsFirefox(normalizedUserAgent);
-            var isEdge = IsEdge(normalizedUserAgent);
+                BankIdSupportedDeviceOs.Ios => BankIdSupportedDeviceType.Mobile,
+                BankIdSupportedDeviceOs.Android => BankIdSupportedDeviceType.Mobile,
+                BankIdSupportedDeviceOs.WindowsPhone => BankIdSupportedDeviceType.Mobile,
 
-            return new BankIdSupportedDevice(isMobile, isDesktop, isIos, isAndroid, isWindowsPhone, isWindowsDesktop, isMacOs, isSafari, isChrome, isFirefox, isEdge);
+                _ => BankIdSupportedDeviceType.Unknown
+            };
+        }
+
+        private static BankIdSupportedDeviceOs GetDeviceOs(string userAgent)
+        {
+            if (IsIos(userAgent))
+            {
+                return BankIdSupportedDeviceOs.Ios;
+            }
+
+            if (IsAndroid(userAgent))
+            {
+                return BankIdSupportedDeviceOs.Android;
+            }
+
+            if (IsWindowsDesktop(userAgent))
+            {
+                return BankIdSupportedDeviceOs.Windows;
+            }
+
+            if (IsMacOs(userAgent))
+            {
+                return BankIdSupportedDeviceOs.MacOs;
+            }
+
+            if (IsWindowsPhone(userAgent))
+            {
+                return BankIdSupportedDeviceOs.WindowsPhone;
+            }
+
+            return BankIdSupportedDeviceOs.Unknown;
+        }
+
+        private static BankIdSupportedDeviceBrowser GetDeviceBrowser(string userAgent)
+        {
+            if (IsSafari(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.Safari;
+            }
+
+            if (IsChrome(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.Chrome;
+            }
+
+            if (IsFirefox(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.Firefox;
+            }
+
+            if (IsEdge(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.Edge;
+            }
+
+            return BankIdSupportedDeviceBrowser.Unknown;
         }
 
         private static bool IsIos(string userAgent)
