@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         private const string BankIdScheme = "bankid:///";
 
         private const string IosUrlPrefix = "https://app.bankid.com/";
-        private const string AndroidNullRedirectUrl = "null";
+        private const string NullRedirectUrl = "null";
 
         private const string IosChromeSchemePrefix = "googlechromes://";
         private const string IosEdgeSchemePrefix = "microsoft-edge-https://";
@@ -28,7 +28,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private string GetPrefixPart(BankIdSupportedDevice device)
         {
-            if (device.IsIos)
+            // Only Safari on IOS seems to support the app.bankid.com reference
+            if (device.DeviceOs == BankIdSupportedDeviceOs.Ios
+                && device.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari)
             {
                 return IosUrlPrefix;
             }
@@ -58,29 +60,29 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
             // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2
-            return device.IsIos
+            return device.DeviceOs == BankIdSupportedDeviceOs.Ios
                 ? GetIOsBrowserSpecificRedirectUrl(device, request.RedirectUrl)
-                : AndroidNullRedirectUrl;
+                : NullRedirectUrl;
         }
 
         private static string GetIOsBrowserSpecificRedirectUrl(BankIdSupportedDevice device, string redirectUrl)
         {
-            if (device.IsChrome || device.IsEdge)
+            if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Chrome || device.DeviceBrowser == BankIdSupportedDeviceBrowser.Edge)
             {
                 var redirectUrlWithoutHttpsScheme = redirectUrl.Substring(8);
 
-                if (device.IsChrome)
+                if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Chrome)
                 {
                     return IosChromeSchemePrefix + redirectUrlWithoutHttpsScheme;
                 }
 
-                if (device.IsEdge)
+                if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Edge)
                 {
                     return IosEdgeSchemePrefix + redirectUrlWithoutHttpsScheme;
                 }
             }
 
-            if (device.IsFirefox)
+            if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Firefox)
             {
                 return IosFirefoxSchemePrefix + Uri.EscapeDataString(redirectUrl);
             }

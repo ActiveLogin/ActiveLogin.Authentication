@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
@@ -125,9 +125,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, authResponse, detectedDevice);
 
-                var response = detectedDevice.IsIos
+                var response = detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
                     ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
-                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, detectedDevice.IsAndroid);
+                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android);
 
                 return Ok(response);
             }
@@ -273,7 +273,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var authPersonalIdentityNumberProvided = PersonalIdentityNumberProvided(unprotectedLoginOptions);
             var detectedDevice = _bankIdSupportedDeviceDetector.Detect(request.Headers["User-Agent"]);
-            var accessedFromMobileDevice = detectedDevice.IsMobile;
+            var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
             var usingQrCode = unprotectedLoginOptions.UseQrCode;
 
             var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
