@@ -146,7 +146,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
 
             Assert.Equal(BankIdSupportedDeviceType.Mobile, detectedDevice.DeviceType);
             Assert.Equal(BankIdSupportedDeviceOs.Ios, detectedDevice.DeviceOs);
-            Assert.Equal(BankIdSupportedDeviceBrowser.Chrome, detectedDevice.DeviceBrowser);
+            Assert.Equal(BankIdSupportedDeviceBrowser.Safari, detectedDevice.DeviceBrowser);
         }
 
         [Fact]
