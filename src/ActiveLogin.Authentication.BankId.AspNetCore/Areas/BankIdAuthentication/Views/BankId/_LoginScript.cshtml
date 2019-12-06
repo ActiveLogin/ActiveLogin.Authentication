@@ -1,7 +1,9 @@
-﻿@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 
 <script>
     (function (options) {
+        log("Start");
+
         // Pre check
         var statusElement = document.querySelector('#bankIdLoginStatus');
         var statusWrapperElement = statusElement.querySelector('.status-wrapper');
@@ -43,9 +45,11 @@
         // Events
 
         if (orderRef) {
+            log("showOrderRefStatus: " + orderRef);
             showOrderRefStatus(orderRef);
         } else if (autoLogin) {
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
+                log("DOMContentLoaded");
                 login();
             });
         } else {
@@ -85,6 +89,8 @@
         var autoStartAttempts = 0;
         var loginIsCancelledByUser = false;
         function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
+            log("initialize");
+
             loginIsCancelledByUser = false;
             formFieldsetElement.disabled = true;
             show(formSubmitButtonSpinnerElement);
@@ -96,8 +102,11 @@
                 'loginOptions': loginOptions
             })
                 .then(function (data) {
+                    log("initialize return", data);
+
                     if (data.isAutoLaunch) {
                         if (!data.checkStatus) {
+                            log("sessionStorage", data.orderRef);
                             sessionStorage.setItem(sessionStorageOrderRefKey, data.orderRef);
                         }
 
@@ -171,6 +180,8 @@
         }
 
         function checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef) {
+            log("checkStatus");
+
             if (loginIsCancelledByUser) {
                 return;
             }
@@ -183,6 +194,8 @@
                     'autoStartAttempts': autoStartAttempts
                 })
                 .then(function (data) {
+                    log("checkStatus return", data);
+
                     if (data.retryLogin) {
                         autoStartAttempts++;
                         login();
@@ -286,6 +299,20 @@
                 element.removeEventListener('input', removeInvalid);
                 element.classList.remove('is-invalid');
             }
+        }
+
+        function log(message, data) {
+            var logContainer = document.querySelector("#bankid-log");
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            var time = h + ":" + m + ":" + s;
+
+            var dataText = !!data ? JSON.stringify(data) : "";
+
+            var entry = "<div>" + time + ":" + message + "-" + dataText + "</div>";
+            logContainer.innerHTML = entry + logContainer.innerHTML;
         }
     }(@Html.Raw(Model.LoginScriptOptionsJson)));
 </script>

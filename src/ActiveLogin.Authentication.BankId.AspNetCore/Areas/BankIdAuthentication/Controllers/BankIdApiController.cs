@@ -125,7 +125,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, authResponse, detectedDevice);
 
-                var response = detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios && detectedDevice.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari
+                var response = detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
                     ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
                     : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android);
 
