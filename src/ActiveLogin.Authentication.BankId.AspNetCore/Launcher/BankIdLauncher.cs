@@ -73,18 +73,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
                 if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Chrome)
                 {
-                    return IosChromeSchemePrefix + redirectUrlWithoutHttpsScheme;
+                    return IosChromeSchemePrefix;
                 }
 
                 if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Edge)
                 {
-                    return IosEdgeSchemePrefix + redirectUrlWithoutHttpsScheme;
+                    return IosEdgeSchemePrefix;
                 }
             }
 
             if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Firefox)
             {
-                return IosFirefoxSchemePrefix + Uri.EscapeDataString(redirectUrl);
+                return IosFirefoxSchemePrefix;
             }
 
             return redirectUrl;
