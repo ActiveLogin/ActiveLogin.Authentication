@@ -11,6 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static readonly EventId BankIdAuthSuccess = new EventId(2_1_1, nameof(BankIdAuthSuccess));
         public static readonly EventId BankIdAuthHardFailure = new EventId(2_1_2, nameof(BankIdAuthHardFailure));
         public static readonly EventId BankIdAuthCancel = new EventId(2_1_3, nameof(BankIdAuthCancel));
+        public static readonly EventId BankIdAuthCancellationFailed = new EventId(2_1_4, nameof(BankIdAuthCancellationFailed));
 
         // BankId API - Collect
         public static readonly EventId BankIdCollectSoftFailure = new EventId(2_2_2, nameof(BankIdCollectSoftFailure));

@@ -36,6 +36,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             logger.LogInformation(BankIdLoggingEvents.BankIdAuthCancel, "BankID auth was cancelled with the OrderRef '{OrderRef}'", orderRef);
         }
 
+        public static void BankIdAuthCancellationFailed(this ILogger logger, string orderRef, string message)
+        {
+            logger.LogInformation(BankIdLoggingEvents.BankIdAuthCancellationFailed, "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", orderRef, message);
+        }
+
         // BankID API - Collect
 
         public static void BankIdCollectFailure(this ILogger logger, string orderRef, BankIdApiException bankIdApiException)

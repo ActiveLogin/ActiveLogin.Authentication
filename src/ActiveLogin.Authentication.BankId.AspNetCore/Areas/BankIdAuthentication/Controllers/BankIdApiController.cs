@@ -337,9 +337,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
 
-            await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
-
-            _logger.BankIdAuthCancelled(orderRef.OrderRef);
+            try
+            {
+                await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
+                _logger.BankIdAuthCancelled(orderRef.OrderRef);
+            }
+            catch (Exception exception)
+            {
+                // When we get exception in a cancellation request, chances
+                // are that the orderRef has already been cancelled or we have
+                // a network issue. We still want to provide the GUI with the
+                // validated cancellation URL though.
+                _logger.BankIdAuthCancellationFailed(orderRef.OrderRef, exception.Message);
+            }
 
             return Ok(BankIdLoginApiCancelResponse.Cancelled(request.CancelReturnUrl));
         }
