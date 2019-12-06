@@ -16,7 +16,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private const string IosChromeSchemePrefix = "googlechromes://";
         private const string IosEdgeSchemePrefix = "microsoft-edge-https://";
-        private const string IosFirefoxSchemePrefix = "firefox://open-url?url=";
+        private const string IosFirefoxSchemePrefix = "firefox://";
 
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
