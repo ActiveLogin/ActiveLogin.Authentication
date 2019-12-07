@@ -69,14 +69,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
             // If it is a third party browser, don't specify the return URL, just the browser scheme.
             // This will launch the browser with the last page used (the Active Login status page).
             // If a URL is specified these browsers will open that URL in a new tab and we will lose context.
-            // At the moment, Edge seems to require a URL and does therefore not work.
 
             return device.DeviceBrowser switch
             {
                 BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
                 BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
-                BankIdSupportedDeviceBrowser.Edge => string.Empty, // Return empty string so user can go back manually
-                _ => redirectUrl
+                BankIdSupportedDeviceBrowser.Safari => redirectUrl,
+
+                _ => string.Empty // Return empty string so user can go back manually, will catch Edge, other third party browsers and PWAs
             };
         }
 
