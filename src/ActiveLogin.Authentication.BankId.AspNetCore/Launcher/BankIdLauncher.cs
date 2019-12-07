@@ -14,9 +14,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         private const string IosUrlPrefix = "https://app.bankid.com/";
         private const string NullRedirectUrl = "null";
 
-        private const string IosChromeSchemePrefix = "googlechromes://";
-        private const string IosEdgeSchemePrefix = "microsoft-edge://";
-        private const string IosFirefoxSchemePrefix = "firefox://";
+        private const string IosChromeScheme = "googlechromes://";
+        private const string IosEdgeScheme = "microsoft-edge://";
+        private const string IosFirefoxScheme = "firefox://";
 
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
@@ -67,27 +67,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private static string GetIOsBrowserSpecificRedirectUrl(BankIdSupportedDevice device, string redirectUrl)
         {
-            if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Chrome || device.DeviceBrowser == BankIdSupportedDeviceBrowser.Edge)
+            // If it is a third party browser, don't specify the return URL, just the browser scheme.
+            // This will launch the browser with the last page used (the Active Login status page).
+            // If a URL is specified these browsers will open that URL in a new tab and we will lose context.
+            // At the moment, Edge seems to require a URL and does therefore not work.
+
+            return device.DeviceBrowser switch
             {
-                var redirectUrlWithoutHttpsScheme = redirectUrl.Substring(8);
-
-                if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Chrome)
-                {
-                    return IosChromeSchemePrefix;
-                }
-
-                if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Edge)
-                {
-                    return IosEdgeSchemePrefix;
-                }
-            }
-
-            if (device.DeviceBrowser == BankIdSupportedDeviceBrowser.Firefox)
-            {
-                return IosFirefoxSchemePrefix;
-            }
-
-            return redirectUrl;
+                BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
+                BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
+                BankIdSupportedDeviceBrowser.Edge => string.Empty, // Return empty string so user can go back manually
+                _ => redirectUrl
+            };
         }
 
         private static string Base64Encode(string value)
