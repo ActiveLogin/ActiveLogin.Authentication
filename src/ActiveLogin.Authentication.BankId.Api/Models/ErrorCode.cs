@@ -18,9 +18,10 @@
 
         /// <summary>
         /// Invalid parameter. Invalid use of method.
-        /// * Using an orderRef that previously resulted in completed. The order cannot be collected twice. 
+        /// * Using an orderRef that previously resulted in completed. The order cannot be collected twice.
         /// * Using an orderRef that previously resulted in failed. The order cannot be collected twice.
         /// * Using an orderRef that is too old. completed orders can only be collected up to 3 minutes and failed orders up to 5 minutes.
+        /// * Cancelling an orderRef that is already cancelled. The order cannot be cancelled twice.
         ///
         /// RP must not try the same request again.
         /// This is an internal error within RP's system and must not be communicated to the user as a BankID error.
