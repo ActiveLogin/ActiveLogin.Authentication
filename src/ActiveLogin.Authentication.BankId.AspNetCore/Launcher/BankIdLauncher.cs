@@ -76,7 +76,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
                 BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
                 BankIdSupportedDeviceBrowser.Safari => redirectUrl,
 
-                _ => string.Empty // Return empty string so user can go back manually, will catch Edge, other third party browsers and PWAs
+                _ => string.Empty // Return empty string so user can go back manually, will catch Edge and other third party browsers
             };
         }
 
