@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
+using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
     {
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
-            if (device.IsIos)
+            if (device.DeviceOs == BankIdSupportedDeviceOs.Ios)
             {
                 return request.RedirectUrl;
             }

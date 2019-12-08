@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.Extensions.Logging;
@@ -31,16 +31,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             logger.LogTrace(BankIdLoggingEvents.BankIdAuthSuccess, "BankID auth succeeded for PersonalIdentityNumber '{PersonalIdentityNumber}' with the OrderRef '{OrderRef}'", personalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, orderRef);
         }
 
-        public static void BankIdAuthCancelled(this ILogger logger, string orderRef)
-        {
-            logger.LogInformation(BankIdLoggingEvents.BankIdAuthCancel, "BankID auth was cancelled with the OrderRef '{OrderRef}'", orderRef);
-        }
-
-        public static void BankIdAuthCancellationFailed(this ILogger logger, string orderRef, string message)
-        {
-            logger.LogInformation(BankIdLoggingEvents.BankIdAuthCancellationFailed, "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", orderRef, message);
-        }
-
         // BankID API - Collect
 
         public static void BankIdCollectFailure(this ILogger logger, string orderRef, BankIdApiException bankIdApiException)
@@ -62,6 +52,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             logger.LogInformation(BankIdLoggingEvents.BankIdCollectCompleted, "BankID collect is completed for OrderRef '{OrderRef}'", orderRef);
             logger.LogTrace(BankIdLoggingEvents.BankIdCollectCompleted, "BankID collect is completed for OrderRef '{OrderRef}' with User (PersonalIdentityNumber: '{UserPersonalIdentityNumber}'; GivenName: '{UserGivenName}'; Surname: '{UserSurname}'; Name: '{UserName}'), Signature '{Signature}' and OcspResponse '{OcspResponse}'", orderRef, completionData.User.PersonalIdentityNumber, completionData.User.GivenName, completionData.User.Surname, completionData.User.Name, completionData.Signature, completionData.OcspResponse);
+        }
+
+        // BankID - Cancel
+
+        public static void BankIdCancelSuccess(this ILogger logger, string orderRef)
+        {
+            logger.LogInformation(BankIdLoggingEvents.BankIdCancelSuccess, "BankID auth was cancelled with the OrderRef '{OrderRef}'", orderRef);
+        }
+
+        public static void BankIdCancelFailed(this ILogger logger, string orderRef, string message)
+        {
+            logger.LogInformation(BankIdLoggingEvents.BankIdCancelFailure, "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", orderRef, message);
         }
     }
 }

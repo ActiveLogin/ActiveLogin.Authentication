@@ -12,11 +12,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         private const string BankIdScheme = "bankid:///";
 
         private const string IosUrlPrefix = "https://app.bankid.com/";
-        private const string AndroidNullRedirectUrl = "null";
+        private const string NullRedirectUrl = "null";
 
-        private const string IosChromeSchemePrefix = "googlechromes://";
-        private const string IosEdgeSchemePrefix = "microsoft-edge-https://";
-        private const string IosFirefoxSchemePrefix = "firefox://open-url?url=";
+        private const string IosChromeScheme = "googlechromes://";
+        private const string IosFirefoxScheme = "firefox://";
 
         public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
@@ -28,7 +27,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private string GetPrefixPart(BankIdSupportedDevice device)
         {
-            if (device.IsIos)
+            // Only Safari on IOS seems to support the app.bankid.com reference
+            if (device.DeviceOs == BankIdSupportedDeviceOs.Ios
+                && device.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari)
             {
                 return IosUrlPrefix;
             }
@@ -58,34 +59,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
             // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2
-            return device.IsIos
+            return device.DeviceOs == BankIdSupportedDeviceOs.Ios
                 ? GetIOsBrowserSpecificRedirectUrl(device, request.RedirectUrl)
-                : AndroidNullRedirectUrl;
+                : NullRedirectUrl;
         }
 
         private static string GetIOsBrowserSpecificRedirectUrl(BankIdSupportedDevice device, string redirectUrl)
         {
-            if (device.IsChrome || device.IsEdge)
+            // If it is a third party browser, don't specify the return URL, just the browser scheme.
+            // This will launch the browser with the last page used (the Active Login status page).
+            // If a URL is specified these browsers will open that URL in a new tab and we will lose context.
+
+            return device.DeviceBrowser switch
             {
-                var redirectUrlWithoutHttpsScheme = redirectUrl.Substring(8);
+                BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
+                BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
+                BankIdSupportedDeviceBrowser.Safari => redirectUrl,
 
-                if (device.IsChrome)
-                {
-                    return IosChromeSchemePrefix + redirectUrlWithoutHttpsScheme;
-                }
-
-                if (device.IsEdge)
-                {
-                    return IosEdgeSchemePrefix + redirectUrlWithoutHttpsScheme;
-                }
-            }
-
-            if (device.IsFirefox)
-            {
-                return IosFirefoxSchemePrefix + Uri.EscapeDataString(redirectUrl);
-            }
-
-            return redirectUrl;
+                _ => string.Empty // Return empty string so user can go back manually, will catch Edge and other third party browsers
+            };
         }
 
         private static string Base64Encode(string value)

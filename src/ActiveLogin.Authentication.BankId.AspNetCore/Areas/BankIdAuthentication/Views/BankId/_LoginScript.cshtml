@@ -1,4 +1,4 @@
-﻿@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 
 <script>
     (function (options) {
@@ -45,7 +45,7 @@
         if (orderRef) {
             showOrderRefStatus(orderRef);
         } else if (autoLogin) {
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 login();
             });
         } else {
@@ -175,8 +175,7 @@
                 return;
             }
 
-            postJson(options.bankIdStatusApiUrl, requestVerificationToken,
-                {
+            postJson(options.bankIdStatusApiUrl, requestVerificationToken, {
                     'orderRef': orderRef,
                     'returnUrl': returnUrl,
                     'loginOptions': loginOptions,

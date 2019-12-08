@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
@@ -75,9 +75,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Initialize")]
         public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
         {
-            if (request.LoginOptions == null)
+            if (string.IsNullOrWhiteSpace(request.LoginOptions))
             {
                 throw new ArgumentNullException(nameof(request.LoginOptions));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.ReturnUrl))
+            {
+                throw new ArgumentNullException(nameof(request.ReturnUrl));
             }
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
@@ -125,9 +130,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, authResponse, detectedDevice);
 
-                var response = detectedDevice.IsIos
+                // Don't check for status if the browser will reload on return
+                var response = BrowserWillReloadPageOnReturnRedirect(detectedDevice)
                     ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
-                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, detectedDevice.IsAndroid);
+                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, BrowserMightNotAutoLaunch(detectedDevice));
 
                 return Ok(response);
             }
@@ -139,6 +145,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
+        }
+
+        private static bool BrowserMightNotAutoLaunch(BankIdSupportedDevice detectedDevice)
+        {
+            // Some Android browsers might have issues launching a third party scheme (BankID) if there is no user interaction.
+            return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android;
+        }
+
+        private static bool BrowserWillReloadPageOnReturnRedirect(BankIdSupportedDevice detectedDevice)
+        {
+            return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
+                   && detectedDevice.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari;
         }
 
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
@@ -186,12 +204,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Status")]
         public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
         {
-            if (request.LoginOptions == null)
+            if (string.IsNullOrWhiteSpace(request.LoginOptions))
             {
                 throw new ArgumentNullException(nameof(request.LoginOptions));
             }
 
-            if (request.OrderRef == null)
+            if (string.IsNullOrWhiteSpace(request.ReturnUrl))
+            {
+                throw new ArgumentNullException(nameof(request.ReturnUrl));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.OrderRef))
             {
                 throw new ArgumentNullException(nameof(request.OrderRef));
             }
@@ -273,7 +296,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var authPersonalIdentityNumberProvided = PersonalIdentityNumberProvided(unprotectedLoginOptions);
             var detectedDevice = _bankIdSupportedDeviceDetector.Detect(request.Headers["User-Agent"]);
-            var accessedFromMobileDevice = detectedDevice.IsMobile;
+            var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
             var usingQrCode = unprotectedLoginOptions.UseQrCode;
 
             var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
@@ -340,7 +363,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             try
             {
                 await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
-                _logger.BankIdAuthCancelled(orderRef.OrderRef);
+                _logger.BankIdCancelSuccess(orderRef.OrderRef);
             }
             catch (Exception exception)
             {
@@ -348,7 +371,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 // are that the orderRef has already been cancelled or we have
                 // a network issue. We still want to provide the GUI with the
                 // validated cancellation URL though.
-                _logger.BankIdAuthCancellationFailed(orderRef.OrderRef, exception.Message);
+                _logger.BankIdCancelFailed(orderRef.OrderRef, exception.Message);
             }
 
             return Ok(BankIdLoginApiCancelResponse.Cancelled(request.CancelReturnUrl));

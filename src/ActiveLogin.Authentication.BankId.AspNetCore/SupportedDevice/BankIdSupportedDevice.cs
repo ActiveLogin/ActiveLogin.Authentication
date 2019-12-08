@@ -2,37 +2,45 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 {
     public class BankIdSupportedDevice
     {
-        public BankIdSupportedDevice(bool isMobile, bool isDesktop, bool isIos, bool isAndroid, bool isWindowsPhone, bool isWindowsDesktop, bool isMacOs, bool isSafari, bool isChrome, bool isFirefox, bool isEdge)
+        public BankIdSupportedDevice(BankIdSupportedDeviceType deviceType, BankIdSupportedDeviceOs deviceOs, BankIdSupportedDeviceBrowser deviceBrowser)
         {
-            IsMobile = isMobile;
-            IsDesktop = isDesktop;
-
-            IsIos = isIos;
-            IsAndroid = isAndroid;
-            IsWindowsPhone = isWindowsPhone;
-
-            IsWindowsDesktop = isWindowsDesktop;
-            IsMacOs = isMacOs;
-
-            IsSafari = isSafari;
-            IsChrome = isChrome;
-            IsFirefox = isFirefox;
-            IsEdge = isEdge;
+            DeviceType = deviceType;
+            DeviceOs = deviceOs;
+            DeviceBrowser = deviceBrowser;
         }
 
-        public bool IsMobile { get; }
-        public bool IsDesktop { get; }
+        public BankIdSupportedDeviceType DeviceType { get; }
+        public BankIdSupportedDeviceOs DeviceOs { get; }
+        public BankIdSupportedDeviceBrowser DeviceBrowser { get; }
+    }
 
-        public bool IsIos { get; }
-        public bool IsAndroid { get; }
-        public bool IsWindowsPhone { get; }
+    public enum BankIdSupportedDeviceType
+    {
+        Unknown,
 
-        public bool IsWindowsDesktop { get; }
-        public bool IsMacOs { get; }
+        Desktop,
+        Mobile
+    }
 
-        public bool IsSafari { get; }
-        public bool IsChrome { get; }
-        public bool IsFirefox { get; }
-        public bool IsEdge { get; }
+    public enum BankIdSupportedDeviceOs
+    {
+        Unknown,
+
+        Windows,
+        MacOs,
+
+        Ios,
+        Android,
+        WindowsPhone
+    }
+
+    public enum BankIdSupportedDeviceBrowser
+    {
+        Unknown,
+
+        Chrome,
+        Safari,
+        Firefox,
+        Edge
     }
 }
