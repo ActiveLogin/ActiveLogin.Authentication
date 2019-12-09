@@ -105,6 +105,8 @@ dotnet add package ActiveLogin.Authentication.GrandId.AspNetCore
 
 It is expected that you have a basic understanding of how [ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/), [ASP.NET Core MVC](https://docs.microsoft.com/en-us/aspnet/core/mvc/overview) and [ASP.NET Core Authentication](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) works before getting started.
 
+Also, you are expected to have read up on the [latest information from BankID](https://www.bankid.com/bankid-i-dina-tjanster/rp-info). Active Login will help you to implement BankID according to guidelines, but in the end, it's your responsiblity to follow the BankID agreement.
+
 The authentication modules for BankID and GrandID are registered in `ConfigureServices( ... )` in your `Startup.cs`. Depending on your setup, you will probably have to configure challenge and callbacks in `AccountController.cs` or similar.
 
 ### 3. Get started in development
@@ -198,7 +200,9 @@ services
 
 ## Samples
 
-For more use cases, samples and inspiration; feel free to browse our unit tests and samples:
+For more use cases, samples and inspiration; feel free to browse our unit tests and samples.
+
+_Note: These are samples on how to use Active Login in different situations and might not represent optimal way of setting up ASP.NET MVC, Identity Server or other components. Please see this as inspiration._
 
 ## Projects and live demos
 
