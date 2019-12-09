@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +12,16 @@ using Microsoft.Extensions.Hosting;
 
 namespace IdentityServer.ClientSample
 {
+    //
+    // DISCLAIMER
+    //
+    // These are samples on how to use Active Login in different situations
+    // and might not represent optimal way of setting up
+    // ASP.NET MVC, Identity Server or other components.
+    //
+    // Please see this as inspiration, not a complete template.
+    //
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
