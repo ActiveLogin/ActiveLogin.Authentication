@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -16,6 +16,16 @@ using Microsoft.Extensions.Hosting;
 
 namespace IdentityServer.ServerSample
 {
+    //
+    // DISCLAIMER
+    //
+    // These are samples on how to use Active Login in different situations
+    // and might not represent optimal way of setting up
+    // ASP.NET MVC, Identity Server or other components.
+    //
+    // Please see this as inspiration, not a complete template.
+    //
+
     public class Startup
     {
         private readonly IWebHostEnvironment _environment;
