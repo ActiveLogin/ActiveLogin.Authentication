@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.GrandId.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
@@ -54,10 +54,13 @@ namespace IdentityServer.ServerSample
                 config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
-            services.AddIdentityServer(x => { x.Authentication.CookieLifetime = TimeSpan.FromHours(1); })
-                    .AddDeveloperSigningCredential()
-                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                    .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
+            services.AddIdentityServer(options =>
+                {
+                    options.Authentication.CookieLifetime = BankIdDefaults.MaximumSessionLifespan;
+                })
+                .AddDeveloperSigningCredential()
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
 
             // Sample of using BankID with in memory dev environment
             //services.AddAuthentication()
@@ -106,7 +109,8 @@ namespace IdentityServer.ServerSample
             //        });
 
             // Full sample with both BankID and GrandID with custom display name and multiple environment support
-            services.AddAuthentication()
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddBankId(builder =>
                 {
                     builder.UseQrCoderQrCodeGenerator();
