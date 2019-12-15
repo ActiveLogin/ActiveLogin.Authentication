@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -8,7 +8,7 @@ namespace IdentityServer.ServerSample
 {
     public static class Config
     {
-        private const string PersonaIidentityNumberScopeName = "personalidentitynumber";
+        private const string PersonaIdentityNumberScopeName = "personalidentitynumber";
 
         public static IEnumerable<Client> GetClients(IConfiguration clientsConfiguration)
         {
@@ -16,14 +16,14 @@ namespace IdentityServer.ServerSample
             {
                 new Client
                 {
-                    ClientId = "mvc",
-                    ClientName = "MVC Client",
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    ClientName = "Active Login - IdentityServer - MvcClientSample",
+                    ClientId = clientsConfiguration["MvcClient:ClientId"],
                     ClientSecrets =
                     {
-                        new Secret("secret".Sha256())
+                        new Secret(clientsConfiguration["MvcClient:ClientSecret"].Sha256())
                     },
-                    AlwaysIncludeUserClaimsInIdToken = true,
+
+                    AllowedGrantTypes = GrantTypes.Hybrid,
 
                     RedirectUris = { clientsConfiguration["MvcClient:RedirectUri"] },
                     PostLogoutRedirectUris = { clientsConfiguration["MvcClient:PostLogoutRedirectUri"] },
@@ -32,10 +32,15 @@ namespace IdentityServer.ServerSample
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        PersonaIidentityNumberScopeName
+                        PersonaIdentityNumberScopeName
                     },
 
-                    RequireConsent = false
+                    RequireConsent = false,
+
+                    // We can only obtain the info from BankID on sign in,
+                    //  so as long as we don't persist it in a local database
+                    //  we have to pass them on right away in the id token
+                    AlwaysIncludeUserClaimsInIdToken = true,
                 }
             };
         }
@@ -46,7 +51,7 @@ namespace IdentityServer.ServerSample
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource(PersonaIidentityNumberScopeName, new List<string>
+                new IdentityResource(PersonaIdentityNumberScopeName, new List<string>
                 {
                     BankIdClaimTypes.SwedishPersonalIdentityNumber
                 })
