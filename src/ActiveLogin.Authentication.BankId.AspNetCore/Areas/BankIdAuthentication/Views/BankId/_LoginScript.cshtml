@@ -46,13 +46,13 @@
             showOrderRefStatus(orderRef);
         } else if (autoLogin) {
             document.addEventListener('DOMContentLoaded', function () {
-                login();
+                login(true);
             });
         } else {
             formElement.addEventListener('submit', function (event) {
                 event.preventDefault();
 
-                login();
+                login(true);
             });
         }
 
@@ -69,7 +69,7 @@
             checkStatus(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, orderRef);
         }
 
-        function login() {
+        function login(resetUi) {
             var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
             var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
             var cancelReturnUrlElement = formElement.querySelector('[name="CancelReturnUrl"]');
@@ -77,19 +77,23 @@
             var personalIdentityNumberElement = formElement.querySelector('[name="PersonalIdentityNumber"]');
             var personalIdentityNumber = !!personalIdentityNumberElement ? personalIdentityNumberElement.value : '';
 
-            initialize(requestVerificationTokenElement.value, returnUrlElement.value, cancelReturnUrlElement.value, loginOptionsElement.value, personalIdentityNumber, personalIdentityNumberElement);
+            initialize(resetUi, requestVerificationTokenElement.value, returnUrlElement.value, cancelReturnUrlElement.value, loginOptionsElement.value, personalIdentityNumber, personalIdentityNumberElement);
         }
 
         // BankID
 
         var autoStartAttempts = 0;
         var loginIsCancelledByUser = false;
-        function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
+        function initialize(resetUi, requestVerificationToken, returnUrl, cancelUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
             loginIsCancelledByUser = false;
-            formFieldsetElement.disabled = true;
-            show(formSubmitButtonSpinnerElement);
-            hide(formSubmitButtonTextElement);
-            hide(qrCodeElement);
+
+            if (resetUi) {
+                formFieldsetElement.disabled = true;
+                show(formSubmitButtonSpinnerElement);
+                hide(formSubmitButtonTextElement);
+                hide(qrCodeElement);
+            }
+
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl,
@@ -184,7 +188,7 @@
                 .then(function (data) {
                     if (data.retryLogin) {
                         autoStartAttempts++;
-                        login();
+                        login(false);
                     } else if (data.isFinished) {
                         window.location.href = data.redirectUri;
                     } else if (!loginIsCancelledByUser) {
