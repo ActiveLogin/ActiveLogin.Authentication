@@ -9,16 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="tempkey.rsa" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="tempkey.rsa">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="3.0.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.11.0" />
