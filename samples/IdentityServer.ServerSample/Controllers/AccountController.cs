@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer.ServerSample.Models;
-using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -70,7 +69,7 @@ namespace IdentityServer.ServerSample.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout(string logoutId)
         {
-            LogoutRequest logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
+            var logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
             var returnUrl = logoutRequest?.PostLogoutRedirectUri;
 
             return await Logout(new LogoutModel(returnUrl));
