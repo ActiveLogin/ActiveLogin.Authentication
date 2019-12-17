@@ -23,9 +23,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, ClientCertificateFromAzureKeyVaultOptions options)
         {
-            if (string.IsNullOrEmpty(options.AzureKeyVaultSecretKey))
+            if (string.IsNullOrWhiteSpace(options.AzureKeyVaultSecretKey))
             {
-                throw new ArgumentNullException(nameof(options.AzureKeyVaultSecretKey));
+                throw new ArgumentException("AzureKeyVaultSecretKey is required");
             }
 
             builder.UseClientCertificate(() =>
