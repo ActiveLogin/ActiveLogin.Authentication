@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,38 +10,30 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, IConfigurationSection configurationSection)
         {
-            builder.AuthenticationBuilder.Services.Configure<ClientCertificateFromAzureKeyVaultOptions>(configurationSection.Bind);
-
-            return UseClientCertificateFromAzureKeyVault(builder);
+            var options = new ClientCertificateFromAzureKeyVaultOptions();
+            configurationSection.Bind(options);
+            return UseClientCertificateFromAzureKeyVault(builder, options);
         }
 
         public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
         {
-            builder.AuthenticationBuilder.Services.Configure(configureOptions);
-
-            return UseClientCertificateFromAzureKeyVault(builder);
+            var options = new ClientCertificateFromAzureKeyVaultOptions();
+            configureOptions(options);
+            return UseClientCertificateFromAzureKeyVault(builder, options);
         }
 
-        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder)
+        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, ClientCertificateFromAzureKeyVaultOptions options)
         {
+            if (string.IsNullOrEmpty(options.AzureKeyVaultSecretKey))
+            {
+                throw new ArgumentNullException(nameof(options.AzureKeyVaultSecretKey));
+            }
+
             builder.UseClientCertificate(() =>
             {
-                var options = builder.AuthenticationBuilder.Services
-                    .BuildServiceProvider()
-                    .GetService<IOptions<ClientCertificateFromAzureKeyVaultOptions>>();
+                var keyVaultCertificateClient = AzureKeyVaultCertificateClient.Create(options);
 
-                using (var keyVaultCertificateClient = AzureKeyVaultCertificateClient.Create(options.Value))
-                {
-                    if (string.IsNullOrEmpty(options.Value.AzureKeyVaultSecretIdentifier))
-                    {
-                        throw new ArgumentNullException(nameof(options.Value.AzureKeyVaultSecretIdentifier));
-                    }
-
-                    return keyVaultCertificateClient.GetX509Certificate2Async(options.Value.AzureKeyVaultSecretIdentifier)
-                        .ConfigureAwait(false)
-                        .GetAwaiter()
-                        .GetResult();
-                }
+                return keyVaultCertificateClient.GetX509Certificate2(options.AzureKeyVaultSecretKey);
             });
 
             return builder;
