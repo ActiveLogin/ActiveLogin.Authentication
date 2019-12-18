@@ -207,4 +207,7 @@
   <data name="UnsupportedBrowser_ErrorMessage" xml:space="preserve">
     <value>Your browser does not have the features required to use this login page.</value>
   </data>
+  <data name="BankIdUserMessage_ShortName_RFA1QR" xml:space="preserve">
+    <value>Start your BankID app and scan the QR code.</value>
+  </data>
 </root>

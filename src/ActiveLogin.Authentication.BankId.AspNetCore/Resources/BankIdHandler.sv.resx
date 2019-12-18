@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BankIdUserMessage_ShortName_RFA1" xml:space="preserve">
-    <value>Starta BankID-appen</value>
+    <value>Starta BankID-appen.</value>
   </data>
   <data name="BankIdUserMessage_ShortName_RFA13" xml:space="preserve">
     <value>Försöker starta BankID-appen.</value>
@@ -206,5 +206,8 @@
   </data>
   <data name="UnsupportedBrowser_ErrorMessage" xml:space="preserve">
     <value>Din webbläsare saknar funktioner som krävs för att använda denna loginsida.</value>
+  </data>
+  <data name="BankIdUserMessage_ShortName_RFA1QR" xml:space="preserve">
+    <value>Starta BankID-appen och scanna QR-koden.</value>
   </data>
 </root>

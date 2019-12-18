@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using ActiveLogin.Authentication.BankId.Api.Models;
 
@@ -8,10 +8,12 @@ namespace ActiveLogin.Authentication.BankId.Api.UserMessage
     {
         private static readonly List<CollectResponseMapping> CollectResponseMappings = new List<CollectResponseMapping>()
         {
-            new CollectResponseMapping(MessageShortName.RFA1, CollectStatus.Pending, CollectHintCode.NoClient, authPersonalIdentityNumberProvided: true),
+            new CollectResponseMapping(MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: true),
+            new CollectResponseMapping(MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: false),
             new CollectResponseMapping(MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.NoClient, authPersonalIdentityNumberProvided: false),
 
-            new CollectResponseMapping(MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true),
+            new CollectResponseMapping(MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: true),
+            new CollectResponseMapping(MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: false),
             new CollectResponseMapping(MessageShortName.RFA13, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: false),
 
             new CollectResponseMapping(MessageShortName.RFA9, CollectStatus.Pending, CollectHintCode.UserSign),
