@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class AuthResponse
     {
-        internal AuthResponse(string orderRef, string autoStartToken)
+        public AuthResponse(string orderRef, string autoStartToken)
         {
             OrderRef = orderRef;
             AutoStartToken = autoStartToken;

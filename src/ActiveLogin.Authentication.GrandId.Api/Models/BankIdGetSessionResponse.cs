@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
+namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     public class BankIdGetSessionResponse : GetSessionResponseBase
     {
@@ -8,7 +8,7 @@
             UserAttributes = fullResponse.UserAttributes;
         }
 
-        internal BankIdGetSessionResponse(string? sessionId, string? username, BankIdGetSessionUserAttributes userAttributes)
+        public BankIdGetSessionResponse(string? sessionId, string? username, BankIdGetSessionUserAttributes userAttributes)
             : base(sessionId, username)
         {
             UserAttributes = userAttributes;

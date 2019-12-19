@@ -1,11 +1,11 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     [DataContract]
     public class BankIdGetSessionUserAttributes
     {
-        internal BankIdGetSessionUserAttributes(string signature, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
+        public BankIdGetSessionUserAttributes(string signature, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
         {
             Signature = signature;
             GivenName = givenName;

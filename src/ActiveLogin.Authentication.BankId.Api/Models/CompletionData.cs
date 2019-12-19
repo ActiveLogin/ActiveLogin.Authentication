@@ -1,11 +1,11 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     [DataContract]
     public class CompletionData
     {
-        internal CompletionData(User user, Device device, Cert cert, string signature, string ocspResponse)
+        public CompletionData(User user, Device device, Cert cert, string signature, string ocspResponse)
         {
             User = user;
             Device = device;

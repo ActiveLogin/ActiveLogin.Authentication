@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
+namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     public class BankIdFederatedLoginResponse : FederatedLoginResponseBase
     {
@@ -7,7 +7,7 @@
         {
         }
 
-        internal BankIdFederatedLoginResponse(string sessionId, string redirectUrl)
+        public BankIdFederatedLoginResponse(string sessionId, string redirectUrl)
             : base(sessionId, redirectUrl)
         {
         }
