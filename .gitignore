@@ -292,4 +292,3 @@ __pycache__/
 
 # Certificates
 *.crt
-tempkey.rsa
