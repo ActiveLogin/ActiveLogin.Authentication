@@ -186,18 +186,6 @@ stages:
         Contents: 'BankIdRootCertificate-Test.crt'
         TargetFolder: samples/IdentityServer.ServerSample/Certificates
 
-    - task: DownloadSecureFile@1
-      displayName: 'Download secure file: tempkey.rsa'
-      inputs:
-        secureFile: 'tempkey.rsa'
-
-    - task: CopyFiles@2
-      displayName: 'Copy secure file: tempkey.rsa'
-      inputs:
-        SourceFolder: '$(Agent.TempDirectory)'
-        Contents: 'tempkey.rsa'
-        TargetFolder: samples/IdentityServer.ServerSample
-
     - task: UseDotNet@2
       displayName: 'Install: .NET Core SDK'
       inputs:
