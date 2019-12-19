@@ -46,12 +46,14 @@
             showOrderRefStatus(orderRef);
         } else if (autoLogin) {
             document.addEventListener('DOMContentLoaded', function () {
+                resetUi();
                 login();
             });
         } else {
             formElement.addEventListener('submit', function (event) {
                 event.preventDefault();
 
+                resetUi();
                 login();
             });
         }
@@ -80,16 +82,20 @@
             initialize(requestVerificationTokenElement.value, returnUrlElement.value, cancelReturnUrlElement.value, loginOptionsElement.value, personalIdentityNumber, personalIdentityNumberElement);
         }
 
+        function resetUi() {
+            formFieldsetElement.disabled = true;
+            show(formSubmitButtonSpinnerElement);
+            hide(formSubmitButtonTextElement);
+            hide(qrCodeElement);
+        }
+
         // BankID
 
         var autoStartAttempts = 0;
         var loginIsCancelledByUser = false;
         function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
             loginIsCancelledByUser = false;
-            formFieldsetElement.disabled = true;
-            show(formSubmitButtonSpinnerElement);
-            hide(formSubmitButtonTextElement);
-            hide(qrCodeElement);
+
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl,

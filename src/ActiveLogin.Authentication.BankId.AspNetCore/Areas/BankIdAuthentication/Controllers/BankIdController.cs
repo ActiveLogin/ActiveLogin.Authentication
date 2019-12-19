@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
@@ -51,6 +51,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
         {
+            var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
             var loginScriptOptions = new BankIdLoginScriptOptions(
                 Url.Action("Initialize", "BankIdApi"),
                 Url.Action("Status", "BankIdApi"),
@@ -59,7 +60,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             {
                 RefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs,
 
-                InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA13),
+                InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(initialStatusMessage),
                 UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
 
                 UnsupportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"]
@@ -76,6 +77,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 SystemRuntimeJsonSerializer.Serialize(loginScriptOptions),
                 antiforgeryTokens.RequestToken
             );
+        }
+
+        private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)
+        {
+            if (loginOptions.AutoLaunch)
+            {
+                return MessageShortName.RFA13;
+            }
+
+            if (loginOptions.UseQrCode)
+            {
+                return MessageShortName.RFA1QR;
+            }
+
+            return MessageShortName.RFA1;
         }
     }
 }

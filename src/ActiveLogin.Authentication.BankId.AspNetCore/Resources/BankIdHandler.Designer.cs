@@ -160,6 +160,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start your BankID app and scan the QR code..
+        /// </summary>
+        internal static string BankIdUserMessage_ShortName_RFA1QR {
+            get {
+                return ResourceManager.GetString("BankIdUserMessage_ShortName_RFA1QR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The BankID app is not installed. Please contact your internet bank..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA2 {
