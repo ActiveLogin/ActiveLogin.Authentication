@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.GrandId.Api.Models
+namespace ActiveLogin.Authentication.GrandId.Api.Models
 {
     public class LogoutResponse
     {
@@ -7,7 +7,7 @@
             SessionDeleted = fullResponse.SessionDeleted?.Equals("1") ?? false;
         }
 
-        internal LogoutResponse(bool sessionDeleted)
+        public LogoutResponse(bool sessionDeleted)
         {
             SessionDeleted = sessionDeleted;
         }

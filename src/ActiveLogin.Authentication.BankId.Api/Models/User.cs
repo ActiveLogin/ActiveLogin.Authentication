@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class User
     {
-        internal User(string personalIdentityNumber, string name, string givenName, string surname)
+        public User(string personalIdentityNumber, string name, string givenName, string surname)
         {
             PersonalIdentityNumber = personalIdentityNumber;
             Name = name;

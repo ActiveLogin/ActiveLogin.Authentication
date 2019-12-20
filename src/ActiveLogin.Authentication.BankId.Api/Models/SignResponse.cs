@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class SignResponse
     {
-        internal SignResponse(string orderRef, string autoStartToken)
+        public SignResponse(string orderRef, string autoStartToken)
         {
             OrderRef = orderRef;
             AutoStartToken = autoStartToken;
