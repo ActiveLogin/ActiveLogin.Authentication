@@ -5,7 +5,7 @@
 [![Slack](https://img.shields.io/badge/slack-@ActiveLogin-blue.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
 [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Totally free to use! [Commercial support and traning](#support--training) is available if you need assistance or a quick start. 
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Free to use, [commercial support and traning](#support--training) is available if you need assistance or a quick start. 
 
 ## Features
 
@@ -16,7 +16,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable UI
 - :white_square_button: BankID QR code support
-- :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Proivder for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
+- :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Provider for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 
 ## Screenshots
 
@@ -197,8 +197,8 @@ services
     {
         builder
             .UseProductionEnvironment(config => {
-	        config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-	        config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+                config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
             })
             .AddBankIdSameDevice()
             .AddBankIdOtherDevice();
@@ -320,7 +320,7 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
 
 ### Do I need to use your ASP.NET Core Auth provider, or can just use the API?
 
-We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. The look like this and are both well documented using XML-comments.
+We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. They look like this and are both well documented using XML-comments.
 
 The constructor for these ApiClients takes an `HttpClient` and you need to configure that `HttpClient` with a `BaseAddress`, `Tls12`, client certificates etc. depending on your needs.
 

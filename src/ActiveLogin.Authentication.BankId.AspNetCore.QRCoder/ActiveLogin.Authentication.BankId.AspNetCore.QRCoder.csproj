@@ -1,56 +1,57 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <NeutralLanguage>en</NeutralLanguage>
-    <NoWarn>1701;1702;1591;CS7035</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <NeutralLanguage>en</NeutralLanguage>
+        <NoWarn>1701;1702;1591;CS7035</NoWarn>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.QRCoder</AssemblyName>
-    <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.QRCoder</PackageId>
-    <RootNamespace>ActiveLogin.Authentication.BankId.AspNetCore.QrCoder</RootNamespace>
+        <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.QRCoder</AssemblyName>
+        <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.QRCoder</PackageId>
+        <RootNamespace>ActiveLogin.Authentication.BankId.AspNetCore.QrCoder</RootNamespace>
 
-    <VersionPrefix>3.0.0</VersionPrefix>
-    <VersionSuffix>beta-2</VersionSuffix>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
-    <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
+        <VersionPrefix>3.0.0</VersionPrefix>
+        <VersionSuffix>beta-3</VersionSuffix>
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
+        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-    <Description>QR code generation for ActiveLogin.Authentication.BankId.AspNetCore using the QRCoder library.</Description>
-    <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;qr</PackageTags>
+        <Description>QR code generation for ActiveLogin.Authentication.BankId.AspNetCore using the QRCoder library.</Description>
+        <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;qr</PackageTags>
 
-    <Authors>Active Solution;Daniel Kvist;Peter Örneholm</Authors>
-    <Copyright>Copyright © ActiveLogin</Copyright>
+        <Authors>Active Solution;Daniel Kvist;Peter Örneholm</Authors>
+        <Copyright>Copyright © ActiveLogin</Copyright>
 
-    <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="QRCoder" Version="1.3.6" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="QRCoder" Version="1.3.6" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
-    <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
+        <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
+        <None Include="readme.md" Pack="True" PackagePath="readme.txt" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
+    </ItemGroup>
 
 </Project>
