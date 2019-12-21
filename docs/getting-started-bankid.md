@@ -17,7 +17,7 @@ BankID requires you to use a client certificate and trust a specific root CA-cer
 
 ```json
 {
-  "ActiveLogin:BankId:CaCertificate:FilePath": "Certificates\\BankIdRootCertificate-[Test or Prod].crt"
+    "ActiveLogin:BankId:CaCertificate:FilePath": "Certificates\\BankIdRootCertificate-[Test or Prod].crt"
 }
 ```
 
@@ -29,18 +29,26 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 
 1. Deploy Azure KeyVault to your subscription. The ARM-template available in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/samples/AzureProvisioningSample)  contains configuration that creates a KeyVault and enables [Managed Service Identity](https://azure.microsoft.com/en-us/resources/samples/app-service-msi-keyvault-dotnet/) for the App Service.
 1. [Import the certificates](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate) to your Azure Key Vault.
-1. Add the following to your config, the secret identifier is expected in the form of `"https://[keyvaultname].vault.azure.net/secrets/[keyidentifier]"` .
+1. Add the following to your config, the secret identifier and auth settings.
 
 ```json
 {
-  "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretIdentifier": "TODO-ADD-YOUR-VALUE",
-  "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity": true
+    "ActiveLogin:BankId:ClientCertificate" {
+        "UseManagedIdentity": true,
+
+        "AzureAdTenantId": "",
+        "AzureAdClientId": "",
+        "AzureAdClientSecret": "",
+
+        "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
+        "AzureKeyVaultSecretKey": "TODO-ADD-YOUR-VALUE"
+    }
 }
 ```
 
 #### Certificates are secrets
 
-Note that when configuring the AzureKeyVaultSecretIdentifier-url, the URL using `/secrets/` to identify the object is used. This is because key vault only exposes certificates with private keys as secrets.
+Note that when configuring the AzureKeyVaultSecretKey, the secret key should be the same as the name of the certificate in KeyVault. This is because key vault only exposes certificates with private keys as secrets.
 
 You can read more about the reasonind behind this [in this blog post](https://azidentity.azurewebsites.net/post/2018/07/03/azure-key-vault-certificates-are-secrets) or in the very extensive [official documentation](https://docs.microsoft.com/en-gb/azure/key-vault/about-keys-secrets-and-certificates#BKMK_CompositionOfCertificate).
 
@@ -202,7 +210,7 @@ services
             .AddCustom(options => {
                 options.BankIdAutoLaunch = true;
                 options.BankIdAllowChangingPersonalIdentityNumber = false;
-			});
+            });
     });
 ```
 
