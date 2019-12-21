@@ -28,7 +28,6 @@
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PackageReadmeFile>readme.md</PackageReadmeFile>
 
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
@@ -50,7 +49,7 @@
     <ItemGroup>
         <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
-        <None Include="readme.md" Pack="True" PackagePath="readme.md" />
+        <None Include="readme.md" Pack="True" PackagePath="readme.txt" />
     </ItemGroup>
 
     <ItemGroup>
