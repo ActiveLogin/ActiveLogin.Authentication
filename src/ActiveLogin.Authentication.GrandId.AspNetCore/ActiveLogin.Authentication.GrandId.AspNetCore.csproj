@@ -1,67 +1,69 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <NeutralLanguage>en</NeutralLanguage>
-    <NoWarn>1701;1702;1591;CS7035</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <NeutralLanguage>en</NeutralLanguage>
+        <NoWarn>1701;1702;1591;CS7035</NoWarn>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 
-    <AssemblyName>ActiveLogin.Authentication.GrandId.AspNetCore</AssemblyName>
-    <PackageId>ActiveLogin.Authentication.GrandId.AspNetCore</PackageId>
+        <AssemblyName>ActiveLogin.Authentication.GrandId.AspNetCore</AssemblyName>
+        <PackageId>ActiveLogin.Authentication.GrandId.AspNetCore</PackageId>
 
-    <VersionPrefix>3.0.0</VersionPrefix>
-    <VersionSuffix>beta-2</VersionSuffix>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
-    <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
+        <VersionPrefix>3.0.0</VersionPrefix>
+        <VersionSuffix>beta-2</VersionSuffix>
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
+        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-    <Description>ASP.NET Core authentication module that enables an application to support GrandID's (Svensk E-identitet) authentication workflow.</Description>
-    <PackageTags>grandid;bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
+        <Description>ASP.NET Core authentication module that enables an application to support GrandID's (Svensk E-identitet) authentication workflow.</Description>
+        <PackageTags>grandid;bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
-    <Authors>Active Solution;Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
-    <Copyright>Copyright © ActiveLogin</Copyright>
+        <Authors>Active Solution;Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
+        <Copyright>Copyright © ActiveLogin</Copyright>
 
-    <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.0" />
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.0" />
 
-    <PackageReference Include="ActiveLogin.Identity.Swedish" Version="2.0.2" />
-  </ItemGroup>
+        <PackageReference Include="ActiveLogin.Identity.Swedish" Version="2.0.2" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\Serialization\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Common\Serialization\" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
-    <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
+        <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
+        <None Include="README.md" Pack="True" PackagePath="README.md" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
+    </ItemGroup>
 </Project>
