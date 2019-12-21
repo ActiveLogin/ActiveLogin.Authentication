@@ -28,7 +28,8 @@
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
+        <NuspecProperties>readme=readme.md</NuspecProperties>
 
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
