@@ -28,7 +28,6 @@
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
         <PackageReadmeFile>readme.md</PackageReadmeFile>
-        <NuspecProperties>readme=readme.md</NuspecProperties>
 
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
