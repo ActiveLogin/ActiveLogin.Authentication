@@ -182,7 +182,7 @@ services
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             .AddSameDevice()
             .AddOtherDevice()
-			.UseQrCoderQrCodeGenerator();
+            .UseQrCoderQrCodeGenerator();
     });
 ```
 
@@ -308,8 +308,8 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
         RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
         Items =
         {
-            {"returnUrl", returnUrl},
-            {"scheme", provider},
+            { "returnUrl", returnUrl },
+            { "scheme", provider },
             { BankIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, personalIdentityNumber }
         }
     };
@@ -368,10 +368,11 @@ A more technical deep dive of the cookies can be found in [this issue](https://g
 
 We aim at supporting the latest version of all major browsers (Edge, Chrome, Firefox, Safari) both on desktop and on mobile.
 
-We even support third party browsers on iOS by using their unique schemes:
-- [Chrome on iOS](https://developer.chrome.com/multidevice/ios/links): googlechromes://
-- [Firefox on iOS](https://github.com/mozilla-mobile/firefox-ios-open-in-client): firefox://open-url?url=
-- [Edge on iOS](https://stackoverflow.com/a/51109646/105581): microsoft-edge-https://
+All browsers on mobile are supported, but the full automated flow on same device (redirect between apps) are supported on these:
+- Safari on iOS
+- Chrome on iOS
+- Firefox on iOS
+- All browsers on Android
 
 If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 
