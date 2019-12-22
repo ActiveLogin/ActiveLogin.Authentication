@@ -1,40 +1,34 @@
 using System.IO;
-using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ActiveLogin.Authentication.Common.Serialization
 {
-    internal static class SystemRuntimeJsonSerializer
+    public static class SystemRuntimeJsonSerializer
     {
-        public static T Deserialize<T>(string json)
+        public static async Task<T> DeserializeAsync<T>(string json)
         {
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(T));
-                return (T)serializer.ReadObject(stream);
-            }
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+            return await JsonSerializer.DeserializeAsync<T>(stream).ConfigureAwait(false);
         }
 
-        public static T Deserialize<T>(Stream json)
+        public static async Task<T> DeserializeAsync<T>(Stream stream)
         {
-            var serializer = new DataContractJsonSerializer(typeof(T));
-            return (T)serializer.ReadObject(json);
+            return await JsonSerializer.DeserializeAsync<T>(stream).ConfigureAwait(false);
         }
 
-        public static string Serialize<T>(T value)
+        public static async Task<string> SerializeAsync<T>(T value)
         {
             if (value == null)
             {
                 return string.Empty;
             }
 
-            using (var stream = new MemoryStream())
-            {
-                var serializer = new DataContractJsonSerializer(typeof(T));
-                serializer.WriteObject(stream, value);
-                var json = stream.ToArray();
-                return Encoding.UTF8.GetString(json, 0, json.Length);
-            }
+            using var stream = new MemoryStream();
+            await JsonSerializer.SerializeAsync(stream, value).ConfigureAwait(false);
+            var json = stream.ToArray();
+            return Encoding.UTF8.GetString(json, 0, json.Length);
         }
     }
 }

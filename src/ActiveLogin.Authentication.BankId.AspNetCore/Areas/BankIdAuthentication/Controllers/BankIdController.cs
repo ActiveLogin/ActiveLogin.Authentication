@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
@@ -35,7 +36,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         }
 
         [HttpGet]
-        public ActionResult Login(string returnUrl, string loginOptions)
+        public async Task<IActionResult> Login(string returnUrl, string loginOptions)
         {
             if (!Url.IsLocalUrl(returnUrl))
             {
@@ -43,13 +44,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
-            var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
+            var antiForgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
 
-            var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
+            var viewModel = await GetLoginViewModelAsync(returnUrl, loginOptions, unprotectedLoginOptions, antiForgeryTokens);
             return View(viewModel);
         }
 
-        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
+        private async Task<BankIdLoginViewModel> GetLoginViewModelAsync(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
         {
             var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
             var loginScriptOptions = new BankIdLoginScriptOptions(
@@ -74,7 +75,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 loginOptions,
                 unprotectedLoginOptions,
                 loginScriptOptions,
-                SystemRuntimeJsonSerializer.Serialize(loginScriptOptions),
+                await SystemRuntimeJsonSerializer.SerializeAsync(loginScriptOptions),
                 antiforgeryTokens.RequestToken
             );
         }

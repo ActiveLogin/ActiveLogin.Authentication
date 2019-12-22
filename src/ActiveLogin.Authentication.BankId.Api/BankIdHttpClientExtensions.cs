@@ -10,14 +10,14 @@ namespace ActiveLogin.Authentication.BankId.Api
     {
         public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
-            var requestJson = SystemRuntimeJsonSerializer.Serialize(request);
+            var requestJson = await SystemRuntimeJsonSerializer.SerializeAsync(request);
             var requestContent = GetJsonStringContent(requestJson);
 
             var httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
             await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage).ConfigureAwait(false);
             var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
+            return await SystemRuntimeJsonSerializer.DeserializeAsync<TResult>(content);
         }
 
         private static StringContent GetJsonStringContent(string requestJson)
