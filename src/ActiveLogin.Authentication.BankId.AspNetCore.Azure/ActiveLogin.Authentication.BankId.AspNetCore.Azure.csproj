@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <LangVersion>latest</LangVersion>
@@ -48,7 +48,7 @@
     <ItemGroup>
         <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
-        <None Include="readme.md" Pack="True" PackagePath="readme.txt" />
+        <None Include="readme.txt" Pack="True" PackagePath="readme.txt" />
     </ItemGroup>
 
     <ItemGroup>
