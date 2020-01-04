@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <LangVersion>latest</LangVersion>
@@ -9,6 +9,7 @@
 
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 
+        <Product>Active Login</Product>
         <AssemblyName>ActiveLogin.Authentication.GrandId.AspNetCore</AssemblyName>
         <PackageId>ActiveLogin.Authentication.GrandId.AspNetCore</PackageId>
 
@@ -22,7 +23,8 @@
         <PackageTags>grandid;bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
         <Authors>Active Solution;Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
-        <Copyright>Copyright © ActiveLogin</Copyright>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
 
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>

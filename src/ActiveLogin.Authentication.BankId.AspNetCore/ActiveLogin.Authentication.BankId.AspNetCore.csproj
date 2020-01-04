@@ -9,6 +9,7 @@
 
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 
+        <Product>Active Login</Product>
         <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
         <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
 
@@ -22,7 +23,8 @@
         <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
         <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
-        <Copyright>Copyright © ActiveLogin</Copyright>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
 
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>

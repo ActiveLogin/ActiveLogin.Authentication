@@ -7,6 +7,7 @@
         <NoWarn>1701;1702;1591;CS7035</NoWarn>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
+        <Product>Active Login</Product>
         <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.Azure</AssemblyName>
         <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.Azure</PackageId>
 
@@ -20,7 +21,8 @@
         <PackageTags>azure;bankid;swedish;sweden;aspnetcore;authentication</PackageTags>
 
         <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
-        <Copyright>Copyright © ActiveLogin</Copyright>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
 
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
