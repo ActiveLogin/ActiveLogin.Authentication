@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <LangVersion>latest</LangVersion>
@@ -7,6 +7,7 @@
         <NoWarn>1701;1702;1591;CS7035</NoWarn>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
+        <Product>Active Login</Product>
         <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.QRCoder</AssemblyName>
         <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.QRCoder</PackageId>
         <RootNamespace>ActiveLogin.Authentication.BankId.AspNetCore.QrCoder</RootNamespace>
@@ -21,7 +22,8 @@
         <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;qr</PackageTags>
 
         <Authors>Active Solution;Daniel Kvist;Peter Örneholm</Authors>
-        <Copyright>Copyright © ActiveLogin</Copyright>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
 
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
