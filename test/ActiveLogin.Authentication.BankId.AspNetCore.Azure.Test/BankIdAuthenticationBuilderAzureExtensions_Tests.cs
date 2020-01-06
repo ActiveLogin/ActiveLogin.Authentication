@@ -36,7 +36,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                 var config = new Dictionary<string, string>
                 {
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
-                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretKey", "somekey" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
                     { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "true" }
                 };
 
@@ -50,7 +50,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
             {
                 var config = new Dictionary<string, string>
                 {
-                    {"ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretKey", ""},
+                    {"ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", ""},
                 };
 
                 var exception = Assert.Throws<ArgumentException>(() =>
@@ -64,7 +64,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                         });
                 });
 
-                Assert.Contains("AzureKeyVaultSecretKey", exception.Message);
+                Assert.Contains("AzureKeyVaultSecretName", exception.Message);
             }
 
             [Fact]
@@ -76,7 +76,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientId", "id" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "clientsecret" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
-                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretKey", "somekey" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
                     { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
                 };
 
@@ -96,7 +96,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientId", "" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "clientsecret" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
-                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretKey", "somekey" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
                     { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
                 };
 
@@ -115,7 +115,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientId", "id" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
-                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretKey", "somekey" },
+                    { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
                     { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
                 };
 

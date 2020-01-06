@@ -41,16 +41,16 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
         "AzureAdClientSecret": "",
 
         "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
-        "AzureKeyVaultSecretKey": "TODO-ADD-YOUR-VALUE"
+        "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE"
     }
 }
 ```
 
 #### Certificates are secrets
 
-Note that when configuring the AzureKeyVaultSecretKey, the secret key should be the same as the name of the certificate in KeyVault. This is because key vault only exposes certificates with private keys as secrets.
+When configuring the AzureKeyVaultSecretName, the name is retrieved from the _Certificates_ rather than _Secrets_ in the Azure Portal. It is called a _secret_ in the API since this is how Azure Key Vault exposes certificates with private keys.
 
-You can read more about the reasonind behind this [in this blog post](https://azidentity.azurewebsites.net/post/2018/07/03/azure-key-vault-certificates-are-secrets) or in the very extensive [official documentation](https://docs.microsoft.com/en-gb/azure/key-vault/about-keys-secrets-and-certificates#BKMK_CompositionOfCertificate).
+You can read more about the reasoning behind this [in this blog post](https://azidentity.azurewebsites.net/post/2018/07/03/azure-key-vault-certificates-are-secrets) or in the very extensive [official documentation](https://docs.microsoft.com/en-gb/azure/key-vault/about-keys-secrets-and-certificates#BKMK_CompositionOfCertificate).
 
 ## Environments
 

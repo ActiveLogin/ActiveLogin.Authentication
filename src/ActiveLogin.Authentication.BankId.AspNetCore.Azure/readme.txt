@@ -1,6 +1,6 @@
 # ActiveLogin.Authentication.BankId.AspNetCore.Azure
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Free to use, [commercial support and training](https://activelogin.net/#support) is available if you need assistance or a quick start. 
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Free to use, [commercial support and training](https://activelogin.net/#support) is available if you need assistance or a quick start.
 
 ## Sample usage
 
@@ -30,7 +30,7 @@ The expected configuration looks like this:
         "AzureAdClientSecret": "",
 
         "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
-        "AzureKeyVaultSecretKey": "TODO-ADD-YOUR-VALUE"
+        "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE"
     }
 }
 ```

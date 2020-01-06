@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 {
     public class ClientCertificateFromAzureKeyVaultOptions
     {
@@ -9,6 +9,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
         public string? AzureAdClientSecret { get; set; }
 
         public string? AzureKeyVaultUri { get; set; }
-        public string? AzureKeyVaultSecretKey { get; set; }
+        public string? AzureKeyVaultSecretName { get; set; }
     }
 }
