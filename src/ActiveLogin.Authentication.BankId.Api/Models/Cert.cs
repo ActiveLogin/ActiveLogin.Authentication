@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class Cert
     {
-        internal Cert(string notBefore, string notAfter)
+        public Cert(string notBefore, string notAfter)
         {
             NotBefore = notBefore;
             NotAfter = notAfter;
