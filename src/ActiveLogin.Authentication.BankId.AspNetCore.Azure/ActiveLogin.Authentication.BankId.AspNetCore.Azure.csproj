@@ -20,7 +20,7 @@
         <Description>Azure integrations for ActiveLogin.Authentication.BankId.AspNetCore that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
         <PackageTags>azure;bankid;swedish;sweden;aspnetcore;authentication</PackageTags>
 
-        <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+        <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>
         <Company>Active Solution</Company>
         <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
 
