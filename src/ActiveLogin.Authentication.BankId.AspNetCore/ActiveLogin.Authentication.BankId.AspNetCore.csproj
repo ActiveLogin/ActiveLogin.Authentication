@@ -22,7 +22,7 @@
         <Description>ASP.NET Core authentication module that enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow.</Description>
         <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
-        <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Ohlsson;Robert Folkesson;Jakob Ehn</Authors>
+        <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>
         <Company>Active Solution</Company>
         <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
 

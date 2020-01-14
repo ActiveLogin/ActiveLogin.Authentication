@@ -33,7 +33,7 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 
 ```json
 {
-    "ActiveLogin:BankId:ClientCertificate" {
+    "ActiveLogin:BankId:ClientCertificate": {
         "UseManagedIdentity": true,
 
         "AzureAdTenantId": "",
@@ -51,6 +51,14 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 When configuring the AzureKeyVaultSecretName, the name is retrieved from the _Certificates_ rather than _Secrets_ in the Azure Portal. It is called a _secret_ in the API since this is how Azure Key Vault exposes certificates with private keys.
 
 You can read more about the reasoning behind this [in this blog post](https://azidentity.azurewebsites.net/post/2018/07/03/azure-key-vault-certificates-are-secrets) or in the very extensive [official documentation](https://docs.microsoft.com/en-gb/azure/key-vault/about-keys-secrets-and-certificates#BKMK_CompositionOfCertificate).
+
+#### Authentication using Managed Identity
+
+If possible, you should use [Azure AD Managed Identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) to connect to Azure KeyVault. To use Managed Identity, set `UseManagedIdentity` to `true`.
+
+#### Authentication using Client Credentials
+
+If Managed Identity can't be used, you can authenticate to Azure Key Vault using Client Credentials. Then set `UseManagedIdentity` to `false` and instead set values for `AzureAdTenantId`, `AzureAdClientId` and `AzureAdClientSecret`.
 
 ## Environments
 
