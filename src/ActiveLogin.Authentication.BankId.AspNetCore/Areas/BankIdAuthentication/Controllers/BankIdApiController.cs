@@ -178,7 +178,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private string GetEndUserIp()
         {
-            return HttpContext.Connection.RemoteIpAddress.ToString();
+            var remoteIp = HttpContext.Connection.RemoteIpAddress;
+            return (remoteIp.IsIPv4MappedToIPv6 ? remoteIp.MapToIPv4().ToString() : remoteIp.ToString());
         }
 
         private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, AuthResponse authResponse, BankIdSupportedDevice detectedDevice)
