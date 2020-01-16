@@ -12,11 +12,12 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 
 - :id: Supports BankID both natively and through GrandID
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Core 3.1
+- :five: Built on V5 (the latest) BankID JSON API released in February 2018
+- :white_square_button: Supports BankID QR code and Cancel
 - :lock: GDPR: Security by design
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable UI
-- :white_square_button: BankID QR code support
 - :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Provider for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 
 ## Screenshots
