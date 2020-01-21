@@ -49,6 +49,7 @@ _Screenshots on how the default UI for Native BankID looks on different devices.
 	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api)
 	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies)
 	+ [What browsers do you support?](#what-browsers-do-you-support)
+    + [What dependencies do I need if I run Active Login on Linux or in a Linux Docker container?](#what-dependencies-do-i-need-if-i-run-active-login-on-linux-or-in-a-linux-docker-container)
 	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized)
 * [Active Login](#active-login)
 	+ [Contribute](#contribute)
@@ -379,6 +380,19 @@ All browsers on mobile are supported, but the full automated flow on same device
 If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 
 * [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): https://github.com/github/fetch
+
+### What dependencies do I need if I run Active Login on Linux or in a Linux Docker container?
+
+The ActiveLogin.Authentication.BankId.AspNetCore.QRCoder package has a dependency on package [libgdiplus](https://github.com/mono/libgdiplus) on Linux.
+
+If you are using Active Login with BankID QR-Codes on either WSL (Windows Subsystem for Linux) or in a Linux Docker Container your OS must have this package installed.
+
+Add [libgdiplus](https://github.com/mono/libgdiplus) to your Dockerfile using apt-get.
+```dockerfile
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
+RUN apt-get update && apt-get -y install libgdiplus libc6-dev
+...
+```
 
 ### Why are the names of the person sometimes capitalized?
 
