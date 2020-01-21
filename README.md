@@ -383,11 +383,11 @@ If you aim to support IE11 a polyfill for some JavaScript features we are using 
 
 ### What dependencies do I need if I run Active Login on Linux or in a Linux Docker container?
 
-The ActiveLogin.Authentication.BankId.AspNetCore.QRCoder package has a dependency on package `libgdiplus` on Linux.
+The ActiveLogin.Authentication.BankId.AspNetCore.QRCoder package has a dependency on package [libgdiplus](https://github.com/mono/libgdiplus) on Linux.
 
 If you are using Active Login with BankID QR-Codes on either WSL (Windows Subsystem for Linux) or in a Linux Docker Container your OS must have this package installed.
 
-Add `libgdiplus` to your Dockerfile using apt-get.
+Add [libgdiplus](https://github.com/mono/libgdiplus) to your Dockerfile using apt-get.
 ```dockerfile
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
 RUN apt-get update && apt-get -y install libgdiplus libc6-dev
