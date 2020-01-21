@@ -241,6 +241,8 @@ _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample a
 
 ## FAQ
 
+Here is a summary of common technical questions. For commercial / business related questions, see the [FAQ at ActiveLogin.net](https://activelogin.net/#faq).
+
 ### What version of .NET is supported?
 
 The API-wrappers (*.Api) target .NET Standard 2.0, so they can be used from .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The packages that target .NET Standard are strong named as they can be used from .NET Framework where strong naming can be relevant.
