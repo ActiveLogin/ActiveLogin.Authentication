@@ -38,7 +38,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdOrderRefProtector _orderRefProtector;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
-        private readonly IBankIdResultStore _bankIdResultStore;
+        private readonly List<IBankIdResultStore> _bankIdResultStores;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
 
         private const int MaxRetryLoginAttempts = 5;
@@ -54,7 +54,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdOrderRefProtector orderRefProtector,
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
-            IBankIdResultStore bankIdResultStore,
+            IEnumerable<IBankIdResultStore> bankIdResultStores,
             IBankIdQrCodeGenerator qrCodeGenerator)
         {
             _urlEncoder = urlEncoder;
@@ -67,7 +67,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _orderRefProtector = orderRefProtector;
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
-            _bankIdResultStore = bankIdResultStore;
+            _bankIdResultStores = bankIdResultStores.ToList();
             _qrCodeGenerator = qrCodeGenerator;
         }
 
@@ -276,7 +276,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             _logger.BankIdCollectCompleted(collectResponse.OrderRef, collectResponse.CompletionData);
-            await _bankIdResultStore.StoreCollectCompletedCompletionData(collectResponse.OrderRef, collectResponse.CompletionData);
+            foreach (var bankIdResultStore in _bankIdResultStores)
+            {
+                await bankIdResultStore.StoreCollectCompletedCompletionData(collectResponse.OrderRef, collectResponse.CompletionData);
+            }
 
             var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
             if (!Url.IsLocalUrl(returnUri))
