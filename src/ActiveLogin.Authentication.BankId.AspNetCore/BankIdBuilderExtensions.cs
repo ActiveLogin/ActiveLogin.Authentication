@@ -107,7 +107,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
         {
-            builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdResultStore, TResultStoreImplementation>();
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
 
             return builder;
         }
