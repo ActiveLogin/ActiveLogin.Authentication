@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
@@ -34,10 +34,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
             services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
-            services.TryAddTransient<IBankIdResultStore, BankIdResultTraceLoggerStore>();
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
             services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
+
+            builder.AddResultStore<BankIdResultTraceLoggerStore>();
 
             return builder;
         }
@@ -94,6 +95,19 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
         {
             builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds a class that will be called when BankID returns a valid signed in user.
+        /// </summary>
+        /// <typeparam name="TResultStoreImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
 
             return builder;
         }

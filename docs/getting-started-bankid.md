@@ -318,6 +318,48 @@ Example:
 });
 ```
 
+### Store data on auth completion
+
+When the login flow is completed and the collect request to BankID returns data, any class implementing `IBankIdResultStore` registered in the DI will be called.
+There is a shorthand method (`AddResultStore`) on the BankIdBuilder to register the implementation.
+
+*Sample implementation:*
+
+```csharp
+public class BankIdResultSampleLoggerStore : IBankIdResultStore
+{
+    private readonly EventId _eventId = new EventId(101, "StoreCollectCompletedCompletionData");
+    private readonly ILogger<BankIdResultTraceLoggerStore> _logger;
+
+    public BankIdResultSampleLoggerStore(ILogger<BankIdResultTraceLoggerStore> logger)
+    {
+        _logger = logger;
+    }
+
+    public Task StoreCollectCompletedCompletionData(string orderRef, CompletionData completionData)
+    {
+        _logger.LogTrace(_eventId, "Storing completion data for OrderRef '{OrderRef}' (UserPersonalIdentityNumber: '{UserPersonalIdentityNumber}')", orderRef, completionData.User.PersonalIdentityNumber);
+
+        return Task.CompletedTask;
+    }
+}
+
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            //...
+            .AddResultStore<BankIdResultSampleLoggerStore>();
+    });
+```
+
+The default implementation will log all data to the tracelog. If you want to remove that implementation, remove any class implementing `IBankIdResultStore` from the ASP.NET Core services in your `Startup.cs`:
+
+```csharp
+services.RemoveAll(typeof(IBankIdResultStore));
+```
+
 ### Full sample for production
 
 Finally, a full sample on how to use BankID in production with client certificate from Azure KeyVault and trusting a custom root certificate.
