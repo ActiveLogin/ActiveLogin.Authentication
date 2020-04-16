@@ -5,6 +5,7 @@ using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
@@ -37,6 +38,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
             services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
+
+            services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
             builder.AddResultStore<BankIdResultTraceLoggerStore>();
 
