@@ -360,6 +360,25 @@ The default implementation will log all data to the tracelog. If you want to rem
 services.RemoveAll(typeof(IBankIdResultStore));
 ```
 
+### Resolve the end user ip
+
+In some scenarios, like running behind a proxy, you might want to resolve the end user IP yourself and override the default implementaion.
+
+Either register a class implementing `IEndUserIpResolver`:
+
+```csharp
+builder.UseEndUserIpResolver<EndUserIpResolver>();
+```
+
+Or use the shorthand version:
+
+```csharp
+builder.UseEndUserIpResolver(httpContext =>
+{
+    return httpContext.Connection.RemoteIpAddress.ToString();
+});
+```
+
 ### Full sample for production
 
 Finally, a full sample on how to use BankID in production with client certificate from Azure KeyVault and trusting a custom root certificate.

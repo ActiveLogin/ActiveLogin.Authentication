@@ -9,6 +9,7 @@ using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
+using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
@@ -40,6 +41,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly List<IBankIdResultStore> _bankIdResultStores;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
+        private readonly IEndUserIpResolver _endUserIpResolver;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
 
         private const int MaxRetryLoginAttempts = 5;
@@ -56,6 +58,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdLoginResultProtector loginResultProtector,
             IEnumerable<IBankIdResultStore> bankIdResultStores,
             IBankIdQrCodeGenerator qrCodeGenerator,
+            IEndUserIpResolver endUserIpResolver,
             IBankIdEventTrigger bankIdEventTrigger)
         {
             _urlEncoder = urlEncoder;
@@ -69,6 +72,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _loginResultProtector = loginResultProtector;
             _bankIdResultStores = bankIdResultStores.ToList();
             _qrCodeGenerator = qrCodeGenerator;
+            _endUserIpResolver = endUserIpResolver;
             _bankIdEventTrigger = bankIdEventTrigger;
         }
 
@@ -162,7 +166,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
-            var endUserIp = GetEndUserIp();
+            var endUserIp = _endUserIpResolver.GetEndUserIp(HttpContext);
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
             var autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
 
@@ -175,12 +179,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var authRequestRequirement = new Requirement(certificatePolicies, autoStartTokenRequired, loginOptions.AllowBiometric);
 
             return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement);
-        }
-
-        private string GetEndUserIp()
-        {
-            var remoteIp = HttpContext.Connection.RemoteIpAddress;
-            return (remoteIp.IsIPv4MappedToIPv6 ? remoteIp.MapToIPv4().ToString() : remoteIp.ToString());
         }
 
         private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, AuthResponse authResponse, BankIdSupportedDevice detectedDevice)
