@@ -21,6 +21,8 @@ BankID requires you to use a client certificate and trust a specific root CA-cer
 }
 ```
 
+__Note:__ When using MacOS, path strings use ```'/'``` for subfolders: ```"Certificates/BankIdRootCertificate-[Test or Prod].crt"```
+
 ### Storing certificates in Azure
 
 These are only necessary if you plan to store your certificates in Azure KeyVault (recommended) and use the extension for easy integration with BankID.
