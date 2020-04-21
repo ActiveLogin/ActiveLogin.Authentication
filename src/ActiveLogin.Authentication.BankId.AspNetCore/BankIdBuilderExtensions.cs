@@ -5,11 +5,13 @@ using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -42,6 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
             builder.AddResultStore<BankIdResultTraceLoggerStore>();
+            builder.UseEndUserIpResolver<RemoteIpAddressEndUserIpResolver>();
 
             builder.AddLoggerEventListener();
             builder.AddResultStoreEventListener();
@@ -114,6 +117,32 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
         {
             builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Set the class that will be used to resolve end user ip.
+        /// </summary>
+        /// <typeparam name="TEndUserIpResolverImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder UseEndUserIpResolver<TEndUserIpResolverImplementation>(this IBankIdBuilder builder) where TEndUserIpResolverImplementation : class, IEndUserIpResolver
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IEndUserIpResolver, TEndUserIpResolverImplementation>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Set resolver that will be used to resolve the ip of the end user.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="resolver"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder UseEndUserIpResolver(this IBankIdBuilder builder, Func<HttpContext, string> resolver)
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IEndUserIpResolver>(x => new DynamicEndUserIpResolver(resolver));
 
             return builder;
         }
