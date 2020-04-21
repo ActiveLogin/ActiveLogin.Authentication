@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         public override Task HandleBankIdAuthenticationTicketCreatedEvent(BankIdAuthenticationTicketCreatedEvent e)
         {
             _logger.LogInformation(new EventId(e.EventTypeId, e.EventTypeName), "BankID authentication ticket created");
-            _logger.LogTrace(new EventId(e.EventTypeId, e.EventTypeName), "BankID authentication ticket created for PersonalIdentityNumber '{PersonalIdentityNumber}'", e.PersonalIdentityNumber ?? MissingPersonalIdentityNumber);
+            _logger.LogTrace(new EventId(e.EventTypeId, e.EventTypeName), "BankID authentication ticket created for PersonalIdentityNumber '{PersonalIdentityNumber}'", e.PersonalIdentityNumber.To12DigitString() ?? MissingPersonalIdentityNumber);
             return Task.CompletedTask;
         }
 
@@ -26,7 +26,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         {
             _logger.LogError(e.BankIdApiException, "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
             _logger.LogTrace(new EventId(e.EventTypeId, e.EventTypeName), "BankID auth failed for PersonalIdentityNumber '{PersonalIdentityNumber}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.PersonalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
-
             return Task.CompletedTask;
         }
 
@@ -77,6 +76,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             _logger.LogInformation(new EventId(e.EventTypeId, e.EventTypeName), "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", e.OrderRef, e.Exception.Message);
             return Task.CompletedTask;
         }
-
     }
 }

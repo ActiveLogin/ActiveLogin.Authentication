@@ -1,3 +1,5 @@
+using ActiveLogin.Identity.Swedish;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
     /// <summary>
@@ -5,14 +7,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// </summary>
     public class BankIdAuthenticationTicketCreatedEvent : BankIdEvent
     {
-
-        public BankIdAuthenticationTicketCreatedEvent(string personalIdentityNumber)
-            : base(BankIdEventTypeIds.BankIdAuthenticationTicketCreated, BankIdEventTypeNames.BankIdAuthenticationTicketCreated, EventSeverity.Information)
+        internal BankIdAuthenticationTicketCreatedEvent(SwedishPersonalIdentityNumber personalIdentityNumber)
+            : base(BankIdEventTypes.BankIdAuthenticationTicketCreatedId, BankIdEventTypes.BankIdAuthenticationTicketCreatedName, EventSeverity.Information)
         {
             PersonalIdentityNumber = personalIdentityNumber;
         }
 
-        public string PersonalIdentityNumber { get; set; }
+        public SwedishPersonalIdentityNumber PersonalIdentityNumber { get; }
     }
 }
-

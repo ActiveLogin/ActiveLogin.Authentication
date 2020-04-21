@@ -61,7 +61,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var properties = state.AuthenticationProperties;
             var ticket = GetAuthenticationTicket(loginResult, properties);
 
-            _bankIdEventTrigger.TriggerAsync(new BankIdAuthenticationTicketCreatedEvent(loginResult.PersonalIdentityNumber));
+            _bankIdEventTrigger.TriggerAsync(new BankIdAuthenticationTicketCreatedEvent(SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber)));
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
         }

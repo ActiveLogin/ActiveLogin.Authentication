@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
@@ -11,11 +12,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             _listeners = listeners;
         }
 
-        public void TriggerAsync(BankIdEvent bankIdEvent)
+        public async Task TriggerAsync(BankIdEvent bankIdEvent)
         {
             foreach (var listener in _listeners)
             {
-                listener.HandleAsync(bankIdEvent);
+                await listener.HandleAsync(bankIdEvent);
             }
         }
     }

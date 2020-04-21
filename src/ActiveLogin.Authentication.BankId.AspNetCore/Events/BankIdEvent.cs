@@ -9,11 +9,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             Severity = severity;
         }
 
-        public int EventTypeId { get; set; }
+        public int EventTypeId { get; }
 
-        public string EventTypeName { get; set; }
+        public string EventTypeName { get; }
 
         public EventSeverity Severity { get; }
-
     }
 }

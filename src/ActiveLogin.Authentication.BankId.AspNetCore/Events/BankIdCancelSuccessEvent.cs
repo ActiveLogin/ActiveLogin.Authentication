@@ -5,14 +5,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// </summary>
     public class BankIdCancelSuccessEvent : BankIdEvent
     {
-        public BankIdCancelSuccessEvent(string orderRef)
-            : base(BankIdEventTypeIds.BankIdCancelSuccess, BankIdEventTypeNames.BankIdCancelSuccess, EventSeverity.Success)
+        internal BankIdCancelSuccessEvent(string orderRef)
+            : base(BankIdEventTypes.BankIdCancelSuccessId, BankIdEventTypes.BankIdCancelSuccessName, EventSeverity.Success)
         {
             OrderRef = orderRef;
         }
 
-        public string OrderRef { get; set; }
-
+        public string OrderRef { get; }
     }
 }
-

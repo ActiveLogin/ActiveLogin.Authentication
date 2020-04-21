@@ -38,7 +38,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdOrderRefProtector _orderRefProtector;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
-        private readonly List<IBankIdResultStore> _bankIdResultStores;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
 
@@ -54,7 +53,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdOrderRefProtector orderRefProtector,
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
-            IEnumerable<IBankIdResultStore> bankIdResultStores,
             IBankIdQrCodeGenerator qrCodeGenerator,
             IBankIdEventTrigger bankIdEventTrigger)
         {
@@ -67,7 +65,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _orderRefProtector = orderRefProtector;
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
-            _bankIdResultStores = bankIdResultStores.ToList();
             _qrCodeGenerator = qrCodeGenerator;
             _bankIdEventTrigger = bankIdEventTrigger;
         }
@@ -115,7 +112,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
-                _bankIdEventTrigger.TriggerAsync(new BankIdAuthFailureEvent(personalIdentityNumber, bankIdApiException));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthFailureEvent(personalIdentityNumber, bankIdApiException));
 
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
@@ -124,7 +121,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var orderRef = authResponse.OrderRef;
             var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(orderRef));
 
-            _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef));
 
             if (unprotectedLoginOptions.AutoLaunch)
             {
@@ -231,7 +228,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
-                _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef.OrderRef, bankIdApiException));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef.OrderRef, bankIdApiException));
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
@@ -276,11 +273,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 throw new ArgumentNullException(nameof(request.ReturnUrl));
             }
 
-            _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData));
-            foreach (var bankIdResultStore in _bankIdResultStores)
-            {
-                await bankIdResultStore.StoreCollectCompletedCompletionData(collectResponse.OrderRef, collectResponse.CompletionData);
-            }
+            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData));
 
             var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
             if (!Url.IsLocalUrl(returnUri))
@@ -368,7 +361,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             try
             {
                 await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
-                _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef.OrderRef));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef.OrderRef));
             }
             catch (Exception exception)
             {
@@ -376,7 +369,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 // are that the orderRef has already been cancelled or we have
                 // a network issue. We still want to provide the GUI with the
                 // validated cancellation URL though.
-                _bankIdEventTrigger.TriggerAsync(new BankIdCancelFailedEvent(orderRef.OrderRef, exception));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelFailedEvent(orderRef.OrderRef, exception));
             }
 
             return Ok(BankIdLoginApiCancelResponse.Cancelled(request.CancelReturnUrl));

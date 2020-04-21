@@ -43,6 +43,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.AddResultStore<BankIdResultTraceLoggerStore>();
 
+            builder.AddLoggerEventListener();
+            builder.AddResultStoreEventListener();
+
             return builder;
         }
 
@@ -111,6 +114,33 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
         {
             builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Add a custom event listener.
+        /// </summary>
+        /// <typeparam name="TBankIdEventListenerImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddEventListener<TBankIdEventListenerImplementation>(this IBankIdBuilder builder) where TBankIdEventListenerImplementation : class, IBankIdEventListener
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener, TBankIdEventListenerImplementation>();
+
+            return builder;
+        }
+
+        private static IBankIdBuilder AddLoggerEventListener(this IBankIdBuilder builder)
+        {
+            builder.AddEventListener<LoggerBankIdEventListner>();
+
+            return builder;
+        }
+
+        private static IBankIdBuilder AddResultStoreEventListener(this IBankIdBuilder builder)
+        {
+            builder.AddEventListener<ResultStoreBankIdEventListener>();
 
             return builder;
         }

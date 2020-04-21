@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             _ => Task.CompletedTask
         };
 
-        public virtual Task HandleBankIdAuthenticationTicketCreatedEvent(BankIdAuthenticationTicketCreatedEvent bankIdEvent) => Task.CompletedTask;
+        public virtual Task HandleBankIdAuthenticationTicketCreatedEvent(BankIdAuthenticationTicketCreatedEvent e) => Task.CompletedTask;
 
         public virtual Task HandleBankIdAuthFailureEvent(BankIdAuthFailureEvent e) => Task.CompletedTask;
 
@@ -35,6 +35,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         public virtual Task HandleBankIdCollectPendingEvent(BankIdCollectPendingEvent e) => Task.CompletedTask;
 
         public virtual Task HandleBankIdCollectSoftFailureEvent(BankIdCollectFailureEvent e) => Task.CompletedTask;
-
     }
 }
