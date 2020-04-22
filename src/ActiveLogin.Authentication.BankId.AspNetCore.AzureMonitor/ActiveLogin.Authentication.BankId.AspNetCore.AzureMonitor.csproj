@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <NeutralLanguage>en</NeutralLanguage>
+        <NoWarn>1701;1702;1591;CS7035</NoWarn>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+        <Product>Active Login</Product>
+        <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor</AssemblyName>
+        <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor</PackageId>
+
+        <VersionPrefix>3.1.0</VersionPrefix>
+        <VersionSuffix>beta-1</VersionSuffix>
+        <AssemblyVersion>3.0.0.0</AssemblyVersion>
+        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
+        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
+
+        <Description>Azure Monitor integrations for ActiveLogin.Authentication.BankId.AspNetCore that enables an application to support Swedish BankID's (svenskt BankIDs) native authentication workflow.</Description>
+        <PackageTags>azure;bankid;swedish;sweden;aspnetcore;authentication</PackageTags>
+
+        <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
+
+        <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
+        <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
+        <None Include="readme.txt" Pack="True" PackagePath="readme.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
+    </ItemGroup>
+</Project>
