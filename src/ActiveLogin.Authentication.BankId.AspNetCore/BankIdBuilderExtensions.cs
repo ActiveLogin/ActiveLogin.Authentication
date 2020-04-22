@@ -6,6 +6,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
@@ -40,8 +41,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
 
+            services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
+
             builder.AddResultStore<BankIdResultTraceLoggerStore>();
             builder.UseEndUserIpResolver<RemoteIpAddressEndUserIpResolver>();
+
+            builder.AddLoggerEventListener();
+            builder.AddResultStoreEventListener();
 
             return builder;
         }
@@ -137,6 +143,33 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBankIdBuilder UseEndUserIpResolver(this IBankIdBuilder builder, Func<HttpContext, string> resolver)
         {
             builder.AuthenticationBuilder.Services.AddTransient<IEndUserIpResolver>(x => new DynamicEndUserIpResolver(resolver));
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Add a custom event listener.
+        /// </summary>
+        /// <typeparam name="TBankIdEventListenerImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddEventListener<TBankIdEventListenerImplementation>(this IBankIdBuilder builder) where TBankIdEventListenerImplementation : class, IBankIdEventListener
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener, TBankIdEventListenerImplementation>();
+
+            return builder;
+        }
+
+        private static IBankIdBuilder AddLoggerEventListener(this IBankIdBuilder builder)
+        {
+            builder.AddEventListener<LoggerBankIdEventListner>();
+
+            return builder;
+        }
+
+        private static IBankIdBuilder AddResultStoreEventListener(this IBankIdBuilder builder)
+        {
+            builder.AddEventListener<ResultStoreBankIdEventListener>();
 
             return builder;
         }

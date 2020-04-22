@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
@@ -16,23 +17,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     {
-        private readonly ILogger<BankIdHandler> _logger;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
+        private readonly IBankIdEventTrigger _bankIdEventTrigger;
 
         public BankIdHandler(
             IOptionsMonitor<BankIdOptions> options,
             ILoggerFactory loggerFactory,
             UrlEncoder encoder,
             ISystemClock clock,
-            ILogger<BankIdHandler> logger,
             IBankIdLoginOptionsProtector loginOptionsProtector,
-            IBankIdLoginResultProtector loginResultProtector)
+            IBankIdLoginResultProtector loginResultProtector,
+            IBankIdEventTrigger bankIdEventTrigger)
             : base(options, loggerFactory, encoder, clock)
         {
-            _logger = logger;
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
+            _bankIdEventTrigger = bankIdEventTrigger;
         }
 
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
@@ -60,7 +61,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var properties = state.AuthenticationProperties;
             var ticket = GetAuthenticationTicket(loginResult, properties);
 
-            _logger.BankIdAuthenticationTicketCreated(loginResult.PersonalIdentityNumber);
+            _bankIdEventTrigger.TriggerAsync(new BankIdAuthenticationTicketCreatedEvent(SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber)));
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
         }
