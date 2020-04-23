@@ -162,7 +162,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IBankIdBuilder AddLoggerEventListener(this IBankIdBuilder builder)
         {
-            builder.AddEventListener<LoggerBankIdEventListner>();
+            builder.AddEventListener<LoggerBankIdEventListener>();
 
             return builder;
         }

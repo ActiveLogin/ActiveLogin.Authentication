@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
-    public abstract class TypedBankIdEventListner : IBankIdEventListener
+    public abstract class TypedBankIdEventListener : IBankIdEventListener
     {
         public Task HandleAsync(BankIdEvent bankIdEvent) => bankIdEvent switch
         {

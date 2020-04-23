@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// <summary>
     /// To comply with BankID Technical requirement RFT5 you need to store the data in completion data./>.
     /// </summary>
-    public class ResultStoreBankIdEventListener : TypedBankIdEventListner
+    public class ResultStoreBankIdEventListener : TypedBankIdEventListener
     {
         private readonly List<IBankIdResultStore> _bankIdResultStores;
 

@@ -1,39 +1,38 @@
 using System;
 using ActiveLogin.Authentication.BankId.AspNetCore;
-using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
-using Microsoft.Extensions.Configuration;
+using ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class BankIdBuilderAzureMonitorExtensions
     {
-        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, IConfigurationSection configurationSection)
+        public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, Action<ApplicationInsightsBankIdEventListenerOptions> configureOptions)
         {
-            var options = new ClientCertificateFromAzureKeyVaultOptions();
-            configurationSection.Bind(options);
-            return UseClientCertificateFromAzureKeyVault(builder, options);
-        }
-
-        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
-        {
-            var options = new ClientCertificateFromAzureKeyVaultOptions();
+            var options = new ApplicationInsightsBankIdEventListenerOptions();
             configureOptions(options);
-            return UseClientCertificateFromAzureKeyVault(builder, options);
+            return AddApplicationInsightsEventListener(builder, options);
         }
 
-        public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, ClientCertificateFromAzureKeyVaultOptions options)
+        public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, ApplicationInsightsBankIdEventListenerOptions options)
         {
-            if (string.IsNullOrWhiteSpace(options.AzureKeyVaultSecretName))
-            {
-                throw new ArgumentException("AzureKeyVaultSecretName is required");
-            }
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener>(x => new ApplicationInsightsBankIdEventListener(x.GetRequiredService<TelemetryClient>(), options));
 
-            builder.UseClientCertificate(() =>
-            {
-                var keyVaultCertificateClient = AzureKeyVaultCertificateClient.Create(options);
+            return builder;
+        }
 
-                return keyVaultCertificateClient.GetX509Certificate2(options.AzureKeyVaultSecretName);
-            });
+        public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string instrumentationKey, Action<ApplicationInsightsBankIdEventListenerOptions> configureOptions)
+        {
+            var options = new ApplicationInsightsBankIdEventListenerOptions();
+            configureOptions(options);
+            return AddApplicationInsightsEventListener(builder, instrumentationKey, options);
+        }
+
+        public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string instrumentationKey, ApplicationInsightsBankIdEventListenerOptions options)
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener>(x => new ApplicationInsightsBankIdEventListener(new TelemetryClient(new TelemetryConfiguration(instrumentationKey)), options));
 
             return builder;
         }
