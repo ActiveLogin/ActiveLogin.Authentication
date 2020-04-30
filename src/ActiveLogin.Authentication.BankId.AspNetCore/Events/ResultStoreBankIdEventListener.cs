@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             _bankIdResultStores = bankIdResultStores.ToList();
         }
 
-        public async override Task HandleBankIdCollectCompletedEvent(BankIdCollectCompletedEvent e)
+        public async override Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e)
         {
             var tasks = new List<Task>();
 

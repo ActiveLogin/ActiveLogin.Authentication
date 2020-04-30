@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdCollectErrorEvent : BankIdEvent
     {
         internal BankIdCollectErrorEvent(string orderRef, BankIdApiException bankIdApiException)
-            : base(BankIdEventTypes.BankIdCollectHardFailureId, BankIdEventTypes.BankIdCollectHardFailureName, EventSeverity.Error)
+            : base(BankIdEventTypes.BankIdCollectErrorId, BankIdEventTypes.BankIdCollectErrorName, EventSeverity.Error)
         {
             OrderRef = orderRef;
             BankIdApiException = bankIdApiException;

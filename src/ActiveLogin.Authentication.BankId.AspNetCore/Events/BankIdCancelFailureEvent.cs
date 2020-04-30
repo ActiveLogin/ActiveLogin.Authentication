@@ -5,9 +5,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// <summary>
     /// Event for canceling authentication order failed.
     /// </summary>
-    public class BankIdCancelFailedEvent : BankIdEvent
+    public class BankIdCancelFailureEvent : BankIdEvent
     {
-        internal BankIdCancelFailedEvent(string orderRef, Exception exception)
+        internal BankIdCancelFailureEvent(string orderRef, Exception exception)
             : base(BankIdEventTypes.BankIdCancelFailureId, BankIdEventTypes.BankIdCancelFailureName, EventSeverity.Failure)
         {
             OrderRef = orderRef;

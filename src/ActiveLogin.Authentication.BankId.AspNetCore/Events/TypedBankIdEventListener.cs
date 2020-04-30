@@ -6,34 +6,39 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     {
         public Task HandleAsync(BankIdEvent bankIdEvent) => bankIdEvent switch
         {
-            BankIdAuthenticationTicketCreatedEvent e => HandleBankIdAuthenticationTicketCreatedEvent(e),
-            BankIdAuthFailureEvent e => HandleBankIdAuthFailureEvent(e),
-            BankIdAuthSuccessEvent e => HandleBankIdAuthSuccessEvent(e),
-            BankIdCancelFailedEvent e => HandleBankIdCancelFailedEvent(e),
-            BankIdCancelSuccessEvent e => HandleBankIdCancelSuccessEvent(e),
-            BankIdCollectCompletedEvent e => HandleBankIdCollectCompletedEvent(e),
-            BankIdCollectErrorEvent e => HandleBankIdCollectHardFailureEvent(e),
-            BankIdCollectPendingEvent e => HandleBankIdCollectPendingEvent(e),
-            BankIdCollectFailureEvent e => HandleBankIdCollectSoftFailureEvent(e),
+            BankIdAspNetAuthenticateSuccessEvent e => HandleAspNetAuthenticateSuccessEvent(e),
+            BankIdAspNetAuthenticateErrorEvent e => HandleAspNetAuthenticateErrorEvent(e),
+
+            BankIdAspNetChallangeSuccessEvent e => HandleAspNetChallengeSuccessEvent(e),
+
+            BankIdAuthSuccessEvent e => HandleAuthSuccessEvent(e),
+            BankIdAuthErrorEvent e => HandleAuthFailureEvent(e),
+            
+            BankIdCancelSuccessEvent e => HandleCancelSuccessEvent(e),
+            BankIdCancelFailureEvent e => HandleCancelFailureEvent(e),
+
+            BankIdCollectPendingEvent e => HandleCollectPendingEvent(e),
+            BankIdCollectCompletedEvent e => HandleCollectCompletedEvent(e),
+            BankIdCollectFailureEvent e => HandleCollectFailureEvent(e),
+            BankIdCollectErrorEvent e => HandleCollectErrorEvent(e),
+
             _ => Task.CompletedTask
         };
 
-        public virtual Task HandleBankIdAuthenticationTicketCreatedEvent(BankIdAuthenticationTicketCreatedEvent e) => Task.CompletedTask;
+        public virtual Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e) => Task.CompletedTask;
+        public virtual Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateErrorEvent e) => Task.CompletedTask;
 
-        public virtual Task HandleBankIdAuthFailureEvent(BankIdAuthFailureEvent e) => Task.CompletedTask;
+        public virtual Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallangeSuccessEvent e) => Task.CompletedTask;
 
-        public virtual Task HandleBankIdAuthSuccessEvent(BankIdAuthSuccessEvent e) => Task.CompletedTask;
+        public virtual Task HandleAuthSuccessEvent(BankIdAuthSuccessEvent e) => Task.CompletedTask;
+        public virtual Task HandleAuthFailureEvent(BankIdAuthErrorEvent e) => Task.CompletedTask;
 
-        public virtual Task HandleBankIdCancelFailedEvent(BankIdCancelFailedEvent e) => Task.CompletedTask;
+        public virtual Task HandleCancelSuccessEvent(BankIdCancelSuccessEvent e) => Task.CompletedTask;
+        public virtual Task HandleCancelFailureEvent(BankIdCancelFailureEvent e) => Task.CompletedTask;
 
-        public virtual Task HandleBankIdCancelSuccessEvent(BankIdCancelSuccessEvent e) => Task.CompletedTask;
-
-        public virtual Task HandleBankIdCollectCompletedEvent(BankIdCollectCompletedEvent e) => Task.CompletedTask;
-
-        public virtual Task HandleBankIdCollectHardFailureEvent(BankIdCollectErrorEvent e) => Task.CompletedTask;
-
-        public virtual Task HandleBankIdCollectPendingEvent(BankIdCollectPendingEvent e) => Task.CompletedTask;
-
-        public virtual Task HandleBankIdCollectSoftFailureEvent(BankIdCollectFailureEvent e) => Task.CompletedTask;
+        public virtual Task HandleCollectPendingEvent(BankIdCollectPendingEvent e) => Task.CompletedTask;
+        public virtual Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e) => Task.CompletedTask;
+        public virtual Task HandleCollectFailureEvent(BankIdCollectFailureEvent e) => Task.CompletedTask;
+        public virtual Task HandleCollectErrorEvent(BankIdCollectErrorEvent e) => Task.CompletedTask;
     }
 }

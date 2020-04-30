@@ -13,9 +13,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             _logger = logger;
         }
 
-        // BankID API - Auth
+        // ASP.NET Authentication
 
-        public override Task HandleBankIdAuthenticationTicketCreatedEvent(BankIdAuthenticationTicketCreatedEvent e)
+        public override Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e)
         {
             var eventId = GetEventId(e);
             _logger.LogInformation(eventId, "BankID authentication ticket created");
@@ -23,15 +23,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             return Task.CompletedTask;
         }
 
-        public override Task HandleBankIdAuthFailureEvent(BankIdAuthFailureEvent e)
+        public override Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateErrorEvent e)
         {
             var eventId = GetEventId(e);
-            _logger.LogError(eventId, e.BankIdApiException, "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
-            _logger.LogTrace(eventId, "BankID auth failed for PersonalIdentityNumber '{PersonalIdentityNumber}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.PersonalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
+            _logger.LogInformation(eventId, "BankID authentication had an error with reason '{ErrorReason}'", e.ErrorReason);
             return Task.CompletedTask;
         }
 
-        public override Task HandleBankIdAuthSuccessEvent(BankIdAuthSuccessEvent e)
+        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallangeSuccessEvent e)
+        {
+            var eventId = GetEventId(e);
+            _logger.LogInformation(eventId, "BankID authentication challenged");
+            return Task.CompletedTask;
+        }
+
+        // BankID API - Auth
+
+        public override Task HandleAuthSuccessEvent(BankIdAuthSuccessEvent e)
         {
             var eventId = GetEventId(e);
             _logger.LogInformation(eventId, "BankID auth succeeded with the OrderRef '{OrderRef}'", e.OrderRef);
@@ -39,27 +47,29 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             return Task.CompletedTask;
         }
 
+        public override Task HandleAuthFailureEvent(BankIdAuthErrorEvent e)
+        {
+            var eventId = GetEventId(e);
+            _logger.LogError(eventId, e.BankIdApiException, "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
+            _logger.LogTrace(eventId, "BankID auth failed for PersonalIdentityNumber '{PersonalIdentityNumber}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.PersonalIdentityNumber?.To12DigitString() ?? MissingPersonalIdentityNumber, e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
+            return Task.CompletedTask;
+        }
+
         // BankID API - Collect
 
-        public override Task HandleBankIdCollectHardFailureEvent(BankIdCollectErrorEvent e)
-        {
-            _logger.LogError(GetEventId(e), e.BankIdApiException, "BankID collect failed for OrderRef '{OrderRef}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.OrderRef, e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
-            return Task.CompletedTask;
-        }
-
-        public override Task HandleBankIdCollectSoftFailureEvent(BankIdCollectFailureEvent e)
-        {
-            _logger.LogInformation(GetEventId(e), "BankID collect failed for OrderRef '{OrderRef}' with the HintCode '{CollectHintCode}'", e.OrderRef, e.HintCode);
-            return Task.CompletedTask;
-        }
-
-        public override Task HandleBankIdCollectPendingEvent(BankIdCollectPendingEvent e)
+        public override Task HandleCollectPendingEvent(BankIdCollectPendingEvent e)
         {
             _logger.LogInformation(GetEventId(e), "BankID collect is pending for OrderRef '{OrderRef}' with HintCode '{CollectHintCode}'", e.OrderRef, e.HintCode);
             return Task.CompletedTask;
         }
 
-        public override Task HandleBankIdCollectCompletedEvent(BankIdCollectCompletedEvent e)
+        public override Task HandleCollectFailureEvent(BankIdCollectFailureEvent e)
+        {
+            _logger.LogInformation(GetEventId(e), "BankID collect failed for OrderRef '{OrderRef}' with the HintCode '{CollectHintCode}'", e.OrderRef, e.HintCode);
+            return Task.CompletedTask;
+        }
+
+        public override Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e)
         {
             var eventId = GetEventId(e);
             _logger.LogInformation(eventId, "BankID collect is completed for OrderRef '{OrderRef}'", e.OrderRef);
@@ -67,15 +77,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             return Task.CompletedTask;
         }
 
+        public override Task HandleCollectErrorEvent(BankIdCollectErrorEvent e)
+        {
+            _logger.LogError(GetEventId(e), e.BankIdApiException, "BankID collect failed for OrderRef '{OrderRef}' with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.OrderRef, e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);
+            return Task.CompletedTask;
+        }
+
         // BankID - Cancel
 
-        public override Task HandleBankIdCancelSuccessEvent(BankIdCancelSuccessEvent e)
+        public override Task HandleCancelSuccessEvent(BankIdCancelSuccessEvent e)
         {
             _logger.LogInformation(GetEventId(e), "BankID auth was cancelled with the OrderRef '{OrderRef}'", e.OrderRef);
             return Task.CompletedTask;
         }
 
-        public override Task HandleBankIdCancelFailedEvent(BankIdCancelFailedEvent e)
+        public override Task HandleCancelFailureEvent(BankIdCancelFailureEvent e)
         {
             _logger.LogInformation(GetEventId(e), "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", e.OrderRef, e.Exception.Message);
             return Task.CompletedTask;

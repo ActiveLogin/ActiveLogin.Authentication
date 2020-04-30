@@ -3,22 +3,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public enum EventSeverity
     {
         /// <summary>
-        /// Success event
+        /// Information event.
         /// </summary>
-        Success = 1,
+        Information = 1,
 
         /// <summary>
-        /// Failure event
+        /// Success event.
         /// </summary>
-        Failure = 2,
+        Success = 2,
 
         /// <summary>
-        /// Information event
+        /// Failure event. Occurs when a known / handled scenario occurs that is not succeeded.
         /// </summary>
-        Information = 3,
+        Failure = 3,
 
         /// <summary>
-        /// Error event
+        /// Error event. Occurs when an unknown / unhandled scenario occurs that is not succeeded.
         /// </summary>
         Error = 4
     }
