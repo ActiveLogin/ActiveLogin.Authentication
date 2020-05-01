@@ -115,12 +115,12 @@ namespace IdentityServer.ServerSample
                 {
                     builder.AddApplicationInsightsEventListener(options =>
                     {
-                        options.LogUserPersonalIdentityNumber = true;
+                        options.LogUserPersonalIdentityNumber = false;
                         options.LogUserPersonalIdentityNumberHints = true;
 
-                        options.LogUserNames = true;
+                        options.LogUserNames = false;
 
-                        options.LogDeviceIpAddress = true;
+                        options.LogDeviceIpAddress = false;
                         options.LogCertificateDates = true;
                     });
 
