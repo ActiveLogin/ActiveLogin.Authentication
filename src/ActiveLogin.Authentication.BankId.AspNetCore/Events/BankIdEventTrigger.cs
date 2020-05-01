@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
     public class BankIdEventTrigger : IBankIdEventTrigger
     {
-        private List<IBankIdEventListener> _listeners;
+        private readonly List<IBankIdEventListener> _listeners;
 
         public BankIdEventTrigger(IEnumerable<IBankIdEventListener> listeners) 
         {

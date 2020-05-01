@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
@@ -10,7 +10,6 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl)
         {
-            builder.EnableHttpClient();
             builder.ConfigureHttpClient(httpClient =>
             {
                 httpClient.BaseAddress = apiBaseUrl;

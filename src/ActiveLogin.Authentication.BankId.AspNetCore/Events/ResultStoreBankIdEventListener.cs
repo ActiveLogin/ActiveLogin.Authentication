@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 
@@ -10,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// <summary>
     /// To comply with BankID Technical requirement RFT5 you need to store the data in completion data./>.
     /// </summary>
-    public class ResultStoreBankIdEventListener : TypedBankIdEventListener
+    internal class ResultStoreBankIdEventListener : TypedBankIdEventListener
     {
         private readonly List<IBankIdResultStore> _bankIdResultStores;
 
@@ -19,7 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             _bankIdResultStores = bankIdResultStores.ToList();
         }
 
-        public async override Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e)
+        public override async Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e)
         {
             var tasks = new List<Task>();
 
