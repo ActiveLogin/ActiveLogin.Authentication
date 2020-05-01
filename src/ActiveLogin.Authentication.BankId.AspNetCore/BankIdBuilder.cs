@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdBuilder : IBankIdBuilder
+    internal class BankIdBuilder : IBankIdBuilder
     {
         public AuthenticationBuilder AuthenticationBuilder { get; }
 

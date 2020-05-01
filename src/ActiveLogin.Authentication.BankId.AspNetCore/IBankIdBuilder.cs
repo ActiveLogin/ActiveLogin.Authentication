@@ -8,8 +8,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     {
         AuthenticationBuilder AuthenticationBuilder { get; }
 
-        void EnableHttpBankIdApiClient();
-
         void ConfigureHttpClient(Action<HttpClient> configureHttpClient);
         void ConfigureHttpClientHandler(Action<SocketsHttpHandler> configureHttpClientHandler);
     }

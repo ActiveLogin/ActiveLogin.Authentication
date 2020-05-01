@@ -20,7 +20,10 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AuthenticationBuilder.Services.AddTransient<IBankIdApiClient, BankIdApiClient>();
             builder.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, BankIdLauncher>();
 
-            builder.EnableHttpBankIdApiClient();
+            if (builder is BankIdBuilder bankIdBuilder)
+            {
+                bankIdBuilder.EnableHttpBankIdApiClient();
+            }
 
             return builder;
         }
