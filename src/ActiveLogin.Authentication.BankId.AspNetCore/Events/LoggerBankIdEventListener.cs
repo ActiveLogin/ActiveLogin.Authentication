@@ -23,7 +23,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             return Task.CompletedTask;
         }
 
-        public override Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateErrorEvent e)
+        public override Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent e)
         {
             var eventId = GetEventId(e);
             _logger.LogInformation(eventId, "BankID authentication had an error with reason '{ErrorReason}'", e.ErrorReason);
@@ -91,7 +91,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             return Task.CompletedTask;
         }
 
-        public override Task HandleCancelFailureEvent(BankIdCancelFailureEvent e)
+        public override Task HandleCancelFailureEvent(BankIdCancelErrorEvent e)
         {
             _logger.LogInformation(GetEventId(e), "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", e.OrderRef, e.Exception.Message);
             return Task.CompletedTask;

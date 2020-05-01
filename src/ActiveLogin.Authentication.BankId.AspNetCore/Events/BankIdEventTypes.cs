@@ -13,7 +13,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         public static readonly string BankIdAspNetAuthenticateSuccessEventName = EventNamePrefix + "BankIdAspNetAuthenticateSuccess";
 
         public static readonly int BankIdAspNetAuthenticateErrorEventId = EventIdBase + 1_1_2;
-        public static readonly string BankIdAspNetAuthenticateErrorEventName = EventNamePrefix + "BankIdAspNetAuthenticateError";
+        public static readonly string BankIdAspNetAuthenticateFailureEventName = EventNamePrefix + "BankIdAspNetAuthenticateFailure";
 
         public static readonly int BankIdAspNetChallengeSuccessEventId = EventIdBase + 1_2_1;
         public static readonly string BankIdAspNetChallengeSuccessEventName = EventNamePrefix + "BankIdAspNetChallengeSuccess";

@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         public Task HandleAsync(BankIdEvent bankIdEvent) => bankIdEvent switch
         {
             BankIdAspNetAuthenticateSuccessEvent e => HandleAspNetAuthenticateSuccessEvent(e),
-            BankIdAspNetAuthenticateErrorEvent e => HandleAspNetAuthenticateErrorEvent(e),
+            BankIdAspNetAuthenticateFailureEvent e => HandleAspNetAuthenticateErrorEvent(e),
 
             BankIdAspNetChallangeSuccessEvent e => HandleAspNetChallengeSuccessEvent(e),
 
@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             BankIdAuthErrorEvent e => HandleAuthFailureEvent(e),
             
             BankIdCancelSuccessEvent e => HandleCancelSuccessEvent(e),
-            BankIdCancelFailureEvent e => HandleCancelFailureEvent(e),
+            BankIdCancelErrorEvent e => HandleCancelFailureEvent(e),
 
             BankIdCollectPendingEvent e => HandleCollectPendingEvent(e),
             BankIdCollectCompletedEvent e => HandleCollectCompletedEvent(e),
@@ -26,7 +26,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         };
 
         public virtual Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e) => Task.CompletedTask;
-        public virtual Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateErrorEvent e) => Task.CompletedTask;
+        public virtual Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent e) => Task.CompletedTask;
 
         public virtual Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallangeSuccessEvent e) => Task.CompletedTask;
 
@@ -34,7 +34,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         public virtual Task HandleAuthFailureEvent(BankIdAuthErrorEvent e) => Task.CompletedTask;
 
         public virtual Task HandleCancelSuccessEvent(BankIdCancelSuccessEvent e) => Task.CompletedTask;
-        public virtual Task HandleCancelFailureEvent(BankIdCancelFailureEvent e) => Task.CompletedTask;
+        public virtual Task HandleCancelFailureEvent(BankIdCancelErrorEvent e) => Task.CompletedTask;
 
         public virtual Task HandleCollectPendingEvent(BankIdCollectPendingEvent e) => Task.CompletedTask;
         public virtual Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e) => Task.CompletedTask;

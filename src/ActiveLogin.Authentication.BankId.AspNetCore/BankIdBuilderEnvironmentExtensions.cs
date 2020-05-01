@@ -8,8 +8,10 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class BankIdBuilderEnvironmentExtensions
     {
-        internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl)
+        internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl, string environment)
         {
+            SetActiveLoginContext(builder.AuthenticationBuilder.Services, environment, BankIdConstants.BankIdApiVersion);
+
             builder.ConfigureHttpClient(httpClient =>
             {
                 httpClient.BaseAddress = apiBaseUrl;
@@ -23,12 +25,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder)
         {
-            return builder.UseEnvironment(BankIdUrls.TestApiBaseUrl);
+            return builder.UseEnvironment(BankIdUrls.TestApiBaseUrl, BankIdEnvironments.Test);
         }
 
         public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder)
         {
-            return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl);
+            return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl, BankIdEnvironments.Production);
         }
 
         public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder)
@@ -42,10 +44,21 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
         {
+            SetActiveLoginContext(builder.AuthenticationBuilder.Services, BankIdEnvironments.Simulated, BankIdConstants.BankIdApiVersion);
+
             builder.AuthenticationBuilder.Services.TryAddSingleton(bankIdDevelopmentApiClient);
             builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, BankIdDevelopmentLauncher>();
 
             return builder;
+        }
+
+        private static void SetActiveLoginContext(IServiceCollection services, string environment, string apiVersion)
+        {
+            services.Configure<BankIdActiveLoginContext>(context =>
+            {
+                context.BankIdApiEnvironment = environment;
+                context.BankIdApiVersion = apiVersion;
+            });
         }
     }
 }

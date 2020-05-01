@@ -13,12 +13,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         Success = 2,
 
         /// <summary>
-        /// Failure event. Occurs when a known / handled scenario occurs that is not succeeded.
+        /// Failure event.
         /// </summary>
         Failure = 3,
 
         /// <summary>
-        /// Error event. Occurs when an unknown / unhandled scenario occurs that is not succeeded.
+        /// Error event.
         /// </summary>
         Error = 4
     }

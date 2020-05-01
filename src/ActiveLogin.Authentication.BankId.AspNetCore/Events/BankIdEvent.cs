@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
     public abstract class BankIdEvent
@@ -9,10 +11,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             EventSeverity = eventSeverity;
         }
 
+        internal void SetContext(BankIdActiveLoginContext context)
+        {
+            ActiveLoginProductName = context.ActiveLoginProductName;
+            ActiveLoginProductVersion = context.ActiveLoginProductVersion;
+
+            BankIdApiEnvironment = context.BankIdApiEnvironment;
+            BankIdApiVersion = context.BankIdApiVersion;
+        }
+
         public int EventTypeId { get; }
 
         public string EventTypeName { get; }
 
         public EventSeverity EventSeverity { get; }
+
+        public string ActiveLoginProductName { get; private set; } = string.Empty;
+        public string ActiveLoginProductVersion { get; private set; } = string.Empty;
+
+        public string BankIdApiEnvironment { get; private set; } = string.Empty;
+        public string BankIdApiVersion { get; private set; } = string.Empty;
     }
 }

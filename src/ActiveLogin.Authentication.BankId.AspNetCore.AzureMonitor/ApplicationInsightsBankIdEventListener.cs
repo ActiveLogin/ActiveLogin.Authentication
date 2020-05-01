@@ -11,6 +11,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 {
     public class ApplicationInsightsBankIdEventListener : TypedBankIdEventListener
     {
+        private const string PropertyName_ProductName = "AL_ProductName";
+        private const string PropertyName_ProductVersion = "AL_ProductVersion";
+        private const string PropertyName_BankIdApiEnvironment = "AL_BankId_ApiEnvironment";
+        private const string PropertyName_BankIdApiVersion = "AL_BankId_ApiVersion";
+
         private const string PropertyName_EventTypeName = "AL_Event_TypeName";
         private const string PropertyName_EventTypeId = "AL_Event_TypeId";
         private const string PropertyName_EventSeverity = "AL_Event_Severity";
@@ -56,7 +61,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
             );
         }
 
-        public override Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateErrorEvent e)
+        public override Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent e)
         {
             return Track(
                 e,
@@ -193,7 +198,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
             );
         }
 
-        public override Task HandleCancelFailureEvent(BankIdCancelFailureEvent e)
+        public override Task HandleCancelFailureEvent(BankIdCancelErrorEvent e)
         {
             return Track(
                 e,
@@ -211,6 +216,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         {
             var allProperties = properties == null ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
             var allMetrics = metrics == null ? new Dictionary<string, double>() : new Dictionary<string, double>(metrics);
+
+            allProperties.Add(PropertyName_ProductName, e.ActiveLoginProductName);
+            allProperties.Add(PropertyName_ProductVersion, e.ActiveLoginProductVersion);
+            allProperties.Add(PropertyName_BankIdApiEnvironment, e.BankIdApiEnvironment);
+            allProperties.Add(PropertyName_BankIdApiVersion, e.BankIdApiVersion);
 
             allProperties.Add(PropertyName_EventTypeName, e.EventTypeName);
             allProperties.Add(PropertyName_EventTypeId, e.EventTypeId.ToString("D"));

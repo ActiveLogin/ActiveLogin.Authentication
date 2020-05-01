@@ -71,7 +71,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private async Task<HandleRequestResult> HandleRemoteAuthenticateFail(string reason)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateErrorEvent(reason));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateFailureEvent(reason));
 
             return HandleRequestResult.Fail(reason);
         }
