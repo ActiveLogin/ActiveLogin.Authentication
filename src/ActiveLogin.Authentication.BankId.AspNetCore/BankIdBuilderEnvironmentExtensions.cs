@@ -17,8 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 httpClient.BaseAddress = apiBaseUrl;
             });
 
-            builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdApiClient, BankIdApiClient>();
-            builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, BankIdLauncher>();
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdApiClient, BankIdApiClient>();
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, BankIdLauncher>();
+
+            builder.EnableHttpBankIdApiClient();
 
             return builder;
         }
@@ -46,8 +48,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             SetActiveLoginContext(builder.AuthenticationBuilder.Services, BankIdEnvironments.Simulated, BankIdConstants.BankIdApiVersion);
 
-            builder.AuthenticationBuilder.Services.TryAddSingleton(bankIdDevelopmentApiClient);
-            builder.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, BankIdDevelopmentLauncher>();
+            builder.AuthenticationBuilder.Services.AddSingleton(bankIdDevelopmentApiClient);
+            builder.AuthenticationBuilder.Services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();
 
             return builder;
         }

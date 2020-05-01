@@ -19,8 +19,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         {
             AuthenticationBuilder = authenticationBuilder;
 
-            EnableHttpClient();
-
             ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
             ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
         }
@@ -35,7 +33,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
         }
 
-        private void EnableHttpClient()
+        public void EnableHttpBankIdApiClient()
         {
             AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
                 {
