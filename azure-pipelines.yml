@@ -119,10 +119,10 @@ stages:
       inputs:
         secureFile: 'activesolution-codesigning-cert.pfx'
 
-    - task: NuGetToolInstaller@0
+    - task: NuGetToolInstaller@1
       displayName: 'Install: NuGet'
       inputs:
-        versionSpec: 5.3.0
+        versionSpec: 5.x
 
     - task: NuGetCommand@2
       displayName: 'nuget sign'
