@@ -295,7 +295,7 @@ Azure AD B2C supports using custom identity providers that supports [Open ID Con
 
 ![Active Login with Azure AD B2C](docs/images/activelogin-setup-azuread-b2c.png)
 
-Please [reach out](#support--training) if you need assistance in seting this up.
+Please [reach out](#support--training) if you need assistance in setting this up.
 
 ### How do I prepopulate the personal identity number for the user?
 
