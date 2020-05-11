@@ -6,13 +6,13 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
     /// <summary>
-    /// To comply with BankID Technical requirement RFT5 you need to store the data in completion data./>.
+    /// To comply with BankID Technical requirement RFT5 you need to store the data in completion data.
     /// </summary>
-    internal class ResultStoreBankIdEventListener : TypedBankIdEventListener
+    internal class BankIdResultStoreEventListener : BankIdTypedEventListener
     {
         private readonly List<IBankIdResultStore> _bankIdResultStores;
 
-        public ResultStoreBankIdEventListener(IEnumerable<IBankIdResultStore> bankIdResultStores)
+        public BankIdResultStoreEventListener(IEnumerable<IBankIdResultStore> bankIdResultStores)
         {
             _bankIdResultStores = bankIdResultStores.ToList();
         }

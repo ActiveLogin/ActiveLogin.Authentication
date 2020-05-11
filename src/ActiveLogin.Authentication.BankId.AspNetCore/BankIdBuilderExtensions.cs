@@ -160,16 +160,28 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Add an event listener that will serialize and write all events to debug.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddDebugEventListener(this IBankIdBuilder builder)
+        {
+            builder.AddEventListener<BankIdDebugEventListener>();
+
+            return builder;
+        }
+
         private static IBankIdBuilder AddLoggerEventListener(this IBankIdBuilder builder)
         {
-            builder.AddEventListener<LoggerBankIdEventListener>();
+            builder.AddEventListener<BankIdLoggerEventListener>();
 
             return builder;
         }
 
         private static IBankIdBuilder AddResultStoreEventListener(this IBankIdBuilder builder)
         {
-            builder.AddEventListener<ResultStoreBankIdEventListener>();
+            builder.AddEventListener<BankIdResultStoreEventListener>();
 
             return builder;
         }

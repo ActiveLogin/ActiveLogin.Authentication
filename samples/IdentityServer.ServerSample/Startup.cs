@@ -113,6 +113,7 @@ namespace IdentityServer.ServerSample
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddBankId(builder =>
                 {
+                    builder.AddDebugEventListener();
                     builder.AddApplicationInsightsEventListener(options =>
                     {
                         options.LogUserPersonalIdentityNumber = false;

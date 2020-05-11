@@ -2,7 +2,6 @@ using System;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -17,7 +16,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 httpClient.BaseAddress = apiBaseUrl;
             });
 
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdApiClient, BankIdApiClient>();
             builder.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, BankIdLauncher>();
 
             if (builder is BankIdBuilder bankIdBuilder)

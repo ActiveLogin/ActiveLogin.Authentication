@@ -9,7 +9,7 @@ using Microsoft.ApplicationInsights;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 {
-    public class ApplicationInsightsBankIdEventListener : TypedBankIdEventListener
+    public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
     {
         private const string PropertyName_ProductName = "AL_ProductName";
         private const string PropertyName_ProductVersion = "AL_ProductVersion";
@@ -45,7 +45,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         private readonly TelemetryClient _telemetryClient;
         private readonly ApplicationInsightsBankIdEventListenerOptions _options;
 
-        public ApplicationInsightsBankIdEventListener(TelemetryClient telemetryClient, ApplicationInsightsBankIdEventListenerOptions options)
+        public BankIdApplicationInsightsEventListener(TelemetryClient telemetryClient, ApplicationInsightsBankIdEventListenerOptions options)
         {
             _telemetryClient = telemetryClient;
             _options = options;

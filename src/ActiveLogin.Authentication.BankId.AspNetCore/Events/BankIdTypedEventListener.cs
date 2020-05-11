@@ -2,7 +2,10 @@ using System.Threading.Tasks;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
-    public abstract class TypedBankIdEventListener : IBankIdEventListener
+    /// <summary>
+    /// Base class that allows you to override specific known events.
+    /// </summary>
+    public abstract class BankIdTypedEventListener : IBankIdEventListener
     {
         public Task HandleAsync(BankIdEvent bankIdEvent) => bankIdEvent switch
         {

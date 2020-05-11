@@ -3,12 +3,12 @@ using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
-    public class LoggerBankIdEventListener : TypedBankIdEventListener
+    public class BankIdLoggerEventListener : BankIdTypedEventListener
     {
         private const string MissingPersonalIdentityNumber = "-";
-        private readonly ILogger<LoggerBankIdEventListener> _logger;
+        private readonly ILogger<BankIdLoggerEventListener> _logger;
 
-        public LoggerBankIdEventListener(ILogger<LoggerBankIdEventListener> logger)
+        public BankIdLoggerEventListener(ILogger<BankIdLoggerEventListener> logger)
         {
             _logger = logger;
         }

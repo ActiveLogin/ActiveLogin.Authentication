@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, ApplicationInsightsBankIdEventListenerOptions options)
         {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener>(x => new ApplicationInsightsBankIdEventListener(x.GetRequiredService<TelemetryClient>(), options));
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener>(x => new BankIdApplicationInsightsEventListener(x.GetRequiredService<TelemetryClient>(), options));
 
             return builder;
         }
@@ -44,7 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string instrumentationKey, ApplicationInsightsBankIdEventListenerOptions options)
         {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener>(x => new ApplicationInsightsBankIdEventListener(new TelemetryClient(new TelemetryConfiguration(instrumentationKey)), options));
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener>(x => new BankIdApplicationInsightsEventListener(new TelemetryClient(new TelemetryConfiguration(instrumentationKey)), options));
 
             return builder;
         }
