@@ -40,8 +40,6 @@ stages:
       sourceRepositoryBranch: '$(Build.SourceBranchName)'
       sourceRepositoryCommit: '$(Build.SourceVersion)'
 
-      codesigningTimestamperUrl: 'http://timestamp.digicert.com'
-
     steps:
 
     - task: UseDotNet@2
@@ -110,9 +108,6 @@ stages:
 
     - name: pathToNugetPackages
       value: '**/*.nupkg'
-
-    - name: codesigningTimestamperUrl
-      value: 'http://timestamp.digicert.com'
 
     steps:
     - download: current
