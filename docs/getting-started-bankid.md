@@ -21,7 +21,7 @@ BankID requires you to use a client certificate and trust a specific root CA-cer
 }
 ```
 
-__Note:__ When using MacOS, path strings use ```'/'``` for subfolders: ```"Certificates/BankIdRootCertificate-[Test or Prod].crt"```
+__Note:__ When using MacOS or Linux, path strings use ```'/'``` for subfolders: ```"Certificates/BankIdRootCertificate-[Test or Prod].crt"```
 
 ### Storing certificates in Azure
 
