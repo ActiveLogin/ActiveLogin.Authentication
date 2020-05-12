@@ -40,8 +40,6 @@ stages:
       sourceRepositoryBranch: '$(Build.SourceBranchName)'
       sourceRepositoryCommit: '$(Build.SourceVersion)'
 
-      codesigningTimestamperUrl: 'http://timestamp.digicert.com'
-
     steps:
 
     - task: UseDotNet@2
@@ -111,9 +109,6 @@ stages:
     - name: pathToNugetPackages
       value: '**/*.nupkg'
 
-    - name: codesigningTimestamperUrl
-      value: 'http://timestamp.digicert.com'
-
     steps:
     - download: current
       artifact: '$(sourceArtifactName)'
@@ -124,10 +119,10 @@ stages:
       inputs:
         secureFile: 'activesolution-codesigning-cert.pfx'
 
-    - task: NuGetToolInstaller@0
+    - task: NuGetToolInstaller@1
       displayName: 'Install: NuGet'
       inputs:
-        versionSpec: 5.3.0
+        versionSpec: 5.x
 
     - task: NuGetCommand@2
       displayName: 'nuget sign'
