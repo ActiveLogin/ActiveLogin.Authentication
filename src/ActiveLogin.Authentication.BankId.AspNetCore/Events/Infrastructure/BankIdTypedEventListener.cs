@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
             BankIdAspNetAuthenticateSuccessEvent e => HandleAspNetAuthenticateSuccessEvent(e),
             BankIdAspNetAuthenticateFailureEvent e => HandleAspNetAuthenticateErrorEvent(e),
 
-            BankIdAspNetChallangeSuccessEvent e => HandleAspNetChallengeSuccessEvent(e),
+            BankIdAspNetChallengeSuccessEvent e => HandleAspNetChallengeSuccessEvent(e),
 
             BankIdAuthSuccessEvent e => HandleAuthSuccessEvent(e),
             BankIdAuthErrorEvent e => HandleAuthFailureEvent(e),
@@ -31,7 +31,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
         public virtual Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e) => Task.CompletedTask;
         public virtual Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent e) => Task.CompletedTask;
 
-        public virtual Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallangeSuccessEvent e) => Task.CompletedTask;
+        public virtual Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e) => Task.CompletedTask;
 
         public virtual Task HandleAuthSuccessEvent(BankIdAuthSuccessEvent e) => Task.CompletedTask;
         public virtual Task HandleAuthFailureEvent(BankIdAuthErrorEvent e) => Task.CompletedTask;

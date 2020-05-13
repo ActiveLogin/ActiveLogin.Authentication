@@ -161,7 +161,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallangeSuccessEvent(loginOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(loginOptions));
         }
 
         private static SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)

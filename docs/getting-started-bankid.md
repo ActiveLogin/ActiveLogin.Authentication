@@ -294,7 +294,7 @@ During the login flow, quite a lot of things are happening and using our event l
 At the moment, we trigger these events:
 
 - AspNet
-    - `BankIdAspNetChallangeSuccessEvent`
+    - `BankIdAspNetChallengeSuccessEvent`
     - `BankIdAspNetAuthenticateSuccessEvent`
     - `BankIdAspNetAuthenticateFailureEvent`
 - Auth

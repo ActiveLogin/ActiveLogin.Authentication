@@ -6,9 +6,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// <summary>
     /// Event for creating an ASP.NET authentication ticket.
     /// </summary>
-    public class BankIdAspNetChallangeSuccessEvent : BankIdEvent
+    public class BankIdAspNetChallengeSuccessEvent : BankIdEvent
     {
-        internal BankIdAspNetChallangeSuccessEvent(BankIdLoginOptions bankIdOptions)
+        internal BankIdAspNetChallengeSuccessEvent(BankIdLoginOptions bankIdOptions)
             : base(BankIdEventTypes.BankIdAspNetChallengeSuccessEventId, BankIdEventTypes.BankIdAspNetChallengeSuccessEventName, EventSeverity.Success)
         {
             BankIdOptions = bankIdOptions;

@@ -74,7 +74,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
             );
         }
 
-        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallangeSuccessEvent e)
+        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e)
         {
             return Track(
                 e,

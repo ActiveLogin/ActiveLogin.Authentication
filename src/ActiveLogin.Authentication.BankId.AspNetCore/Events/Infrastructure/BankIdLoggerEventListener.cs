@@ -30,7 +30,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
             return Task.CompletedTask;
         }
 
-        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallangeSuccessEvent e)
+        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e)
         {
             var eventId = GetEventId(e);
             _logger.LogInformation(eventId, "BankID authentication challenged");
