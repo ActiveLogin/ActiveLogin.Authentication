@@ -110,19 +110,6 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds a class that will be called when BankID returns a valid signed in user.
-        /// </summary>
-        /// <typeparam name="TResultStoreImplementation"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
-
-            return builder;
-        }
-
-        /// <summary>
         /// Set the class that will be used to resolve end user ip.
         /// </summary>
         /// <typeparam name="TEndUserIpResolverImplementation"></typeparam>
@@ -183,6 +170,19 @@ namespace Microsoft.Extensions.DependencyInjection
         private static IBankIdBuilder AddResultStoreEventListener(this IBankIdBuilder builder)
         {
             builder.AddEventListener<BankIdResultStoreEventListener>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds a class that will be called when BankID returns a valid signed in user.
+        /// </summary>
+        /// <typeparam name="TResultStoreImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
 
             return builder;
         }

@@ -283,47 +283,124 @@ var props = new AuthenticationProperties
 return Challenge(props, provider);
 ```
 
-### Custom QR code generation
+### Event listeners
 
-By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
+During the login flow, quite a lot of things are happening and using our event listeners you can listen and act on those events. By implementing and regestering `IBankIdEventListener` you will be notified when an event occurs. A common scenario is logging.
 
-If you wish to provide your own implementation of QR code generation simply implement the `IBankIdQrCodeGenerator` interface and add your implementation as a service.
+`BankIdEvent` is the base class for all events which all events will inherit from. Each event might (and in most cases will) have unique properties relevant for that specific event.
+
+#### Event types
+
+At the moment, we trigger these events:
+
+- AspNet
+    - `BankIdAspNetChallangeSuccessEvent`
+    - `BankIdAspNetAuthenticateSuccessEvent`
+    - `BankIdAspNetAuthenticateFailureEvent`
+- Auth
+    - `BankIdAuthSuccessEvent`
+    - `BankIdAuthErrorEvent`
+- Collect
+    - `BankIdCollectPendingEvent`
+    - `BankIdCollectCompletedEvent`
+    - `BankIdCollectFailureEvent`
+    - `BankIdCollectErrorEvent`
+- Cancel
+    - `BankIdCancelSuccessEvent`
+    - `BankIdCancelErrorEvent`
+
+#### Sample implementation
 
 ```csharp
-services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();
+public class BankIdSampleEventListener : IBankIdEventListener
+{
+    public Task HandleAsync(BankIdEvent bankIdEvent)
+    {
+        Console.WriteLine($"{bankIdEvent.EventTypeName}: {bankIdEvent.EventSeverity}");
+        return Task.CompletedTask;
+    }
+}
+
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            //...
+            .AddEventListener<BankIdSampleEventListener>();
+    });
 ```
 
-### BankID Certificate Policies
+#### Supported event listeners
 
-BankId options allows you to set a list of certificate policies and there is a class available to help you out with this.
+##### BankIdDebugEventListener
+
+`BankIdDebugEventListener` will listen for all events and write them as serialized JSON to the debug log using `ILogger.LogDebug(...)`.
+Call `builder.AddDebugEventListener()` to enable it. Good to have for local development to see all details about what is happening.
 
 ```csharp
-.AddOtherDevice(options =>
-{
-	options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId);
-});
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            //...
+            .AddDebugEventListener();
+    });
 ```
 
-Because the policies have different values for test and production environment, you need to use either `.GetPoliciesForProductionEnvironment()` or `.GetPoliciesForTestEnvironment()` depending on what environment you are using.
+##### BankIdApplicationInsightsEventListener
 
-Example:
+`BankIdApplicationInsightsEventListener` will listen for all events and write them as to Application Insights. 
+Call `builder.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
+
+___Note:___ This event listener is available is available through a separate package called `ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor`.
 
 ```csharp
-.AddOtherDevice(options =>
-{
-	var policies = new[] { BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId };
-	if(isProductionEnvironment) {
-		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(policies);
-	} else {
-		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForTestEnvironment(policies);
-	}
-});
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            //...
+            .AddApplicationInsightsEventListener();
+    });
+```
+
+##### BankIdLoggerEventListener
+
+`BankIdDebugEventListener` will listen for all events and write them with a descriptive text to the log using `ILogger.Log(...)`.
+This listener is registered by default on startup, se info below if you want to clear the default listeners.
+
+```csharp
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            //...
+            .AddDebugEventListener();
+    });
+```
+
+#### Default registered event listeners
+
+By default, two event listeners will be enabled:
+- `BankIdLoggerEventListener` (Log all events to `ILogger`)
+- `BankIdResultStoreEventListener` (Map the completion event for `IBankIdResultStore`, see info below under __Store data on auth completion__.)
+
+If you want to remove those implementations, remove any class implementing `IBankIdEventListener` from the ASP.NET Core services in your `Startup.cs`:
+
+```csharp
+services.RemoveAll(typeof(IBankIdEventListener));
 ```
 
 ### Store data on auth completion
 
 When the login flow is completed and the collect request to BankID returns data, any class implementing `IBankIdResultStore` registered in the DI will be called.
 There is a shorthand method (`AddResultStore`) on the BankIdBuilder to register the implementation.
+
+___Note:___ `IBankIdResultStore` is just a shorthand for the `BankIdCollectCompletedEvent` as described above.
 
 *Sample implementation:*
 
@@ -398,6 +475,43 @@ services
             .AddOtherDevice(options => { })
             .UseQrCoderQrCodeGenerator();
     });
+```
+
+### Custom QR code generation
+
+By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
+
+If you wish to provide your own implementation of QR code generation simply implement the `IBankIdQrCodeGenerator` interface and add your implementation as a service.
+
+```csharp
+services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();
+```
+
+### BankID Certificate Policies
+
+BankId options allows you to set a list of certificate policies and there is a class available to help you out with this.
+
+```csharp
+.AddOtherDevice(options =>
+{
+	options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId);
+});
+```
+
+Because the policies have different values for test and production environment, you need to use either `.GetPoliciesForProductionEnvironment()` or `.GetPoliciesForTestEnvironment()` depending on what environment you are using.
+
+Example:
+
+```csharp
+.AddOtherDevice(options =>
+{
+	var policies = new[] { BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId };
+	if(isProductionEnvironment) {
+		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(policies);
+	} else {
+		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForTestEnvironment(policies);
+	}
+});
 ```
 
 ## FAQ

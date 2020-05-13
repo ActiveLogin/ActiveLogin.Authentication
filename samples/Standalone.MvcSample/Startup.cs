@@ -56,6 +56,7 @@ namespace Standalone.MvcSample
                 .AddCookie()
                 .AddBankId(builder =>
                 {
+                    builder.AddDebugEventListener();
                     builder.AddApplicationInsightsEventListener(options =>
                     {
                         options.LogUserPersonalIdentityNumber = false;
