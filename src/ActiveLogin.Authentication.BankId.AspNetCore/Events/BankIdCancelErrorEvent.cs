@@ -9,15 +9,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// </summary>
     public class BankIdCancelErrorEvent : BankIdEvent
     {
-        internal BankIdCancelErrorEvent(string orderRef, BankIdApiException exception)
-            : base(BankIdEventTypes.BankIdCancelFailureId, BankIdEventTypes.BankIdCancelFailureName, EventSeverity.Error)
+        internal BankIdCancelErrorEvent(string orderRef, BankIdApiException bankIdApiException)
+            : base(BankIdEventTypes.BankIdCancelFailureId, BankIdEventTypes.BankIdCancelFailureName, BankIdEventSeverity.Error)
         {
             OrderRef = orderRef;
-            Exception = exception;
+            BankIdApiException = bankIdApiException;
         }
 
         public string OrderRef { get; }
 
-        public BankIdApiException Exception { get; }
+        public BankIdApiException BankIdApiException { get; }
     }
 }

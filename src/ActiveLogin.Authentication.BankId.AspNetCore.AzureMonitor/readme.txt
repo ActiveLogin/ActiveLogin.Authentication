@@ -1,10 +1,21 @@
 # ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Free to use, [commercial support and training](https://activelogin.net/#support) is available if you need assistance or a quick start.
+ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor provides `BankIdApplicationInsightsEventListener` that will listen for all events and write them to Application Insights. 
 
 ## Sample usage
 
-TODO
+Call `builder.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
+
+```csharp
+services
+    .AddAuthentication()
+    .AddBankId(builder =>
+    {
+        builder
+            //...
+            .AddApplicationInsightsEventListener();
+    });
+```
 
 ## Full documentation
 

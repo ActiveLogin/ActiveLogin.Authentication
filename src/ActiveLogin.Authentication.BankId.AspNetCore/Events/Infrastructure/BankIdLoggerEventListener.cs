@@ -3,6 +3,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
+    /// <summary>
+    /// Logs event to <see cref="ILogger"/>
+    /// </summary>
     public class BankIdLoggerEventListener : BankIdTypedEventListener
     {
         private const string MissingPersonalIdentityNumber = "-";
@@ -93,7 +96,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 
         public override Task HandleCancelFailureEvent(BankIdCancelErrorEvent e)
         {
-            _logger.LogInformation(GetEventId(e), "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", e.OrderRef, e.Exception.Message);
+            _logger.LogInformation(GetEventId(e), "BankID auth cancellation for '{OrderRef}' failed with the message '{Message}'", e.OrderRef, e.BankIdApiException.Message);
             return Task.CompletedTask;
         }
 

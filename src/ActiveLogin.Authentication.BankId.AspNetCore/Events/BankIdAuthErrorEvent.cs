@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdAuthErrorEvent : BankIdEvent
     {
         internal BankIdAuthErrorEvent(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException)
-            : base(BankIdEventTypes.BankIdAuthErrorEventId, BankIdEventTypes.BankIdAuthErrorEventName, EventSeverity.Error)
+            : base(BankIdEventTypes.BankIdAuthErrorEventId, BankIdEventTypes.BankIdAuthErrorEventName, BankIdEventSeverity.Error)
         {
             PersonalIdentityNumber = personalIdentityNumber;
             BankIdApiException = bankIdApiException;

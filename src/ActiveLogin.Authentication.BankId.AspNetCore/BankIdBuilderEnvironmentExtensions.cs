@@ -26,22 +26,52 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Use the BankID test environment (https://appapi2.test.bankid.com/rp/vX/)
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder)
         {
             return builder.UseEnvironment(BankIdUrls.TestApiBaseUrl, BankIdEnvironments.Test);
         }
 
+        /// <summary>
+        /// Use the BankID production environment (https://appapi2.bankid.com/rp/vX/)
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder)
         {
             return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl, BankIdEnvironments.Production);
         }
 
+        /// <summary>
+        /// Use simulated (in memory) environment. To be used for automated testing.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder)
             => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient());
 
+        /// <summary>
+        /// Use simulated (in memory) environment. To be used for automated testing.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="givenName">Fake given name</param>
+        /// <param name="surname">Fake surname</param>
+        /// <returns></returns>
         public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname)
             => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname));
 
+        /// <summary>
+        /// Use simulated (in memory) environment. To be used for automated testing.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="givenName">Fake given name</param>
+        /// <param name="surname">Fake surname</param>
+        /// <param name="personalIdentityNumber">Fake personal identity number</param>
+        /// <returns></returns>
         public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname, string personalIdentityNumber)
             => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
 

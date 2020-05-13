@@ -10,6 +10,25 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class BankIdExtensions
     {
+        /// <summary>
+        /// Add BankID authentication provider from Active Login.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="bankId">BankID configuration.</param>
+        /// <example>
+        /// <code>
+        /// .AddBankId(builder =>
+        /// {
+        ///     builder
+        ///         .UseProductionEnvironment()
+        ///         .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+        ///         .AddSameDevice()
+        ///         .AddOtherDevice()
+        ///         .UseQrCoderQrCodeGenerator();
+        /// });
+        /// </code>
+        /// </example>
+        /// <returns></returns>
         public static AuthenticationBuilder AddBankId(this AuthenticationBuilder builder, Action<IBankIdBuilder> bankId)
         {
             var (activeLoginName, activeLoginVersion) = GetActiveLoginInfo();

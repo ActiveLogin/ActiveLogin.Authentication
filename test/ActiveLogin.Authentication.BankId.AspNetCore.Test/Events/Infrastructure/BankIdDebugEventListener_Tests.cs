@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Events.Infrastructur
             // Arrange
             var logger = new Mock<ILogger<BankIdDebugEventListener>>();
             var debugEventListener = new BankIdDebugEventListener(logger.Object);
-            var testEvent = new TestBankIdEvent(999, "TestEvent", EventSeverity.Information);
+            var testEvent = new TestBankIdEvent(999, "TestEvent", BankIdEventSeverity.Information);
 
             // Act
 

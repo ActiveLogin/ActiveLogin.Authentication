@@ -351,7 +351,7 @@ services
 
 ##### BankIdApplicationInsightsEventListener
 
-`BankIdApplicationInsightsEventListener` will listen for all events and write them as to Application Insights. 
+`BankIdApplicationInsightsEventListener` will listen for all events and write them to Application Insights. 
 Call `builder.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
 
 ___Note:___ This event listener is available is available through a separate package called `ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor`.

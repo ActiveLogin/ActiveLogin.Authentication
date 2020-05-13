@@ -14,6 +14,7 @@ services
     .AddBankId(builder =>
     {
         builder
+            .AddDebugEventListener();
             .UseSimulatedEnvironment()
             .AddSameDevice();
     });
@@ -27,8 +28,14 @@ services
     .AddBankId(builder =>
     {
         builder
+            .AddApplicationInsightsEventListener(options =>
+            {
+                options.LogUserPersonalIdentityNumberHints = true;
+                options.LogCertificateDates = true;
+            })
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             .AddSameDevice()
             .AddOtherDevice()
             .UseQrCoderQrCodeGenerator();

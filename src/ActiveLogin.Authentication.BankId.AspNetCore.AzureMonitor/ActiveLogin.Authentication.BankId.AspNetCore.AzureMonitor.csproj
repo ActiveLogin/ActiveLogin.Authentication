@@ -18,7 +18,7 @@
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
         <Description>Azure Monitor integrations for ActiveLogin.Authentication.BankId.AspNetCore.</Description>
-        <PackageTags>azure;monitor;applicationinsightsbankid;swedish;sweden;aspnetcore;authentication</PackageTags>
+        <PackageTags>azure;monitor;applicationinsights;bankid;swedish;sweden;aspnetcore;authentication</PackageTags>
 
         <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>
         <Company>Active Solution</Company>

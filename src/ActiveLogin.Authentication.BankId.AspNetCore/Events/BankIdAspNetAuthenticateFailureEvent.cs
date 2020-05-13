@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdAspNetAuthenticateFailureEvent : BankIdEvent
     {
         internal BankIdAspNetAuthenticateFailureEvent(string errorReason)
-            : base(BankIdEventTypes.BankIdAspNetAuthenticateErrorEventId, BankIdEventTypes.BankIdAspNetAuthenticateFailureEventName, EventSeverity.Failure)
+            : base(BankIdEventTypes.BankIdAspNetAuthenticateErrorEventId, BankIdEventTypes.BankIdAspNetAuthenticateFailureEventName, BankIdEventSeverity.Failure)
         {
             ErrorReason = errorReason;
         }

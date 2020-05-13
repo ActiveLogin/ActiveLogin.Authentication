@@ -1,6 +1,9 @@
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
-    public enum EventSeverity
+    /// <summary>
+    /// BankId event severity.
+    /// </summary>
+    public enum BankIdEventSeverity
     {
         /// <summary>
         /// Information event.

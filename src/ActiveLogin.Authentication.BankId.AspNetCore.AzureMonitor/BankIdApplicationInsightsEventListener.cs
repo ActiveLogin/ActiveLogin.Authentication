@@ -207,7 +207,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 {
                     { PropertyName_BankIdOrderRef, e.OrderRef }
                 },
-                exception: e.Exception
+                exception: e.BankIdApiException
             );
         }
 
