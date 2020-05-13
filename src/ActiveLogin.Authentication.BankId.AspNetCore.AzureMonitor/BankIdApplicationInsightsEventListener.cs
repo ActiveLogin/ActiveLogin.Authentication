@@ -10,6 +10,9 @@ using Microsoft.ApplicationInsights;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 {
+    /// <summary>
+    /// Listen for all events and write them to Application Insights
+    /// </summary>
     public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
     {
         private const string PropertyName_ProductName = "AL_ProductName";
