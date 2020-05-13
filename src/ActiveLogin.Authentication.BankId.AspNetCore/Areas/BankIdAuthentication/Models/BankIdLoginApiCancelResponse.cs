@@ -2,16 +2,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 {
     public class BankIdLoginApiCancelResponse
     {
-        internal BankIdLoginApiCancelResponse(string cancelReturnUrl)
+        internal BankIdLoginApiCancelResponse()
         {
-            CancelReturnUrl = cancelReturnUrl;
         }
 
-        public static BankIdLoginApiCancelResponse Cancelled(string cancelReturnUrl)
+        public static BankIdLoginApiCancelResponse Cancelled()
         {
-            return new BankIdLoginApiCancelResponse(cancelReturnUrl);
+            return new BankIdLoginApiCancelResponse();
         }
-
-        public string CancelReturnUrl { get; }
     }
 }

@@ -8,8 +8,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         internal const string InvalidReturnUrlErrorMessage = "Invalid returnUrl. Needs to be a local url.";
 
-        internal const string InvalidCancelReturnUrlErrorMessage = "Invalid cancelReturnUrl. Needs to be a local url.";
-
         internal const string BankIdApiVersion = "5.0";
 
         public const string AuthenticationPropertyItemSwedishPersonalIdentityNumber = "swedishPersonalIdentityNumber";

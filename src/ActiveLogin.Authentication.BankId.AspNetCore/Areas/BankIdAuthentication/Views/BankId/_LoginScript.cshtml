@@ -157,23 +157,13 @@
 
         function cancel(requestVerificationToken, cancelReturnUrl, orderRef) {
             loginIsCancelledByUser = true;
-            postJson(options.bankIdCancelApiUrl, requestVerificationToken, {
-                'orderRef': orderRef,
-                'cancelReturnUrl': cancelReturnUrl
-            }).then(function(data) {
-                if (!!data.cancelReturnUrl) {
-                    window.location.href = data.cancelReturnUrl;
-                } else {
-                    hide(statusElement);
-                    show(formElement);
-                    formFieldsetElement.disabled = false;
-                }
-            }).catch(function(error) {
-                showStatus(error.message, 'danger', false);
-                hide(startBankIdAppButtonElement);
-                hide(cancelButtonElement);
-                hide(qrCodeElement);
-            });
+            postJson(options.bankIdCancelApiUrl,
+                requestVerificationToken,
+                {
+                    'orderRef': orderRef
+                }).finally(function() {
+                    window.location.href = cancelReturnUrl;
+                });
         }
 
         function checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef) {

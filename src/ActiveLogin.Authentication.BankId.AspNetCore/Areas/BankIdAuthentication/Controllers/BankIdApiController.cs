@@ -342,16 +342,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 throw new ArgumentNullException(nameof(request.OrderRef));
             }
 
-            if (request.CancelReturnUrl == null)
-            {
-                throw new ArgumentNullException(nameof(request.CancelReturnUrl));
-            }
-
-            if (!Url.IsLocalUrl(request.CancelReturnUrl))
-            {
-                throw new Exception(BankIdConstants.InvalidCancelReturnUrlErrorMessage);
-            }
-
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
 
             try
@@ -368,7 +358,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 await _bankIdEventTrigger.TriggerAsync(new BankIdCancelErrorEvent(orderRef.OrderRef, exception));
             }
 
-            return Ok(BankIdLoginApiCancelResponse.Cancelled(request.CancelReturnUrl));
+            return Ok(BankIdLoginApiCancelResponse.Cancelled());
         }
     }
 }
