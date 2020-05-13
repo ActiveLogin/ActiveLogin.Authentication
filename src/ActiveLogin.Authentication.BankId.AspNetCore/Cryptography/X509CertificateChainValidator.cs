@@ -23,7 +23,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Cryptography
             using (var chain = GetChain(certificateAuthority))
             {
                 var isChainValid = chain.Build(new X509Certificate2(certificate));
-                var chainRoot = chain.ChainElements[chain.ChainElements.Count - 1].Certificate;
+                var chainRoot = chain.ChainElements[^1].Certificate;
                 var isChainRootCertificateAuthority = chainRoot.RawData.SequenceEqual(certificateAuthority.RawData);
 
                 return isChainValid && isChainRootCertificateAuthority;
