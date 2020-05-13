@@ -10,6 +10,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Mo
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;

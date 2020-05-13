@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
     internal static class BankIdEventTypes
     {

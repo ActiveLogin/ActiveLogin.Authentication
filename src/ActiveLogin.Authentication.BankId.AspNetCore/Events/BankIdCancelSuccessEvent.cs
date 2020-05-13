@@ -1,3 +1,5 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
     /// <summary>

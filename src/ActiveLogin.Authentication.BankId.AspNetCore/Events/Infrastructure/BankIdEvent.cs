@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
     public abstract class BankIdEvent
     {

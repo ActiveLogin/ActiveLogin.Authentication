@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events

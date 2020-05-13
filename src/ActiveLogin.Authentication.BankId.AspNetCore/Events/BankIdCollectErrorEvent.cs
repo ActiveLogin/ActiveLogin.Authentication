@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {

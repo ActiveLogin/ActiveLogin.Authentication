@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
     internal class BankIdEventTrigger : IBankIdEventTrigger
     {

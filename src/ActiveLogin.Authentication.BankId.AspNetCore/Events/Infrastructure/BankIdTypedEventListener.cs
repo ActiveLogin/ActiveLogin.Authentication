@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
     /// <summary>
     /// Base class that allows you to override specific known events.

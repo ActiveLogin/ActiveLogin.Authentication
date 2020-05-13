@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
     public class BankIdDebugEventListener : IBankIdEventListener
     {

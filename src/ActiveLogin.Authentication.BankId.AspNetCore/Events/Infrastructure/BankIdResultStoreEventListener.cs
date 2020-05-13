@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
     /// <summary>
     /// To comply with BankID Technical requirement RFT5 you need to store the data in completion data.

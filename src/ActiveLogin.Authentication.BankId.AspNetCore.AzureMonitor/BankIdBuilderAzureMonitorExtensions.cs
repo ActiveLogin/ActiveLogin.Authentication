@@ -2,6 +2,7 @@ using System;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 
