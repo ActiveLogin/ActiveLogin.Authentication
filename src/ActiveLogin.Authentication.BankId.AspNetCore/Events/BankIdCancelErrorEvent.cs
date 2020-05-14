@@ -1,15 +1,16 @@
+using System;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
     /// <summary>
-    /// Event for collect error.
+    /// Event for canceling authentication order failed.
     /// </summary>
-    public class BankIdCollectErrorEvent : BankIdEvent
+    public class BankIdCancelErrorEvent : BankIdEvent
     {
-        internal BankIdCollectErrorEvent(string orderRef, BankIdApiException bankIdApiException)
-            : base(BankIdEventTypes.BankIdCollectErrorId, BankIdEventTypes.BankIdCollectErrorName, BankIdEventSeverity.Error)
+        internal BankIdCancelErrorEvent(string orderRef, BankIdApiException bankIdApiException)
+            : base(BankIdEventTypes.BankIdCancelFailureId, BankIdEventTypes.BankIdCancelFailureName, BankIdEventSeverity.Error)
         {
             OrderRef = orderRef;
             BankIdApiException = bankIdApiException;

@@ -13,34 +13,4 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
         public BankIdSupportedDeviceOs DeviceOs { get; }
         public BankIdSupportedDeviceBrowser DeviceBrowser { get; }
     }
-
-    public enum BankIdSupportedDeviceType
-    {
-        Unknown,
-
-        Desktop,
-        Mobile
-    }
-
-    public enum BankIdSupportedDeviceOs
-    {
-        Unknown,
-
-        Windows,
-        MacOs,
-
-        Ios,
-        Android,
-        WindowsPhone
-    }
-
-    public enum BankIdSupportedDeviceBrowser
-    {
-        Unknown,
-
-        Chrome,
-        Safari,
-        Firefox,
-        Edge
-    }
 }

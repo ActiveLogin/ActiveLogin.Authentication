@@ -1,8 +1,8 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
 {
     public class BankIdLoginResult
     {
-        public BankIdLoginResult(bool isSuccessful, string personalIdentityNumber, string name, string givenName, string surname)
+        internal BankIdLoginResult(bool isSuccessful, string personalIdentityNumber, string name, string givenName, string surname)
         {
             IsSuccessful = isSuccessful;
             PersonalIdentityNumber = personalIdentityNumber;

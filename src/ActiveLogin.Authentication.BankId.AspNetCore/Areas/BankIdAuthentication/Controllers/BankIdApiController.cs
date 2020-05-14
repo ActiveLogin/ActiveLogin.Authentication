@@ -10,9 +10,9 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Mo
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
@@ -20,7 +20,6 @@ using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -116,7 +115,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthFailureEvent(personalIdentityNumber, bankIdApiException));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber, bankIdApiException));
 
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
@@ -344,16 +343,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 throw new ArgumentNullException(nameof(request.OrderRef));
             }
 
-            if (request.CancelReturnUrl == null)
-            {
-                throw new ArgumentNullException(nameof(request.CancelReturnUrl));
-            }
-
-            if (!Url.IsLocalUrl(request.CancelReturnUrl))
-            {
-                throw new Exception(BankIdConstants.InvalidCancelReturnUrlErrorMessage);
-            }
-
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
 
             try
@@ -361,16 +350,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
                 await _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef.OrderRef));
             }
-            catch (Exception exception)
+            catch (BankIdApiException exception)
             {
                 // When we get exception in a cancellation request, chances
                 // are that the orderRef has already been cancelled or we have
                 // a network issue. We still want to provide the GUI with the
                 // validated cancellation URL though.
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelFailedEvent(orderRef.OrderRef, exception));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelErrorEvent(orderRef.OrderRef, exception));
             }
 
-            return Ok(BankIdLoginApiCancelResponse.Cancelled(request.CancelReturnUrl));
+            return Ok(BankIdLoginApiCancelResponse.Cancelled());
         }
     }
 }

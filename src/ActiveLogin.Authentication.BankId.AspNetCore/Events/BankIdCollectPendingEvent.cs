@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
@@ -8,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdCollectPendingEvent : BankIdEvent
     {
         internal BankIdCollectPendingEvent(string orderRef, CollectHintCode hintCode)
-            : base(BankIdEventTypes.BankIdCollectPendingId, BankIdEventTypes.BankIdCollectPendingName, EventSeverity.Information)
+            : base(BankIdEventTypes.BankIdCollectPendingId, BankIdEventTypes.BankIdCollectPendingName, BankIdEventSeverity.Information)
         {
             OrderRef = orderRef;
             HintCode = hintCode;

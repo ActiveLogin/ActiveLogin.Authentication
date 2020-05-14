@@ -113,7 +113,20 @@ namespace IdentityServer.ServerSample
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddBankId(builder =>
                 {
+                    builder.AddDebugEventListener();
+                    builder.AddApplicationInsightsEventListener(options =>
+                    {
+                        options.LogUserPersonalIdentityNumber = false;
+                        options.LogUserPersonalIdentityNumberHints = true;
+
+                        options.LogUserNames = false;
+
+                        options.LogDeviceIpAddress = false;
+                        options.LogCertificateDates = true;
+                    });
+
                     builder.UseQrCoderQrCodeGenerator();
+
                     builder.Configure(options =>
                             {
                                 options.IssueBirthdateClaim = true;

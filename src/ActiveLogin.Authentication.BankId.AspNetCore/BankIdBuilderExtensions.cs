@@ -6,7 +6,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
-using ActiveLogin.Authentication.BankId.AspNetCore.Events;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
@@ -43,11 +43,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
-            builder.AddResultStore<BankIdResultTraceLoggerStore>();
             builder.UseEndUserIpResolver<RemoteIpAddressEndUserIpResolver>();
 
-            builder.AddLoggerEventListener();
-            builder.AddResultStoreEventListener();
+            builder.AddEventListener<BankIdLoggerEventListener>();
+            builder.AddEventListener<BankIdResultStoreEventListener>();
+
+            builder.AddResultStore<BankIdResultTraceLoggerStore>();
 
             return builder;
         }
@@ -63,6 +64,12 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Use client certificate for authenticating against the BankID API.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configureClientCertificate">The certificate to use.</param>
+        /// <returns></returns>
         public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
         {
             builder.ConfigureHttpClientHandler(httpClientHandler =>
@@ -89,6 +96,13 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Use this root certificate for verifying the certificate of BankID API.
+        /// Use only if the root certificate can't be installed on the machine.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configureRootCaCertificate">The root certificate provided by BankID (*.crt)</param>
+        /// <returns></returns>
         public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
         {
             builder.ConfigureHttpClientHandler(httpClientHandler =>
@@ -101,22 +115,16 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Use this root certificate for verifying the certificate of BankID API.
+        /// Use only if the root certificate can't be installed on the machine.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="certificateFilePath">The file path to the root certificate provided by BankID (*.crt)</param>
+        /// <returns></returns>
         public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
         {
             builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
-
-            return builder;
-        }
-
-        /// <summary>
-        /// Adds a class that will be called when BankID returns a valid signed in user.
-        /// </summary>
-        /// <typeparam name="TResultStoreImplementation"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
 
             return builder;
         }
@@ -160,16 +168,27 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        private static IBankIdBuilder AddLoggerEventListener(this IBankIdBuilder builder)
+        /// <summary>
+        /// Add an event listener that will serialize and write all events to debug.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddDebugEventListener(this IBankIdBuilder builder)
         {
-            builder.AddEventListener<LoggerBankIdEventListner>();
+            builder.AddEventListener<BankIdDebugEventListener>();
 
             return builder;
         }
 
-        private static IBankIdBuilder AddResultStoreEventListener(this IBankIdBuilder builder)
+        /// <summary>
+        /// Adds a class that will be called when BankID returns a valid signed in user.
+        /// </summary>
+        /// <typeparam name="TResultStoreImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
         {
-            builder.AddEventListener<ResultStoreBankIdEventListener>();
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
 
             return builder;
         }

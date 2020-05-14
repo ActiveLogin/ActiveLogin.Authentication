@@ -1,10 +1,10 @@
-﻿using ActiveLogin.Authentication.BankId.AspNetCore.Events;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Events
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
 {
     public class TestBankIdEvent : BankIdEvent
     {
-        internal TestBankIdEvent() : base(9_9_9, "TestBankIdEvent", EventSeverity.Information)
+        internal TestBankIdEvent(int eventTypeId, string eventTypeName, BankIdEventSeverity eventSeverity) : base(eventTypeId, eventTypeName, eventSeverity)
         {
         }
     }

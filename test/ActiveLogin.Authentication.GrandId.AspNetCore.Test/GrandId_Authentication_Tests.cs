@@ -14,7 +14,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Test
     public class GrandId_Authentication_Tests
     {
         [Fact]
-        public async Task Challange_Redirects_To_SignIn()
+        public async Task Challenge_Redirects_To_SignIn()
         {
             // Arrange
             using var client = CreateServer(o =>

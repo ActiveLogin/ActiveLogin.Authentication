@@ -1,8 +1,11 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
+    /// <summary>
+    /// Default values used for configuration.
+    /// </summary>
     public static class BankIdDefaults
     {
         public const string IdentityProviderName = "BankID";

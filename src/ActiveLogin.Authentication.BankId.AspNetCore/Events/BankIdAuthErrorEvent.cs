@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
@@ -6,10 +7,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// <summary>
     /// Event for failed initiation of authentication order. 
     /// </summary>
-    public class BankIdAuthFailureEvent : BankIdEvent
+    public class BankIdAuthErrorEvent : BankIdEvent
     {
-        internal BankIdAuthFailureEvent(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException)
-            : base(BankIdEventTypes.BankIdAuthHardFailureId, BankIdEventTypes.BankIdAuthHardFailureName, EventSeverity.Error)
+        internal BankIdAuthErrorEvent(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException)
+            : base(BankIdEventTypes.BankIdAuthErrorEventId, BankIdEventTypes.BankIdAuthErrorEventName, BankIdEventSeverity.Error)
         {
             PersonalIdentityNumber = personalIdentityNumber;
             BankIdApiException = bankIdApiException;

@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
+using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
@@ -41,7 +42,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var state = GetStateFromCookie();
             if (state == null)
             {
-                return Task.FromResult(HandleRequestResult.Fail("Invalid state cookie."));
+                return HandleRemoteAuthenticateFail("Invalid state cookie");
             }
 
             DeleteStateCookie();
@@ -49,21 +50,31 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginResultProtected = Request.Query["loginResult"];
             if (string.IsNullOrEmpty(loginResultProtected))
             {
-                return Task.FromResult(HandleRequestResult.Fail("Missing login result."));
+                return HandleRemoteAuthenticateFail("Missing login result");
             }
 
             var loginResult = _loginResultProtector.Unprotect(loginResultProtected);
             if (loginResult == null || !loginResult.IsSuccessful)
             {
-                return Task.FromResult(HandleRequestResult.Fail("Invalid login result."));
+                return HandleRemoteAuthenticateFail("Invalid login result");
             }
 
             var properties = state.AuthenticationProperties;
             var ticket = GetAuthenticationTicket(loginResult, properties);
 
-            _bankIdEventTrigger.TriggerAsync(new BankIdAuthenticationTicketCreatedEvent(SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber)));
+            _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
+                ticket,
+                SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber)
+            ));
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
+        }
+
+        private async Task<HandleRequestResult> HandleRemoteAuthenticateFail(string reason)
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateFailureEvent(reason));
+
+            return HandleRequestResult.Fail(reason);
         }
 
         private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
@@ -134,7 +145,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             }
         }
 
-        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
+        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
             AppendStateCookie(properties);
 
@@ -150,7 +161,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 
-            return Task.CompletedTask;
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(loginOptions));
         }
 
         private static SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)

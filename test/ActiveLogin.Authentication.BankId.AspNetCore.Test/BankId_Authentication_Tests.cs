@@ -224,8 +224,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             using var client = CreateServer(
                     o =>
                     {
-                        o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();
                         o.UseSimulatedEnvironment().AddSameDevice();
+                        o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
                     },
                     DefaultAppConfiguration(async context =>
                     {
@@ -280,8 +280,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             using var client = CreateServer(
                     o =>
                     {
-                        o.AuthenticationBuilder.Services.TryAddTransient<IBankIdLauncher, TestBankIdLauncher>();
                         o.UseSimulatedEnvironment().AddSameDevice();
+                        o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
                     },
                     DefaultAppConfiguration(async context =>
                     {

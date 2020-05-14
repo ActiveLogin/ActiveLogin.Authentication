@@ -1,5 +1,8 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
+    /// <summary>
+    /// Claims issued by ActiveLogin.BankId.
+    /// </summary>
     public static class BankIdClaimTypes
     {
         public const string Role = "role";

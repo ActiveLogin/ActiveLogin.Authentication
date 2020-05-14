@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Authentication;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
-    public class BankIdBuilder : IBankIdBuilder
+    internal class BankIdBuilder : IBankIdBuilder
     {
         public AuthenticationBuilder AuthenticationBuilder { get; }
 
@@ -33,7 +33,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
         }
 
-        public void EnableHttpClient()
+        public void EnableHttpBankIdApiClient()
         {
             AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
                 {

@@ -56,7 +56,20 @@ namespace Standalone.MvcSample
                 .AddCookie()
                 .AddBankId(builder =>
                 {
+                    builder.AddDebugEventListener();
+                    builder.AddApplicationInsightsEventListener(options =>
+                    {
+                        options.LogUserPersonalIdentityNumber = false;
+                        options.LogUserPersonalIdentityNumberHints = true;
+
+                        options.LogUserNames = false;
+
+                        options.LogDeviceIpAddress = false;
+                        options.LogCertificateDates = true;
+                    });
+
                     builder.UseQrCoderQrCodeGenerator();
+
                     builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
                            .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 

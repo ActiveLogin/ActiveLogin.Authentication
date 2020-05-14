@@ -27,6 +27,9 @@ _Screenshots on how the default UI for Native BankID looks on different devices.
 ![Active Login Screenshots](docs/images/activelogin-screenshots-v2.png)
 
 ## Table of contents
+
+___Note:___ This Readme reflects the state of our master branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our [CI builds](#project--packages-overview).
+
 * [Project & Packages overview](#project--packages-overview)
 	+ [ActiveLogin.Authentication.BankId.*](#activeloginauthenticationbankid)
 	+ [ActiveLogin.Authentication.GrandId.*](#activeloginauthenticationgrandid)
@@ -133,6 +136,7 @@ services
     .AddBankId(builder =>
     {
         builder
+            .AddDebugEventListener();
             .UseSimulatedEnvironment()
             .AddSameDevice();
     });
@@ -180,6 +184,11 @@ services
     .AddBankId(builder =>
     {
         builder
+            .AddApplicationInsightsEventListener(options =>
+            {
+                options.LogUserPersonalIdentityNumberHints = true;
+                options.LogCertificateDates = true;
+            })
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
@@ -189,7 +198,9 @@ services
     });
 ```
 
-_Note: `.UseQrCoderQrCodeGenerator()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.QRCoder](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) package._
+___Note:___ `.AddApplicationInsightsEventListener()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) package.
+
+___Note:___ `.UseQrCoderQrCodeGenerator()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.QRCoder](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) package.
 
 #### [GrandID](docs/getting-started-grandid-bankid.md)
 
