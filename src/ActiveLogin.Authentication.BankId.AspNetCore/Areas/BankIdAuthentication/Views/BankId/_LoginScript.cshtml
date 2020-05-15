@@ -96,6 +96,14 @@
         function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
             loginIsCancelledByUser = false;
 
+            function enableCancelButton(orderRef) {
+                var onCancelButtonClick = function(event) {
+                    cancel(requestVerificationToken, cancelUrl, orderRef);
+                    event.target.removeEventListener('click', onCancelButtonClick);
+                };
+                cancelButtonElement.addEventListener('click', onCancelButtonClick);
+            }
+
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl,
@@ -126,23 +134,20 @@
                         show(qrCodeElement);
                     }
 
-                    if (!!data.personalIdentityNumber || !!data.PersonalIdentityNumber) {
+                    if (!!data.personalIdentityNumber) {
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
                     } else {
+                        enableCancelButton(data.orderRef);
+
                         hide(formElement);
                         showStatus(options.initialStatusMessage, 'white', true);
 
                         if (data.checkStatus) {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
                         }
-
-                        var onCancelButtonClick = function(event) {
-                            cancel(requestVerificationToken, cancelUrl, data.orderRef);
-                            event.target.removeEventListener('click', onCancelButtonClick);
-                        };
-                        cancelButtonElement.addEventListener('click', onCancelButtonClick);
                     }
+
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
@@ -152,17 +157,7 @@
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
                     formFieldsetElement.disabled = false;
-                });
-        }
-
-        function cancel(requestVerificationToken, cancelReturnUrl, orderRef) {
-            loginIsCancelledByUser = true;
-            postJson(options.bankIdCancelApiUrl,
-                requestVerificationToken,
-                {
-                    'orderRef': orderRef
-                }).finally(function() {
-                    window.location.href = cancelReturnUrl;
+                    enableCancelButton();
                 });
         }
 
@@ -196,6 +191,23 @@
                         hide(startBankIdAppButtonElement);
                     }
                     hide(qrCodeElement);
+                });
+        }
+
+        function cancel(requestVerificationToken, cancelReturnUrl, orderRef) {
+            loginIsCancelledByUser = true;
+
+            if (!orderRef) {
+                window.location.href = cancelReturnUrl;
+                return;
+            }
+
+            postJson(options.bankIdCancelApiUrl,
+                requestVerificationToken,
+                {
+                    'orderRef': orderRef
+                }).finally(function() {
+                    window.location.href = cancelReturnUrl;
                 });
         }
 
