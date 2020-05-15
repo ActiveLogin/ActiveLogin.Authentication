@@ -227,15 +227,50 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
         }
 
         [Fact]
-        public void Should_Detect_Os_Version_On_Android_When_Version_9_0_0()
+        public void Should_Detect_Os_Version_On_Android_When_Version_9()
         {
             var userAgent = "Mozilla/5.0 (Linux; Android 9; BLA-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.99 Mobile Safari/537.36";
             var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
 
             Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
             Assert.Equal(9, detectedDevice.DeviceOsVersion.MajorVersion);
-            Assert.Equal(0, detectedDevice.DeviceOsVersion.MinorVersion);
-            Assert.Equal(0, detectedDevice.DeviceOsVersion.Patch);
+            Assert.Null(detectedDevice.DeviceOsVersion.MinorVersion);
+            Assert.Null(detectedDevice.DeviceOsVersion.Patch);
+        }
+
+        [Fact]
+        public void Should_Set_Non_Parsable_Android_Minor_Version_Number_To_Null_When_Version_6_X_1()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 6.X.1; SM-G532G Build/MMB29T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.83 Mobile Safari/537.36";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
+            Assert.Equal(6, detectedDevice.DeviceOsVersion.MajorVersion);
+            Assert.Null(detectedDevice.DeviceOsVersion.MinorVersion);
+            Assert.Equal(1, detectedDevice.DeviceOsVersion.Patch);
+        }
+
+        [Fact]
+        public void Should_Set_Non_Parsable_Android_Version_Numbers_To_Null()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 6.0.1 SM-G532G Build/MMB29T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.83 Mobile Safari/537.36";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Null(detectedDevice.DeviceOsVersion.MajorVersion);
+            Assert.Null(detectedDevice.DeviceOsVersion.MinorVersion);
+            Assert.Null(detectedDevice.DeviceOsVersion.Patch);
+        }
+
+        [Fact]
+        public void Should_Not_Detect_Os_Version_When_Not_Android()
+        {
+            var userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/603.2.4 (KHTML, like Gecko) Mobile/14F89 Safari/603.2.4 EdgiOS/41.1.35.1";
+
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Null(detectedDevice.DeviceOsVersion.MajorVersion);
+            Assert.Null(detectedDevice.DeviceOsVersion.MinorVersion);
+            Assert.Null(detectedDevice.DeviceOsVersion.Patch);
         }
     }
 }
