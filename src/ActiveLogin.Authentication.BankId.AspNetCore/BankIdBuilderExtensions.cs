@@ -82,20 +82,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IBankIdBuilder UseClientCertificateResolver(this IBankIdBuilder builder, Func<ServiceProvider, X509CertificateCollection, string, X509Certificate> configureClientCertificateResolver)
-        {
-            builder.ConfigureHttpClientHandler(httpClientHandler =>
-            {
-                var services = builder.AuthenticationBuilder.Services;
-                var serviceProvider = services.BuildServiceProvider();
-
-                httpClientHandler.SslOptions.LocalCertificateSelectionCallback =
-                    (sender, host, certificates, certificate, issuers) => configureClientCertificateResolver(serviceProvider, certificates, host);
-            });
-
-            return builder;
-        }
-
         /// <summary>
         /// Use this root certificate for verifying the certificate of BankID API.
         /// Use only if the root certificate can't be installed on the machine.
