@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdAspNetChallengeSuccessEvent : BankIdEvent
     {
         internal BankIdAspNetChallengeSuccessEvent(BankIdLoginOptions bankIdOptions)
-            : base(BankIdEventTypes.BankIdAspNetChallengeSuccessEventId, BankIdEventTypes.BankIdAspNetChallengeSuccessEventName, BankIdEventSeverity.Success)
+            : base(BankIdEventTypes.AspNetChallengeSuccessEventId, BankIdEventTypes.AspNetChallengeSuccessEventName, BankIdEventSeverity.Success)
         {
             BankIdOptions = bankIdOptions;
         }

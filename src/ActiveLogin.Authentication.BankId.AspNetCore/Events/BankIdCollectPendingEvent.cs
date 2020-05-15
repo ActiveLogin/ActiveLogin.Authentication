@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdCollectPendingEvent : BankIdEvent
     {
         internal BankIdCollectPendingEvent(string orderRef, CollectHintCode hintCode)
-            : base(BankIdEventTypes.BankIdCollectPendingId, BankIdEventTypes.BankIdCollectPendingName, BankIdEventSeverity.Information)
+            : base(BankIdEventTypes.CollectPendingId, BankIdEventTypes.CollectPendingName, BankIdEventSeverity.Information)
         {
             OrderRef = orderRef;
             HintCode = hintCode;

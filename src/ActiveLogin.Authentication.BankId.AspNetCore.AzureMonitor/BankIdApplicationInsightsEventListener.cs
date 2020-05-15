@@ -33,10 +33,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         private const string PropertyName_BankIdOrderRef = "AL_BankId_OrderRef";
         private const string PropertyName_BankIdCollectHintCode = "AL_BankId_CollectHintCode";
 
-        private const string PropertyName_BankIdDeviceIpAddress = "AL_BankId_Device_IpAddress";
-
-        private const string PropertyName_BankIdCertNotBefore = "AL_BankId_Cert_NotBefore";
-        private const string PropertyName_BankIdCertNotAfter = "AL_BankId_Cert_NotAfter";
+        private const string PropertyName_UserDeviceIpAddress = "AL_BankId_User_DeviceIpAddress";
+        private const string PropertyName_UserCertNotBefore = "AL_User_CertNotBefore";
+        private const string PropertyName_UserCertNotAfter = "AL_User_CertNotAfter";
 
         private const string PropertyName_UserName = "AL_User_Name";
         private const string PropertyName_UserGivenName = "AL_User_GivenName";
@@ -148,13 +147,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
             if (_options.LogDeviceIpAddress)
             {
-                properties.Add(PropertyName_BankIdDeviceIpAddress, e.CompletionData.Device.IpAddress);
+                properties.Add(PropertyName_UserDeviceIpAddress, e.CompletionData.Device.IpAddress);
             }
 
             if (_options.LogCertificateDates)
             {
-                properties.Add(PropertyName_BankIdCertNotBefore, e.CompletionData.Cert.NotBefore);
-                properties.Add(PropertyName_BankIdCertNotAfter, e.CompletionData.Cert.NotAfter);
+                properties.Add(PropertyName_UserCertNotBefore, e.CompletionData.Cert.NotBefore);
+                properties.Add(PropertyName_UserCertNotAfter, e.CompletionData.Cert.NotAfter);
             }
 
             var swedishPersonalIdentityNumber = SwedishPersonalIdentityNumber.Parse(e.CompletionData.User.PersonalIdentityNumber);

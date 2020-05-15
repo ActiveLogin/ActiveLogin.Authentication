@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdCollectCompletedEvent : BankIdEvent
     {
         internal BankIdCollectCompletedEvent(string orderRef, CompletionData completionData)
-            : base(BankIdEventTypes.BankIdCollectCompletedId, BankIdEventTypes.BankIdCollectCompletedName, BankIdEventSeverity.Success)
+            : base(BankIdEventTypes.CollectCompletedId, BankIdEventTypes.CollectCompletedName, BankIdEventSeverity.Success)
         {
             OrderRef = orderRef;
             CompletionData = completionData;

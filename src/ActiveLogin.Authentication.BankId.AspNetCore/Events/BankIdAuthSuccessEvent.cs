@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdAuthSuccessEvent : BankIdEvent
     {
         internal BankIdAuthSuccessEvent(SwedishPersonalIdentityNumber? personalIdentityNumber, string orderRef)
-            : base(BankIdEventTypes.BankIdAuthSuccessId, BankIdEventTypes.BankIdAuthSuccessName, BankIdEventSeverity.Success)
+            : base(BankIdEventTypes.AuthSuccessId, BankIdEventTypes.AuthSuccessName, BankIdEventSeverity.Success)
         {
             PersonalIdentityNumber = personalIdentityNumber;
             OrderRef = orderRef;
