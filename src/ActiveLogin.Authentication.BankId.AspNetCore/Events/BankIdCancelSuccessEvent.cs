@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdCancelSuccessEvent : BankIdEvent
     {
         internal BankIdCancelSuccessEvent(string orderRef)
-            : base(BankIdEventTypes.BankIdCancelSuccessId, BankIdEventTypes.BankIdCancelSuccessName, BankIdEventSeverity.Success)
+            : base(BankIdEventTypes.CancelSuccessId, BankIdEventTypes.CancelSuccessName, BankIdEventSeverity.Success)
         {
             OrderRef = orderRef;
         }

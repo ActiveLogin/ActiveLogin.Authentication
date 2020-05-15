@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdAspNetAuthenticateSuccessEvent : BankIdEvent
     {
         internal BankIdAspNetAuthenticateSuccessEvent(AuthenticationTicket authenticationTicket, SwedishPersonalIdentityNumber personalIdentityNumber)
-            : base(BankIdEventTypes.BankIdAspNetAuthenticateSuccessEventId, BankIdEventTypes.BankIdAspNetAuthenticateSuccessEventName, BankIdEventSeverity.Success)
+            : base(BankIdEventTypes.AspNetAuthenticateSuccessEventId, BankIdEventTypes.AspNetAuthenticateSuccessEventName, BankIdEventSeverity.Success)
         {
             AuthenticationTicket = authenticationTicket;
             PersonalIdentityNumber = personalIdentityNumber;

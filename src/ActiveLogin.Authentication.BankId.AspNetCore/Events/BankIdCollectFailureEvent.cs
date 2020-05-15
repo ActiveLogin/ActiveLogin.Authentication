@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     public class BankIdCollectFailureEvent : BankIdEvent
     {
         internal BankIdCollectFailureEvent(string orderRef, CollectHintCode hintCode)
-            : base(BankIdEventTypes.BankIdCollectFailureId, BankIdEventTypes.BankIdCollectFailureName, BankIdEventSeverity.Failure)
+            : base(BankIdEventTypes.CollectFailureId, BankIdEventTypes.CollectFailureName, BankIdEventSeverity.Failure)
         {
             OrderRef = orderRef;
             HintCode = hintCode;
