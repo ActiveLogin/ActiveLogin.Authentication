@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public static class BankIdConstants
@@ -9,6 +11,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         internal const string InvalidReturnUrlErrorMessage = "Invalid returnUrl. Needs to be a local url.";
 
         internal const string BankIdApiVersion = "5.0";
+
+        internal static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        internal const int MaxRetryLoginAttempts = 5;
 
         public const string AuthenticationPropertyItemSwedishPersonalIdentityNumber = "swedishPersonalIdentityNumber";
     }

@@ -42,8 +42,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IEndUserIpResolver _endUserIpResolver;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
 
-        private const int MaxRetryLoginAttempts = 5;
-
         public BankIdApiController(
             UrlEncoder urlEncoder,
             IBankIdUserMessage bankIdUserMessage,
@@ -100,7 +98,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             {
                 if (!SwedishPersonalIdentityNumber.TryParse(request.PersonalIdentityNumber, out personalIdentityNumber))
                 {
-                    return BadRequest(new
+                    return BadRequestJsonResult(new
                     {
                         PersonalIdentityNumber = "Invalid PersonalIdentityNumber."
                     });
@@ -118,7 +116,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber, bankIdApiException));
 
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
-                return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
+                return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
 
             var orderRef = authResponse.OrderRef;
@@ -136,16 +134,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                     ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
                     : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, BrowserMightNotAutoLaunch(detectedDevice));
 
-                return Ok(response);
+                return OkJsonResult(response);
             }
 
             if (unprotectedLoginOptions.UseQrCode)
             {
                 var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(authResponse.AutoStartToken);
-                return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, qrCode));
+                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, qrCode));
             }
 
-            return Ok(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
+            return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
 
         private static bool BrowserMightNotAutoLaunch(BankIdSupportedDevice detectedDevice)
@@ -227,7 +225,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             {
                 await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef.OrderRef, bankIdApiException));
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
-                return BadRequest(new BankIdLoginApiErrorResponse(errorStatusMessage));
+                return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
 
             var statusMessage = GetStatusMessage(collectResponse, unprotectedLoginOptions, HttpContext.Request);
@@ -244,9 +242,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var hintCode = collectResponse.GetCollectHintCode();
             if (hintCode.Equals(CollectHintCode.StartFailed)
-                && request.AutoStartAttempts < MaxRetryLoginAttempts)
+                && request.AutoStartAttempts < BankIdConstants.MaxRetryLoginAttempts)
             {
-                return Ok(BankIdLoginApiStatusResponse.Retry(statusMessage));
+                return OkJsonResult(BankIdLoginApiStatusResponse.Retry(statusMessage));
             }
 
             return CollectFailure(collectResponse, statusMessage);
@@ -255,7 +253,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage)
         {
             _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode()));
-            return BadRequest(new BankIdLoginApiErrorResponse(statusMessage));
+            return BadRequestJsonResult(new BankIdLoginApiErrorResponse(statusMessage));
         }
 
         private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse)
@@ -278,13 +276,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
             }
 
-            return Ok(BankIdLoginApiStatusResponse.Finished(returnUri));
+            return OkJsonResult(BankIdLoginApiStatusResponse.Finished(returnUri));
         }
 
         private ActionResult CollectPending(CollectResponse collectResponse, string statusMessage)
         {
             _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode()));
-            return Ok(BankIdLoginApiStatusResponse.Pending(statusMessage));
+            return OkJsonResult(BankIdLoginApiStatusResponse.Pending(statusMessage));
         }
 
         private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions, HttpRequest request)
@@ -359,7 +357,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 await _bankIdEventTrigger.TriggerAsync(new BankIdCancelErrorEvent(orderRef.OrderRef, exception));
             }
 
-            return Ok(BankIdLoginApiCancelResponse.Cancelled());
+            return OkJsonResult(BankIdLoginApiCancelResponse.Cancelled());
+        }
+
+        private ActionResult OkJsonResult(object model)
+        {
+            return new JsonResult(model, BankIdConstants.JsonSerializerOptions)
+            {
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        private ActionResult BadRequestJsonResult(object model)
+        {
+            return new JsonResult(model, BankIdConstants.JsonSerializerOptions)
+            {
+                StatusCode = StatusCodes.Status400BadRequest
+            };
         }
     }
 }

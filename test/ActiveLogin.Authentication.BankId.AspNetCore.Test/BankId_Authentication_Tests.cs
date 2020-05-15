@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -237,33 +236,118 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                     })
                 .CreateClient();
 
-            // Arrange csrf info
-            var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
-            var loginCookies = loginResponse.Headers.GetValues("set-cookie");
-            var loginContent = await loginResponse.Content.ReadAsStringAsync();
-            var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
-            var csrfToken = document.GetRequestVerificationToken();
-
             // Arrange acting request
             var testReturnUrl = "/TestReturnUrl";
             var testOptions = "TestOptions";
-            var initializeRequest = new JsonContent(new { returnUrl = testReturnUrl, loginOptions = testOptions });
-            initializeRequest.Headers.Add("Cookie", loginCookies);
-            initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
+            var initializeRequestBody = new { returnUrl = testReturnUrl, loginOptions = testOptions };
 
             // Act
-            var transaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
+            var initializeTransaction = await GetInitializeResponse(client, initializeRequestBody);
 
             // Assert
-            Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
 
-            var responseContent = await transaction.Content.ReadAsStringAsync();
+            var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
             var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
             Assert.True(responseObject.IsAutoLaunch);
 
             var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
             var expectedUrl = $"http://localhost/BankIdAuthentication/Login?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
             Assert.Equal(expectedUrl, responseObject.RedirectUri);
+        }
+
+        [Fact]
+        public async Task Api_Always_Returns_CamelCase_Json_For_Http200Ok()
+        {
+            // Arrange mocks
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty);
+            var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+            mockProtector
+                .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+                .Returns(autoLaunchOptions);
+
+            using var client = CreateServer(
+                    o =>
+                    {
+                        o.UseSimulatedEnvironment().AddSameDevice();
+                        o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                    },
+                    DefaultAppConfiguration(async context =>
+                    {
+                        await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                    }),
+                    services =>
+                    {
+                        services.AddTransient(s => mockProtector.Object);
+                        services.AddMvc().AddJsonOptions(configure =>
+                        {
+                            configure.JsonSerializerOptions.PropertyNamingPolicy = null;
+                        });
+                    })
+                .CreateClient();
+
+
+            // Arrange acting request
+            var testReturnUrl = "/TestReturnUrl";
+            var testOptions = "TestOptions";
+            var initializeRequestBody = new { returnUrl = testReturnUrl, loginOptions = testOptions };
+
+            //Act
+            var initializeTransaction = await GetInitializeResponse(client, initializeRequestBody);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
+
+            var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
+            Assert.Contains("redirectUri", responseContent);
+            Assert.Contains("orderRef", responseContent);
+            Assert.Contains("isAutoLaunch", responseContent);
+        }
+
+        [Fact]
+        public async Task Api_Always_Returns_CamelCase_Json_For_Http400BadRequest()
+        {
+            // Arrange mocks
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty);
+            var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+            mockProtector
+                .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+                .Returns(autoLaunchOptions);
+
+            using var client = CreateServer(
+                    o =>
+                    {
+                        o.UseSimulatedEnvironment().AddOtherDevice();
+                        o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                    },
+                    DefaultAppConfiguration(async context =>
+                    {
+                        await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                    }),
+                    services =>
+                    {
+                        services.AddTransient(s => mockProtector.Object);
+                        services.AddMvc().AddJsonOptions(configure =>
+                        {
+                            configure.JsonSerializerOptions.PropertyNamingPolicy = null;
+                        });
+                    })
+                .CreateClient();
+
+
+            // Arrange acting request
+            var initializeRequestBody = new { };
+
+            //Act
+            var initializeTransaction = await GetInitializeResponse(client, initializeRequestBody);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, initializeTransaction.StatusCode);
+
+            var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
+            Assert.Contains("title", responseContent);
+            Assert.Contains("type", responseContent);
+            Assert.Contains("errors", responseContent);
         }
 
         [Fact]
@@ -296,19 +380,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
 
             // Arrange csrf info
             var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
-            var loginCookies = loginResponse.Headers.GetValues("set-cookie").ToList();
-
+            var loginCookies = loginResponse.Headers.GetValues("set-cookie");
             var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
             var csrfToken = document.GetRequestVerificationToken();
 
             // Arrange acting request
             var testReturnUrl = "/TestReturnUrl";
             var testOptions = "TestOptions";
-
             var initializeRequest = new JsonContent(new { returnUrl = testReturnUrl, loginOptions = testOptions });
             initializeRequest.Headers.Add("Cookie", loginCookies);
             initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
+            // Act
             var initializeTransaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
             var initializeResponseContent = await initializeTransaction.Content.ReadAsStringAsync();
             var initializeObject = JsonConvert.DeserializeAnonymousType(initializeResponseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
@@ -327,6 +410,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             // Assert
             Assert.Equal(HttpStatusCode.OK, cancelTransaction.StatusCode);
             Assert.True(testBankIdApi.CancelAsyncIsCalled);
+        }
+
+        private async Task<HttpResponseMessage> GetInitializeResponse(HttpClient client, object initializeRequestBody)
+        {
+            // Arrange csrf info
+            var loginResponse = await client.GetAsync("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+            var loginCookies = loginResponse.Headers.GetValues("set-cookie");
+            var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
+            var csrfToken = document.GetRequestVerificationToken();
+
+            // Arrange acting request
+            var initializeRequest = new JsonContent(initializeRequestBody);
+            initializeRequest.Headers.Add("Cookie", loginCookies);
+            initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
+
+            return await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
         }
 
         private TestServer CreateServer(
