@@ -514,6 +514,57 @@ Example:
 });
 ```
 
+### Multi tenant scenario
+
+With the current architecture of Active Login all services are registered "globally" and you can't call `.AddBankId()` more than once.
+To run Active Login in a multi tenant scenario, where different customers should use different certificates, you could register multiple certificates and on runtime select the correct one per request.
+With our current solution, this requires you to disable pooling of the `SocketsHttpHandler` so we've decided not to ship that code in the NuGet-package, but below you'll find a sample on how it could be configured. We hope to redesign this in the future.
+
+___Note:___ The code below is a sample and because it disables `PooledConnection` it might (and will) have performance implications.
+
+```csharp
+internal static class BankIdBuilderExtensions
+{
+    public static IBankIdBuilder UseClientCertificateResolver(this IBankIdBuilder builder, Func<ServiceProvider, X509CertificateCollection, string, X509Certificate> configureClientCertificateResolver)
+    {
+        builder.ConfigureHttpClientHandler(httpClientHandler =>
+        {
+            var services = builder.AuthenticationBuilder.Services;
+            var serviceProvider = services.BuildServiceProvider();
+
+            httpClientHandler.PooledConnectionLifetime = TimeSpan.Zero;
+            httpClientHandler.SslOptions.LocalCertificateSelectionCallback =
+                (sender, host, certificates, certificate, issuers) => configureClientCertificateResolver(serviceProvider, certificates, host);
+        });
+
+        return builder;
+    }
+}
+
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // ...
+        services.AddAuthentication()
+            .AddBankId(builder =>
+            {
+                builder
+                    .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate1"))
+                    .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate2"))
+                    .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate3"))
+                    .UseClientCertificateResolver((serviceCollection, certificates, hostname) =>
+                    {
+                        // Apply logic here to select the correct certificate
+                        return certificates[0];
+                    });
+
+                // ...
+            }
+    }
+}
+```
+
 ## FAQ
 
 ### How do I customize the UI?
