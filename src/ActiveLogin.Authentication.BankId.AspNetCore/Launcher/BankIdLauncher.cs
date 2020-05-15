@@ -11,7 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
     {
         private const string BankIdScheme = "bankid:///";
 
-        private const string IosUrlPrefix = "https://app.bankid.com/";
+        private const string UrlPrefix = "https://app.bankid.com/";
         private const string NullRedirectUrl = "null";
 
         private const string IosChromeScheme = "googlechromes://";
@@ -27,11 +27,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private string GetPrefixPart(BankIdSupportedDevice device)
         {
-            // Only Safari on IOS seems to support the app.bankid.com reference
-            if (device.DeviceOs == BankIdSupportedDeviceOs.Ios
+            // Only Safari on IOS and Android version >= 6 seems to support the app.bankid.com reference
+            if ((device.DeviceOs == BankIdSupportedDeviceOs.Ios
                 && device.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari)
+                || (device.DeviceOs == BankIdSupportedDeviceOs.Android
+                && device.DeviceOsVersion.MajorVersion >= 6))
             {
-                return IosUrlPrefix;
+                return UrlPrefix;
             }
 
             return BankIdScheme;
