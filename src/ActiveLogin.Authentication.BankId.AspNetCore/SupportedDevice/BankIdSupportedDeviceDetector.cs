@@ -10,10 +10,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
             var normalizedUserAgent = userAgent?.ToLower().Trim() ?? string.Empty;
 
             var deviceOs = GetDeviceOs(normalizedUserAgent);
+            var deviceOsVersion = GetDeviceOsVersion(normalizedUserAgent);
             var deviceBrowser = GetDeviceBrowser(normalizedUserAgent);
             var deviceType = GetDeviceType(deviceOs);
 
-            return new BankIdSupportedDevice(deviceType, deviceOs, deviceBrowser);
+            return new BankIdSupportedDevice(deviceType, deviceOs, deviceBrowser, deviceOsVersion);
         }
 
         private static BankIdSupportedDeviceType GetDeviceType(BankIdSupportedDeviceOs deviceOs)
@@ -59,6 +60,26 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
             }
 
             return BankIdSupportedDeviceOs.Unknown;
+        }
+
+        private static BankIdSupportedDeviceOsVersion GetDeviceOsVersion(string userAgent)
+        {
+            return IsAndroid(userAgent) ? GetAndroidVersion(userAgent) : new BankIdSupportedDeviceOsVersion();
+        }
+
+        private static BankIdSupportedDeviceOsVersion GetAndroidVersion(string userAgent)
+        {
+            var versionNumber = userAgent.Substring(userAgent.IndexOf("android") + "android".Length).Trim();
+            versionNumber = versionNumber.Substring(0, versionNumber.IndexOf(";"));
+            var versionNumberList = versionNumber.Split('.').Select(int.Parse).ToList();
+
+            return versionNumberList.Count switch
+            {
+                1 => new BankIdSupportedDeviceOsVersion(versionNumberList.ElementAt(0)),
+                2 => new BankIdSupportedDeviceOsVersion(versionNumberList.ElementAt(0), versionNumberList.ElementAt(1)),
+                3 => new BankIdSupportedDeviceOsVersion(versionNumberList.ElementAt(0), versionNumberList.ElementAt(1), versionNumberList.ElementAt(2)),
+                _ => new BankIdSupportedDeviceOsVersion()
+            };
         }
 
         private static BankIdSupportedDeviceBrowser GetDeviceBrowser(string userAgent)

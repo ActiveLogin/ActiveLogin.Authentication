@@ -46,7 +46,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.Equal(BankIdSupportedDeviceBrowser.Chrome, detectedDevice.DeviceBrowser);
         }
 
-
         [Fact]
         public void Should_Only_Detect_WindowsPhone_And_Mobile_When_WindowsPhone_User_Agent()
         {
@@ -213,6 +212,30 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.Equal(BankIdSupportedDeviceType.Mobile, detectedDevice.DeviceType);
             Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
             Assert.Equal(BankIdSupportedDeviceBrowser.Edge, detectedDevice.DeviceBrowser);
+        }
+
+        [Fact]
+        public void Should_Detect_Os_Version_On_Android_When_Version_6_0_1()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 6.0.1; SM-G532G Build/MMB29T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.83 Mobile Safari/537.36";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
+            Assert.Equal(6, detectedDevice.DeviceOsVersion.MajorVersion);               
+            Assert.Equal(0, detectedDevice.DeviceOsVersion.MinorVersion);               
+            Assert.Equal(1, detectedDevice.DeviceOsVersion.Patch);               
+        }
+
+        [Fact]
+        public void Should_Detect_Os_Version_On_Android_When_Version_9_0_0()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 9; BLA-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.99 Mobile Safari/537.36";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
+            Assert.Equal(9, detectedDevice.DeviceOsVersion.MajorVersion);
+            Assert.Equal(0, detectedDevice.DeviceOsVersion.MinorVersion);
+            Assert.Equal(0, detectedDevice.DeviceOsVersion.Patch);
         }
     }
 }
