@@ -138,6 +138,8 @@
                         setInvalidUntilChange(personalIdentityNumberElement);
                         formFieldsetElement.disabled = false;
                     } else {
+                        enableCancelButton(data.orderRef);
+
                         hide(formElement);
                         showStatus(options.initialStatusMessage, 'white', true);
 
@@ -146,7 +148,6 @@
                         }
                     }
 
-                    enableCancelButton(data.orderRef);
                     show(formSubmitButtonTextElement);
                     hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
