@@ -149,7 +149,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private static bool BrowserMightNotAutoLaunch(BankIdSupportedDevice detectedDevice)
         {
             // Some Android browsers might have issues launching a third party scheme (BankID) if there is no user interaction.
-            // Android version > 6 supports app links (https://app.bankid.com/)
+            // Android version > 6 supports app links (https://app.bankid.com/).
             return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android && detectedDevice.DeviceOsVersion.MajorVersion < 6;
         }
 
