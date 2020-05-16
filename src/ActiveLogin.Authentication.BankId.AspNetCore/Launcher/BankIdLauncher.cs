@@ -19,14 +19,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         public bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
         {
-            // Some Android browsers might have issues launching a third party scheme (BankID) if there is no user interaction.
-            // Android version > 6 supports app links (https://app.bankid.com/), but still requires user interaction.
-            return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android;
+            // On Android, some browsers will (for security reasons) not launching a
+            // third party app/scheme (BankID) if there is no user interaction.
+            //
+            // - Chrome and Samsung Internet Browser is confirmed to require User Interaction.
+            // - Firefox is confirmed to work without.
+            //
+            // HTML files to try this out is available under /docs/tests
+
+            return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android
+                   && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox;
         }
 
         public bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
         {
             // When returned from the BankID app Safari on iOS will refresh the page/tab.
+
             return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
                    && detectedDevice.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari;
         }
@@ -49,7 +57,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         private static bool CanUseAppLink(BankIdSupportedDevice device)
         {
             // Only Safari on IOS and Chrome on Android version >= 6 seems to support
-            //  the https://app.bankid.com/ reference
+            //  the https://app.bankid.com/ launch url
+
             return IsSafariOnIos(device) || IsChromeOnAndroid6OrGreater(device);
         }
 

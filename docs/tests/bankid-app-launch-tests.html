@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>BankID App Launch Test</title>
+</head>
+<body>
+    <script>
+        window.openUrl = function(url) {
+            window.location.href = url;
+        };
+    </script>
+
+    <h1>BankID App Launch Test</h1>
+
+    <h2>bankid:///</h2>
+    <p>
+      <a href="bankid:///?autostarttoken=a36fe224-f731-4d14-ad60-23b239429450&redirect=null">Using a href</a>
+    </p>
+    <p>
+      <button onclick="openUrl('bankid:///?autostarttoken=a36fe224-f731-4d14-ad60-23b239429450&redirect=null')">Using window.location.href</button>
+    </p>
+    <p>
+      <a href="bankid-app-launch-tests-auto-bankid.html">Using document on load</a>
+    </p>
+
+    <hr />
+
+    <h2>https://app.bankid.com/</h2>
+    <p>
+      <a href="https://app.bankid.com/?autostarttoken=a36fe224-f731-4d14-ad60-23b239429450&redirect=null">Using a href</a>
+    </p>
+    <p>
+      <button onclick="openUrl('https://app.bankid.com/?autostarttoken=a36fe224-f731-4d14-ad60-23b239429450&redirect=null')">Using window.location.href</button>
+    </p>
+    <p>
+      <a href="bankid-app-launch-tests-auto-https.html">Using document on load</a>
+    </p>
+
+</body>
+</html>
