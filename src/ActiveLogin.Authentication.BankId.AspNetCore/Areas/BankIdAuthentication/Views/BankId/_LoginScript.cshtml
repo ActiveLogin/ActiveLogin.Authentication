@@ -115,7 +115,7 @@
                             sessionStorage.setItem(sessionStorageOrderRefKey, data.orderRef);
                         }
 
-                        if (data.showLaunchButton) {
+                        if (data.deviceMightRequireUserInteractionToLaunchBankIdApp) {
                             var startBankIdAppButtonOnClick = function(event) {
                                 window.location.href = data.redirectUri;
                                 hide(startBankIdAppButtonElement);

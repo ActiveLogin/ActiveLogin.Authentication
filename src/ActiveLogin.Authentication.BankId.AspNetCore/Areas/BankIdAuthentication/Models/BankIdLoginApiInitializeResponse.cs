@@ -1,17 +1,17 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
     public class BankIdLoginApiInitializeResponse
     {
         internal BankIdLoginApiInitializeResponse(
             bool isAutoLaunch,
-            bool showLaunchButton,
+            bool deviceMightRequireUserInteractionToLaunchBankIdApp,
             bool checkStatus,
             string orderRef,
             string? redirectUri,
             string? qrCodeAsBase64)
         {
             IsAutoLaunch = isAutoLaunch;
-            ShowLaunchButton = showLaunchButton;
+            DeviceMightRequireUserInteractionToLaunchBankIdApp = deviceMightRequireUserInteractionToLaunchBankIdApp;
             CheckStatus = checkStatus;
             OrderRef = orderRef;
             RedirectUri = redirectUri;
@@ -20,7 +20,7 @@
 
 
         public bool IsAutoLaunch { get; }
-        public bool ShowLaunchButton { get; }
+        public bool DeviceMightRequireUserInteractionToLaunchBankIdApp { get; }
         public bool CheckStatus { get; }
         public string OrderRef { get; }
         public string? RedirectUri { get; }

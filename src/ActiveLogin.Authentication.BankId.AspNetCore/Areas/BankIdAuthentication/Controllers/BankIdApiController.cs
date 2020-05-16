@@ -129,12 +129,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
                 var bankIdRedirectUri = GetBankIdRedirectUri(request, authResponse, detectedDevice);
 
-                // Don't check for status if the browser will reload on return
-                var response = BrowserWillReloadPageOnReturnRedirect(detectedDevice)
-                    ? BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, false)
-                    : BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, BrowserMightNotAutoLaunch(detectedDevice));
+                var deviceWillReloadPageOnReturn = _bankIdLauncher.GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice);
+                var deviceMightRequireUserInteraction = _bankIdLauncher.GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
 
-                return OkJsonResult(response);
+                // Don't check for status if the browser will reload on return
+                if (deviceWillReloadPageOnReturn)
+                {
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, deviceMightRequireUserInteraction));
+                }
+                else
+                {
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, deviceMightRequireUserInteraction));
+                }
             }
 
             if (unprotectedLoginOptions.UseQrCode)
@@ -144,19 +150,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
-        }
-
-        private static bool BrowserMightNotAutoLaunch(BankIdSupportedDevice detectedDevice)
-        {
-            // Some Android browsers might have issues launching a third party scheme (BankID) if there is no user interaction.
-            // Android version > 6 supports app links (https://app.bankid.com/).
-            return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android && detectedDevice.DeviceOsVersion.MajorVersion < 6;
-        }
-
-        private static bool BrowserWillReloadPageOnReturnRedirect(BankIdSupportedDevice detectedDevice)
-        {
-            return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
-                   && detectedDevice.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari;
         }
 
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)

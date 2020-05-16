@@ -13,5 +13,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
             return "#";
         }
+
+        public bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
+        {
+            return false;
+        }
+
+        public bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
+        {
+            return false;
+        }
     }
 }
