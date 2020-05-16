@@ -9,5 +9,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
         {
             return request.RedirectUrl;
         }
+
+        public bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
+        {
+            return false;
+        }
+
+        public bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
+        {
+            return false;
+        }
     }
 }
