@@ -1,23 +1,14 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
-using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
+using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
 {
     internal class TestBankIdLauncher : IBankIdLauncher
     {
-        public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
+        public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request, HttpContext httpContext)
         {
-            return request.RedirectUrl;
-        }
-
-        public bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
-        {
-            return false;
-        }
-
-        public bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
-        {
-            return false;
+            // Always redirect back without user interaction in simulated mode
+            return new BankIdLaunchInfo(request.RedirectUrl, false, false);
         }
     }
 }

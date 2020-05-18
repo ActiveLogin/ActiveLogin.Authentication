@@ -2,8 +2,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 {
     public class BankIdSupportedDevice
     {
-        public BankIdSupportedDevice(BankIdSupportedDeviceType deviceType, BankIdSupportedDeviceOs deviceOs,
-            BankIdSupportedDeviceBrowser deviceBrowser, BankIdSupportedDeviceOsVersion deviceOsVersion)
+        public BankIdSupportedDevice(BankIdSupportedDeviceType deviceType, BankIdSupportedDeviceOs deviceOs, BankIdSupportedDeviceBrowser deviceBrowser, BankIdSupportedDeviceOsVersion deviceOsVersion)
         {
             DeviceType = deviceType;
             DeviceOs = deviceOs;

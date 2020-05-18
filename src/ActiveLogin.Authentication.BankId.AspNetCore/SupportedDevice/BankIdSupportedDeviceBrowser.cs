@@ -7,6 +7,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
         Chrome,
         Safari,
         Firefox,
-        Edge
+        Edge,
+        SamsungBrowser,
+        Opera
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
 using Microsoft.ApplicationInsights;
@@ -33,9 +34,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         private const string PropertyName_BankIdOrderRef = "AL_BankId_OrderRef";
         private const string PropertyName_BankIdCollectHintCode = "AL_BankId_CollectHintCode";
 
-        private const string PropertyName_UserDeviceIpAddress = "AL_BankId_User_DeviceIpAddress";
         private const string PropertyName_UserCertNotBefore = "AL_User_CertNotBefore";
         private const string PropertyName_UserCertNotAfter = "AL_User_CertNotAfter";
+
+        private const string PropertyName_UserDeviceIpAddress = "AL_BankId_User_Device_IpAddress";
+        private const string PropertyName_UserDeviceBrowser = "AL_BankId_User_Device_Browser";
+        private const string PropertyName_UserDeviceOs = "AL_BankId_User_Device_Os";
+        private const string PropertyName_UserDeviceType = "AL_BankId_User_Device_Type";
+        private const string PropertyName_UserDeviceOsVersion = "AL_BankId_User_Device_OsVersion";
 
         private const string PropertyName_UserName = "AL_User_Name";
         private const string PropertyName_UserGivenName = "AL_User_GivenName";
@@ -98,20 +104,27 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
         public override Task HandleAuthSuccessEvent(BankIdAuthSuccessEvent e)
         {
+            var properties = new Dictionary<string, string>
+            {
+                { PropertyName_BankIdOrderRef, e.OrderRef }
+            };
+            AddUserDeviceProperties(properties, e.DetectedUserDevice);
+
             return Track(
                 e,
-                new Dictionary<string, string>
-                {
-                    { PropertyName_BankIdOrderRef, e.OrderRef }
-                },
+                properties,
                 personalIdentityNumber: e.PersonalIdentityNumber
             );
         }
 
         public override Task HandleAuthFailureEvent(BankIdAuthErrorEvent e)
         {
+            var properties = new Dictionary<string, string>();
+            AddUserDeviceProperties(properties, e.DetectedUserDevice);
+
             return Track(
                 e,
+                properties,
                 personalIdentityNumber: e.PersonalIdentityNumber,
                 exception: e.BankIdApiException
             );
@@ -268,6 +281,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                     metrics.Add(PropertyName_UserAgeHint, ageHint.Value);
                 }
             }
+        }
+
+        private void AddUserDeviceProperties(Dictionary<string, string> properties, BankIdSupportedDevice userDevice)
+        {
+            properties.Add(PropertyName_UserDeviceBrowser, userDevice.DeviceBrowser.ToString());
+            properties.Add(PropertyName_UserDeviceOs, userDevice.DeviceOs.ToString());
+            properties.Add(PropertyName_UserDeviceType, userDevice.DeviceType.ToString());
+            properties.Add(PropertyName_UserDeviceOsVersion, userDevice.DeviceOsVersion.ToString());
         }
     }
 }

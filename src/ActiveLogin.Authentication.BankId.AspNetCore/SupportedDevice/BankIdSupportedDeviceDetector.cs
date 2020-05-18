@@ -64,30 +64,36 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 
         private static BankIdSupportedDeviceOsVersion GetDeviceOsVersion(string userAgent)
         {
-            return IsAndroid(userAgent) ? GetAndroidVersion(userAgent) : new BankIdSupportedDeviceOsVersion();
+            return IsAndroid(userAgent) ? GetAndroidVersion(userAgent) : BankIdSupportedDeviceOsVersion.Empty;
         }
 
         private static BankIdSupportedDeviceOsVersion GetAndroidVersion(string userAgent)
         {
+            if(string.IsNullOrWhiteSpace(userAgent))
+            {
+                return BankIdSupportedDeviceOsVersion.Empty;
+            }
+
             try
             {
                 //Example userAgent for Android "Mozilla/5.0 (Linux; Android 6.0.1; SM-G532G Build/MMB29T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.83 Mobile Safari/537.36";
                 const string Android = "android";
-                var versionNumber = userAgent.Substring(userAgent.IndexOf(Android) + Android.Length).Trim();
-                versionNumber = versionNumber.Substring(0, versionNumber.IndexOf(";"));
-                var versionNumberList = versionNumber.Split('.').Select(v => int.TryParse(v, out var version) ? version : (int?)null).ToArray();
+
+                var versionNumber = userAgent.Substring(userAgent.IndexOf(Android, StringComparison.Ordinal) + Android.Length).Trim();
+                versionNumber = versionNumber.Substring(0, versionNumber.IndexOf(";", StringComparison.Ordinal));
+                var versionNumberList = versionNumber.Split('.').Select(v => int.TryParse(v, out var version) ? version : 0).ToArray();
 
                 return versionNumberList.Length switch
                 {
                     1 => new BankIdSupportedDeviceOsVersion(versionNumberList[0]),
                     2 => new BankIdSupportedDeviceOsVersion(versionNumberList[0], versionNumberList[1]),
                     3 => new BankIdSupportedDeviceOsVersion(versionNumberList[0], versionNumberList[1], versionNumberList[2]),
-                    _ => new BankIdSupportedDeviceOsVersion()
+                    _ => BankIdSupportedDeviceOsVersion.Empty
                 };
             }
             catch
             {
-                return new BankIdSupportedDeviceOsVersion();
+                return BankIdSupportedDeviceOsVersion.Empty;
             }
         }
 
@@ -111,6 +117,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
             if (IsEdge(userAgent))
             {
                 return BankIdSupportedDeviceBrowser.Edge;
+            }
+
+            if (IsSamsungBrowser(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.SamsungBrowser;
+            }
+
+            if (IsOpera(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.Opera;
             }
 
             return BankIdSupportedDeviceBrowser.Unknown;
@@ -167,13 +183,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
             return IsUserAgent(userAgent, "safari")
                     && !IsChrome(userAgent)
                     && !IsFirefox(userAgent)
-                    && !IsEdge(userAgent);
+                    && !IsEdge(userAgent)
+                    && !IsSamsungBrowser(userAgent)
+                    && !IsOpera(userAgent);
         }
 
         private static bool IsChrome(string userAgent)
         {
             return IsUserAgent(userAgent, "crios", "chrome")
-                    && !IsEdge(userAgent);
+                    && !IsEdge(userAgent)
+                    && !IsSamsungBrowser(userAgent)
+                    && !IsOpera(userAgent);
         }
 
         private static bool IsFirefox(string userAgent)
@@ -184,6 +204,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
         private static bool IsEdge(string userAgent)
         {
             return IsUserAgent(userAgent, "edg", "edge", "edgios", "edga");
+        }
+
+        private static bool IsSamsungBrowser(string userAgent)
+        {
+            return IsUserAgent(userAgent, "samsungbrowser");
+        }
+
+        private static bool IsOpera(string userAgent)
+        {
+            return IsUserAgent(userAgent, "opr");
         }
 
         private static bool IsUserAgent(string userAgent, params string[] keys)
