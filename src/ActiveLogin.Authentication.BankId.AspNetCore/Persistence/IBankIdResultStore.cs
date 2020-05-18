@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Persistence
