@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
+    /// <summary>
+    /// Resolves launch information to start the BankID app
+    /// </summary>
     public interface IBankIdLauncher
     {
         /// <summary>
