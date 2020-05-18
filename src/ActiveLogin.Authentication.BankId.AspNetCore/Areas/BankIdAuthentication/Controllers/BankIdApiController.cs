@@ -29,6 +29,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     [AllowAnonymous]
     public class BankIdApiController : Controller
     {
+        private const string UserAgentHttpHeaderName = "User-Agent";
+
         private readonly UrlEncoder _urlEncoder;
         private readonly IBankIdUserMessage _bankIdUserMessage;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
@@ -105,6 +107,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 }
             }
 
+            var detectedUserDevice = GetDetectedUserDevice();
             AuthResponse authResponse;
             try
             {
@@ -113,7 +116,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber, bankIdApiException));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber, bankIdApiException, detectedUserDevice));
 
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
@@ -122,24 +125,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var orderRef = authResponse.OrderRef;
             var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(orderRef));
 
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef, detectedUserDevice));
 
             if (unprotectedLoginOptions.AutoLaunch)
             {
-                var detectedDevice = _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers["User-Agent"]);
-                var bankIdRedirectUri = GetBankIdRedirectUri(request, authResponse, detectedDevice);
-
-                var deviceWillReloadPageOnReturn = _bankIdLauncher.GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice);
-                var deviceMightRequireUserInteraction = _bankIdLauncher.GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
-
+                var launchInfo = GetBankIdLaunchInfo(request, authResponse);
+                
                 // Don't check for status if the browser will reload on return
-                if (deviceWillReloadPageOnReturn)
+                if (launchInfo.DeviceWillReloadPageOnReturnFromBankIdApp)
                 {
-                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, bankIdRedirectUri, deviceMightRequireUserInteraction));
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, launchInfo.LaunchUrl, launchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
                 }
                 else
                 {
-                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, bankIdRedirectUri, deviceMightRequireUserInteraction));
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, launchInfo.LaunchUrl, launchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
                 }
             }
 
@@ -151,7 +150,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
-
+        
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = _endUserIpResolver.GetEndUserIp(HttpContext);
@@ -169,7 +168,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement);
         }
 
-        private string GetBankIdRedirectUri(BankIdLoginApiInitializeRequest request, AuthResponse authResponse, BankIdSupportedDevice detectedDevice)
+        private BankIdLaunchInfo GetBankIdLaunchInfo(BankIdLoginApiInitializeRequest request, AuthResponse authResponse)
         {
             var returnRedirectUri = GetAbsoluteUrl(Url.Action("Login", "BankId", new
             {
@@ -177,9 +176,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 loginOptions = request.LoginOptions
             }));
             var launchUrlRequest = new LaunchUrlRequest(returnRedirectUri, authResponse.AutoStartToken);
-            var bankIdRedirectUri = _bankIdLauncher.GetLaunchUrl(detectedDevice, launchUrlRequest);
-
-            return bankIdRedirectUri;
+            return _bankIdLauncher.GetLaunchInfo(launchUrlRequest, HttpContext);
         }
 
         private string GetAbsoluteUrl(string returnUrl)
@@ -222,7 +219,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
 
-            var statusMessage = GetStatusMessage(collectResponse, unprotectedLoginOptions, HttpContext.Request);
+            var statusMessage = GetStatusMessage(collectResponse, unprotectedLoginOptions);
 
             if (collectResponse.GetCollectStatus() == CollectStatus.Pending)
             {
@@ -279,10 +276,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return OkJsonResult(BankIdLoginApiStatusResponse.Pending(statusMessage));
         }
 
-        private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions, HttpRequest request)
+        private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions)
         {
             var authPersonalIdentityNumberProvided = PersonalIdentityNumberProvided(unprotectedLoginOptions);
-            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(request.Headers["User-Agent"]);
+            var detectedDevice = GetDetectedUserDevice();
             var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
             var usingQrCode = unprotectedLoginOptions.UseQrCode;
 
@@ -295,6 +292,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
 
             return statusMessage;
+        }
+
+        private BankIdSupportedDevice GetDetectedUserDevice()
+        {
+            return _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers[UserAgentHttpHeaderName]);
         }
 
         private static bool PersonalIdentityNumberProvided(BankIdLoginOptions unprotectedLoginOptions)

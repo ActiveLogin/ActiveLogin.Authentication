@@ -204,6 +204,28 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
         }
 
         [Fact]
+        public void Should_Detect_SamsungBrowser_On_Android()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 9; SAMSUNG SM-G960U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/10.1 Chrome/71.0.3578.99 Mobile Safari/537.36";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Equal(BankIdSupportedDeviceType.Mobile, detectedDevice.DeviceType);
+            Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
+            Assert.Equal(BankIdSupportedDeviceBrowser.SamsungBrowser, detectedDevice.DeviceBrowser);
+        }
+
+        [Fact]
+        public void Should_Detect_Opera_On_Android()
+        {
+            var userAgent = "Mozilla/5.0 (Linux; Android 10; SM-G970F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Mobile Safari/537.36 OPR/55.2.2719";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Equal(BankIdSupportedDeviceType.Mobile, detectedDevice.DeviceType);
+            Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
+            Assert.Equal(BankIdSupportedDeviceBrowser.Opera, detectedDevice.DeviceBrowser);
+        }
+
+        [Fact]
         public void Should_Detect_Edge_On_Android()
         {
             var userAgent = "Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.0 Mobile Safari/537.36 EdgA/41.1.35.1";
@@ -246,7 +268,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
 
             Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
             Assert.Equal(6, detectedDevice.DeviceOsVersion.MajorVersion);
-            Assert.Null(detectedDevice.DeviceOsVersion.MinorVersion);
+            Assert.Equal(0, detectedDevice.DeviceOsVersion.MinorVersion);
             Assert.Equal(1, detectedDevice.DeviceOsVersion.Patch);
         }
 

@@ -9,13 +9,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 {
     internal class BankIdEventTrigger : IBankIdEventTrigger
     {
-        private readonly BankIdActiveLoginContext _bankIdActiveLoginContext;
         private readonly List<IBankIdEventListener> _listeners;
+        private readonly BankIdActiveLoginContext _bankIdActiveLoginContext;
+        
 
         public BankIdEventTrigger(IEnumerable<IBankIdEventListener> listeners, IOptions<BankIdActiveLoginContext> bankIdActiveLoginContext)
         {
-            _bankIdActiveLoginContext = bankIdActiveLoginContext.Value;
             _listeners = listeners.ToList();
+            _bankIdActiveLoginContext = bankIdActiveLoginContext.Value;
         }
 
         public async Task TriggerAsync(BankIdEvent bankIdEvent)

@@ -1,27 +1,13 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
+using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     internal class BankIdDevelopmentLauncher : IBankIdLauncher
     {
-        public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
+        public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request, HttpContext httpContext)
         {
-            if (device.DeviceOs == BankIdSupportedDeviceOs.Ios)
-            {
-                return request.RedirectUrl;
-            }
-
-            return "#";
-        }
-
-        public bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
-        {
-            return false;
-        }
-
-        public bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
-        {
-            return false;
+            // Always redirect back without user interaction in simulated mode
+            return new BankIdLaunchInfo(request.RedirectUrl, false, false);
         }
     }
 }

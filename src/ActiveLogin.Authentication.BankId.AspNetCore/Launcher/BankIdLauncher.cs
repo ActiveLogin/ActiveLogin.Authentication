@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
@@ -16,8 +17,26 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private const string IosChromeScheme = "googlechromes://";
         private const string IosFirefoxScheme = "firefox://";
+        private const string UserAgentHeaderName = "User-Agent";
 
-        public bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
+        private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
+
+        public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector)
+        {
+            _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+        }
+
+        public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request, HttpContext httpContext)
+        {
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(httpContext.Request.Headers[UserAgentHeaderName]);
+            var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
+            var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice);
+
+            var launchUrl = GetLaunchUrl(detectedDevice, request);
+            return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn);
+        }
+
+        private bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
         {
             // On Android, some browsers will (for security reasons) not launching a
             // third party app/scheme (BankID) if there is no user interaction.
@@ -31,7 +50,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
                    && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox;
         }
 
-        public bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
+        private bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
         {
             // When returned from the BankID app Safari on iOS will refresh the page/tab.
 
@@ -39,7 +58,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
                    && detectedDevice.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari;
         }
 
-        public string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
+        private string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
         {
             var prefix = GetPrefixPart(device);
             var queryString = GetQueryStringPart(device, request);

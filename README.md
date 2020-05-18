@@ -384,11 +384,17 @@ A more technical deep dive of the cookies can be found in [this issue](https://g
 
 We aim at supporting the latest version of all major browsers (Edge, Chrome, Firefox, Safari) both on desktop and on mobile.
 
-All browsers on mobile are supported, but the full automated flow on same device (redirect between apps) are supported on these:
-- Safari on iOS
-- Chrome on iOS
-- Firefox on iOS
-- All browsers on Android
+All browsers on mobile are supported, but the redirect flow are tested on these:
+- iOS
+    - Safari
+    - Chrome
+    - Firefox
+- Android
+    - Chrome
+    - Firefox
+    - Samsung Internet Browser
+    - Opera
+    - Edge
 
 If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 
