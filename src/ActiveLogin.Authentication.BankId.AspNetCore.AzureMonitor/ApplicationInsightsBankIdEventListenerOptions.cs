@@ -26,5 +26,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         /// If certificate dates (not before, not after) should be logged.
         /// </summary>
         public bool LogCertificateDates { get; set; } = false;
+
+        /// <summary>
+        /// If detected user device should be logged (browser, os, os version, type).
+        /// </summary>
+        public bool LogUserDevice { get; set; } = true;
     }
 }

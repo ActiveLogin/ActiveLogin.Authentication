@@ -34,14 +34,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         private const string PropertyName_BankIdOrderRef = "AL_BankId_OrderRef";
         private const string PropertyName_BankIdCollectHintCode = "AL_BankId_CollectHintCode";
 
-        private const string PropertyName_UserCertNotBefore = "AL_User_CertNotBefore";
-        private const string PropertyName_UserCertNotAfter = "AL_User_CertNotAfter";
+        private const string PropertyName_BankIdUserCertNotBefore = "AL_BankId_User_CertNotBefore";
+        private const string PropertyName_BankIdUserCertNotAfter = "AL_BankId_User_CertNotAfter";
+        private const string PropertyName_BankIdUserDeviceIpAddress = "AL_BankId_User_DeviceIpAddress";
 
-        private const string PropertyName_UserDeviceIpAddress = "AL_BankId_User_Device_IpAddress";
-        private const string PropertyName_UserDeviceBrowser = "AL_BankId_User_Device_Browser";
-        private const string PropertyName_UserDeviceOs = "AL_BankId_User_Device_Os";
-        private const string PropertyName_UserDeviceType = "AL_BankId_User_Device_Type";
-        private const string PropertyName_UserDeviceOsVersion = "AL_BankId_User_Device_OsVersion";
+        private const string PropertyName_UserDeviceBrowser = "AL_User_Device_Browser";
+        private const string PropertyName_UserDeviceOs = "AL_User_Device_Os";
+        private const string PropertyName_UserDeviceType = "AL_User_Device_Type";
+        private const string PropertyName_UserDeviceOsVersion = "AL_User_Device_OsVersion";
 
         private const string PropertyName_UserName = "AL_User_Name";
         private const string PropertyName_UserGivenName = "AL_User_GivenName";
@@ -93,11 +93,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 },
                 personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber
             );
-        }
-
-        private static string GetBooleanProperty(bool property)
-        {
-            return property ? "True" : "False";
         }
 
         // BankID API - Auth
@@ -160,13 +155,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
             if (_options.LogDeviceIpAddress)
             {
-                properties.Add(PropertyName_UserDeviceIpAddress, e.CompletionData.Device.IpAddress);
+                properties.Add(PropertyName_BankIdUserDeviceIpAddress, e.CompletionData.Device.IpAddress);
             }
 
             if (_options.LogCertificateDates)
             {
-                properties.Add(PropertyName_UserCertNotBefore, e.CompletionData.Cert.NotBefore);
-                properties.Add(PropertyName_UserCertNotAfter, e.CompletionData.Cert.NotAfter);
+                properties.Add(PropertyName_BankIdUserCertNotBefore, e.CompletionData.Cert.NotBefore);
+                properties.Add(PropertyName_BankIdUserCertNotAfter, e.CompletionData.Cert.NotAfter);
             }
 
             var swedishPersonalIdentityNumber = SwedishPersonalIdentityNumber.Parse(e.CompletionData.User.PersonalIdentityNumber);
@@ -285,10 +280,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
         private void AddUserDeviceProperties(Dictionary<string, string> properties, BankIdSupportedDevice userDevice)
         {
-            properties.Add(PropertyName_UserDeviceBrowser, userDevice.DeviceBrowser.ToString());
-            properties.Add(PropertyName_UserDeviceOs, userDevice.DeviceOs.ToString());
-            properties.Add(PropertyName_UserDeviceType, userDevice.DeviceType.ToString());
-            properties.Add(PropertyName_UserDeviceOsVersion, userDevice.DeviceOsVersion.ToString());
+            if (_options.LogUserDevice)
+            {
+                properties.Add(PropertyName_UserDeviceBrowser, userDevice.DeviceBrowser.ToString());
+                properties.Add(PropertyName_UserDeviceOs, userDevice.DeviceOs.ToString());
+                properties.Add(PropertyName_UserDeviceType, userDevice.DeviceType.ToString());
+                properties.Add(PropertyName_UserDeviceOsVersion, userDevice.DeviceOsVersion.ToString());
+            }
+        }
+
+        private static string GetBooleanProperty(bool property)
+        {
+            return property ? "True" : "False";
         }
     }
 }
