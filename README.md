@@ -393,7 +393,7 @@ All browsers on mobile are supported, but the redirect flow are tested on these:
     - Chrome
     - Firefox
     - Samsung Internet Browser
-    - Opera
+    - Opera Mini
     - Edge
 
 If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
