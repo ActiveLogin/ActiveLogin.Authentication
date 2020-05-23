@@ -1,6 +1,8 @@
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using ActiveLogin.Identity.Swedish;
 using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
@@ -19,17 +21,46 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
                 WriteIndented = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
+
             _serializerOptions.Converters.Add(new JsonStringEnumConverter());
+            _serializerOptions.Converters.Add(new PersonalIdentityNumberJsonConverter());
         }
 
         public Task HandleAsync(BankIdEvent bankIdEvent)
         {
             var eventId = new EventId(bankIdEvent.EventTypeId, bankIdEvent.EventTypeName);
-            var serializedEvent = JsonSerializer.Serialize(bankIdEvent, bankIdEvent.GetType(), _serializerOptions);
+            var debugMessage = GetSerializedEventOrError(bankIdEvent);
 
-            _logger.LogDebug(eventId, serializedEvent);
+            _logger.LogDebug(eventId, debugMessage);
 
             return Task.CompletedTask;
+        }
+
+        private string GetSerializedEventOrError(BankIdEvent bankIdEvent)
+        {
+            try
+            {
+                return JsonSerializer.Serialize(bankIdEvent, bankIdEvent.GetType(), _serializerOptions);
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        private class PersonalIdentityNumberJsonConverter : JsonConverter<SwedishPersonalIdentityNumber>
+        {
+            public override SwedishPersonalIdentityNumber Read(
+                ref Utf8JsonReader reader,
+                Type typeToConvert,
+                JsonSerializerOptions options) =>
+                SwedishPersonalIdentityNumber.Parse(reader.GetString());
+
+            public override void Write(
+                Utf8JsonWriter writer,
+                SwedishPersonalIdentityNumber personalIdentityNumberValue,
+                JsonSerializerOptions options) =>
+                writer.WriteStringValue(personalIdentityNumberValue.To12DigitString());
         }
     }
 }
