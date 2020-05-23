@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
@@ -16,6 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
             PersonalIdentityNumber = personalIdentityNumber;
         }
 
+        [JsonIgnore] // ClaimsPrincipal have self circular references
         public AuthenticationTicket AuthenticationTicket { get; }
         public SwedishPersonalIdentityNumber PersonalIdentityNumber { get; }
     }
