@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request, HttpContext httpContext)
         {
             // Always redirect back without user interaction in simulated mode
-            return new BankIdLaunchInfo(request.RedirectUrl, false, false);
+            return new BankIdLaunchInfo("#", false, false);
         }
     }
 }
