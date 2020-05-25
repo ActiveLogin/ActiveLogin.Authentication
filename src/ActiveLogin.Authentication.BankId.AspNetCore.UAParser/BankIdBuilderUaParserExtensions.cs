@@ -15,7 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBankIdBuilder UseUaParserDeviceDetection(this IBankIdBuilder builder)
         {
             var services = builder.AuthenticationBuilder.Services;
-            services.TryAddTransient<IBankIdSupportedDeviceDetector, UAParserDeviceDetector>();
+            var descriptor = new ServiceDescriptor(typeof(IBankIdSupportedDeviceDetector),typeof(UAParserDeviceDetector), ServiceLifetime.Transient);
+            services.Replace(descriptor);
 
             return builder;
         }
