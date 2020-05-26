@@ -25,113 +25,35 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
             var hasMinor = int.TryParse(clientInfo.OS.Minor, out var minor);
             var hasPatch = int.TryParse(clientInfo.OS.Patch, out var patch);
 
-            if(hasMajor && hasMinor && hasPatch)
+            return (hasMajor, hasMinor, hasPatch) switch
             {
-                return new BankIdSupportedDeviceOsVersion(major, minor, patch);
-            }
-
-            if (hasMajor && hasMinor)
-            {
-                return new BankIdSupportedDeviceOsVersion(major, minor);
-            }
-
-            if (hasMajor)
-            {
-                return new BankIdSupportedDeviceOsVersion(major);
-            }
-
-            return BankIdSupportedDeviceOsVersion.Empty;
-        }
-
-        private BankIdSupportedDeviceBrowser GetDeviceBrowser(ClientInfo clientInfo)
-        {
-            if (IsChrome(clientInfo.UA.Family))
-            {
-                return BankIdSupportedDeviceBrowser.Chrome;
-            }
-
-            if (IsSafari(clientInfo.UA.Family))
-            {
-                return BankIdSupportedDeviceBrowser.Safari;
-            }
-
-            if (IsEdge(clientInfo.UA.Family))
-            {
-                return BankIdSupportedDeviceBrowser.Edge;
-            }
-
-            if (IsFirefox(clientInfo.UA.Family))
-            {
-                return BankIdSupportedDeviceBrowser.Firefox;
-            }
-
-
-            if (IsSamsungBrowser(clientInfo.UA.Family))
-            {
-                return BankIdSupportedDeviceBrowser.SamsungBrowser;
-            }
-
-            if (IsOpera(clientInfo.UA.Family))
-            {
-                return BankIdSupportedDeviceBrowser.Opera;
-            }
-
-            return BankIdSupportedDeviceBrowser.Unknown;
-        }
-
-        private bool IsChrome(string family)
-        {
-            return family.ToLower().Contains("chrome");
-        }
-
-        private bool IsSafari(string family)
-        {
-            return family.ToLower().Contains("safari");
-        }
-
-        private bool IsEdge(string family)
-        {
-            return family.ToLower().Contains("edge");
-        }
-
-        private bool IsFirefox(string family)
-        {
-            return family.ToLower().Contains("firefox");
-        }
-
-        private bool IsSamsungBrowser(string family)
-        {
-            return family.ToLower().Contains("samsung");
-        }
-
-        private bool IsOpera(string family)
-        {
-            return family.ToLower().Contains("opera");
-        }
-
-        //TODO: Use Contains instead.
-        private BankIdSupportedDeviceOs GetDeviceOs(ClientInfo clientInfo)
-        {
-            return clientInfo.OS.Family.ToLower() switch
-            {
-                "ios" => BankIdSupportedDeviceOs.Ios,
-                "android" => BankIdSupportedDeviceOs.Android,
-                "windows phone" => BankIdSupportedDeviceOs.WindowsPhone,
-                "windows" => BankIdSupportedDeviceOs.Windows,
-                "mac os x" => BankIdSupportedDeviceOs.MacOs,
-                _ => BankIdSupportedDeviceOs.Unknown
+                (true, true, true) => new BankIdSupportedDeviceOsVersion(major, minor, patch),
+                (true, true, false) => new BankIdSupportedDeviceOsVersion(major, minor),
+                (true, false, false) => new BankIdSupportedDeviceOsVersion(major),
+                _ => BankIdSupportedDeviceOsVersion.Empty
             };
         }
 
-        private BankIdSupportedDeviceType GetDeviceType(ClientInfo clientInfo)
+        private BankIdSupportedDeviceBrowser GetDeviceBrowser(ClientInfo clientInfo) => clientInfo.UA switch
         {
-            return clientInfo.Device.Family switch
-            {
-                "iPhone" => BankIdSupportedDeviceType.Mobile,
-                "iPad" => BankIdSupportedDeviceType.Mobile,
-                _ => BankIdSupportedDeviceType.Unknown
-            };
-        }
+            var userAgent when IsChrome(userAgent) => BankIdSupportedDeviceBrowser.Chrome,
+            var userAgent when IsSafari(userAgent) => BankIdSupportedDeviceBrowser.Safari,
+            var userAgent when IsEdge(userAgent) => BankIdSupportedDeviceBrowser.Edge,
+            var userAgent when IsFirefox(userAgent) => BankIdSupportedDeviceBrowser.Firefox,
+            var userAgent when IsSamsungBrowser(userAgent) => BankIdSupportedDeviceBrowser.SamsungBrowser,
+            var userAgent when IsOpera(userAgent) => BankIdSupportedDeviceBrowser.Opera,
+            _ => BankIdSupportedDeviceBrowser.Unknown
+        };
+
+        private BankIdSupportedDeviceOs GetDeviceOs(ClientInfo clientInfo) => clientInfo.OS switch
+        {
+            var os when IsIos(os) => BankIdSupportedDeviceOs.Ios,
+            var os when IsAndroid(os) => BankIdSupportedDeviceOs.Android,
+            var os when IsWindowsPhone(os) => BankIdSupportedDeviceOs.WindowsPhone,
+            var os when IsWindows(os) => BankIdSupportedDeviceOs.Windows,
+            var os when IsMacOs(os) => BankIdSupportedDeviceOs.MacOs,
+            _ => BankIdSupportedDeviceOs.Unknown
+        };
 
         private static BankIdSupportedDeviceType GetDeviceType(BankIdSupportedDeviceOs deviceOs)
         {
@@ -146,6 +68,71 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
 
                 _ => BankIdSupportedDeviceType.Unknown
             };
+        }
+
+        private bool IsChrome(UserAgent userAgent)
+        {
+            return IsBrowser(userAgent, "chrome");
+        }
+
+        private bool IsSafari(UserAgent userAgent)
+        {
+            return IsBrowser(userAgent, "safari");
+        }
+
+        private bool IsEdge(UserAgent userAgent)
+        {
+            return IsBrowser(userAgent, "edge");
+        }
+
+        private bool IsFirefox(UserAgent userAgent)
+        {
+            return IsBrowser(userAgent, "firefox");
+        }
+
+        private bool IsSamsungBrowser(UserAgent userAgent)
+        {
+            return IsBrowser(userAgent, "samsung");
+        }
+
+        private bool IsOpera(UserAgent userAgent)
+        {
+            return IsBrowser(userAgent, "opera");
+        }
+
+        private bool IsBrowser(UserAgent userAgent, string browser)
+        {
+            return userAgent.Family.ToLower().Contains(browser.ToLower(), StringComparison.InvariantCulture);
+        }
+
+        private bool IsIos(OS os)
+        {
+            return IsOs(os, "ios");
+        }
+
+        private bool IsAndroid(OS os)
+        {
+            return IsOs(os, "android");
+        }
+
+        private bool IsWindowsPhone(OS os)
+        {
+            return IsOs(os, "windows phone");
+        }
+
+        private bool IsWindows(OS os)
+        {
+            return IsOs(os, "windows");
+        }
+
+        private bool IsMacOs(OS os)
+        {
+            return IsOs(os, "mac os");
+        }
+
+        private bool IsOs(OS os, string osName)
+        {
+            return os.Family.ToLower().Contains(osName.ToLower(), StringComparison.InvariantCulture);
         }
     }
 }
