@@ -272,7 +272,7 @@ namespace ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test
         }
 
         [Fact]
-        public void Webview_On_Android()
+        public void Should_Detect_Chrome_On_Android_WebView()
         {
             var userAgent = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
             var detectedDevice = _uaParserDeviceDetector.Detect(userAgent);
