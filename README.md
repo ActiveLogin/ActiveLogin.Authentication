@@ -54,6 +54,7 @@ ___Note:___ This Readme reflects the state of our master branch and the code doc
 	+ [What browsers do you support?](#what-browsers-do-you-support)
     + [What dependencies do I need if I run Active Login on Linux or in a Linux Docker container?](#what-dependencies-do-i-need-if-i-run-active-login-on-linux-or-in-a-linux-docker-container)
 	+ [Why are the names of the person sometimes capitalized?](#why-are-the-names-of-the-person-sometimes-capitalized)
+	+ [Why use UAParserDeviceDetector for device and browser detection](#why-use-uaparserdevicedetector-for-device-and-browser-detection)
 * [Active Login](#active-login)
 	+ [Contribute](#contribute)
 	+ [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
@@ -76,6 +77,7 @@ Packages for Swedish BankID.
 | [BankId.AspNetCore.Azure](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.Azure) | Azure KeyVault integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) |
 | [BankId.AspNetCore.AzureMonitor](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor) | Azure Monitor (Application Insights) integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) |
 | [BankId.AspNetCore.QRCoder](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder) | QR code generation using QRCoder the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) |
+| [BankId.AspNetCore.UAParser](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.UACoder) | Device and browser detection. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) |
 
 ### ActiveLogin.Authentication.GrandId.*
 
@@ -195,13 +197,16 @@ services
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             .AddSameDevice()
             .AddOtherDevice()
-            .UseQrCoderQrCodeGenerator();
+            .UseQrCoderQrCodeGenerator()
+            .UseUaParserDeviceDetection();
     });
 ```
 
 ___Note:___ `.AddApplicationInsightsEventListener()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) package.
 
 ___Note:___ `.UseQrCoderQrCodeGenerator()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.QRCoder](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) package.
+
+___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.UAParser](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) package.
 
 #### [GrandID](docs/getting-started-grandid-bankid.md)
 
@@ -419,6 +424,10 @@ RUN apt-get update && apt-get -y install libgdiplus libc6-dev
 The names comes from the bank that the end user has, and some banks (due to legacy) stores all of the names in all caps (like `ALICE SMITH`).
 
 We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
+
+### Why use UAParserDeviceDetector for device and browser detection?
+
+In Active Login device and browser detection is required for example to determine which URL to use to launch the BankID app, according to the BankID Relaying party Guidelines. This logic is primarily encapsulated into `IBankIdSupportedDeviceDetector`. The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supports the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.AspNetCore.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
 
 ---
 
