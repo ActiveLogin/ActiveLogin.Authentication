@@ -4,6 +4,14 @@ using UAParser;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
 {
+    /// <summary>
+    /// This class is used for device and browser detection to support requirements in the
+    /// BankID Relaying party Guidelines (e.g. use of different launch URLs for the BankID app
+    /// for different devices and browsers).
+    /// </summary>
+    /// <remarks>
+    /// It uses the ua_parser C# library for user agent parsing.
+    /// </remarks>
     public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
     {
         public BankIdSupportedDevice Detect(string userAgent)
