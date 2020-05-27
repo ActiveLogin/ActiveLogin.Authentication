@@ -11,27 +11,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
             var uaParser = Parser.GetDefault();
             var clientInfo = uaParser.Parse(userAgent);
 
+            var deviceType = GetDeviceType(clientInfo);
             var deviceOs = GetDeviceOs(clientInfo);
-            var deviceBrowser = GetDeviceBrowser(clientInfo);
             var deviceOsVersion = GetDeviceOsVersion(clientInfo);
-            var deviceType = GetDeviceType(deviceOs); //TODO: Is it possible to dettermine this by checking if clientInfo.UA.Family contains "Mobile"?
+            var deviceBrowser = GetDeviceBrowser(clientInfo);
 
             return new BankIdSupportedDevice(deviceType, deviceOs, deviceBrowser, deviceOsVersion);
-        }
-
-        private BankIdSupportedDeviceOsVersion GetDeviceOsVersion(ClientInfo clientInfo)
-        {
-            var hasMajor = int.TryParse(clientInfo.OS.Major, out var major);
-            var hasMinor = int.TryParse(clientInfo.OS.Minor, out var minor);
-            var hasPatch = int.TryParse(clientInfo.OS.Patch, out var patch);
-
-            return (hasMajor, hasMinor, hasPatch) switch
-            {
-                (true, true, true) => new BankIdSupportedDeviceOsVersion(major, minor, patch),
-                (true, true, false) => new BankIdSupportedDeviceOsVersion(major, minor),
-                (true, false, false) => new BankIdSupportedDeviceOsVersion(major),
-                _ => BankIdSupportedDeviceOsVersion.Empty
-            };
         }
 
         private BankIdSupportedDeviceBrowser GetDeviceBrowser(ClientInfo clientInfo) => clientInfo.UA switch
@@ -55,7 +40,35 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
             _ => BankIdSupportedDeviceOs.Unknown
         };
 
-        private static BankIdSupportedDeviceType GetDeviceType(BankIdSupportedDeviceOs deviceOs)
+        private BankIdSupportedDeviceOsVersion GetDeviceOsVersion(ClientInfo clientInfo)
+        {
+            var hasMajor = int.TryParse(clientInfo.OS.Major, out var major);
+            var hasMinor = int.TryParse(clientInfo.OS.Minor, out var minor);
+            var hasPatch = int.TryParse(clientInfo.OS.Patch, out var patch);
+
+            return (hasMajor, hasMinor, hasPatch) switch
+            {
+                (true, true, true) => new BankIdSupportedDeviceOsVersion(major, minor, patch),
+                (true, true, false) => new BankIdSupportedDeviceOsVersion(major, minor),
+                (true, false, false) => new BankIdSupportedDeviceOsVersion(major),
+                _ => BankIdSupportedDeviceOsVersion.Empty
+            };
+        }
+
+        private BankIdSupportedDeviceType GetDeviceType(ClientInfo clientInfo)
+        {
+            var deviceOs = GetDeviceOs(clientInfo);
+            var deviceType = GetDeviceType(deviceOs);
+            var isMobileBrowser = IsMobileBrowser(clientInfo.UA);
+
+            return (deviceType, isMobileBrowser) switch
+            {
+                (BankIdSupportedDeviceType.Unknown, true) => BankIdSupportedDeviceType.Mobile,
+                _ => deviceType
+            };
+        }
+
+        private BankIdSupportedDeviceType GetDeviceType(BankIdSupportedDeviceOs deviceOs)
         {
             return deviceOs switch
             {
@@ -98,6 +111,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
         private bool IsOpera(UserAgent userAgent)
         {
             return IsBrowser(userAgent, "opera");
+        }
+
+        private bool IsMobileBrowser(UserAgent userAgent)
+        {
+            return IsBrowser(userAgent, "mobile");
         }
 
         private bool IsBrowser(UserAgent userAgent, string browser)

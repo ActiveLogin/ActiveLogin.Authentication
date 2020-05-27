@@ -266,7 +266,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.Equal(BankIdSupportedDeviceOs.Android, detectedDevice.DeviceOs);
             Assert.Equal(6, detectedDevice.DeviceOsVersion.MajorVersion);
             Assert.Equal(0, detectedDevice.DeviceOsVersion.MinorVersion);
-            //Assert.Null(detectedDevice.DeviceOsVersion.MinorVersion); //TODO: change to isnull.
             Assert.Equal(1, detectedDevice.DeviceOsVersion.Patch);
         }
 
