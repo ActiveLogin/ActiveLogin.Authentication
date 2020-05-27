@@ -128,7 +128,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
 
         private bool IsBrowser(UserAgent userAgent, string browser)
         {
-            return userAgent.Family.ToLower().Contains(browser.ToLower(), StringComparison.InvariantCulture);
+            return userAgent.Family.Contains(browser, StringComparison.InvariantCultureIgnoreCase);
         }
 
         private bool IsIos(OS os)
@@ -158,7 +158,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
 
         private bool IsOs(OS os, string osName)
         {
-            return os.Family.ToLower().Contains(osName.ToLower(), StringComparison.InvariantCulture);
+            return os.Family.Contains(osName, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
