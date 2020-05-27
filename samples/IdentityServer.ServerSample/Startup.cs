@@ -126,6 +126,7 @@ namespace IdentityServer.ServerSample
                     });
 
                     builder.UseQrCoderQrCodeGenerator();
+                    builder.UseUaParserDeviceDetection();
 
                     builder.Configure(options =>
                             {

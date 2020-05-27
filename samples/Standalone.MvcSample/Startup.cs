@@ -69,6 +69,7 @@ namespace Standalone.MvcSample
                     });
 
                     builder.UseQrCoderQrCodeGenerator();
+                    builder.UseUaParserDeviceDetection();
 
                     builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
                            .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
