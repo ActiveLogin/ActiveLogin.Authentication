@@ -9,6 +9,9 @@
 
 <ul class="nav nav-pills">
     <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link active" asp-action="Launch">Launch</a>
     </li>
     <li class="nav-item">
@@ -30,8 +33,21 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        window.location.href = '@Html.Raw(Model.Url)';
-    });
-</script>
+@if (Model.WithConfirm)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            if (window.confirm("Vill du öppna BankID-appen?")) {
+                window.location.href = '@Html.Raw(Model.Url)';
+            }
+        });
+    </script>
+}
+else
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            window.location.href = '@Html.Raw(Model.Url)';
+        });
+    </script>
+}

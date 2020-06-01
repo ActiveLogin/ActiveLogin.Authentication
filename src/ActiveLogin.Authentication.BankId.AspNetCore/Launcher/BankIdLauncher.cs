@@ -10,6 +10,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     internal class BankIdLauncher : IBankIdLauncher
     {
+        private const string UserAgentHeaderName = "User-Agent";
+
         private const string BankIdSchemePrefix = "bankid:///";
         private const string BankIdAppLinkPrefix = "https://app.bankid.com/";
 
@@ -17,7 +19,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private const string IosChromeScheme = "googlechromes://";
         private const string IosFirefoxScheme = "firefox://";
-        private const string UserAgentHeaderName = "User-Agent";
 
         private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
 
@@ -41,13 +42,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
             // On Android, some browsers will (for security reasons) not launching a
             // third party app/scheme (BankID) if there is no user interaction.
             //
-            // - Chrome and Samsung Internet Browser is confirmed to require User Interaction.
-            // - Firefox is confirmed to work without.
-            //
-            // HTML files to try this out is available under /docs/tests
+            // - Chrome, Edge, Samsung Internet Browser and Brave is confirmed to require User Interaction
+            // - Firefox and Opera is confirmed to work without User Interaction
 
             return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android
-                   && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox;
+                   && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
+                   && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Opera;
         }
 
         private bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
@@ -75,10 +75,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
         private static bool CanUseAppLink(BankIdSupportedDevice device)
         {
-            // Only Safari on IOS and Chrome on Android version >= 6 seems to support
+            // Only Safari on IOS and Chrome or Edge on Android version >= 6 seems to support
             //  the https://app.bankid.com/ launch url
 
-            return IsSafariOnIos(device) || IsChromeOnAndroid6OrGreater(device);
+            return IsSafariOnIos(device)
+                   || IsChromeOrEdgeOnAndroid6OrGreater(device);
         }
 
         private static bool IsSafariOnIos(BankIdSupportedDevice device)
@@ -87,11 +88,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
                    && device.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari;
         }
 
-        private static bool IsChromeOnAndroid6OrGreater(BankIdSupportedDevice device)
+        private static bool IsChromeOrEdgeOnAndroid6OrGreater(BankIdSupportedDevice device)
         {
             return device.DeviceOs == BankIdSupportedDeviceOs.Android
                    && device.DeviceOsVersion.MajorVersion >= 6
-                   && device.DeviceBrowser == BankIdSupportedDeviceBrowser.Chrome;
+                   && (
+                       device.DeviceBrowser == BankIdSupportedDeviceBrowser.Chrome
+                       || device.DeviceBrowser == BankIdSupportedDeviceBrowser.Edge
+                    );
         }
 
         private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request)
@@ -129,11 +133,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 
             return device.DeviceBrowser switch
             {
-                BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
-                BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
+                // Safari can only be launched by providing redirect url (https://...)
                 BankIdSupportedDeviceBrowser.Safari => redirectUrl,
 
-                _ => string.Empty // Return empty string so user can go back manually, will catch Edge and other third party browsers
+                // Normally you would supply the URL, but we just want to launch the app again
+                BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
+                BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
+
+                // Opens a new tab on app launch, so can't launch automatically
+                BankIdSupportedDeviceBrowser.Edge => string.Empty,
+                BankIdSupportedDeviceBrowser.Opera => string.Empty,
+
+                // Return empty string so user can go back manually, will catch unknown third party browsers
+                _ => string.Empty
             };
         }
 

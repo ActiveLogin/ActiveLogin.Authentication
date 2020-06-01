@@ -90,21 +90,23 @@ namespace IdentityServer.ServerSample.Controllers
             return View(viewModel);
         }
 
-        public IActionResult AutoLaunch(string type)
+        public IActionResult AutoLaunch(string type, bool withConfirm)
         {
             if (type == "AppLink")
             {
                 return View(new DebuggerAutoLaunchViewModel
                 {
                     Type = "AppLink",
-                    Url = SampleAppLinkUrl
+                    Url = SampleAppLinkUrl,
+                    WithConfirm = withConfirm
                 });
             }
 
             return View(new DebuggerAutoLaunchViewModel
             {
                 Type = "Scheme",
-                Url = SampleSchemeUrl
+                Url = SampleSchemeUrl,
+                WithConfirm = withConfirm
             });
         }
 
@@ -134,6 +136,7 @@ namespace IdentityServer.ServerSample.Controllers
         {
             public string Type { get; set; } = "";
             public string Url { get; set; } = "";
+            public bool WithConfirm { get; set; } = false;
         }
     }
 }

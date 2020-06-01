@@ -9,6 +9,9 @@
 
 <ul class="nav nav-pills">
     <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link active" asp-action="Launch">Launch</a>
     </li>
     <li class="nav-item">
@@ -57,7 +60,7 @@
         <p>
             <a class="btn btn-primary" href="@Model.SchemeUrl" class="mr-4">Manual launch</a>
 
-            <a class="btn btn-primary" asp-action="AutoLaunch" asp-route-type="Scheme" class="mr-4">Auto launch</a>
+            <a class="btn btn-primary" asp-action="AutoLaunch" asp-route-type="Scheme" asp-route-WithConfirm="false" class="mr-4">Auto launch</a>
         </p>
     </div>
 </div>
@@ -73,7 +76,7 @@
         <p>
             <a class="btn btn-primary" href="@Model.AppLinkUrl" class="mr-4">Manual launch</a>
 
-            <a class="btn btn-primary" asp-action="AutoLaunch" asp-route-type="AppLink" class="mr-4">Auto launch</a>
+            <a class="btn btn-primary" asp-action="AutoLaunch" asp-route-type="AppLink" asp-route-WithConfirm="false" class="mr-4">Auto launch</a>
         </p>
     </div>
 </div>
