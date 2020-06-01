@@ -1,0 +1,37 @@
+@model IdentityServer.ServerSample.Controllers.DebuggerController.DebuggerAutoLaunchViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Debugger - Auto Launch";
+}
+
+<h1>BankID Debugger - Auto Launch</h1>
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" asp-action="Launch">Launch</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-action="Info">Info</a>
+    </li>
+</ul>
+
+<h3 class="m2-1 mt-5">Context</h3>
+<div class="card">
+    <div class="card-body">
+        <dl>
+            <dt>Type:</dt>
+            <dd>@Model.Type</dd>
+        </dl>
+        <dl>
+            <dt>URL:</dt>
+            <dd>@Model.Url</dd>
+        </dl>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        window.location.href = '@Html.Raw(Model.Url)';
+    });
+</script>

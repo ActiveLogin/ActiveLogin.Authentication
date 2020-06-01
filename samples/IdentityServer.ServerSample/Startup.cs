@@ -52,7 +52,8 @@ namespace IdentityServer.ServerSample
             services.AddControllersWithViews(config =>
             {
                 config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            });
+            })
+            .AddRazorRuntimeCompilation();
 
             services.AddIdentityServer(options =>
                 {
