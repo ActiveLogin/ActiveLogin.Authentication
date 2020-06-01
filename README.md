@@ -388,21 +388,25 @@ A more technical deep dive of the cookies can be found in [this issue](https://g
 
 ### What browsers do you support?
 
-We aim at supporting the latest version of all major browsers (Edge, Chrome, Firefox, Safari) both on desktop and on mobile.
+We aim at supporting the latest version of all major browsers both on desktop and on mobile.
 
-All browsers on mobile are supported, but the redirect flow are tested on these:
+All browsers on mobile are supported, but the redirect flow have been tested and verified on these:
 - iOS
     - Safari
     - Chrome
+    - Edge
     - Firefox
+    - Opera Touch
 - Android
     - Chrome
     - Firefox
-    - Samsung Internet Browser
-    - Opera Mini
     - Edge
+    - Samsung Internet
+    - Opera Mini
 
-If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
+___Note:___ Brave on iOS/Android is not supported at the moment. It identifies as Safari or Chrome for privacy reasons and will get wrong configuration.
+
+___Note:___ If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 
 * [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): https://github.com/github/fetch
 
