@@ -99,16 +99,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 
         private static BankIdSupportedDeviceBrowser GetDeviceBrowser(string userAgent)
         {
-            if (IsSafari(userAgent))
-            {
-                return BankIdSupportedDeviceBrowser.Safari;
-            }
-
-            if (IsChrome(userAgent))
-            {
-                return BankIdSupportedDeviceBrowser.Chrome;
-            }
-
             if (IsFirefox(userAgent))
             {
                 return BankIdSupportedDeviceBrowser.Firefox;
@@ -127,6 +117,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
             if (IsOpera(userAgent))
             {
                 return BankIdSupportedDeviceBrowser.Opera;
+            }
+
+            if (IsSafari(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.Safari;
+            }
+
+            if (IsChrome(userAgent))
+            {
+                return BankIdSupportedDeviceBrowser.Chrome;
             }
 
             return BankIdSupportedDeviceBrowser.Unknown;
@@ -213,7 +213,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
 
         private static bool IsOpera(string userAgent)
         {
-            return IsUserAgent(userAgent, "opr");
+            return IsUserAgent(userAgent, "opr", "opt", "opios");
         }
 
         private static bool IsUserAgent(string userAgent, params string[] keys)

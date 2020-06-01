@@ -27,14 +27,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
             return new BankIdSupportedDevice(deviceType, deviceOs, deviceBrowser, deviceOsVersion);
         }
 
-        private BankIdSupportedDeviceBrowser GetDeviceBrowser(ClientInfo clientInfo) => clientInfo.UA switch
+        private BankIdSupportedDeviceBrowser GetDeviceBrowser(ClientInfo clientInfo) => clientInfo switch
         {
-            var userAgent when IsChrome(userAgent) => BankIdSupportedDeviceBrowser.Chrome,
-            var userAgent when IsSafari(userAgent) => BankIdSupportedDeviceBrowser.Safari,
-            var userAgent when IsEdge(userAgent) => BankIdSupportedDeviceBrowser.Edge,
-            var userAgent when IsFirefox(userAgent) => BankIdSupportedDeviceBrowser.Firefox,
-            var userAgent when IsSamsungBrowser(userAgent) => BankIdSupportedDeviceBrowser.SamsungBrowser,
-            var userAgent when IsOpera(userAgent) => BankIdSupportedDeviceBrowser.Opera,
+            _ when IsEdge(clientInfo) => BankIdSupportedDeviceBrowser.Edge,
+            _ when IsSamsungBrowser(clientInfo) => BankIdSupportedDeviceBrowser.SamsungBrowser,
+            _ when IsOpera(clientInfo) => BankIdSupportedDeviceBrowser.Opera,
+            _ when IsFirefox(clientInfo) => BankIdSupportedDeviceBrowser.Firefox,
+
+            _ when IsSafari(clientInfo) => BankIdSupportedDeviceBrowser.Safari,
+            _ when IsChrome(clientInfo) => BankIdSupportedDeviceBrowser.Chrome,
+
             _ => BankIdSupportedDeviceBrowser.Unknown
         };
 
@@ -91,34 +93,36 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
             };
         }
 
-        private bool IsChrome(UserAgent userAgent)
+        private bool IsChrome(ClientInfo clientInfo)
         {
-            return IsBrowser(userAgent, "chrome");
+            return IsBrowser(clientInfo.UA, "chrome");
         }
 
-        private bool IsSafari(UserAgent userAgent)
+        private bool IsSafari(ClientInfo clientInfo)
         {
-            return IsBrowser(userAgent, "safari");
+            return IsBrowser(clientInfo.UA, "safari");
         }
 
-        private bool IsEdge(UserAgent userAgent)
+        private bool IsEdge(ClientInfo clientInfo)
         {
-            return IsBrowser(userAgent, "edge");
+            return IsBrowser(clientInfo.UA, "edge")
+                || IsBrowserRaw(clientInfo.String, "edgios");
         }
 
-        private bool IsFirefox(UserAgent userAgent)
+        private bool IsFirefox(ClientInfo clientInfo)
         {
-            return IsBrowser(userAgent, "firefox");
+            return IsBrowser(clientInfo.UA, "firefox");
         }
 
-        private bool IsSamsungBrowser(UserAgent userAgent)
+        private bool IsSamsungBrowser(ClientInfo clientInfo)
         {
-            return IsBrowser(userAgent, "samsung");
+            return IsBrowser(clientInfo.UA, "samsung");
         }
 
-        private bool IsOpera(UserAgent userAgent)
+        private bool IsOpera(ClientInfo clientInfo)
         {
-            return IsBrowser(userAgent, "opera");
+            return IsBrowser(clientInfo.UA, "opera")
+                || IsBrowserRaw(clientInfo.String, "opt");
         }
 
         private bool IsMobileBrowser(UserAgent userAgent)
@@ -129,6 +133,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
         private bool IsBrowser(UserAgent userAgent, string browser)
         {
             return userAgent.Family.Contains(browser, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        private static bool IsBrowserRaw(string userAgent, string browser)
+        {
+            var fullKey = browser + "/";
+            return userAgent.Contains(fullKey, StringComparison.InvariantCultureIgnoreCase);
         }
 
         private bool IsIos(OS os)

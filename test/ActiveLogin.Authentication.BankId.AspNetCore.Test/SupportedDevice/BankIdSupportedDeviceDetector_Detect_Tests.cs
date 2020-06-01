@@ -1,7 +1,7 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.SupportedDevice
 {
     public class BankIdSupportedDeviceDetector_Detect_Tests
     {
@@ -167,10 +167,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserMessage
             Assert.Equal(BankIdSupportedDeviceBrowser.Firefox, detectedDevice.DeviceBrowser);
         }
 
-        [Fact]
-        public void Should_Detect_Edge_On_IOS()
+        [Theory]
+        [InlineData("Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) OPT/2.3.2 Mobile/15E148")]
+        [InlineData("Mozilla/5.0 (iPad; CPU OS 9_3_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) OPiOS/13.0.1.100754 Mobile/13E238 Safari/9537.53")]
+        public void Should_Detect_Opera_On_IOS(string userAgent)
         {
-            var userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/603.2.4 (KHTML, like Gecko) Mobile/14F89 Safari/603.2.4 EdgiOS/41.1.35.1";
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
+
+            Assert.Equal(BankIdSupportedDeviceType.Mobile, detectedDevice.DeviceType);
+            Assert.Equal(BankIdSupportedDeviceOs.Ios, detectedDevice.DeviceOs);
+            Assert.Equal(BankIdSupportedDeviceBrowser.Opera, detectedDevice.DeviceBrowser);
+        }
+
+        [Theory]
+        [InlineData("Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/603.2.4 (KHTML, like Gecko) Mobile/14F89 Safari/603.2.4 EdgiOS/41.1.35.1")]
+        [InlineData("Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 EdgiOS/45.3.19 Mobile/15E148 Safari/605.1.15")]
+        public void Should_Detect_Edge_On_IOS(string userAgent)
+        {
             var detectedDevice = _bankIdSupportedDeviceDetector.Detect(userAgent);
 
             Assert.Equal(BankIdSupportedDeviceType.Mobile, detectedDevice.DeviceType);

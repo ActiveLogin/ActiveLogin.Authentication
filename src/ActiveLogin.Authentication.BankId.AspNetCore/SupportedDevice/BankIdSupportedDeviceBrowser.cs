@@ -9,6 +9,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
         Firefox,
         Edge,
         SamsungBrowser,
-        Opera
+        Opera,
+
+        // Brave - Brave behaves the exact same way as Chrome (for privacy reasons), so can't be detected
     }
 }
