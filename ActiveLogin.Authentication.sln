@@ -33,7 +33,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4764448D-A014-403F-A956-3F4CFFA00AF2}"
 	ProjectSection(SolutionItems) = preProject
-		docs\bankid-launch-configurations.md = docs\bankid-launch-configurations.md
 		docs\getting-started-bankid.md = docs\getting-started-bankid.md
 		docs\getting-started-grandid-bankid.md = docs\getting-started-grandid-bankid.md
 	EndProjectSection

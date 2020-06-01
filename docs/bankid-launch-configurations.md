@@ -1,2 +1,0 @@
-# BankID Launch Configurations
-
