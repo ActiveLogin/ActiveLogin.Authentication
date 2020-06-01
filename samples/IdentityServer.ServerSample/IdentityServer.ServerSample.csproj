@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="IdentityServer4" Version="3.1.0" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.4" />
         <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.12.0" />
     </ItemGroup>
 
@@ -23,6 +24,7 @@
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />

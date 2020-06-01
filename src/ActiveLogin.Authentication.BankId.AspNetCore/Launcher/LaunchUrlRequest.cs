@@ -1,13 +1,15 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     public class LaunchUrlRequest
     {
-        internal LaunchUrlRequest(string redirectUrl, string autoStartToken)
-            : this(redirectUrl, autoStartToken, null)
+        public LaunchUrlRequest(string redirectUrl, string autoStartToken)
         {
+            RedirectUrl = redirectUrl;
+            AutoStartToken = autoStartToken;
+            RelyingPartyReference = null;
         }
 
-        internal LaunchUrlRequest(string redirectUrl, string autoStartToken, string? relyingPartyReference)
+        public LaunchUrlRequest(string redirectUrl, string autoStartToken, string relyingPartyReference)
         {
             RedirectUrl = redirectUrl;
             AutoStartToken = autoStartToken;

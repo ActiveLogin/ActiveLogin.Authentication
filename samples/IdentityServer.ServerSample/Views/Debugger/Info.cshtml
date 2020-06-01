@@ -1,0 +1,119 @@
+@model IdentityServer.ServerSample.Controllers.DebuggerController.DebuggerInfoViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Debugger - Extract info";
+}
+
+<h1>BankID Debugger - Extract info</h1>
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-action="Launch">Launch</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" asp-action="Info">Info</a>
+    </li>
+</ul>
+
+<h3 class="m2-1 mt-5">Context</h3>
+<form asp-action="Info" method="get">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h3>Device Detector</h3>
+
+            <div class="form-group">
+                <label asp-for="UserAgent">User Agent</label>
+                <input type="text" required class="form-control" placeholder="Mozilla/5.0 (Windows NT 10.0; Win64; x64)" asp-for="UserAgent" name="UserAgent" />
+            </div>
+
+            <h3>Launch Request</h3>
+
+            <div class="form-group">
+                <label asp-for="LaunchUrlRequest.RedirectUrl">Redirect Url</label>
+                <input type="url" required class="form-control" placeholder="https://localhost/" asp-for="LaunchUrlRequest.RedirectUrl" name="RedirectUrl" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LaunchUrlRequest.AutoStartToken">Auto Start Token</label>
+                <input type="text" required class="form-control" placeholder="b9a78277-6109-4ffe-b246-30c968929288" asp-for="LaunchUrlRequest.AutoStartToken" name="AutoStartToken" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LaunchUrlRequest.RelyingPartyReference">Relying Party Reference</label>
+                <input type="text" class="form-control" placeholder="" asp-for="LaunchUrlRequest.RelyingPartyReference" name="RelyingPartyReference" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Debug</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.DetectedDevice != null || Model.DetectedDeviceLaunchInfo != null)
+{
+    @if (Model.DetectedDevice != null)
+    {
+        <h3 class="m2-1 mt-5">Detected Device</h3>
+        <div class="card">
+            <div class="card-body">
+                <dl>
+                    <dt>Implemented by (in Active Login)</dt>
+                    <dd>@Model.DetectedDeviceImplementation</dd>
+                </dl>
+                <dl>
+                    <dt>User Agent</dt>
+                    <dd>@Model.UserAgent</dd>
+                </dl>
+                @if (Model.DetectedDevice != null)
+                {
+                    <div class="row">
+                        <dl class="col">
+                            <dt>Device Type</dt>
+                            <dd>@Model.DetectedDevice.DeviceType</dd>
+                        </dl>
+                        <dl class="col">
+                            <dt>Device Browser</dt>
+                            <dd>@Model.DetectedDevice.DeviceBrowser</dd>
+                        </dl>
+                        <dl class="col">
+                            <dt>Device OS</dt>
+                            <dd>@Model.DetectedDevice.DeviceOs</dd>
+                        </dl>
+                        <dl class="col">
+                            <dt>Device OS Version</dt>
+                            <dd>@Model.DetectedDevice.DeviceOsVersion</dd>
+                        </dl>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.DetectedDeviceLaunchInfo != null)
+    {
+        <h3 class="m2-1 mt-5">Launch info</h3>
+        <div class="card">
+            <div class="card-body">
+                <dl>
+                    <dt>Implemented by (in Active Login)</dt>
+                    <dd>@Model.DetectedDeviceLaunchInfoImplementation</dd>
+                </dl>
+                <dl>
+                    <dt>Launch Url</dt>
+                    <dd>@Model.DetectedDeviceLaunchInfo.LaunchUrl</dd>
+                </dl>
+                <dl>
+                    <dt>Device might require User Interaction to launch BankId app</dt>
+                    <dd>@Model.DetectedDeviceLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp</dd>
+                </dl>
+                <dl>
+                    <dt>Device will reload page on return from BankId app</dt>
+                    <dd>@Model.DetectedDeviceLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp</dd>
+                </dl>
+            </div>
+        </div>
+    }
+}

@@ -82,12 +82,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor", "src\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj", "{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E5C1B133-D58E-410C-8FE0-5A897048CD0B}"
-	ProjectSection(SolutionItems) = preProject
-		docs\tests\bankid-app-launch-tests-auto-bankid.html = docs\tests\bankid-app-launch-tests-auto-bankid.html
-		docs\tests\bankid-app-launch-tests-auto-https.html = docs\tests\bankid-app-launch-tests-auto-https.html
-		docs\tests\bankid-app-launch-tests.html = docs\tests\bankid-app-launch-tests.html
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.UAParser", "src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj", "{BB808E5D-A5E6-4195-A815-37209CFD8ABD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test", "test\ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test\ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test.csproj", "{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -159,6 +156,14 @@ Global
 		{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB808E5D-A5E6-4195-A815-37209CFD8ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB808E5D-A5E6-4195-A815-37209CFD8ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB808E5D-A5E6-4195-A815-37209CFD8ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB808E5D-A5E6-4195-A815-37209CFD8ABD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,7 +188,8 @@ Global
 		{84E9CCEE-4BF2-4D8D-B70B-3FB317328F29} = {A62CB923-FBEA-4F05-A776-47F8F7569DA8}
 		{0BF52185-1294-495F-93C0-853B87075863} = {84E9CCEE-4BF2-4D8D-B70B-3FB317328F29}
 		{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
-		{E5C1B133-D58E-410C-8FE0-5A897048CD0B} = {4764448D-A014-403F-A956-3F4CFFA00AF2}
+		{BB808E5D-A5E6-4195-A815-37209CFD8ABD} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
+		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}

@@ -1,0 +1,82 @@
+@model IdentityServer.ServerSample.Controllers.DebuggerController.DebuggerLaunchViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Debugger - Launch";
+}
+
+<h1>BankID Debugger - Launch</h1>
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" asp-action="Launch">Launch</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-action="Info">Info</a>
+    </li>
+</ul>
+
+<h3 class="m2-1 mt-5">Device</h3>
+<div class="card">
+    <div class="card-body">
+        <dl>
+            <dt>User Agent</dt>
+            <dd>@Model.UserAgent</dd>
+        </dl>
+        @if (Model.DetectedDevice != null)
+        {
+            <div class="row">
+                <dl class="col">
+                    <dt>Device Type</dt>
+                    <dd>@Model.DetectedDevice.DeviceType</dd>
+                </dl>
+                <dl class="col">
+                    <dt>Device Browser</dt>
+                    <dd>@Model.DetectedDevice.DeviceBrowser</dd>
+                </dl>
+                <dl class="col">
+                    <dt>Device OS</dt>
+                    <dd>@Model.DetectedDevice.DeviceOs</dd>
+                </dl>
+                <dl class="col">
+                    <dt>Device OS Version</dt>
+                    <dd>@Model.DetectedDevice.DeviceOsVersion</dd>
+                </dl>
+            </div>
+        }
+    </div>
+</div>
+
+<h3 class="m2-1 mt-5">Scheme URL (bankid:///)</h3>
+<div class="card">
+    <div class="card-body">
+        <dl>
+            <dt>URL:</dt>
+            <dd>@Model.SchemeUrl</dd>
+        </dl>
+        <p>
+            <a class="btn btn-primary" href="@Model.SchemeUrl" class="mr-4">Manual launch</a>
+
+            <a class="btn btn-primary" asp-action="AutoLaunch" asp-route-type="Scheme" asp-route-WithConfirm="false" class="mr-4">Auto launch</a>
+        </p>
+    </div>
+</div>
+
+
+<h3 class="m2-1 mt-5">App Link URL (https://app.bankid.com/)</h3>
+<div class="card">
+    <div class="card-body">
+        <dl>
+            <dt>URL:</dt>
+            <dd>@Model.AppLinkUrl</dd>
+        </dl>
+        <p>
+            <a class="btn btn-primary" href="@Model.AppLinkUrl" class="mr-4">Manual launch</a>
+
+            <a class="btn btn-primary" asp-action="AutoLaunch" asp-route-type="AppLink" asp-route-WithConfirm="false" class="mr-4">Auto launch</a>
+        </p>
+    </div>
+</div>
