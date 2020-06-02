@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
         private const string PropertyName_ErrorReason = "AL_Error_ErrorReason";
 
-        private const string PropertyName_LoginOptionsAutoLaunch = "AL_BankId_LoginOptions_AutoLaunch";
+        private const string PropertyName_LoginOptionsAutoLaunch = "AL_BankId_LoginOptions_SameDevice";
         private const string PropertyName_LoginOptionsUseQrCode = "AL_BankId_LoginOptions_UseQrCode";
         private const string PropertyName_BankIdErrorCode = "AL_BankId_ErrorCode";
         private const string PropertyName_BankIdErrorDetails = "AL_BankId_ErrorDetails";
