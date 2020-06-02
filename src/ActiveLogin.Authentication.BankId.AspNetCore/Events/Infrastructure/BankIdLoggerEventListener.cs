@@ -18,6 +18,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 
         // ASP.NET Authentication
 
+        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e)
+        {
+            var eventId = GetEventId(e);
+            _logger.LogInformation(eventId, "BankID authentication challenged");
+            return Task.CompletedTask;
+        }
+
         public override Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e)
         {
             var eventId = GetEventId(e);
@@ -30,13 +37,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
         {
             var eventId = GetEventId(e);
             _logger.LogInformation(eventId, "BankID authentication had an error with reason '{ErrorReason}'", e.ErrorReason);
-            return Task.CompletedTask;
-        }
-
-        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e)
-        {
-            var eventId = GetEventId(e);
-            _logger.LogInformation(eventId, "BankID authentication challenged");
             return Task.CompletedTask;
         }
 

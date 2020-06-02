@@ -62,6 +62,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
         // ASP.NET Authentication
 
+        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e)
+        {
+            return Track(
+                e,
+                new Dictionary<string, string>
+                {
+                    { PropertyName_LoginOptionsAutoLaunch, GetBooleanProperty(e.BankIdOptions.AutoLaunch) },
+                    { PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(e.BankIdOptions.UseQrCode) }
+                },
+                personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber
+            );
+        }
+
         public override Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e)
         {
             return Track(
@@ -79,19 +92,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                     { PropertyName_ErrorReason, e.ErrorReason }
                 },
                 exception: new Exception("AspNetAuthenticateError: " + e.ErrorReason)
-            );
-        }
-
-        public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e)
-        {
-            return Track(
-                e,
-                new Dictionary<string, string>
-                {
-                    { PropertyName_LoginOptionsAutoLaunch, GetBooleanProperty(e.BankIdOptions.AutoLaunch) },
-                    { PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(e.BankIdOptions.UseQrCode) }
-                },
-                personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber
             );
         }
 
