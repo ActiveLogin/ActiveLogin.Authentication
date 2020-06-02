@@ -27,7 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
         private const string PropertyName_ErrorReason = "AL_Error_ErrorReason";
 
-        private const string PropertyName_LoginOptionsAutoLaunch = "AL_BankId_LoginOptions_SameDevice";
+        private const string PropertyName_LoginOptionsLaunchType = "AL_BankId_LoginOptions_LaunchType";
         private const string PropertyName_LoginOptionsUseQrCode = "AL_BankId_LoginOptions_UseQrCode";
         private const string PropertyName_BankIdErrorCode = "AL_BankId_ErrorCode";
         private const string PropertyName_BankIdErrorDetails = "AL_BankId_ErrorDetails";
@@ -68,7 +68,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 e,
                 new Dictionary<string, string>
                 {
-                    { PropertyName_LoginOptionsAutoLaunch, GetBooleanProperty(e.BankIdOptions.AutoLaunch) },
+                    { PropertyName_LoginOptionsLaunchType, GetLaunchType(e.BankIdOptions.AutoLaunch) },
                     { PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(e.BankIdOptions.UseQrCode) }
                 },
                 personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber
@@ -293,6 +293,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 properties.Add(PropertyName_UserDeviceType, userDevice.DeviceType.ToString());
                 properties.Add(PropertyName_UserDeviceOsVersion, userDevice.DeviceOsVersion.ToString());
             }
+        }
+
+        private static string GetLaunchType(bool isAutoLaunch)
+        {
+            return isAutoLaunch ? "SameDevice" : "OtherDevice";
         }
 
         private static string GetBooleanProperty(bool property)
