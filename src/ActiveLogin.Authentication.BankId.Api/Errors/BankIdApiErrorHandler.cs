@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Models;
@@ -23,7 +23,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
                     throw new BankIdApiException(error, e);
                 }
 
-                throw new BankIdApiException(ErrorCode.Unknown, "Unknown error", e);
+                throw BankIdApiException.Unknown(e);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Data.SqlTypes;
 using System.Net.Http;
 using ActiveLogin.Authentication.BankId.Api.Models;
 
@@ -9,6 +10,8 @@ namespace ActiveLogin.Authentication.BankId.Api
     /// </summary>
     public class BankIdApiException : HttpRequestException
     {
+        private const string UnknownErrorDetails = "Unknown error. See the inner exception for details.";
+
         internal BankIdApiException(Error error, Exception inner)
             : this(error.GetErrorCode(), error.Details, inner)
         { }
@@ -23,6 +26,11 @@ namespace ActiveLogin.Authentication.BankId.Api
         {
             ErrorCode = errorCode;
             ErrorDetails = errorDetails;
+        }
+
+        internal static BankIdApiException Unknown(Exception innerException)
+        {
+            return new BankIdApiException(ErrorCode.Unknown, UnknownErrorDetails, innerException);
         }
 
         /// <summary>
