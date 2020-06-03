@@ -81,7 +81,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)
         {
-            if (loginOptions.AutoLaunch)
+            if (loginOptions.SameDevice)
             {
                 return MessageShortName.RFA13;
             }

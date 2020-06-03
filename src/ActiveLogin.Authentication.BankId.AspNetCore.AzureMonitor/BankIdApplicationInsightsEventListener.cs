@@ -68,7 +68,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 e,
                 new Dictionary<string, string>
                 {
-                    { PropertyName_LoginOptionsLaunchType, GetLaunchType(e.BankIdOptions.AutoLaunch) },
+                    { PropertyName_LoginOptionsLaunchType, GetLaunchType(e.BankIdOptions.SameDevice) },
                     { PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(e.BankIdOptions.UseQrCode) }
                 },
                 personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber
@@ -295,9 +295,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
             }
         }
 
-        private static string GetLaunchType(bool isAutoLaunch)
+        private static string GetLaunchType(bool isSameDevice)
         {
-            return isAutoLaunch ? "SameDevice" : "OtherDevice";
+            return isSameDevice ? "SameDevice" : "OtherDevice";
         }
 
         private static string GetBooleanProperty(bool property)

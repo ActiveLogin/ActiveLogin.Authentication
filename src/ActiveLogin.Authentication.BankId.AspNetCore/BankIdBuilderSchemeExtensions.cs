@@ -70,7 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
             => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
                 {
                     options.CallbackPath = BankIdDefaults.SameDeviceCallbackPath;
-                    options.BankIdAutoLaunch = true;
+                    options.BankIdSameDevice = true;
                     options.BankIdAllowChangingPersonalIdentityNumber = false;
                 });
 
@@ -110,7 +110,7 @@ namespace Microsoft.Extensions.DependencyInjection
             => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
             {
                 options.CallbackPath = BankIdDefaults.OtherDeviceCallbackPath;
-                options.BankIdAutoLaunch = false;
+                options.BankIdSameDevice = false;
                 options.BankIdAllowChangingPersonalIdentityNumber = true;
                 options.BankIdUseQrCode = true;
             });

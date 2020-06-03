@@ -32,7 +32,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// <summary>
         /// Auto launch the BankID app on the current device.
         /// </summary>
-        internal bool BankIdAutoLaunch { get; set; } = false;
+        internal bool BankIdSameDevice { get; set; } = false;
 
         /// <summary>
         /// Users of iOS and Android devices may use fingerprint or face recognition for authentication if the device supports it and the user configured the device to use it.

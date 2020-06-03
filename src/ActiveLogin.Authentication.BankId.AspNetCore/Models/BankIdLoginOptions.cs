@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
             List<string> certificatePolicies,
             SwedishPersonalIdentityNumber? personalIdentityNumber,
             bool allowChangingPersonalIdentityNumber,
-            bool autoLaunch,
+            bool sameDevice,
             bool allowBiometric,
             bool useQrCode,
             string cancelReturnUrl)
@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
             CertificatePolicies = certificatePolicies;
             PersonalIdentityNumber = personalIdentityNumber;
             AllowChangingPersonalIdentityNumber = allowChangingPersonalIdentityNumber;
-            AutoLaunch = autoLaunch;
+            SameDevice = sameDevice;
             AllowBiometric = allowBiometric;
             UseQrCode = useQrCode;
             CancelReturnUrl = cancelReturnUrl;
@@ -28,7 +28,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
         public SwedishPersonalIdentityNumber? PersonalIdentityNumber { get; }
         public bool AllowChangingPersonalIdentityNumber { get; }
 
-        public bool AutoLaunch { get; }
+        public bool SameDevice { get; }
 
         public bool AllowBiometric { get; }
 

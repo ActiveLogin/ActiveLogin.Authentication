@@ -153,7 +153,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdCertificatePolicies,
                 GetSwedishPersonalIdentityNumber(properties),
                 Options.BankIdAllowChangingPersonalIdentityNumber,
-                Options.BankIdAutoLaunch,
+                Options.BankIdSameDevice,
                 Options.BankIdAllowBiometric,
                 Options.BankIdUseQrCode,
                 GetCancelReturnUrl(properties)

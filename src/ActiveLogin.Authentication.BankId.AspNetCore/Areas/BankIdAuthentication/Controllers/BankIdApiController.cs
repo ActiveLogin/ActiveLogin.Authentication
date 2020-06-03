@@ -127,7 +127,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef, detectedUserDevice));
 
-            if (unprotectedLoginOptions.AutoLaunch)
+            if (unprotectedLoginOptions.SameDevice)
             {
                 var launchInfo = GetBankIdLaunchInfo(request, authResponse);
                 
