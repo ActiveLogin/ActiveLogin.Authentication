@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -110,7 +110,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
         private BankIdGetSessionUserAttributes GetUserAttributes(string personalIdentityNumber)
         {
-            return new BankIdGetSessionUserAttributes(string.Empty, _givenName, _surname, $"{_givenName} {_surname}", personalIdentityNumber, string.Empty, string.Empty, string.Empty);
+            return new BankIdGetSessionUserAttributes(string.Empty, string.Empty, _givenName, _surname, $"{_givenName} {_surname}", personalIdentityNumber, string.Empty, string.Empty, string.Empty);
         }
 
         private async Task SimulateResponseDelay()
