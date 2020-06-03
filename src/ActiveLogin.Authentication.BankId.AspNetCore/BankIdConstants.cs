@@ -19,5 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         internal const int MaxRetryLoginAttempts = 5;
 
         public const string AuthenticationPropertyItemSwedishPersonalIdentityNumber = "swedishPersonalIdentityNumber";
+
+        internal const string UserAgentHttpHeaderName = "User-Agent";
     }
 }

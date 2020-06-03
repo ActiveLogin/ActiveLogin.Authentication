@@ -98,7 +98,7 @@
 
             function enableCancelButton(orderRef) {
                 var onCancelButtonClick = function(event) {
-                    cancel(requestVerificationToken, cancelUrl, orderRef);
+                    cancel(requestVerificationToken, cancelUrl, orderRef, loginOptions);
                     event.target.removeEventListener('click', onCancelButtonClick);
                 };
                 cancelButtonElement.addEventListener('click', onCancelButtonClick);
@@ -194,7 +194,7 @@
                 });
         }
 
-        function cancel(requestVerificationToken, cancelReturnUrl, orderRef) {
+        function cancel(requestVerificationToken, cancelReturnUrl, orderRef, loginOptions) {
             loginIsCancelledByUser = true;
 
             if (!orderRef) {
@@ -205,7 +205,8 @@
             postJson(options.bankIdCancelApiUrl,
                 requestVerificationToken,
                 {
-                    'orderRef': orderRef
+                    'orderRef': orderRef,
+                    'loginOptions': loginOptions
                 }).finally(function() {
                     window.location.href = cancelReturnUrl;
                 });

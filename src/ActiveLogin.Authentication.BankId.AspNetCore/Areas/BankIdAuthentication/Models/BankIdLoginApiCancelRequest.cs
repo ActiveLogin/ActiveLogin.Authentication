@@ -10,6 +10,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         }
 
         [Required]
+        public string? LoginOptions { get; set; }
+
+        [Required]
         public string? OrderRef { get; set; }
 
         public string? CancelReturnUrl { get; set; }

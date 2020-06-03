@@ -7,6 +7,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
@@ -21,6 +22,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
+        private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
 
         public BankIdHandler(
             IOptionsMonitor<BankIdOptions> options,
@@ -29,20 +31,24 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             ISystemClock clock,
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
-            IBankIdEventTrigger bankIdEventTrigger)
+            IBankIdEventTrigger bankIdEventTrigger,
+            IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector)
             : base(options, loggerFactory, encoder, clock)
         {
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
             _bankIdEventTrigger = bankIdEventTrigger;
+            _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         }
 
         protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
+            var detectedDevice = GetDetectedDevice();
+
             var state = GetStateFromCookie();
             if (state == null)
             {
-                return HandleRemoteAuthenticateFail("Invalid state cookie");
+                return HandleRemoteAuthenticateFail("Invalid state cookie", detectedDevice);
             }
 
             DeleteStateCookie();
@@ -50,13 +56,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginResultProtected = Request.Query["loginResult"];
             if (string.IsNullOrEmpty(loginResultProtected))
             {
-                return HandleRemoteAuthenticateFail("Missing login result");
+                return HandleRemoteAuthenticateFail("Missing login result", detectedDevice);
             }
 
             var loginResult = _loginResultProtector.Unprotect(loginResultProtected);
             if (loginResult == null || !loginResult.IsSuccessful)
             {
-                return HandleRemoteAuthenticateFail("Invalid login result");
+                return HandleRemoteAuthenticateFail("Invalid login result", detectedDevice);
             }
 
             var properties = state.AuthenticationProperties;
@@ -64,15 +70,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
                 ticket,
-                SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber)
+                SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber),
+                detectedDevice
             ));
 
             return Task.FromResult(HandleRequestResult.Success(ticket));
         }
 
-        private async Task<HandleRequestResult> HandleRemoteAuthenticateFail(string reason)
+        private async Task<HandleRequestResult> HandleRemoteAuthenticateFail(string reason, BankIdSupportedDevice detectedDevice)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateFailureEvent(reason));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateFailureEvent(reason, detectedDevice));
 
             return HandleRequestResult.Fail(reason);
         }
@@ -161,7 +168,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
 
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(loginOptions));
+            var detectedDevice = GetDetectedDevice();
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, loginOptions));
+        }
+
+        private BankIdSupportedDevice GetDetectedDevice()
+        {
+            return _bankIdSupportedDeviceDetector.Detect(Request.Headers[BankIdConstants.UserAgentHttpHeaderName]);
         }
 
         private static SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)

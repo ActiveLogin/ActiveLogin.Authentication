@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
@@ -66,12 +67,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         {
             return Track(
                 e,
-                new Dictionary<string, string>
-                {
-                    { PropertyName_LoginOptionsLaunchType, GetLaunchType(e.BankIdOptions.SameDevice) },
-                    { PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(e.BankIdOptions.UseQrCode) }
-                },
-                personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber
+                personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber,
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -79,7 +77,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         {
             return Track(
                 e,
-                personalIdentityNumber: e.PersonalIdentityNumber
+                personalIdentityNumber: e.PersonalIdentityNumber,
+                detectedDevice: e.DetectedUserDevice
             );
         }
 
@@ -91,7 +90,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 {
                     { PropertyName_ErrorReason, e.ErrorReason }
                 },
-                exception: new Exception("AspNetAuthenticateError: " + e.ErrorReason)
+                exception: new Exception("AspNetAuthenticateError: " + e.ErrorReason),
+                detectedDevice: e.DetectedUserDevice
             );
         }
 
@@ -106,7 +106,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                     { PropertyName_BankIdOrderRef, e.OrderRef }
                 },
                 personalIdentityNumber: e.PersonalIdentityNumber,
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -116,7 +117,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 e,
                 personalIdentityNumber: e.PersonalIdentityNumber,
                 exception: e.BankIdApiException,
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -131,7 +133,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                     { PropertyName_BankIdOrderRef, e.OrderRef },
                     { PropertyName_BankIdCollectHintCode, e.HintCode.ToString() }
                 },
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -165,7 +168,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 e,
                 properties,
                 personalIdentityNumber: swedishPersonalIdentityNumber,
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -178,7 +182,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                     { PropertyName_BankIdOrderRef, e.OrderRef },
                     { PropertyName_BankIdCollectHintCode, e.HintCode.ToString() }
                 },
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -191,7 +196,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                     { PropertyName_BankIdOrderRef, e.OrderRef }
                 },
                 exception: e.BankIdApiException,
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -205,7 +211,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 {
                     { PropertyName_BankIdOrderRef, e.OrderRef }
                 },
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
@@ -218,13 +225,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                     { PropertyName_BankIdOrderRef, e.OrderRef }
                 },
                 exception: e.BankIdApiException,
-                detectedDevice: e.DetectedUserDevice
+                detectedDevice: e.DetectedUserDevice,
+                loginOptions: e.BankIdOptions
             );
         }
 
         // Helpers
 
-        private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, Dictionary<string, double>? metrics = null, SwedishPersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null)
+        private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, Dictionary<string, double>? metrics = null, SwedishPersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null, BankIdLoginOptions? loginOptions = null)
         {
             var allProperties = properties == null ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
             var allMetrics = metrics == null ? new Dictionary<string, double>() : new Dictionary<string, double>(metrics);
@@ -237,6 +245,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
             allProperties.Add(PropertyName_EventTypeName, e.EventTypeName);
             allProperties.Add(PropertyName_EventTypeId, e.EventTypeId.ToString("D"));
             allProperties.Add(PropertyName_EventSeverity, e.EventSeverity.ToString());
+
+            if (loginOptions != null)
+            {
+                AddLoginOptionsProperties(allProperties, loginOptions);
+            }
 
             if (personalIdentityNumber != null)
             {
@@ -293,6 +306,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 properties.Add(PropertyName_UserDeviceType, userDevice.DeviceType.ToString());
                 properties.Add(PropertyName_UserDeviceOsVersion, userDevice.DeviceOsVersion.ToString());
             }
+        }
+
+        private void AddLoginOptionsProperties(Dictionary<string, string> properties, BankIdLoginOptions loginOptions)
+        {
+            properties.Add(PropertyName_LoginOptionsLaunchType, GetLaunchType(loginOptions.SameDevice));
+            properties.Add(PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(loginOptions.UseQrCode));
         }
 
         private static string GetLaunchType(bool isSameDevice)
