@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -89,6 +89,7 @@ namespace ActiveLogin.Authentication.GrandId.Api
             var url = GetUrl("Logout", new Dictionary<string, string?>
             {
                 { "apiKey", _apiKey },
+                { "authenticateServiceKey", _bankIdServiceKey },
                 { "sessionid", request.SessionId }
             });
 

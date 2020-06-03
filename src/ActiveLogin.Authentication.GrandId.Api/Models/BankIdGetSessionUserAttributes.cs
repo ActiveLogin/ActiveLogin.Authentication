@@ -5,9 +5,10 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
     [DataContract]
     public class BankIdGetSessionUserAttributes
     {
-        public BankIdGetSessionUserAttributes(string signature, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
+        public BankIdGetSessionUserAttributes(string signature, string ocspResponse, string givenName, string surname, string name, string personalIdentityNumber, string notBefore, string notAfter, string ipAddress)
         {
             Signature = signature;
+            OcspResponse = ocspResponse;
             GivenName = givenName;
             Surname = surname;
             Name = name;
@@ -19,6 +20,9 @@ namespace ActiveLogin.Authentication.GrandId.Api.Models
 
         [DataMember(Name = "signature")]
         public string Signature { get; private set; }
+
+        [DataMember(Name = "ocspResponse")]
+        public string OcspResponse { get; private set; }
 
         [DataMember(Name = "givenName")]
         public string GivenName { get; private set; }
