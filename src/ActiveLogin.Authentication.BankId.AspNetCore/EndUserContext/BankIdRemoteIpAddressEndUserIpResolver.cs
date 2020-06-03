@@ -5,7 +5,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext
     /// <summary>
     /// Resolves the end user ip of the user from RemoteIpAddress of the connection.
     /// </summary>
-    public class RemoteIpAddressEndUserIpResolver : IEndUserIpResolver
+    public class BankIdRemoteIpAddressEndUserIpResolver : IBankIdEndUserIpResolver
     {
         public string GetEndUserIp(HttpContext httpContext)
         {

@@ -39,7 +39,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
-        private readonly IEndUserIpResolver _endUserIpResolver;
+        private readonly IBankIdEndUserIpResolver _bankIdEndUserIpResolver;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
 
         public BankIdApiController(
@@ -53,7 +53,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
             IBankIdQrCodeGenerator qrCodeGenerator,
-            IEndUserIpResolver endUserIpResolver,
+            IBankIdEndUserIpResolver bankIdEndUserIpResolver,
             IBankIdEventTrigger bankIdEventTrigger)
         {
             _urlEncoder = urlEncoder;
@@ -66,7 +66,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
             _qrCodeGenerator = qrCodeGenerator;
-            _endUserIpResolver = endUserIpResolver;
+            _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
             _bankIdEventTrigger = bankIdEventTrigger;
         }
 
@@ -151,7 +151,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         
         private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
-            var endUserIp = _endUserIpResolver.GetEndUserIp(HttpContext);
+            var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp(HttpContext);
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
             var autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
 
