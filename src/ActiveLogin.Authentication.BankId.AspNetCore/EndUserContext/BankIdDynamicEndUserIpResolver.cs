@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext
 {
-    internal class DynamicEndUserIpResolver : IEndUserIpResolver
+    internal class BankIdDynamicEndUserIpResolver : IBankIdEndUserIpResolver
     {
         private readonly Func<HttpContext, string> _resolver;
 
-        public DynamicEndUserIpResolver(Func<HttpContext, string> resolver)
+        public BankIdDynamicEndUserIpResolver(Func<HttpContext, string> resolver)
         {
             _resolver = resolver;
         }

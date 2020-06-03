@@ -5,7 +5,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext
     /// <summary>
     /// Resolves end user ip for the user.
     /// </summary>
-    public interface IEndUserIpResolver
+    public interface IBankIdEndUserIpResolver
     {
         /// <summary>
         /// Return the end user IP for the user.
