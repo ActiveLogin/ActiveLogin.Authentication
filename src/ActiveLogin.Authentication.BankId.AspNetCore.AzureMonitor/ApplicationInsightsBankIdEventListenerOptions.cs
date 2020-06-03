@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         /// <summary>
         /// If anonymized hints such as birthdate and gender should be logged from the personal identity number (personnummer).
         /// </summary>
-        public bool LogUserPersonalIdentityNumberHints { get; set; } = false;
+        public bool LogUserPersonalIdentityNumberHints { get; set; } = true;
 
         /// <summary>
         /// If names (name, given name and surname) should be logged.

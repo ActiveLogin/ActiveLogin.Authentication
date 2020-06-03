@@ -29,8 +29,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     [AllowAnonymous]
     public class BankIdApiController : Controller
     {
-        private const string UserAgentHttpHeaderName = "User-Agent";
-
         private readonly UrlEncoder _urlEncoder;
         private readonly IBankIdUserMessage _bankIdUserMessage;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
@@ -116,7 +114,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber, bankIdApiException, detectedUserDevice));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber, bankIdApiException, detectedUserDevice, unprotectedLoginOptions));
 
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
@@ -125,9 +123,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var orderRef = authResponse.OrderRef;
             var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(orderRef));
 
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef, detectedUserDevice));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef, detectedUserDevice, unprotectedLoginOptions));
 
-            if (unprotectedLoginOptions.AutoLaunch)
+            if (unprotectedLoginOptions.SameDevice)
             {
                 var launchInfo = GetBankIdLaunchInfo(request, authResponse);
                 
@@ -206,6 +204,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
+            var detectedDevice = GetDetectedUserDevice();
 
             CollectResponse collectResponse;
             try
@@ -214,21 +213,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             catch (BankIdApiException bankIdApiException)
             {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef.OrderRef, bankIdApiException));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef.OrderRef, bankIdApiException, detectedDevice, unprotectedLoginOptions));
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
 
-            var statusMessage = GetStatusMessage(collectResponse, unprotectedLoginOptions);
+            var statusMessage = GetStatusMessage(collectResponse, unprotectedLoginOptions, detectedDevice);
 
             if (collectResponse.GetCollectStatus() == CollectStatus.Pending)
             {
-                return CollectPending(collectResponse, statusMessage);
+                return CollectPending(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
             }
 
             if (collectResponse.GetCollectStatus() == CollectStatus.Complete)
             {
-                return await CollectComplete(request, collectResponse);
+                return await CollectComplete(request, collectResponse, detectedDevice, unprotectedLoginOptions);
             }
 
             var hintCode = collectResponse.GetCollectHintCode();
@@ -238,16 +237,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 return OkJsonResult(BankIdLoginApiStatusResponse.Retry(statusMessage));
             }
 
-            return CollectFailure(collectResponse, statusMessage);
+            return CollectFailure(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
         }
 
-        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage)
+        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
         {
-            _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode()));
+            _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
             return BadRequestJsonResult(new BankIdLoginApiErrorResponse(statusMessage));
         }
 
-        private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse)
+        private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
         {
             if (collectResponse.CompletionData == null)
             {
@@ -259,7 +258,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 throw new ArgumentNullException(nameof(request.ReturnUrl));
             }
 
-            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedDevice, loginOptions));
 
             var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
             if (!Url.IsLocalUrl(returnUri))
@@ -270,16 +269,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return OkJsonResult(BankIdLoginApiStatusResponse.Finished(returnUri));
         }
 
-        private ActionResult CollectPending(CollectResponse collectResponse, string statusMessage)
+        private ActionResult CollectPending(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
         {
-            _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode()));
+            _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
             return OkJsonResult(BankIdLoginApiStatusResponse.Pending(statusMessage));
         }
 
-        private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions)
+        private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions, BankIdSupportedDevice detectedDevice)
         {
             var authPersonalIdentityNumberProvided = PersonalIdentityNumberProvided(unprotectedLoginOptions);
-            var detectedDevice = GetDetectedUserDevice();
             var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
             var usingQrCode = unprotectedLoginOptions.UseQrCode;
 
@@ -296,7 +294,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private BankIdSupportedDevice GetDetectedUserDevice()
         {
-            return _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers[UserAgentHttpHeaderName]);
+            return _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers[BankIdConstants.UserAgentHttpHeaderName]);
         }
 
         private static bool PersonalIdentityNumberProvided(BankIdLoginOptions unprotectedLoginOptions)
@@ -332,17 +330,24 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Cancel")]
         public async Task<ActionResult> Cancel(BankIdLoginApiCancelRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.LoginOptions))
+            {
+                throw new ArgumentNullException(nameof(request.LoginOptions));
+            }
+
             if (request.OrderRef == null)
             {
                 throw new ArgumentNullException(nameof(request.OrderRef));
             }
 
+            var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
+            var detectedDevice = GetDetectedUserDevice();
 
             try
             {
                 await _bankIdApiClient.CancelAsync(orderRef.OrderRef);
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef.OrderRef));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef.OrderRef, detectedDevice, unprotectedLoginOptions));
             }
             catch (BankIdApiException exception)
             {
@@ -350,7 +355,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 // are that the orderRef has already been cancelled or we have
                 // a network issue. We still want to provide the GUI with the
                 // validated cancellation URL though.
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelErrorEvent(orderRef.OrderRef, exception));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCancelErrorEvent(orderRef.OrderRef, exception, detectedDevice, unprotectedLoginOptions));
             }
 
             return OkJsonResult(BankIdLoginApiCancelResponse.Cancelled());

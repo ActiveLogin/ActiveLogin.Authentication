@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 {
@@ -7,12 +8,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// </summary>
     public class BankIdAspNetAuthenticateFailureEvent : BankIdEvent
     {
-        internal BankIdAspNetAuthenticateFailureEvent(string errorReason)
+        internal BankIdAspNetAuthenticateFailureEvent(string errorReason, BankIdSupportedDevice detectedUserDevice)
             : base(BankIdEventTypes.AspNetAuthenticateErrorEventId, BankIdEventTypes.AspNetAuthenticateFailureEventName, BankIdEventSeverity.Failure)
         {
             ErrorReason = errorReason;
+            DetectedUserDevice = detectedUserDevice;
         }
 
         public string ErrorReason { get; }
+
+        public BankIdSupportedDevice DetectedUserDevice { get; }
     }
 }

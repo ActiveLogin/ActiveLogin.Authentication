@@ -399,6 +399,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             var cancelRequest = new JsonContent(new
             {
                 orderRef = initializeObject.OrderRef,
+                loginOptions = "TestOptions",
                 cancelReturnUrl = "/"
             });
             cancelRequest.Headers.Add("Cookie", loginCookies);

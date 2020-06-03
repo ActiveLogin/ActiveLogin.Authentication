@@ -1,5 +1,6 @@
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 
@@ -10,12 +11,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// </summary>
     public class BankIdAuthErrorEvent : BankIdEvent
     {
-        internal BankIdAuthErrorEvent(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException, BankIdSupportedDevice detectedUserDevice)
+        internal BankIdAuthErrorEvent(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException, BankIdSupportedDevice detectedUserDevice, BankIdLoginOptions idOptions)
             : base(BankIdEventTypes.AuthErrorEventId, BankIdEventTypes.AuthErrorEventName, BankIdEventSeverity.Error)
         {
             PersonalIdentityNumber = personalIdentityNumber;
             BankIdApiException = bankIdApiException;
             DetectedUserDevice = detectedUserDevice;
+            BankIdOptions = idOptions;
         }
 
         public SwedishPersonalIdentityNumber? PersonalIdentityNumber { get; }
@@ -23,5 +25,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
         public BankIdApiException BankIdApiException { get; }
 
         public BankIdSupportedDevice DetectedUserDevice { get; }
+
+        public BankIdLoginOptions BankIdOptions { get; }
     }
 }

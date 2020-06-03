@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authentication;
 
@@ -10,15 +11,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// </summary>
     public class BankIdAspNetAuthenticateSuccessEvent : BankIdEvent
     {
-        internal BankIdAspNetAuthenticateSuccessEvent(AuthenticationTicket authenticationTicket, SwedishPersonalIdentityNumber personalIdentityNumber)
+        internal BankIdAspNetAuthenticateSuccessEvent(AuthenticationTicket authenticationTicket, SwedishPersonalIdentityNumber personalIdentityNumber, BankIdSupportedDevice detectedUserDevice)
             : base(BankIdEventTypes.AspNetAuthenticateSuccessEventId, BankIdEventTypes.AspNetAuthenticateSuccessEventName, BankIdEventSeverity.Success)
         {
             AuthenticationTicket = authenticationTicket;
             PersonalIdentityNumber = personalIdentityNumber;
+            DetectedUserDevice = detectedUserDevice;
         }
 
         [JsonIgnore] // ClaimsPrincipal have self circular references
         public AuthenticationTicket AuthenticationTicket { get; }
         public SwedishPersonalIdentityNumber PersonalIdentityNumber { get; }
+
+        public BankIdSupportedDevice DetectedUserDevice { get; }
     }
 }
