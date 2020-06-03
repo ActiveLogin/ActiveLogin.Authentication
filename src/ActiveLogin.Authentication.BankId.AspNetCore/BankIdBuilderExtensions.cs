@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
-            builder.UseEndUserIpResolver<RemoteIpAddressEndUserIpResolver>();
+            builder.UseEndUserIpResolver<BankIdRemoteIpAddressEndUserIpResolver>();
 
             builder.AddEventListener<BankIdLoggerEventListener>();
             builder.AddEventListener<BankIdResultStoreEventListener>();
@@ -121,9 +121,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TEndUserIpResolverImplementation"></typeparam>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IBankIdBuilder UseEndUserIpResolver<TEndUserIpResolverImplementation>(this IBankIdBuilder builder) where TEndUserIpResolverImplementation : class, IEndUserIpResolver
+        public static IBankIdBuilder UseEndUserIpResolver<TEndUserIpResolverImplementation>(this IBankIdBuilder builder) where TEndUserIpResolverImplementation : class, IBankIdEndUserIpResolver
         {
-            builder.AuthenticationBuilder.Services.AddTransient<IEndUserIpResolver, TEndUserIpResolverImplementation>();
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEndUserIpResolver, TEndUserIpResolverImplementation>();
 
             return builder;
         }
@@ -136,7 +136,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IBankIdBuilder UseEndUserIpResolver(this IBankIdBuilder builder, Func<HttpContext, string> resolver)
         {
-            builder.AuthenticationBuilder.Services.AddTransient<IEndUserIpResolver>(x => new DynamicEndUserIpResolver(resolver));
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEndUserIpResolver>(x => new BankIdDynamicEndUserIpResolver(resolver));
 
             return builder;
         }
