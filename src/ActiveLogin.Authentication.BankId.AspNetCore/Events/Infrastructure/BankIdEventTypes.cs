@@ -9,14 +9,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 
         // ASP.NET Authentication Handler
 
-        public static readonly int AspNetAuthenticateSuccessEventId = EventIdBase + 1_1_1;
+        public static readonly int AspNetChallengeSuccessEventId = EventIdBase + 1_1_1;
+        public static readonly string AspNetChallengeSuccessEventName = EventNamePrefix + "AspNetChallengeSuccess";
+
+        public static readonly int AspNetAuthenticateSuccessEventId = EventIdBase + 1_2_1;
         public static readonly string AspNetAuthenticateSuccessEventName = EventNamePrefix + "AspNetAuthenticateSuccess";
 
-        public static readonly int AspNetAuthenticateErrorEventId = EventIdBase + 1_1_2;
+        public static readonly int AspNetAuthenticateErrorEventId = EventIdBase + 1_2_2;
         public static readonly string AspNetAuthenticateFailureEventName = EventNamePrefix + "AspNetAuthenticateFailure";
-
-        public static readonly int AspNetChallengeSuccessEventId = EventIdBase + 1_2_1;
-        public static readonly string AspNetChallengeSuccessEventName = EventNamePrefix + "AspNetChallengeSuccess";
 
         // BankId API - Auth
 
