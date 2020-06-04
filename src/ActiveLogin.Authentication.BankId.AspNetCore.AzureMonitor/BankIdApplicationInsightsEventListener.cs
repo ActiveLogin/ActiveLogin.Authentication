@@ -261,8 +261,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 AddUserDeviceProperties(allProperties, detectedDevice);
             }
 
-            _telemetryClient.TrackEvent(e.EventTypeName, allProperties, allMetrics);
-
             if (exception != null)
             {
                 if (exception is BankIdApiException bankIdApiException)
@@ -273,6 +271,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
                 _telemetryClient.TrackException(exception, allProperties, metrics);
             }
+
+            _telemetryClient.TrackEvent(e.EventTypeName, allProperties, allMetrics);
 
             return Task.CompletedTask;
         }
