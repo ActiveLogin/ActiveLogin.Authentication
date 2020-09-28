@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 {
     public class BankIdLoginApiCancelRequest
     {
-        internal BankIdLoginApiCancelRequest()
+        public BankIdLoginApiCancelRequest()
         {
 
         }
