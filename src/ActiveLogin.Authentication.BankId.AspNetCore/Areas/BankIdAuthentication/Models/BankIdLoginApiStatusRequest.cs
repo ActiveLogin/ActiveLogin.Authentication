@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
     public class BankIdLoginApiStatusRequest
     {
-        internal BankIdLoginApiStatusRequest()
+        public BankIdLoginApiStatusRequest()
         {
 
         }
