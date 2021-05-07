@@ -43,7 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="UAParser" Version="3.1.44" />
+        <PackageReference Include="UAParser" Version="3.1.46" />
     </ItemGroup>
 
     <ItemGroup>
