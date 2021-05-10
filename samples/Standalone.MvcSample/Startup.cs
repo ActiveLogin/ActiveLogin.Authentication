@@ -14,6 +14,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
+
 namespace Standalone.MvcSample
 {
     //
@@ -40,6 +43,8 @@ namespace Standalone.MvcSample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<TelemetryClient>(new TelemetryClient(TelemetryConfiguration.CreateDefault()));
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
@@ -116,6 +121,7 @@ namespace Standalone.MvcSample
                         config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
                     }
                 });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
