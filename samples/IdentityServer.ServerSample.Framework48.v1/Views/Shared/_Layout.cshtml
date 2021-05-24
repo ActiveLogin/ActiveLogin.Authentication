@@ -1,0 +1,20 @@
+﻿@{
+    Layout = "_LayoutMaster";
+}
+
+<div class="container">
+    @RenderBody()
+</div>
+
+<footer>
+    <nav class="navbar fixed-bottom navbar-light justify-content-center">
+        <span class="navbar-text">
+            <a href="https://activelogin.net">Powered by Active Login</a>
+        </span>
+    </nav>
+</footer>
+
+@section Scripts
+{
+    @RenderSection("Scripts", false)
+}
