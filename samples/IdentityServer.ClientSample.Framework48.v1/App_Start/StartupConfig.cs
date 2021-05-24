@@ -8,7 +8,7 @@ using Microsoft.Owin.Security.OpenIdConnect;  // OpenAthens.Owin.Security.OpenId
 
 using Owin;
 
-namespace IdentityServer.ClientSample.Framework48
+namespace IdentityServer.ClientSample.Framework48.v1
 {
     public partial class Startup
     {

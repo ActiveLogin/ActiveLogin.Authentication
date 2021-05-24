@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace IdentityServer.ClientSample.Framework48.Controllers
+namespace IdentityServer.ClientSample.Framework48.v1.Controllers
 {
     public class HomeController : Controller
     {

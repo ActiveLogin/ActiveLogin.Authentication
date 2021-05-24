@@ -6,9 +6,9 @@ using System.Web;
 using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(IdentityServer.ClientSample.Framework48.Startup))]
+[assembly: OwinStartup(typeof(IdentityServer.ClientSample.Framework48.v1.Startup))]
 
-namespace IdentityServer.ClientSample.Framework48
+namespace IdentityServer.ClientSample.Framework48.v1
 {
    public partial class Startup
    {

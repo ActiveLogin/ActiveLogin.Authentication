@@ -1,15 +1,15 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IdentityServer.ClientSample.Framework48")]
+[assembly: AssemblyTitle("IdentityServer.ClientSample.Framework48.v1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IdentityServer.ClientSample.Framework48")]
+[assembly: AssemblyProduct("IdentityServer.ClientSample.Framework48.v1")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("43ad5d88-9122-4fa2-ad0f-5c7d7943d5e8")]
+[assembly: Guid("e0b2e416-0702-4c2b-93d2-c4aaf6b2dc4a")]
 
 // Version information for an assembly consists of the following four values:
 //

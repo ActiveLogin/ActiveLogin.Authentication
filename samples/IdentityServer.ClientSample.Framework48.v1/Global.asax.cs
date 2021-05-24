@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Claims;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using System.IdentityModel.Claims;
-using System.Web.Helpers;
-using System.Net;
 
-namespace IdentityServer.ClientSample.Framework48
+namespace IdentityServer.ClientSample.Framework48.v1
 {
     public class MvcApplication : System.Web.HttpApplication
     {
@@ -23,7 +23,8 @@ namespace IdentityServer.ClientSample.Framework48
             AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
 
             // Not needed for version 4.6 or later
-            //ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+            //ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls13;
         }
     }
 }
