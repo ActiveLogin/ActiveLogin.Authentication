@@ -26,6 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}"
+	ProjectSection(SolutionItems) = preProject
+		Framework48.md = Framework48.md
+	EndProjectSection
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "AzureProvisioningSample", "samples\AzureProvisioningSample\AzureProvisioningSample.deployproj", "{ABC52082-8A5D-426E-B25A-D92934A51A4D}"
 EndProject
@@ -91,6 +94,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.ServerSample.Framework48.v1", "samples\IdentityServer.ServerSample.Framework48.v1\IdentityServer.ServerSample.Framework48.v1.csproj", "{D934A942-5A49-4F17-B62A-4FCD66B8BEB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework48.Samples", "Framework48.Samples", "{4EDC12DA-6ABE-4873-A925-15D964C0CFA4}"
+	ProjectSection(SolutionItems) = preProject
+		Framework48.md = Framework48.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
