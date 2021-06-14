@@ -574,3 +574,18 @@ The UI is bundled into the package as a Razor Class Library, a technique that al
 ### Can the messages be localized?
 
 The messages are already localized to English and Swedish using the official recommended texts. To select what texts that are used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-2.1#localization-middleware).
+
+### How can the certificates be handled when running in Linux?
+
+X509Certificate2 can not be handled in the same way when running in Linux as on Windows. The certificate is Base64 encoded and must be decoded before creating the X509Certificate2 instance. Below is an example for the BankId root certificate:
+
+Copy the content between Begin certificate and End certificate, and paste it into a resource string in a Resource.resx file.
+
+With the certificate in the reosurce, this code can be used to create the X509Certificate2 instance. Note the second line that decodes the Base64 string.
+
+```csharp
+var rootCertEncoded = CertificateResources.BankIdRootTestCertificate;
+var rootCertBytes = Convert.FromBase64String(rootCertEncoded);
+
+return new X509Certificate2(rootCertBytes, string.Empty, X509KeyStorageFlags.MachineKeySet);
+```
