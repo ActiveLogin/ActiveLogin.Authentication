@@ -14,10 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Extensibility;
-
-namespace Standalone.MvcSample
+namespace IdentityServer.ServerSample
 {
     //
     // DISCLAIMER
@@ -43,7 +40,7 @@ namespace Standalone.MvcSample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<TelemetryClient>(new TelemetryClient(TelemetryConfiguration.CreateDefault()));
+            services.AddApplicationInsightsTelemetry(Configuration);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -55,10 +52,66 @@ namespace Standalone.MvcSample
             services.AddControllersWithViews(config =>
             {
                 config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            });
+            })
+            .AddRazorRuntimeCompilation();
 
+            services.AddIdentityServer(options =>
+                {
+                    options.Authentication.CookieLifetime = BankIdDefaults.MaximumSessionLifespan;
+                })
+                .AddDeveloperSigningCredential()
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryClients(Config.GetClients(Configuration.GetSection("ActiveLogin:Clients")));
+
+            // Sample of using BankID with in memory dev environment
+            //services.AddAuthentication()
+            //        .AddBankId(builder =>
+            //    {
+            //        builder
+            //            .UseSimulatedEnvironment()
+            //            .AddSameDevice()
+            //            .AddOtherDevice();
+            //    });
+
+            // Sample of using BankID with production environment
+            //services.AddAuthentication()
+            //        .AddBankId(builder =>
+            //        {
+            //            builder
+            //                .UseProductionEnvironment()
+            //                .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+            //                .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+            //                .AddSameDevice()
+            //                .AddOtherDevice();
+            //        });
+
+
+            // Sample of using BankID through GrandID (Svensk E-identitet) with in memory dev environment
+            //services.AddAuthentication()
+            //        .AddGrandId(builder =>
+            //        {
+            //            builder
+            //                .UseSimulatedEnvironment()
+            //                .AddBankIdSameDevice(options => { })
+            //                .AddBankIdOtherDevice(options => { });
+            //        });
+
+            // Sample of using BankID through GrandID (Svensk E-identitet) with production environment
+            //services.AddAuthentication()
+            //        .AddGrandId(builder =>
+            //        {
+            //            builder
+            //                .UseProductionEnvironment(config =>
+            //                {
+            //                    config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+            //                    config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+            //                })
+            //                .AddBankIdChooseDevice();
+            //        });
+
+            // Full sample with both BankID and GrandID with custom display name and multiple environment support
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie()
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddBankId(builder =>
                 {
                     builder.AddDebugEventListener();
@@ -76,18 +129,17 @@ namespace Standalone.MvcSample
                     builder.UseQrCoderQrCodeGenerator();
                     builder.UseUaParserDeviceDetection();
 
-                    builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
-                           .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+                    builder.Configure(options =>
+                            {
+                                options.IssueBirthdateClaim = true;
+                                options.IssueGenderClaim = true;
+                            })
+                            .AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
+                            .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
                     if (Configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
                     {
                         builder.UseSimulatedEnvironment();
-                    }
-                    else if (Configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
-                    {
-                        builder.UseTestEnvironment()
-                            .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-                            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
                     }
                     else
                     {
@@ -98,7 +150,12 @@ namespace Standalone.MvcSample
                 })
                 .AddGrandId(builder =>
                 {
-                    builder.AddBankIdSameDevice(GrandIdDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
+                    builder.ConfigureBankId(options =>
+                           {
+                               options.IssueBirthdateClaim = true;
+                               options.IssueGenderClaim = true;
+                           })
+                           .AddBankIdSameDevice(GrandIdDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
                            .AddBankIdOtherDevice(GrandIdDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
                            .AddBankIdChooseDevice(GrandIdDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
 
@@ -106,22 +163,15 @@ namespace Standalone.MvcSample
                     {
                         builder.UseSimulatedEnvironment();
                     }
-                    else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
-                    {
-                        builder.UseTestEnvironment(ConfigureEnvironment);
-                    }
                     else
                     {
-                        builder.UseProductionEnvironment(ConfigureEnvironment);
-                    }
-
-                    void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
-                    {
-                        config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                        config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+                        builder.UseProductionEnvironment(config =>
+                        {
+                            config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
+                            config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
+                        });
                     }
                 });
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -156,7 +206,7 @@ namespace Standalone.MvcSample
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
