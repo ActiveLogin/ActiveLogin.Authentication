@@ -28,6 +28,7 @@
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
+    <Content Include="ActiveLogin-Monitor.json" />
     <Content Include="Deploy-AzureResourceGroup.ps1" />
     <Content Include="ActiveLogin.json" />
     <Content Include="ActiveLogin.parameters.json" />
