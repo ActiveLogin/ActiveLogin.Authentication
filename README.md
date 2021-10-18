@@ -39,6 +39,7 @@ ___Note:___ This Readme reflects the state of our master branch and the code doc
 	+ [3. Prepare your project](#3-prepare-your-project)
 	+ [4. Get started in development](#4-get-started-in-development)
 	+ [5. Use test or production environments](#5-use-test-or-production-environments)
+    + [6. Monitoring](#6-monitoring)
 * [Samples](#samples)
 	+ [Projects and live demos](#projects-and-live-demos)
 	+ [Tests](#tests)
@@ -231,7 +232,7 @@ services
 
 ---
 
-6. Monitoring
+### 6. Monitoring
 
 Active Login provides a structured way of generating and logging events. These coould be monitored to get statistics and health status of your BankID login method.
 
