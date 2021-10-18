@@ -1,461 +1,467 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
 
-    "environment_name": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Environment name. dev/test/prod etc"
-      }
+    "metadata": {
+        "description": "Active Login sample setup.",
+        "author": "Active Login (https://github.com/ActiveLogin)"
     },
 
-    "application_name": {
-      "defaultValue": "activelogin",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Application name. Login for example."
-      }
-    },
+    "parameters": {
 
-    "keyvault_resource_name": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "KeyVault resource name."
-      }
-    },
-
-    "keyvault_tenantid": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "KeyVault tenantid."
-      }
-    },
-
-    "insights_resource_name": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Application Insights resource name."
-      }
-    },
-
-    "web_server_resource_name": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Web server resource name."
-      }
-    },
-
-    "web_server_size": {
-      "type": "string",
-      "defaultValue": "S1",
-      "allowedValues": [
-        "B1",
-        "B2",
-        "B3",
-        "S1",
-        "S2",
-        "S3",
-        "P1",
-        "P2",
-        "P3",
-        "P4"
-      ],
-      "metadata": {
-        "description": "Web server size."
-      }
-    },
-
-    "web_server_instances": {
-      "type": "int",
-      "defaultValue": 1,
-      "minValue": 1,
-      "metadata": {
-        "description": "Web server instances."
-      }
-    },
-
-    "web_serversite_resource_name": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Server web app resource name."
-      }
-    },
-
-    "web_serversite_stagingslot_enabled": {
-      "defaultValue": true,
-      "type": "bool",
-      "metadata": {
-        "description": "If the server web app should have a staging slot enabled or not."
-      }
-    },
-
-    "web_clientsite_enabled": {
-      "defaultValue": true,
-      "type": "bool",
-      "metadata": {
-        "description": "Should the client be deployed."
-      }
-    },
-
-    "web_clientsite_resource_name": {
-      "defaultValue": "",
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Client web app resource name."
-      }
-    },
-
-    "web_site_remotedebugging_enabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable remote debugging for the websites."
-      }
-    },
-
-    "web_site_httplogs_enabled": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Enable HTTP logs for the websites."
-      }
-    },
-
-    "web_site_failedrequeststracing_enabled": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Enable failed request tracing for the websites."
-      }
-    },
-
-    "web_site_detailederrormessages_enabled": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Enable detailed error messages for the websites."
-      }
-    }
-  },
-  "variables": {
-
-    "resource_location": "[resourceGroup().location]",
-    "environment_name": "[parameters('environment_name')]",
-    "application_name": "[parameters('application_name')]",
-    "identityResourceId": "[concat(resourceId('Microsoft.Web/sites', parameters('web_serversite_resource_name')),'/providers/Microsoft.ManagedIdentity/Identities/default')]",
-
-
-    "keyvault_resource_name": "[parameters('keyvault_resource_name')]",
-    "keyvault_tenantid": "[parameters('keyvault_tenantid')]",
-    "insights_resource_name": "[parameters('insights_resource_name')]",
-
-    "web_server_resource_name": "[parameters('web_server_resource_name')]",
-    "web_server_size": "[parameters('web_server_size')]",
-    "web_server_instances": "[parameters('web_server_instances')]",
-
-
-    "web_serversite_resource_name": "[parameters('web_serversite_resource_name')]",
-    "web_serversite_stagingslot_enabled": "[parameters('web_serversite_stagingslot_enabled')]",
-
-    "web_clientsite_enabled": "[parameters('web_clientsite_enabled')]",
-    "web_clientsite_resource_name": "[parameters('web_clientsite_resource_name')]",
-
-    "web_site_remotedebugging_enabled": "[parameters('web_site_remotedebugging_enabled')]",
-    "web_site_remotedebugging_version": "VS2017",
-    "web_site_websockets_enabled": false,
-    "web_site_clientaffinity_enabled": false,
-    "web_site_httpsonly_enabled": true,
-    "web_site_alwayson_enabled": true,
-    "web_site_http20_enabled": true,
-    "web_site_tls_minversion": "1.2",
-    "web_site_ftp_state": "Disabled",
-
-    "web_site_httplogs_enabled": "[parameters('web_site_httplogs_enabled')]",
-    "web_site_httplogs_retentioninmb": 50,
-    "web_site_failedrequeststracing_enabled": "[parameters('web_site_failedrequeststracing_enabled')]",
-    "web_site_detailederrormessages_enabled": "[parameters('web_site_detailederrormessages_enabled')]",
-
-    "web_site_config_web": {
-      "netFrameworkVersion": "v4.6",
-      "phpVersion": "",
-      "pythonVersion": "",
-      "nodeVersion": "",
-      "defaultDocuments": [
-        "index.htm",
-        "index.html",
-        "default.htm",
-        "default.html"
-      ],
-      "webSocketsEnabled": "[variables('web_site_websockets_enabled')]",
-      "alwaysOn": "[variables('web_site_alwayson_enabled')]",
-      "remoteDebuggingEnabled": "[variables('web_site_remotedebugging_enabled')]",
-      "remoteDebuggingVersion": "[variables('web_site_remotedebugging_version')]",
-      "http20Enabled": "[variables('web_site_http20_enabled')]",
-      "minTlsVersion": "[variables('web_site_tls_minversion')]",
-      "ftpsState": "[variables('web_site_ftp_state')]"
-    },
-
-    "web_site_stagingslot_resource_name": "staging"
-  },
-  "resources": [
-
-    {
-      "type": "Microsoft.KeyVault/vaults",
-      "name": "[variables('keyvault_resource_name')]",
-      "apiVersion": "2016-10-01",
-      "location": "[variables('resource_location')]",
-      "tags": {
-        "displayName": "KeyVault",
-        "environment": "[variables('environment_name')]",
-        "application": "[variables('application_name')]"
-      },
-      "properties": {
-        "tenantId": "[variables('keyvault_tenantid')]",
-        "sku": {
-          "family": "A",
-          "name": "Premium"
+        "environment_name": {
+            "defaultValue": "",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "Environment name. dev/test/prod etc"
+            }
         },
-        "accessPolicies": [
-            {
-                "tenantId": "[reference(variables('identityResourceId'), '2015-08-31-PREVIEW').tenantId]",
-                "objectId": "[reference(variables('identityResourceId'), '2015-08-31-PREVIEW').principalId]",
-                "permissions": {
-                    "secrets": [
-                        "get"
+
+        "application_name": {
+            "defaultValue": "activelogin",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "Application name. Login for example."
+            }
+        },
+
+        "keyvault_resource_name": {
+            "defaultValue": "",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "KeyVault resource name."
+            }
+        },
+
+        "keyvault_tenantid": {
+            "defaultValue": "",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "KeyVault tenantid."
+            }
+        },
+
+        "insights_resource_name": {
+            "defaultValue": "",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "Application Insights resource name."
+            }
+        },
+
+        "web_server_resource_name": {
+            "defaultValue": "",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "Web server resource name."
+            }
+        },
+
+        "web_server_size": {
+            "type": "string",
+            "defaultValue": "S1",
+            "allowedValues": [
+                "B1",
+                "B2",
+                "B3",
+                "S1",
+                "S2",
+                "S3",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+            ],
+            "metadata": {
+                "description": "Web server size."
+            }
+        },
+
+        "web_server_instances": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "metadata": {
+                "description": "Web server instances."
+            }
+        },
+
+        "web_serversite_resource_name": {
+            "defaultValue": "",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "Server web app resource name."
+            }
+        },
+
+        "web_serversite_stagingslot_enabled": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "If the server web app should have a staging slot enabled or not."
+            }
+        },
+
+        "web_clientsite_enabled": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "Should the client be deployed."
+            }
+        },
+
+        "web_clientsite_resource_name": {
+            "defaultValue": "",
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "Client web app resource name."
+            }
+        },
+
+        "web_site_remotedebugging_enabled": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable remote debugging for the websites."
+            }
+        },
+
+        "web_site_httplogs_enabled": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Enable HTTP logs for the websites."
+            }
+        },
+
+        "web_site_failedrequeststracing_enabled": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Enable failed request tracing for the websites."
+            }
+        },
+
+        "web_site_detailederrormessages_enabled": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Enable detailed error messages for the websites."
+            }
+        }
+    },
+    "variables": {
+
+        "resource_location": "[resourceGroup().location]",
+        "environment_name": "[parameters('environment_name')]",
+        "application_name": "[parameters('application_name')]",
+        "identityResourceId": "[concat(resourceId('Microsoft.Web/sites', parameters('web_serversite_resource_name')),'/providers/Microsoft.ManagedIdentity/Identities/default')]",
+
+
+        "keyvault_resource_name": "[parameters('keyvault_resource_name')]",
+        "keyvault_tenantid": "[parameters('keyvault_tenantid')]",
+        "insights_resource_name": "[parameters('insights_resource_name')]",
+
+        "web_server_resource_name": "[parameters('web_server_resource_name')]",
+        "web_server_size": "[parameters('web_server_size')]",
+        "web_server_instances": "[parameters('web_server_instances')]",
+
+
+        "web_serversite_resource_name": "[parameters('web_serversite_resource_name')]",
+        "web_serversite_stagingslot_enabled": "[parameters('web_serversite_stagingslot_enabled')]",
+
+        "web_clientsite_enabled": "[parameters('web_clientsite_enabled')]",
+        "web_clientsite_resource_name": "[parameters('web_clientsite_resource_name')]",
+
+        "web_site_remotedebugging_enabled": "[parameters('web_site_remotedebugging_enabled')]",
+        "web_site_remotedebugging_version": "VS2017",
+        "web_site_websockets_enabled": false,
+        "web_site_clientaffinity_enabled": false,
+        "web_site_httpsonly_enabled": true,
+        "web_site_alwayson_enabled": true,
+        "web_site_http20_enabled": true,
+        "web_site_tls_minversion": "1.2",
+        "web_site_ftp_state": "Disabled",
+
+        "web_site_httplogs_enabled": "[parameters('web_site_httplogs_enabled')]",
+        "web_site_httplogs_retentioninmb": 50,
+        "web_site_failedrequeststracing_enabled": "[parameters('web_site_failedrequeststracing_enabled')]",
+        "web_site_detailederrormessages_enabled": "[parameters('web_site_detailederrormessages_enabled')]",
+
+        "web_site_config_web": {
+            "netFrameworkVersion": "v4.6",
+            "phpVersion": "",
+            "pythonVersion": "",
+            "nodeVersion": "",
+            "defaultDocuments": [
+                "index.htm",
+                "index.html",
+                "default.htm",
+                "default.html"
+            ],
+            "webSocketsEnabled": "[variables('web_site_websockets_enabled')]",
+            "alwaysOn": "[variables('web_site_alwayson_enabled')]",
+            "remoteDebuggingEnabled": "[variables('web_site_remotedebugging_enabled')]",
+            "remoteDebuggingVersion": "[variables('web_site_remotedebugging_version')]",
+            "http20Enabled": "[variables('web_site_http20_enabled')]",
+            "minTlsVersion": "[variables('web_site_tls_minversion')]",
+            "ftpsState": "[variables('web_site_ftp_state')]"
+        },
+
+        "web_site_stagingslot_resource_name": "staging"
+    },
+    "resources": [
+
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "name": "[variables('keyvault_resource_name')]",
+            "apiVersion": "2016-10-01",
+            "location": "[variables('resource_location')]",
+            "tags": {
+                "displayName": "KeyVault",
+                "environment": "[variables('environment_name')]",
+                "application": "[variables('application_name')]"
+            },
+            "properties": {
+                "tenantId": "[variables('keyvault_tenantid')]",
+                "sku": {
+                    "family": "A",
+                    "name": "Premium"
+                },
+                "accessPolicies": [
+                    {
+                        "tenantId": "[reference(variables('identityResourceId'), '2015-08-31-PREVIEW').tenantId]",
+                        "objectId": "[reference(variables('identityResourceId'), '2015-08-31-PREVIEW').principalId]",
+                        "permissions": {
+                            "secrets": [
+                                "get"
+                            ]
+                        }
+                    }
+                ],
+                "enabledForDeployment": "false",
+                "enabledForDiskEncryption": "false",
+                "enabledForTemplateDeployment": "false"
+            }
+        },
+
+
+        {
+            "type": "Microsoft.Insights/components",
+            "kind": "web",
+            "name": "[variables('insights_resource_name')]",
+            "apiVersion": "2015-05-01",
+            "location": "[variables('resource_location')]",
+            "tags": {
+                "displayName": "Application Insights",
+                "environment": "[variables('environment_name')]",
+                "application": "[variables('application_name')]",
+
+                "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', concat(variables('web_serversite_resource_name')))]": "Resource"
+            },
+            "properties": {
+                "Application_Type": "web",
+                "ApplicationId": "[variables('insights_resource_name')]",
+                "Name": "[variables('insights_resource_name')]"
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+
+
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "sku": {
+                "name": "[variables('web_server_size')]",
+                "capacity": "[variables('web_server_instances')]"
+            },
+            "name": "[variables('web_server_resource_name')]",
+            "apiVersion": "2016-09-01",
+            "location": "[variables('resource_location')]",
+            "tags": {
+                "displayName": "Web server",
+                "environment": "[variables('environment_name')]",
+                "application": "[variables('application_name')]"
+            },
+            "properties": {
+                "name": "[variables('web_server_resource_name')]"
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+
+
+        {
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('web_serversite_resource_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "[variables('resource_location')]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "tags": {
+                "displayName": "Web site",
+                "environment": "[variables('environment_name')]",
+                "application": "[variables('application_name')]",
+
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('web_server_resource_name'))]": "Resource"
+            },
+            "properties": {
+                "name": "[variables('web_serversite_resource_name')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]",
+                "clientAffinityEnabled": "[variables('web_site_clientaffinity_enabled')]",
+                "httpsOnly": "[variables('web_site_httpsonly_enabled')]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))]"
+                    ],
+                    "properties": "[variables('web_site_config_web')]"
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "logs",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))]"
+                    ],
+                    "properties": {
+                        "httpLogs": {
+                            "fileSystem": {
+                                "retentionInMb": "[variables('web_site_httplogs_retentioninmb')]",
+                                "enabled": "[variables('web_site_httplogs_enabled')]"
+                            }
+                        },
+                        "failedRequestsTracing": {
+                            "enabled": "[variables('web_site_failedrequeststracing_enabled')]"
+                        },
+                        "detailedErrorMessages": {
+                            "enabled": "[variables('web_site_detailederrormessages_enabled')]"
+                        }
+                    }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "appsettings",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))]",
+                        "[resourceId('Microsoft.Insights/components', variables('insights_resource_name'))]"
+                    ],
+                    "properties": {
+                        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).InstrumentationKey]",
+                        "APPINSIGHTS_PORTALINFO": "ASP.NETCORE",
+                        "APPINSIGHTS_PROFILERFEATURE_VERSION": "disabled",
+                        "APPINSIGHTS_SNAPSHOTFEATURE_VERSION": "disabled"
+                    }
+                },
+                {
+                    "apiVersion": "2016-08-01",
+                    "name": "[variables('web_site_stagingslot_resource_name')]",
+                    "condition": "[variables('web_serversite_stagingslot_enabled')]",
+                    "type": "slots",
+                    "location": "[variables('resource_location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('web_serversite_resource_name'))]"
+                    ],
+                    "properties": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2015-08-01",
+                            "name": "web",
+                            "condition": "[variables('web_serversite_stagingslot_enabled')]",
+                            "type": "config",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.Web/Sites/Slots', variables('web_serversite_resource_name'), variables('web_site_stagingslot_resource_name'))]"
+                            ],
+                            "properties": "[variables('web_site_config_web')]"
+                        }
                     ]
                 }
-            }
-        ],
-        "enabledForDeployment": "false",
-        "enabledForDiskEncryption": "false",
-        "enabledForTemplateDeployment": "false"
-      }
-    },
-
-
-    {
-      "type": "Microsoft.Insights/components",
-      "kind": "web",
-      "name": "[variables('insights_resource_name')]",
-      "apiVersion": "2015-05-01",
-      "location": "[variables('resource_location')]",
-      "tags": {
-        "displayName": "Application Insights",
-        "environment": "[variables('environment_name')]",
-        "application": "[variables('application_name')]",
-
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', concat(variables('web_serversite_resource_name')))]": "Resource"
-      },
-      "properties": {
-        "Application_Type": "web",
-        "ApplicationId": "[variables('insights_resource_name')]",
-        "Name": "[variables('insights_resource_name')]"
-      },
-      "resources": [],
-      "dependsOn": []
-    },
-
-
-    {
-      "type": "Microsoft.Web/serverfarms",
-      "sku": {
-        "name": "[variables('web_server_size')]",
-        "capacity": "[variables('web_server_instances')]"
-      },
-      "name": "[variables('web_server_resource_name')]",
-      "apiVersion": "2016-09-01",
-      "location": "[variables('resource_location')]",
-      "tags": {
-        "displayName": "Web server",
-        "environment": "[variables('environment_name')]",
-        "application": "[variables('application_name')]"
-      },
-      "properties": {
-        "name": "[variables('web_server_resource_name')]"
-      },
-      "resources": [],
-      "dependsOn": []
-    },
-
-
-    {
-      "type": "Microsoft.Web/sites",
-      "name": "[variables('web_serversite_resource_name')]",
-      "apiVersion": "2015-08-01",
-      "location": "[variables('resource_location')]",
-      "identity": {
-        "type": "SystemAssigned"
-      },
-      "tags": {
-        "displayName": "Web site",
-        "environment": "[variables('environment_name')]",
-        "application": "[variables('application_name')]",
-
-        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('web_server_resource_name'))]": "Resource"
-      },
-      "properties": {
-        "name": "[variables('web_serversite_resource_name')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]",
-        "clientAffinityEnabled": "[variables('web_site_clientaffinity_enabled')]",
-        "httpsOnly": "[variables('web_site_httpsonly_enabled')]"
-      },
-      "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "web",
-          "type": "config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))]"
-          ],
-          "properties": "[variables('web_site_config_web')]"
+            ],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]"
+            ]
         },
+
         {
-          "apiVersion": "2015-08-01",
-          "name": "logs",
-          "type": "config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))]"
-          ],
-          "properties": {
-            "httpLogs": {
-              "fileSystem": {
-                "retentionInMb": "[variables('web_site_httplogs_retentioninmb')]",
-                "enabled": "[variables('web_site_httplogs_enabled')]"
-              }
+            "condition": "[variables('web_clientsite_enabled')]",
+
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('web_clientsite_resource_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "[variables('resource_location')]",
+            "tags": {
+                "displayName": "Web site",
+                "environment": "[variables('environment_name')]",
+                "application": "[variables('application_name')]",
+
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('web_server_resource_name'))]": "Resource"
             },
-            "failedRequestsTracing": {
-              "enabled": "[variables('web_site_failedrequeststracing_enabled')]"
+            "properties": {
+                "name": "[variables('web_clientsite_resource_name')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]",
+                "clientAffinityEnabled": "[variables('web_site_clientaffinity_enabled')]",
+                "httpsOnly": "[variables('web_site_httpsonly_enabled')]"
             },
-            "detailedErrorMessages": {
-              "enabled": "[variables('web_site_detailederrormessages_enabled')]"
-            }
-          }
-        },
-        {
-          "apiVersion": "2015-08-01",
-          "name": "appsettings",
-          "type": "config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))]",
-            "[resourceId('Microsoft.Insights/components', variables('insights_resource_name'))]"
-          ],
-          "properties": {
-            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).InstrumentationKey]",
-            "APPINSIGHTS_PORTALINFO": "ASP.NETCORE",
-            "APPINSIGHTS_PROFILERFEATURE_VERSION": "disabled",
-            "APPINSIGHTS_SNAPSHOTFEATURE_VERSION": "disabled"
-          }
-        },
-        {
-          "apiVersion": "2016-08-01",
-          "name": "[variables('web_site_stagingslot_resource_name')]",
-          "condition": "[variables('web_serversite_stagingslot_enabled')]",
-          "type": "slots",
-          "location": "[variables('resource_location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('web_serversite_resource_name'))]"
-          ],
-          "properties": {},
-          "resources": [
-            {
-              "apiVersion": "2015-08-01",
-              "name": "web",
-              "condition": "[variables('web_serversite_stagingslot_enabled')]",
-              "type": "config",
-              "dependsOn": [
-                "[resourceId('Microsoft.Web/Sites/Slots', variables('web_serversite_resource_name'), variables('web_site_stagingslot_resource_name'))]"
-              ],
-              "properties": "[variables('web_site_config_web')]"
-            }
-          ]
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))]"
+                    ],
+                    "properties": "[variables('web_site_config_web')]"
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "appsettings",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))]",
+                        "[resourceId('Microsoft.Insights/components', variables('insights_resource_name'))]"
+                    ],
+                    "properties": {
+
+                    }
+                }
+            ],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]"
+            ]
         }
-      ],
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]"
-      ]
-    },
+    ],
+    "outputs": {
 
-    {
-      "condition": "[variables('web_clientsite_enabled')]",
-
-      "type": "Microsoft.Web/sites",
-      "name": "[variables('web_clientsite_resource_name')]",
-      "apiVersion": "2015-08-01",
-      "location": "[variables('resource_location')]",
-      "tags": {
-        "displayName": "Web site",
-        "environment": "[variables('environment_name')]",
-        "application": "[variables('application_name')]",
-
-        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('web_server_resource_name'))]": "Resource"
-      },
-      "properties": {
-        "name": "[variables('web_clientsite_resource_name')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]",
-        "clientAffinityEnabled": "[variables('web_site_clientaffinity_enabled')]",
-        "httpsOnly": "[variables('web_site_httpsonly_enabled')]"
-      },
-      "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "web",
-          "type": "config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))]"
-          ],
-          "properties": "[variables('web_site_config_web')]"
+        "web_serversite_url": {
+            "type": "string",
+            "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))).hostNames[0], '/')]"
         },
-        {
-          "apiVersion": "2015-08-01",
-          "name": "appsettings",
-          "type": "config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))]",
-            "[resourceId('Microsoft.Insights/components', variables('insights_resource_name'))]"
-          ],
-          "properties": {
+        "web_clientsite_url": {
+            "type": "string",
+            "value": "[if(variables('web_clientsite_enabled'), concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))).hostNames[0], '/'), '')]"
+        },
 
-          }
+        "insights_instrumentationkey": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).InstrumentationKey]"
+        },
+        "insights_appid": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).AppId]"
         }
-      ],
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('web_server_resource_name'))]"
-      ]
     }
-  ],
-  "outputs": {
-
-    "web_serversite_url": {
-      "type": "string",
-      "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))).hostNames[0], '/')]"
-    },
-    "web_clientsite_url": {
-      "type": "string",
-      "value": "[if(variables('web_clientsite_enabled'), concat('https://', reference(resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))).hostNames[0], '/'), '')]"
-    },
-
-    "insights_instrumentationkey": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).InstrumentationKey]"
-    },
-    "insights_appid": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).AppId]"
-    }
-  }
 }

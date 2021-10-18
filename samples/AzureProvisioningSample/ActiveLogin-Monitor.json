@@ -1,0 +1,735 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+
+    "metadata": {
+        "description": "Monitor dashboard for Active Login events.",
+        "author": "Active Login (https://github.com/ActiveLogin)"
+    },
+
+    "parameters": {
+        "dashbord_location": {
+            "defaultValue": "westeurope",
+            "type": "String",
+            "minLength": 1,
+            "metadata": {
+                "description": "Location to deploy the dashboard resource to."
+            }
+        },
+        "insights_subscriptionid": {
+            "defaultValue": "",
+            "type": "String",
+            "minLength": 1,
+            "metadata": {
+                "description": "Subscription ID for the Application Insights resource."
+            }
+        },
+        "insights_resourcegroupname": {
+            "defaultValue": "",
+            "type": "String",
+            "minLength": 1,
+            "metadata": {
+                "description": "Resource Group Name for the Application Insights resource."
+            }
+        },
+        "insights_resourcename": {
+            "defaultValue": "",
+            "type": "String",
+            "minLength": 1,
+            "metadata": {
+                "description": "Resource Name for the Application Insights resource."
+            }
+        }
+    },
+    "variables": {
+        "dashbord_location": "[parameters('dashbord_location')]",
+
+        "dashboard_resource_name": "[concat('activelogin-monitor-', guid(resourceGroup().id, parameters('insights_subscriptionid'), parameters('insights_resourcegroupname'), parameters('insights_resourcename')))]",
+        "dashboard_title": "Active Login Monitor",
+
+        "application_insights_resourceid": "[concat('/subscriptions/', parameters('insights_subscriptionid'),'/resourceGroups/', parameters('insights_resourcegroupname'),'/providers/microsoft.insights/components/', parameters('insights_resourcename'))]",
+        "application_insights_componentid": {
+            "SubscriptionId": "[parameters('insights_subscriptionid')]",
+            "ResourceGroup": "[parameters('insights_resourcegroupname')]",
+            "Name": "[parameters('insights_resourcename')]"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Portal/dashboards",
+            "apiVersion": "2019-01-01-preview",
+            "name": "[variables('dashboard_resource_name')]",
+            "location": "[variables('dashbord_location')]",
+            "tags": {
+                "hidden-title": "[variables('dashboard_title')]"
+            },
+            "properties": {
+                "lenses": {
+                    "0": {
+                        "order": 0,
+                        "parts": {
+                            "0": {
+                                "position": {
+                                    "x": 0,
+                                    "y": 0,
+                                    "rowSpan": 4,
+                                    "colSpan": 9
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Succesful logins chart\r\ncustomEvents\r\n| where name == \"ActiveLogin_BankId_AspNetAuthenticateSuccess\"\r\n| project\r\n    timestamp\r\n| summarize Logins = count() by bin(timestamp, 1h)\r\n| render columnchart\r\n"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "value": {
+                                                "xAxis": {
+                                                    "name": "timestamp",
+                                                    "type": "datetime"
+                                                },
+                                                "yAxis": [
+                                                    {
+                                                        "name": "Logins",
+                                                        "type": "long"
+                                                    }
+                                                ],
+                                                "splitBy": [
+                                                ],
+                                                "aggregation": "Sum"
+                                            }
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "70e8e099-2ead-4d94-a64e-a4f8f811cb87"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Succesful logins"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "Over time"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsChart"
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "value": "Bar"
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "1": {
+                                "position": {
+                                    "x": 9,
+                                    "y": 0,
+                                    "rowSpan": 1,
+                                    "colSpan": 1
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "id",
+                                            "value": "[variables('application_insights_resourceid')]"
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AspNetOverviewPinnedPart",
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "2": {
+                                "position": {
+                                    "x": 10,
+                                    "y": 0,
+                                    "rowSpan": 1,
+                                    "colSpan": 2
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                    ],
+                                    "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                                    "settings": {
+                                        "content": {
+                                            "settings": {
+                                                "content": "Monitoring of BankID logins using [Active Login](https://github.com/ActiveLogin/ActiveLogin.Authentication/). Need [support](https://activelogin.net/)?",
+                                                "title": "",
+                                                "subtitle": ""
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "3": {
+                                "position": {
+                                    "x": 12,
+                                    "y": 0,
+                                    "rowSpan": 4,
+                                    "colSpan": 12
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Success details\r\ncustomEvents\r\n| where name startswith \"ActiveLogin_BankId_\"\r\n| extend \r\n    Event_Name = name,\r\n    Event_TypeId = tostring(customDimensions.AL_Event_TypeId),\r\n    Event_Severity = tostring(customDimensions.AL_Event_Severity),\r\n    BankId_LoginOptions_LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType),\r\n    BankId_LoginOptions_UseQrCode = tostring(customDimensions.AL_BankId_LoginOptions_UseQrCode),\r\n    BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),\r\n    BankId_CollectHintCode = tostring(customDimensions.AL_BankId_CollectHintCode),\r\n    BankId_User_CertNotBefore = tostring(customDimensions.AL_BankId_User_CertNotBefore),\r\n    BankId_User_CertNotAfter = tostring(customDimensions.AL_BankId_User_CertNotAfter),\r\n    BankId_User_DeviceIpAddress = tostring(customDimensions.AL_BankId_User_DeviceIpAddress),\r\n    User_Device_Browser = tostring(customDimensions.AL_User_Device_Browser),\r\n    User_Device_Os = tostring(customDimensions.AL_User_Device_Os),\r\n    User_Device_Type = tostring(customDimensions.AL_User_Device_Type),\r\n    User_Device_OsVersion = tostring(customDimensions.AL_User_Device_OsVersion),\r\n    User_Name = tostring(customDimensions.AL_User_Name),\r\n    User_GivenName = tostring(customDimensions.AL_User_GivenName),\r\n    User_Surname = tostring(customDimensions.AL_User_Surname),\r\n    User_SwedishPersonalIdentityNumber = tostring(customDimensions.AL_User_SwedishPersonalIdentityNumber),\r\n    User_DateOfBirthHint = tostring(customDimensions.AL_User_DateOfBirthHint),\r\n    User_AgeHint = tostring(customDimensions.AL_User_AgeHint),\r\n    User_GenderHint = tostring(customDimensions.AL_User_GenderHint),\r\n    ProductName = tostring(customDimensions.AL_ProductName),\r\n    ProductVersion = tostring(customDimensions.AL_ProductVersion),\r\n    BankId_ApiEnvironment = tostring(customDimensions.AL_BankId_ApiEnvironment),\r\n    BankId_ApiVersion = tostring(customDimensions.AL_BankId_ApiVersion)\r\n| where Event_Severity == \"Success\"\r\n| order by timestamp desc\r\n| render table\r\n"
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "78c32fcd-3a17-4ca6-a147-27060f120ed2"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Succesful events"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "Details"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsGrid"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "4": {
+                                "position": {
+                                    "x": 9,
+                                    "y": 1,
+                                    "rowSpan": 3,
+                                    "colSpan": 3
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Succesful logins by week\r\ncustomEvents\r\n| where timestamp >= startofmonth(ago(90d))\r\n| where name == \"ActiveLogin_BankId_AspNetAuthenticateSuccess\"\r\n| project\r\n    timestamp,\r\n    Year = datetime_part(\"Year\", timestamp),\r\n    Week = week_of_year(timestamp)\r\n| extend\r\n    YearAndWeek = strcat(Year, ' ' , Week)\r\n| order by Year, Week\r\n| summarize Logins = count() by YearAndWeek\r\n| render table\r\n"
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "4f47f4d8-38b4-4396-b379-89bd575a5b6f"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Succesful logins"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "By year and week"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsGrid"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "value": "P30D"
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "5": {
+                                "position": {
+                                    "x": 0,
+                                    "y": 4,
+                                    "rowSpan": 4,
+                                    "colSpan": 12
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Error chart - By error code\r\ncustomEvents\r\n| where name startswith \"ActiveLogin_BankId_\"\r\n| project\r\n    timestamp,\r\n    ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),\r\n    EventSeverity = tostring(customDimensions.AL_Event_Severity)\r\n| where EventSeverity == \"Failure\" or EventSeverity == \"Error\"\r\n| summarize count() by bin(timestamp, 1h), ErrorCode\r\n| render columnchart\r\n"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "value": {
+                                                "xAxis": {
+                                                    "name": "timestamp",
+                                                    "type": "datetime"
+                                                },
+                                                "yAxis": [
+                                                    {
+                                                        "name": "count_",
+                                                        "type": "long"
+                                                    }
+                                                ],
+                                                "splitBy": [
+                                                    {
+                                                        "name": "ErrorCode",
+                                                        "type": "string"
+                                                    }
+                                                ],
+                                                "aggregation": "Sum"
+                                            }
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "968a1ff1-5905-457d-9496-54e16e1552b6"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Errors"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "Over time, by error code"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsChart"
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "value": "Bar"
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "6": {
+                                "position": {
+                                    "x": 12,
+                                    "y": 4,
+                                    "rowSpan": 4,
+                                    "colSpan": 12
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Error details\r\ncustomEvents\r\n| where name startswith \"ActiveLogin_BankId_\"\r\n| project\r\n    timestamp,\r\n    Event_ShortName = substring(name, 19),\r\n    Event_TypeId = tostring(customDimensions.AL_Event_TypeId),\r\n    Event_Severity = tostring(customDimensions.AL_Event_Severity),\r\n    Error_ErrorReason = tostring(customDimensions.AL_Error_ErrorReason),\r\n    BankId_LoginOptions_LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType),\r\n    BankId_LoginOptions_UseQrCode = tostring(customDimensions.AL_BankId_LoginOptions_UseQrCode),\r\n    BankId_ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),\r\n    BankId_ErrorDetails = tostring(customDimensions.AL_BankId_ErrorDetails),\r\n    BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),\r\n    BankId_CollectHintCode = tostring(customDimensions.AL_BankId_CollectHintCode),\r\n    BankId_User_CertNotBefore = tostring(customDimensions.AL_BankId_User_CertNotBefore),\r\n    BankId_User_CertNotAfter = tostring(customDimensions.AL_BankId_User_CertNotAfter),\r\n    BankId_User_DeviceIpAddress = tostring(customDimensions.AL_BankId_User_DeviceIpAddress),\r\n    User_Device_Browser = tostring(customDimensions.AL_User_Device_Browser),\r\n    User_Device_Os = tostring(customDimensions.AL_User_Device_Os),\r\n    User_Device_Type = tostring(customDimensions.AL_User_Device_Type),\r\n    User_Device_OsVersion = tostring(customDimensions.AL_User_Device_OsVersion),\r\n    User_Name = tostring(customDimensions.AL_User_Name),\r\n    User_GivenName = tostring(customDimensions.AL_User_GivenName),\r\n    User_Surname = tostring(customDimensions.AL_User_Surname),\r\n    User_SwedishPersonalIdentityNumber = tostring(customDimensions.AL_User_SwedishPersonalIdentityNumber),\r\n    User_DateOfBirthHint = tostring(customDimensions.AL_User_DateOfBirthHint),\r\n    User_AgeHint = tostring(customDimensions.AL_User_AgeHint),\r\n    User_GenderHint = tostring(customDimensions.AL_User_GenderHint),\r\n    ProductName = tostring(customDimensions.AL_ProductName),\r\n    ProductVersion = tostring(customDimensions.AL_ProductVersion),\r\n    BankId_ApiEnvironment = tostring(customDimensions.AL_BankId_ApiEnvironment),\r\n    BankId_ApiVersion = tostring(customDimensions.AL_BankId_ApiVersion)\r\n| where Event_Severity == \"Failure\" or Event_Severity == \"Error\"\r\n| order by timestamp desc\r\n| render table\r\n"
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "765cb342-b998-41af-876e-aaede45da5dd"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Error events"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "Details"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsGrid"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "7": {
+                                "position": {
+                                    "x": 0,
+                                    "y": 8,
+                                    "rowSpan": 4,
+                                    "colSpan": 6
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Errors by error code\r\ncustomEvents\r\n| where name startswith \"ActiveLogin_BankId_\"\r\n| project\r\n    timestamp,\r\n    ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),\r\n    EventSeverity = tostring(customDimensions.AL_Event_Severity)\r\n| where EventSeverity == \"Failure\" or EventSeverity == \"Error\"\r\n| summarize count() by ErrorCode\r\n| render piechart\r\n"
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "value": "P7D"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "value": {
+                                                "xAxis": {
+                                                    "name": "ErrorCode",
+                                                    "type": "string"
+                                                },
+                                                "yAxis": [
+                                                    {
+                                                        "name": "count_",
+                                                        "type": "long"
+                                                    }
+                                                ],
+                                                "splitBy": [
+                                                ],
+                                                "aggregation": "Sum"
+                                            }
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "8110cc8c-2e6a-4a31-a214-9eb5e6a12f73"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Errors"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "By error code"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsDonut"
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "8": {
+                                "position": {
+                                    "x": 6,
+                                    "y": 8,
+                                    "rowSpan": 4,
+                                    "colSpan": 6
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Errors by type\r\ncustomEvents\r\n| where name startswith \"ActiveLogin_BankId_\"\r\n| project\r\n    Event_ShortName = substring(name, 19),\r\n    Event_Severity = tostring(customDimensions.AL_Event_Severity)\r\n| where Event_Severity == \"Failure\" or Event_Severity == \"Error\"\r\n| summarize count() by Event_ShortName\r\n| render piechart\n"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "value": {
+                                                "xAxis": {
+                                                    "name": "Event_ShortName",
+                                                    "type": "string"
+                                                },
+                                                "yAxis": [
+                                                    {
+                                                        "name": "count_",
+                                                        "type": "long"
+                                                    }
+                                                ],
+                                                "splitBy": [
+                                                ],
+                                                "aggregation": "Sum"
+                                            }
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "1d52ed40-8496-4094-8150-41756126d236"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Errors"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "By event type"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsDonut"
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            },
+                            "9": {
+                                "position": {
+                                    "x": 12,
+                                    "y": 8,
+                                    "rowSpan": 4,
+                                    "colSpan": 6
+                                },
+                                "metadata": {
+                                    "inputs": [
+                                        {
+                                            "name": "ComponentId",
+                                            "value": "[variables('application_insights_componentid')]"
+                                        },
+                                        {
+                                            "name": "Query",
+                                            "value": "// Launch Type and Device Type\r\ncustomEvents\r\n| where name == \"ActiveLogin_BankId_AspNetChallengeSuccess\"\r\n| project\r\n    DeviceType = tostring(customDimensions.AL_User_Device_Type),\r\n    LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType)\r\n| where isnotempty(DeviceType) and isnotempty(LaunchType)\r\n| project DeviceTypeAndLaunchType = strcat(DeviceType, ' - ', LaunchType)\r\n| summarize count() by DeviceTypeAndLaunchType\r\n| render piechart\r\n"
+                                        },
+                                        {
+                                            "name": "Dimensions",
+                                            "value": {
+                                                "xAxis": {
+                                                    "name": "DeviceTypeAndLaunchType",
+                                                    "type": "string"
+                                                },
+                                                "yAxis": [
+                                                    {
+                                                        "name": "count_",
+                                                        "type": "long"
+                                                    }
+                                                ],
+                                                "splitBy": [
+                                                ],
+                                                "aggregation": "Sum"
+                                            }
+                                        },
+                                        {
+                                            "name": "Version",
+                                            "value": "1.0"
+                                        },
+                                        {
+                                            "name": "PartId",
+                                            "value": "3328b361-4f8e-48fc-bf9b-6ae76b12c140"
+                                        },
+                                        {
+                                            "name": "PartTitle",
+                                            "value": "Users"
+                                        },
+                                        {
+                                            "name": "PartSubTitle",
+                                            "value": "By device and login type"
+                                        },
+                                        {
+                                            "name": "resourceTypeMode",
+                                            "value": "components"
+                                        },
+                                        {
+                                            "name": "ControlType",
+                                            "value": "AnalyticsDonut"
+                                        },
+                                        {
+                                            "name": "TimeRange",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "DashboardId",
+                                            "isOptional": true
+                                        },
+                                        {
+                                            "name": "SpecificChart",
+                                            "isOptional": true
+                                        }
+                                    ],
+                                    "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                    "settings": {
+                                    },
+                                    "asset": {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "metadata": {
+                    "model": {
+                        "filters": {
+                            "value": {
+                                "MsPortalFx_TimeRange": {
+                                    "model": {
+                                        "format": "local",
+                                        "granularity": "auto",
+                                        "relative": "7d"
+                                    },
+                                    "displayCache": {
+                                        "name": "Local Time",
+                                        "value": "Past 7 days"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
