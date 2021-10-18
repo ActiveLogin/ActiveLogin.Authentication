@@ -181,6 +181,8 @@ Samples on how to use them in production are:
 
 #### [BankID](docs/getting-started-bankid.md)
 
+[Gettings started with BankID in production](docs/getting-started-bankid.md)
+
 ```csharp
 services
     .AddAuthentication()
@@ -210,6 +212,8 @@ ___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentica
 
 #### [GrandID](docs/getting-started-grandid-bankid.md)
 
+[Gettings started with GrandID in production](docs/getting-started-grandid.md)
+
 ```csharp
 services
     .AddAuthentication()
@@ -226,6 +230,14 @@ services
 ```
 
 ---
+
+6. Monitoring
+
+Active Login provides a structured way of generating and logging events. These coould be monitored to get statistics and health status of your BankID login method.
+
+Read more on the topic in [Active Login Monitor](docs/monitor.md).
+
+![Active Login Monitor](docs/images/active-login-monitor-screenshot_1.png)
 
 ## Samples
 
