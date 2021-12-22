@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -87,7 +87,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
-            return new AuthResponse(response.OrderRef, response.AutoStartToken);
+            return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartSecret, response.QrStartSecret);
         }
 
         public async Task<SignResponse> SignAsync(SignRequest request)
@@ -98,7 +98,7 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
-            return new SignResponse(response.OrderRef, response.AutoStartToken);
+            return new SignResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
         }
 
         private async Task<OrderResponse> GetOrderResponseAsync(string? personalIdentityNumber, string endUserIp)
@@ -117,8 +117,10 @@ namespace ActiveLogin.Authentication.BankId.Api
             _auths.Add(orderRef, auth);
 
             var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var qrStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var qrStartSecret = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
-            return new OrderResponse(orderRef, autoStartToken);
+            return new OrderResponse(orderRef, autoStartToken, qrStartToken, qrStartSecret);
         }
 
         private async Task EnsureNoExistingAuth(string personalIdentityNumber)
@@ -242,15 +244,21 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         private class OrderResponse
         {
-            public OrderResponse(string orderRef, string autoStartToken)
+            public OrderResponse(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret)
             {
                 OrderRef = orderRef;
                 AutoStartToken = autoStartToken;
+                QrStartToken = qrStartToken;
+                QrStartSecret = qrStartSecret;
             }
 
             public string OrderRef { get; set; }
 
             public string AutoStartToken { get; set; }
+
+            public string QrStartToken { get; set; }
+
+            public string QrStartSecret { get; set; }
         }
 
         public class CollectState
