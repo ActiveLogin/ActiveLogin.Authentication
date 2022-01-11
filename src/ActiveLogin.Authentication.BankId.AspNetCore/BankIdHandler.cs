@@ -41,14 +41,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         }
 
-        protected override Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
+        protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
             var detectedDevice = GetDetectedDevice();
 
             var state = GetStateFromCookie();
             if (state == null)
             {
-                return HandleRemoteAuthenticateFail("Invalid state cookie", detectedDevice);
+                return await HandleRemoteAuthenticateFail("Invalid state cookie", detectedDevice);
             }
 
             DeleteStateCookie();
@@ -56,25 +56,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             var loginResultProtected = Request.Query["loginResult"];
             if (string.IsNullOrEmpty(loginResultProtected))
             {
-                return HandleRemoteAuthenticateFail("Missing login result", detectedDevice);
+                return await HandleRemoteAuthenticateFail("Missing login result", detectedDevice);
             }
 
             var loginResult = _loginResultProtector.Unprotect(loginResultProtected);
             if (loginResult == null || !loginResult.IsSuccessful)
             {
-                return HandleRemoteAuthenticateFail("Invalid login result", detectedDevice);
+                return await HandleRemoteAuthenticateFail("Invalid login result", detectedDevice);
             }
 
             var properties = state.AuthenticationProperties;
             var ticket = GetAuthenticationTicket(loginResult, properties);
 
-            _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
+            await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
                 ticket,
                 SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber),
                 detectedDevice
             ));
 
-            return Task.FromResult(HandleRequestResult.Success(ticket));
+            return HandleRequestResult.Success(ticket);
         }
 
         private async Task<HandleRequestResult> HandleRemoteAuthenticateFail(string reason, BankIdSupportedDevice detectedDevice)
