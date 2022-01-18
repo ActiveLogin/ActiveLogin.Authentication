@@ -163,13 +163,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdSameDevice,
                 Options.BankIdAllowBiometric,
                 Options.BankIdUseQrCode,
-                GetCancelReturnUrl(properties)
+                GetCancelReturnUrl(properties),
+                Options.StateCookie.Name
             );
-            var loginUrl = GetLoginUrl(loginOptions);
-            Response.Redirect(loginUrl);
 
             var detectedDevice = GetDetectedDevice();
             await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, loginOptions));
+
+            var loginUrl = GetLoginUrl(loginOptions);
+            Response.Redirect(loginUrl);
         }
 
         private BankIdSupportedDevice GetDetectedDevice()

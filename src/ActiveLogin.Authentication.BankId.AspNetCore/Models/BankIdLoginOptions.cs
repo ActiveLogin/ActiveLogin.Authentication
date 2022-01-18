@@ -12,7 +12,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
             bool sameDevice,
             bool allowBiometric,
             bool useQrCode,
-            string cancelReturnUrl)
+            string cancelReturnUrl,
+            string stateCookieName)
         {
             CertificatePolicies = certificatePolicies;
             PersonalIdentityNumber = personalIdentityNumber;
@@ -21,6 +22,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
             AllowBiometric = allowBiometric;
             UseQrCode = useQrCode;
             CancelReturnUrl = cancelReturnUrl;
+            StateCookieName = stateCookieName;
         }
 
         public List<string> CertificatePolicies { get; }
@@ -35,5 +37,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
         public bool UseQrCode { get; set; }
 
         public string CancelReturnUrl { get; }
+
+        public string StateCookieName { get; }
     }
 }
