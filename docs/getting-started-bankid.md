@@ -458,6 +458,26 @@ builder.UseEndUserIpResolver(httpContext =>
 });
 ```
 
+### Handle missing or invalid state cookie
+
+Ifthe user navigates directly to the BankdID status page (*/BankIdAuthentication/Login*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#setting-the-return-url-for-cancellation).
+
+This behaviour can be overriden by implementing `IBankIdInvalidStateHandler` and adding that to the IOC-container.
+
+A simple sample of such handler is:
+
+```csharp
+public class SampleInvalidStateHandler : IBankIdInvalidStateHandler
+{
+    public Task HandleAsync(HttpContext httpContext, BankIdInvalidStateContext invalidStateContext)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        return Task.CompletedTask;
+    }
+}
+```
+
 ### Full sample for production
 
 Finally, a full sample on how to use BankID in production with client certificate from Azure KeyVault and trusting a custom root certificate.
