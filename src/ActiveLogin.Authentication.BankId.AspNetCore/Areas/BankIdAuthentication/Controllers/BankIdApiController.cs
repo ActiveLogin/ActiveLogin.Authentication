@@ -222,7 +222,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (collectResponse.GetCollectStatus() == CollectStatus.Pending)
             {
-                return CollectPending(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
+                return await CollectPending(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
             }
 
             if (collectResponse.GetCollectStatus() == CollectStatus.Complete)
@@ -237,12 +237,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 return OkJsonResult(BankIdLoginApiStatusResponse.Retry(statusMessage));
             }
 
-            return CollectFailure(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
+            return await CollectFailure(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
         }
 
-        private ActionResult CollectFailure(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
+        private async Task<ActionResult> CollectFailure(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
         {
-            _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
             return BadRequestJsonResult(new BankIdLoginApiErrorResponse(statusMessage));
         }
 
@@ -269,9 +269,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return OkJsonResult(BankIdLoginApiStatusResponse.Finished(returnUri));
         }
 
-        private ActionResult CollectPending(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
+        private async Task<ActionResult> CollectPending(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
         {
-            _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
             return OkJsonResult(BankIdLoginApiStatusResponse.Pending(statusMessage));
         }
 
