@@ -9,6 +9,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
+using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using Microsoft.AspNetCore.Http;
@@ -33,6 +34,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
             services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
             services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+
+            services.TryAddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
 
             services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
             services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
