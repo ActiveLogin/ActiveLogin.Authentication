@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -18,6 +18,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
     {
         private readonly Mock<HttpMessageHandler> _messageHandlerMock;
         private readonly BankIdApiClient _bankIdApiClient;
+        private readonly BankIdApiClient _bankIdApiClientv5;
 
         public BankIdApiClient_Tests()
         {
@@ -27,11 +28,15 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
                 Content = new StringContent("{ }", Encoding.Default, "application/json"),
             });
 
-            var httpClient = new HttpClient(_messageHandlerMock.Object)
+            _bankIdApiClient = new BankIdApiClient(new HttpClient(_messageHandlerMock.Object)
             {
                 BaseAddress = new Uri("https://bankid/")
-            };
-            _bankIdApiClient = new BankIdApiClient(httpClient);
+            });
+
+            _bankIdApiClientv5 = new BankIdApiClient(new HttpClient(_messageHandlerMock.Object)
+            {
+                BaseAddress = new Uri("https://bankid/v5")
+            });
         }
 
         [Fact]
@@ -107,7 +112,22 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithReqirements()
+        public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements_V5()
+        {
+            // Arrange
+
+            // Act
+            await _bankIdApiClientv5.AuthAsync(new AuthRequest("1.1.1.1", "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
+
+            // Assert
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"autoStartTokenRequired\":true}}", contentString);
+        }
+
+        [Fact]
+        public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
         {
             // Arrange
 
@@ -118,14 +138,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"autoStartTokenRequired\":true,\"certificatePolicies\":[\"req1\",\"req2\"]}}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"tokenStartRequired\":true}}", contentString);
         }
 
         [Fact]
-        public async Task AuthAsync_WithAuthRequest__ShouldParseAndReturnOrderRef_AndAutoStartToken()
+        public async Task AuthAsync_WithAuthRequest__ShouldParseAndReturnOrderRef_AndTokens()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\" }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\", \"qrStartSecret\": \"ghi790\", \"qrStartToken\": \"jkl123\" }");
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act
@@ -135,6 +155,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             Assert.NotNull(result);
             Assert.Equal("abc123", result.OrderRef);
             Assert.Equal("def456", result.AutoStartToken);
+            Assert.Equal("ghi790", result.QrStartSecret);
+            Assert.Equal("jkl123", result.QrStartToken);
         }
 
         [Fact]
@@ -201,7 +223,22 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async Task SignAsync_WithRequirements__ShouldPostJsonPayload_WithReqirements()
+        public async Task SignAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements_V5()
+        {
+            // Arrange
+
+            // Act
+            await _bankIdApiClientv5.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
+
+            // Assert
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"autoStartTokenRequired\":true},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
+        }
+
+        [Fact]
+        public async Task SignAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
         {
             // Arrange
 
@@ -212,14 +249,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"autoStartTokenRequired\":true,\"certificatePolicies\":[\"req1\",\"req2\"]},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"tokenStartRequired\":true},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
-        public async Task SignAsync_WithSignRequest__ShouldParseAndReturnOrderRef_AndAutoStartToken()
+        public async Task SignAsync_WithSignRequest__ShouldParseAndReturnOrderRef_AndTokens()
         {
             // Arrange
-            var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\" }");
+            var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\", \"qrStartSecret\": \"ghi790\", \"qrStartToken\": \"jkl123\" }");
             var bankIdClient = new BankIdApiClient(httpClient);
 
             // Act
@@ -229,6 +266,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             Assert.NotNull(result);
             Assert.Equal("abc123", result.OrderRef);
             Assert.Equal("def456", result.AutoStartToken);
+            Assert.Equal("ghi790", result.QrStartSecret);
+            Assert.Equal("jkl123", result.QrStartToken);
         }
 
         [Fact]

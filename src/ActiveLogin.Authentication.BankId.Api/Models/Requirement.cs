@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
@@ -13,7 +13,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// 
         /// </summary>
         /// <param name="certificatePolicies">The oid in certificate policies in the user certificate. List of String.</param>
-        /// <param name="autoStartTokenRequired">
+        /// <param name="tokenStartRequired">
         /// If set to true, the client must have been started using the AutoStartToken.
         /// To be used if it is important that the BankID App is on the same device as the RP service.
         /// 
@@ -26,10 +26,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If set to true, the users are allowed to use fingerprint.
         /// If set to false, the users are not allowed to use fingerprint.
         /// </param>
-        public Requirement(List<string>? certificatePolicies = null, bool? autoStartTokenRequired = null, bool? allowFingerprint = null)
+        public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? allowFingerprint = null)
         {
             CertificatePolicies = certificatePolicies;
-            AutoStartTokenRequired = autoStartTokenRequired;
+            TokenStartRequired = tokenStartRequired;
             AllowFingerprint = allowFingerprint;
         }
 
@@ -45,8 +45,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// 
         /// If set to false, the client does not need to be started using the autoStartToken.
         /// </summary>
-        [DataMember(Name = "autoStartTokenRequired", EmitDefaultValue = false)]
-        public bool? AutoStartTokenRequired { get; private set; }
+        [DataMember(Name = "tokenStartRequired", EmitDefaultValue = false)]
+        public bool? TokenStartRequired { get; private set; }
 
         /// <summary>
         /// Users of iOS and Android devices may use fingerprint for authentication and signing if the device supports it and the user configured the device to use it.

@@ -153,7 +153,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp(HttpContext);
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
-            var autoStartTokenRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
+            var tokenStartRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
 
             List<string>? certificatePolicies = null;
             if (loginOptions.CertificatePolicies != null && loginOptions.CertificatePolicies.Any())
@@ -161,7 +161,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 certificatePolicies = loginOptions.CertificatePolicies;
             }
 
-            var authRequestRequirement = new Requirement(certificatePolicies, autoStartTokenRequired, loginOptions.AllowBiometric);
+            var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired, loginOptions.AllowBiometric);
 
             return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement);
         }
