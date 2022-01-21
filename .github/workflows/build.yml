@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v1.7.2
+      - uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       
@@ -55,7 +55,7 @@ jobs:
       - name: Dotnet test
         run: dotnet test ${{ env.pathToTestProjects }} --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
 
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with: 
             name: ${{ matrix.artifactName }}
             path: $RUNNER_TEMP
@@ -97,7 +97,7 @@ jobs:
             codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
             codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
 
-          uses: actions/upload-artifact@v2
+        - uses: actions/upload-artifact@v2
           with: 
             name: ${{ env.targetArtifactName }}
             path: $GITHUB_WORKSPACE"/"${{ env.sourceArtifactName }}
