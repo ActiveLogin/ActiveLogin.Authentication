@@ -11,17 +11,18 @@ env:
   dotnetVerbosity: 'Detailed'
 
 jobs:
-  build:
+  package_nuget:
+    name: Build and pack NuGet packages
     runs-on: ${{ matrix.os }}
     strategy:
         matrix:
             include:
             - os: windows-latest
-              artifactName: "nuget-windows"
+              artifactName: nuget-windows
             - os: macos-latest
-              artifactName: "nuget-macos"
+              artifactName: nuget-macos
             - os: ubuntu-latest
-              artifactName: "nuget-ubuntu"
+              artifactName: nuget-ubuntu
     env:
        pathToBuildProjects: '**/**/*.*sproj'
        pathToTestProjects: '**/test/**/*.Test.*sproj'
@@ -34,10 +35,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+      - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
       
       - name: Dotnet restore
         run: dotnet restore ${{ env.pathToBuildProjects }} --verbosity ${{ env.dotnetVerbosity }}     
@@ -54,109 +53,98 @@ jobs:
       - name: Dotnet test
         run: dotnet test ${{ env.pathToTestProjects }} --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload packages
+        uses: actions/upload-artifact@v2
         with: 
             name: ${{ matrix.artifactName }}
             path: $RUNNER_TEMP
 
-    SignNuget:
-        runs-on: windows-latest
-        needs: build
-        if : ${{ succeeded() && $GITHUB_EVENT_NAME != 'PullRequest' }}
+  sign_nuget:
+    name: Sign NuGet packages on Windows
+    runs-on: windows-latest
+    needs: package_nuget
+    if : ${{ succeeded() && $GITHUB_EVENT_NAME != 'PullRequest' }}
 
+    env:
+      sourceArtifactName: 'nuget-windows'
+      targetArtifactName: 'nuget-windows-signed'
+      pathToNugetPackages: '**/*.nupkg'
+      
+    steps:
+      - name: Download artifact 
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.sourceArtifactName }}
+
+      - name: Install NuGet
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: '5.x'
+
+      - name: Create file codesigning-cert.pfx
+        run: |
+          $certFile = Join-Path -Path $RUNNER_TEMP -ChildPath "codesigning-cert.pfx";
+          $encodedBytes = [System.Convert]::FromBase64String($env:cert_fileb64);
+          Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+        shell: pwsh
         env:
-          sourceArtifactName: 'nuget-windows'
-          targetArtifactName: 'nuget-windows-signed'
-          pathToNugetPackages: '**/*.nupkg'
-        
-        steps:
-        - name: Download artifact 
-          uses: actions/download-artifact@v2
-          with:
-            name: ${{ env.sourceArtifactName }}
+      #    cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
 
-        - name: Install Nuget
-          uses: nuget/setup-nuget@v1
-          with:
-            nuget-version: '5.x'
-
-        - name: Create file codesigning-cert.pfx
-          run: |
-            $certFile = Join-Path -Path $RUNNER_TEMP -ChildPath "codesigning-cert.pfx";
-            $encodedBytes = [System.Convert]::FromBase64String($env:cert_fileb64);
-            Set-Content $$certFile -Value $encodedBytes -AsByteStream;
-          shell: pwsh
-          env:
-            cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
-
-
-        - name: 'Nuget:sign'
-          run: dotnet nuget sign $GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath $RUNNER_TEMP"/codesigning-cert.pfx" -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamperUrl }}
-          env:
-            codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
-            codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
-
-        - uses: actions/upload-artifact@v2
-          with: 
-            name: ${{ env.targetArtifactName }}
-            path: $GITHUB_WORKSPACE"/"${{ env.sourceArtifactName }}
-
-
-    build samples:
-        needs: []
-        runs-on: ${{ matrix.os }}
-        strategy:
-             matrix:
-                include:
-                - os: windows-latest
-                  artifactName: "nuget-windows"
-                - os: macos-latest
-                  artifactName: "nuget-macos"
-                - os: ubuntu-latest
-                  artifactName: "nuget-ubuntu"
-
+      - name: NuGet sign
+        run: dotnet nuget sign $GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath $RUNNER_TEMP"/codesigning-cert.pfx" -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamperUrl }}
         env:
-            athToBuildProjects: '**/**/*.*sproj'
-            pathToTestProjects: '**/test/**/*.Test.*sproj'
-            pathToPackProjects: '**/src/**/*.*sproj'
-            pathToNugetPackages: '**/*.nupkg'
+          codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
+          codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
 
-            sourceRepositoryBranch: $GITHUB_REF_NAME
-            sourceRepositoryCommit: $GITHUB_SHA
+      - name: Upload signed packages
+        uses: actions/upload-artifact@v2
+        with: 
+          name: ${{ env.targetArtifactName }}
+          path: $GITHUB_WORKSPACE"/"${{ env.sourceArtifactName }}
 
-        steps:
-            - name: Create file BankIdRootCertificate-Prod.crt
-              run: |
-                $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Prod.crt";
-                $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_prod);
-                Set-Content $$certFile -Value $encodedBytes -AsByteStream;
-              shell: pwsh
-              env:
-                bankIdRootCert_prod: ${{ secrets.BANKIDROOTCERTIFICATE_PROD_FILEB64 }}
+  build_samples:
+    name: Build samples
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+        - os: windows-latest
+          artifactName: samples-windows
+        - os: macos-latest
+          artifactName: samples-macos
+        - os: ubuntu-latest
+          artifactName: samples-ubuntu
 
-            - name: Create file BankIdRootCertificate-Test.crt
-              run: |
-                $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Test.crt";
-                $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_test);
-                Set-Content $$certFile -Value $encodedBytes -AsByteStream;
-              shell: pwsh
-              env:
-                bankIdRootCert_test: ${{ secrets.BANKIDROOTCERTIFICATE_TEST_FILEB64 }}
+    steps:
+      - uses: actions/checkout@v2
 
-            - name: 'Install: .NET Core SDK'
-              uses: actions/setup-dotnet@v1.7.2
-              with:
-                dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Create file BankIdRootCertificate-Prod.crt
+        run: |
+          $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Prod.crt";
+          $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_prod);
+          Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+        shell: pwsh
+        env:
+          bankIdRootCert_prod: ${{ secrets.BANKIDROOTCERTIFICATE_PROD_FILEB64 }}
 
-            - name: Dotnet publish
-              run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $RUNNER_TEMP --self-contained --runtime win-x86
+      - name: Create file BankIdRootCertificate-Test.crt
+        run: |
+          $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Test.crt";
+          $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_test);
+          Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+        shell: pwsh
+        env:
+          bankIdRootCert_test: ${{ secrets.BANKIDROOTCERTIFICATE_TEST_FILEB64 }}
 
-            - name: 'Copy Files to: AzureProvisioningSample'
-              run: |
-                Copy-Item -Path "samples/AzureProvisioningSample" -Destination ${{ matrix.artifactName }}"\AzureProvisioningSample" -Recurse
-              shell: pwsh
+      - name: 'Install: .NET Core SDK'
+        uses: actions/setup-dotnet@v1.7.2
 
-            - uses: actions/upload-artifact@v2
-              with: 
-                name: ${{ matrix.artifactName }}
-                path: $RUNNER_TEMP
+      # TODO add publish and zip
+      - name: Dotnet publish
+        run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $RUNNER_TEMP --self-contained --runtime win-x86
+
+      - name: Upload samples
+        uses: actions/upload-artifact@v2
+        with: 
+          name: ${{ matrix.artifactName }}
+          path: $RUNNER_TEMP
