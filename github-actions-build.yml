@@ -1,0 +1,169 @@
+name: Active Login Authentication
+
+env:
+    dotnetBuildConfiguration: 'Release'
+    dotnetVerbosity: 'Detailed'
+
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            include:
+            - os: windows-latest
+              artifactName: "nuget-windows"
+            - os: macos-latest
+              artifactName: "nuget-macos"
+            - os: ubuntu-latest
+              artifactName: "nuget-ubuntu"
+    env:
+       pathToBuildProjects: '**/**/*.*sproj'
+       pathToTestProjects: '**/test/**/*.Test.*sproj'
+       pathToPackProjects: '**/src/**/*.*sproj'
+       pathToNugetPackages: '**/*.nupkg'
+
+       sourceRepositoryBranch: $GITHUB_REF_NAME
+       sourceRepositoryCommit: $GITHUB_SHA
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: Dotnet restore
+        run: dotnet restore ${{ env.pathToBuildProjects }} --verbosity ${{ env.dotnetVerbosity }}     
+      
+      - name: Dotnet build
+        run: dotnet build ${{ env.pathToBuildProjects }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }}
+
+      - name: 'Dotnet pack: ci'
+        run: dotnet pack ${{ env.pathToPackProjects }} --output $RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$GITHUB_RUN_ID
+      
+      - name: 'Dotnet pack: release'
+        run: dotnet pack ${{ env.pathToPackProjects }} --output $RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+
+      - name: Dotnet test
+        run: dotnet test ${{ env.pathToTestProjects }} --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
+
+        uses: actions/upload-artifact@v2
+        with: 
+            name: ${{ matrix.artifactName }}
+            path: $RUNNER_TEMP
+
+    SignNuget:
+        runs-on: windows-latest
+        needs: build
+        if : ${{ succeeded() && $GITHUB_EVENT_NAME != 'PullRequest' }}
+
+        env:
+          sourceArtifactName: 'nuget-windows'
+          targetArtifactName: 'nuget-windows-signed'
+          pathToNugetPackages: '**/*.nupkg'
+        
+        steps:
+        - name: Download artifact 
+        - uses: actions/download-artifact@v2
+          with:
+            name: ${{ env.sourceArtifactName }}
+
+        - name: Install Nuget
+        - uses: nuget/setup-nuget@v1
+          with:
+            nuget-version: '5.x'
+
+        - name: Create file codesigning-cert.pfx
+          run: |
+            $certFile = Join-Path -Path $RUNNER_TEMP -ChildPath "codesigning-cert.pfx";
+            $encodedBytes = [System.Convert]::FromBase64String($env:cert_fileb64);
+            Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+          shell: pwsh
+          env:
+            cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
+
+
+        - name: 'Nuget:sign'
+          run: dotnet nuget sign $GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath $RUNNER_TEMP"/codesigning-cert.pfx" -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamperUrl }}
+          env:
+            codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
+            codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
+
+          uses: actions/upload-artifact@v2
+          with: 
+            name: ${{ env.targetArtifactName }}
+            path: $GITHUB_WORKSPACE"/"${{ env.sourceArtifactName }}
+
+
+    build samples:
+        needs: []
+        runs-on: ${{ matrix.os }}
+        strategy:
+             matrix:
+                include:
+                - os: windows-latest
+                  artifactName: "nuget-windows"
+                - os: macos-latest
+                  artifactName: "nuget-macos"
+                - os: ubuntu-latest
+                  artifactName: "nuget-ubuntu"
+
+        env:
+            athToBuildProjects: '**/**/*.*sproj'
+            pathToTestProjects: '**/test/**/*.Test.*sproj'
+            pathToPackProjects: '**/src/**/*.*sproj'
+            pathToNugetPackages: '**/*.nupkg'
+
+            sourceRepositoryBranch: $GITHUB_REF_NAME
+            sourceRepositoryCommit: $GITHUB_SHA
+
+        steps:
+            - name: Create file BankIdRootCertificate-Prod.crt
+              run: |
+                $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Prod.crt";
+                $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_prod);
+                Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+              shell: pwsh
+              env:
+                bankIdRootCert_prod: ${{ secrets.BANKIDROOTCERTIFICATE_PROD_FILEB64 }}
+
+            - name: Create file BankIdRootCertificate-Test.crt
+              run: |
+                $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Test.crt";
+                $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_test);
+                Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+              shell: pwsh
+              env:
+                bankIdRootCert_test: ${{ secrets.BANKIDROOTCERTIFICATE_TEST_FILEB64 }}
+
+            - name: 'Install: .NET Core SDK'
+              uses: actions/setup-dotnet@v1.7.2
+              with:
+                dotnet-version: ${{ matrix.dotnet-version }}
+
+            - name: Dotnet publish
+              run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $RUNNER_TEMP --self-contained --runtime win-x86
+
+            - name: 'Copy Files to: AzureProvisioningSample'
+              run: |
+                Copy-Item -Path "samples/AzureProvisioningSample" -Destination ${{ matrix.artifactName }}"\AzureProvisioningSample" -Recurse
+              shell: pwsh
+
+              uses: actions/upload-artifact@v2
+              with: 
+                name: ${{ matrix.artifactName }}
+                path: $RUNNER_TEMP
+
+
+
+
+
+

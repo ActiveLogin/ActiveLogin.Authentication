@@ -86,6 +86,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test", "test\ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test\ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test.csproj", "{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{56AC5092-82E5-47D4-8520-1DE424845E58}"
+	ProjectSection(SolutionItems) = preProject
+		github-actions-build.yml = github-actions-build.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +195,7 @@ Global
 		{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{BB808E5D-A5E6-4195-A815-37209CFD8ABD} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
+		{56AC5092-82E5-47D4-8520-1DE424845E58} = {84E9CCEE-4BF2-4D8D-B70B-3FB317328F29}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}
