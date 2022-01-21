@@ -1,16 +1,14 @@
 name: Active Login Authentication
 
-env:
-    dotnetBuildConfiguration: 'Release'
-    dotnetVerbosity: 'Detailed'
-
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
 
+env:
+  dotnetBuildConfiguration: 'Release'
+  dotnetVerbosity: 'Detailed'
 
 jobs:
   build:
@@ -35,8 +33,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-      - uses: actions/setup-dotnet@v1.7.2
+        uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       
@@ -72,12 +71,12 @@ jobs:
         
         steps:
         - name: Download artifact 
-        - uses: actions/download-artifact@v2
+          uses: actions/download-artifact@v2
           with:
             name: ${{ env.sourceArtifactName }}
 
         - name: Install Nuget
-        - uses: nuget/setup-nuget@v1
+          uses: nuget/setup-nuget@v1
           with:
             nuget-version: '5.x'
 
@@ -157,13 +156,7 @@ jobs:
                 Copy-Item -Path "samples/AzureProvisioningSample" -Destination ${{ matrix.artifactName }}"\AzureProvisioningSample" -Recurse
               shell: pwsh
 
-              uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v2
               with: 
                 name: ${{ matrix.artifactName }}
                 path: $RUNNER_TEMP
-
-
-
-
-
-
