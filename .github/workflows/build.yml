@@ -63,7 +63,7 @@ jobs:
     name: Sign NuGet packages on Windows
     runs-on: windows-latest
     needs: package_nuget
-    if : ${{ succeeded() && $GITHUB_EVENT_NAME != 'PullRequest' }}
+    if : $GITHUB_EVENT_NAME != 'PullRequest'
 
     env:
       sourceArtifactName: 'nuget-windows'
