@@ -24,11 +24,6 @@ jobs:
             - os: ubuntu-latest
               artifactName: nuget-ubuntu
     env:
-       pathToBuildProjects: '**/**/*.*sproj'
-       pathToTestProjects: '**/test/**/*.Test.*sproj'
-       pathToPackProjects: '**/src/**/*.*sproj'
-       pathToNugetPackages: '**/*.nupkg'
-
        sourceRepositoryBranch: $GITHUB_REF_NAME
        sourceRepositoryCommit: $GITHUB_SHA
 
@@ -39,19 +34,19 @@ jobs:
         uses: actions/setup-dotnet@v1.7.2
       
       - name: Dotnet restore
-        run: dotnet restore ${{ env.pathToBuildProjects }} --verbosity ${{ env.dotnetVerbosity }}     
+        run: dotnet restore --verbosity ${{ env.dotnetVerbosity }}     
       
       - name: Dotnet build
-        run: dotnet build ${{ env.pathToBuildProjects }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }}
+        run: dotnet build --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }}
 
       - name: 'Dotnet pack: ci'
-        run: dotnet pack ${{ env.pathToPackProjects }} --output $RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$GITHUB_RUN_ID
+        run: dotnet pack --output $RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$GITHUB_RUN_ID
       
       - name: 'Dotnet pack: release'
-        run: dotnet pack ${{ env.pathToPackProjects }} --output $RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+        run: dotnet pack --output $RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
 
       - name: Dotnet test
-        run: dotnet test ${{ env.pathToTestProjects }} --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
+        run: dotnet test --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
 
       - name: Upload packages
         uses: actions/upload-artifact@v2
