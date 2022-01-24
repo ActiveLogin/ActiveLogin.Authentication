@@ -24,8 +24,8 @@ jobs:
             - os: ubuntu-latest
               artifactName: nuget-ubuntu
     env:
-       sourceRepositoryBranch: ${{ github_ref_name }}
-       sourceRepositoryCommit: ${{ github_sha }}
+       sourceRepositoryBranch: $github_ref_name
+       sourceRepositoryCommit: $github_sha
 
     steps:
       - uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
             name: ${{ matrix.artifactName }}
-            path: ${{ runner_temp }}
+            path: $runner_temp
 
   sign_nuget:
     name: Sign NuGet packages on Windows
