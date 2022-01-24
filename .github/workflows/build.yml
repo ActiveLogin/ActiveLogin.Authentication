@@ -96,6 +96,7 @@ jobs:
         env:
           codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
           codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
+        shell: pwsh
 
       - name: Upload signed packages
         uses: actions/upload-artifact@v2
@@ -144,8 +145,6 @@ jobs:
       - name: Dotnet publish
         run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
         shell: pwsh
-        env:
-          outputFolder: $runner_temp
 
       - name: Upload samples
         uses: actions/upload-artifact@v2
