@@ -34,19 +34,24 @@ jobs:
         uses: actions/setup-dotnet@v1.7.2
       
       - name: Dotnet restore
-        run: dotnet restore --verbosity ${{ env.dotnetVerbosity }}     
+        run: dotnet restore --verbosity ${{ env.dotnetVerbosity }}
+        shell: pwsh
       
       - name: Dotnet build
         run: dotnet build --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }}
+        shell: pwsh
 
       - name: 'Dotnet pack: ci'
         run: dotnet pack --output $runner_temp"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$github_run_id
+        shell: pwsh
      
       - name: 'Dotnet pack: release'
         run: dotnet pack --output $runner_temp"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+        shell: pwsh
 
       - name: Dotnet test
         run: dotnet test --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
+        shell: pwsh
 
       - name: Upload packages
         uses: actions/upload-artifact@v2
@@ -146,4 +151,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ matrix.artifactName }}
-          path: ${{ runner_temp }}
+          path: $RUNNER_TEMP
