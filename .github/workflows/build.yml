@@ -139,10 +139,10 @@ jobs:
       - name: Dotnet publish
         run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.outputFolder }} --self-contained --runtime win-x86
         env:
-          outputFolder: $RUNNER_TEMP
+          outputFolder: $runner_temp
 
       - name: Upload samples
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ matrix.artifactName }}
-          path: $RUNNER_TEMP
+          path: $runner_temp
