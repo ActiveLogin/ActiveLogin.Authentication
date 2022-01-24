@@ -142,7 +142,7 @@ jobs:
 
       # TODO add publish and zip
       - name: Dotnet publish
-        run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $RUNNER_TEMP --self-contained --runtime win-x86
+        run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
         shell: pwsh
         env:
           outputFolder: $runner_temp
@@ -151,4 +151,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ matrix.artifactName }}
-          path: $RUNNER_TEMP
+          path: $env:RUNNER_TEMP
