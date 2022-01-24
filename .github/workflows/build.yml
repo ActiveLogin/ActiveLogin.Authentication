@@ -40,7 +40,10 @@ jobs:
         run: dotnet build --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }}
 
       - name: 'Dotnet pack: ci'
-        run: dotnet pack --no-build --output $RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$GITHUB_RUN_ID
+        run: dotnet pack --output ${{ env.runnerOutput }}"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-${{ env.runId }}
+        env:
+          runnerOutput: $RUNNER_TEMP
+          runId: $GITHUB_RUN_ID
       
       - name: 'Dotnet pack: release'
         run: dotnet pack --output $RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
