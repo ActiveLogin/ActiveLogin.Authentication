@@ -24,8 +24,8 @@ jobs:
             - os: ubuntu-latest
               artifactName: nuget-ubuntu
     env:
-       sourceRepositoryBranch: $github_ref_name
-       sourceRepositoryCommit: $github_sha
+       sourceRepositoryBranch: $env:GITHUB_REF_NAME
+       sourceRepositoryCommit: $env:GITHUB_SHA
 
     steps:
       - uses: actions/checkout@v2
@@ -42,11 +42,11 @@ jobs:
         shell: pwsh
 
       - name: 'Dotnet pack: ci'
-        run: dotnet pack --output $runner_temp"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$github_run_id
+        run: dotnet pack --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
      
       - name: 'Dotnet pack: release'
-        run: dotnet pack --output $runner_temp"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+        run: dotnet pack --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
         shell: pwsh
 
       - name: Dotnet test
@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
             name: ${{ matrix.artifactName }}
-            path: $runner_temp
+            path: $env:RUNNER_TEMP
 
   sign_nuget:
     name: Sign NuGet packages on Windows
@@ -83,7 +83,7 @@ jobs:
 
       - name: Create file codesigning-cert.pfx
         run: |
-          $certFile = Join-Path -Path $RUNNER_TEMP -ChildPath "codesigning-cert.pfx";
+          $certFile = Join-Path -Path $env:RUNNER_TEMP -ChildPath "codesigning-cert.pfx";
           $encodedBytes = [System.Convert]::FromBase64String($env:cert_fileb64);
           Set-Content $$certFile -Value $encodedBytes -AsByteStream;
         shell: pwsh
@@ -92,7 +92,7 @@ jobs:
       #    cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
 
       - name: NuGet sign
-        run: dotnet nuget sign $GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath $RUNNER_TEMP"/codesigning-cert.pfx" -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamperUrl }}
+        run: dotnet nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath $env:RUNNER_TEMP"/codesigning-cert.pfx" -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamperUrl }}
         env:
           codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
           codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
@@ -101,7 +101,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ env.targetArtifactName }}
-          path: $GITHUB_WORKSPACE"/"${{ env.sourceArtifactName }}
+          path: $env:GITHUB_WORKSPACE"/"${{ env.sourceArtifactName }}
 
   build_samples:
     name: Build samples
