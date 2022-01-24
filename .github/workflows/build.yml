@@ -24,8 +24,8 @@ jobs:
             - os: ubuntu-latest
               artifactName: nuget-ubuntu
     env:
-       sourceRepositoryBranch: $GITHUB_REF_NAME
-       sourceRepositoryCommit: $GITHUB_SHA
+       sourceRepositoryBranch: ${{ github_ref_name }}
+       sourceRepositoryCommit: ${{ github_sha }}
 
     steps:
       - uses: actions/checkout@v2
@@ -40,13 +40,10 @@ jobs:
         run: dotnet build --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }}
 
       - name: 'Dotnet pack: ci'
-        run: dotnet pack --output ${{ env.runnerOutput }}"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-${{ env.runId }}
-        env:
-          runnerOutput: $RUNNER_TEMP
-          runId: $GITHUB_RUN_ID
-      
+        run: dotnet pack --output ${{ runner_temp }}"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-${{ github_run_id }}
+     
       - name: 'Dotnet pack: release'
-        run: dotnet pack --output $RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+        run: dotnet pack --output ${{ runner_temp }}"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
 
       - name: Dotnet test
         run: dotnet test --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
@@ -55,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
             name: ${{ matrix.artifactName }}
-            path: $RUNNER_TEMP
+            path: ${{ runner_temp }}
 
   sign_nuget:
     name: Sign NuGet packages on Windows
