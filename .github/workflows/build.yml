@@ -137,7 +137,7 @@ jobs:
 
       # TODO add publish and zip
       - name: Dotnet publish
-        run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.outputFolder }} --self-contained --runtime win-x86
+        run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $RUNNER_TEMP --self-contained --runtime win-x86
         env:
           outputFolder: $runner_temp
 
