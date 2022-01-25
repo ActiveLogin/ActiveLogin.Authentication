@@ -42,7 +42,7 @@ jobs:
         shell: pwsh
 
       - name: 'Dotnet pack: ci'
-        run: dotnet pack --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+        run: dotnet pack '**/src/**/*.*sproj' --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
      
       - name: 'Dotnet pack: release'
@@ -71,6 +71,8 @@ jobs:
       pathToNugetPackages: '**/*.nupkg'
       
     steps:
+      - uses: actions/checkout@v2
+
       - name: Download artifact 
         uses: actions/download-artifact@v2
         with:
@@ -146,9 +148,9 @@ jobs:
         run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
         shell: pwsh
 
-      - name: 'Copy Files to: AzureProvisioningSample'
-        run: Copy-Item -Path samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/AzureProvisioningSample -Recurse
-        shell: pwsh
+      #- name: 'Copy Files to: AzureProvisioningSample'
+      #  run: Copy-Item -Path samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/AzureProvisioningSample -Recurse
+      #  shell: pwsh
 
       - name: Upload samples
         uses: actions/upload-artifact@v2
