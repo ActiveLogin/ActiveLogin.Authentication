@@ -146,6 +146,9 @@ jobs:
         run : dotnet publish --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
         shell: pwsh
 
+      - name: 'Copy Files to: AzureProvisioningSample'
+        run: Copy-Item -Path samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/AzureProvisioningSample -Recurse
+
       - name: Upload samples
         uses: actions/upload-artifact@v2
         with: 
