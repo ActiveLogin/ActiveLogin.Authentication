@@ -148,6 +148,7 @@ jobs:
 
       - name: 'Copy Files to: AzureProvisioningSample'
         run: Copy-Item -Path samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/AzureProvisioningSample -Recurse
+        shell: pwsh
 
       - name: Upload samples
         uses: actions/upload-artifact@v2
