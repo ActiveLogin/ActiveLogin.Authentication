@@ -42,7 +42,7 @@ jobs:
         shell: pwsh
 
       - name: 'Dotnet pack: ci'
-        run: dotnet pack ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+        run: dotnet pack ./src/**/ActiveLogin.Authentication.BankId.Api.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
      
       - name: 'Dotnet pack: release'
@@ -104,7 +104,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ env.targetArtifactName }}
-          path: $env:GITHUB_WORKSPACE"/"${{ env.sourceArtifactName }}
+          path: ${{ github.workspace }}"/"${{ env.sourceArtifactName }}
 
   build_samples:
     name: Build samples
@@ -156,4 +156,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ matrix.artifactName }}
-          path: $env:RUNNER_TEMP
+          path: ${{ runner.temp }}
