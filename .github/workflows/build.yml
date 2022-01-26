@@ -46,7 +46,7 @@ jobs:
         shell: pwsh
      
       - name: 'Dotnet pack: release'
-        run: dotnet pack --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+        run: dotnet pack ./src/*/ActiveLogin.Authentication.BankId.Api.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
         shell: pwsh
 
       - name: Dotnet test
