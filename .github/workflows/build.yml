@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
             name: ${{ matrix.artifactName }}
-            path: $env:RUNNER_TEMP
+            path: $RUNNER_TEMP
 
   sign_nuget:
     name: Sign NuGet packages on Windows
