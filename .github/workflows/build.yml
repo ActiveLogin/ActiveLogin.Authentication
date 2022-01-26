@@ -159,7 +159,14 @@ jobs:
 
       # TODO add publish and zip
       - name: Dotnet publish
-        run : dotnet publish ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+        run : |
+          dotnet publish ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore/ActiveLogin.Authentication.BankId.AspNetCore.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore.Azure/ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+          dotnet publish ./src/ActiveLogin.Authentication.GrandId.Api/ActiveLogin.Authentication.GrandId.Api.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+          dotnet publish ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
         shell: pwsh
 
       #- name: 'Copy Files to: AzureProvisioningSample'
