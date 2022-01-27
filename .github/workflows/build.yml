@@ -127,7 +127,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ env.targetArtifactName }}
-          path: ${{ github.workspace }}"/"${{ env.sourceArtifactName }}
+          path: ${{ github.workspace }}\${{ env.sourceArtifactName }}
 
   build_samples:
     name: Build samples
