@@ -109,7 +109,7 @@ jobs:
         run: |
           $certFile = Join-Path -Path $env:RUNNER_TEMP -ChildPath "codesigning-cert.pfx";
           $encodedBytes = [System.Convert]::FromBase64String($env:cert_fileb64);
-          Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+          Set-Content $certFile -Value $encodedBytes -AsByteStream;
         shell: pwsh
         env:
           cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
@@ -149,7 +149,7 @@ jobs:
         run: |
           $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Prod.crt";
           $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_prod);
-          Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+          Set-Content $certFile -Value $encodedBytes -AsByteStream;
         shell: pwsh
         env:
           bankIdRootCert_prod: ${{ secrets.BANKIDROOTCERTIFICATE_PROD_FILEB64 }}
@@ -158,7 +158,7 @@ jobs:
         run: |
           $certFile = Join-Path -Path samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Test.crt";
           $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_test);
-          Set-Content $$certFile -Value $encodedBytes -AsByteStream;
+          Set-Content $certFile -Value $encodedBytes -AsByteStream;
         shell: pwsh
         env:
           bankIdRootCert_test: ${{ secrets.BANKIDROOTCERTIFICATE_TEST_FILEB64 }}
