@@ -113,7 +113,7 @@ jobs:
           cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
 
       - name: NuGet sign
-        run: dotnet nuget sign D:\a\_temp\ci\ActiveLogin.Authentication.GrandId.Api.4.0.0-ci-$env:GITHUB_RUN_ID".nupkg" --certificate-path ${{ env.codesigning_cert_path }} --certificate-password ${{ env.codesigning_cert_password }} --timestamper ${{ env.codesigning_timestamperUrl }}
+        run: dotnet nuget sign D:\a\_temp\release\ActiveLogin.Authentication.BankId.Api.4.0.0.nupkg --certificate-path ${{ env.codesigning_cert_path }} --certificate-password ${{ env.codesigning_cert_password }} --timestamper ${{ env.codesigning_timestamperUrl }}
     #    run: dotnet nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} --certificate-path ${{ env.codesigning_cert_path }} --certificate-password ${{ env.codesigning_cert_password }} --timestamper ${{ env.codesigning_timestamperUrl }}
         env:
           codesigning_cert_path: $env:RUNNER_TEMP"/codesigning-cert.pfx"
