@@ -101,7 +101,7 @@ jobs:
       - name: Install NuGet
         uses: nuget/setup-nuget@v1
         with:
-          nuget-version: '5.x'
+          nuget-version: '6.x'
 
       - name: Create file codesigning-cert.pfx
         run: |
