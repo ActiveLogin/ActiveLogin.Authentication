@@ -43,27 +43,31 @@ jobs:
 
       - name: 'Dotnet pack: ci'
         run: |
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore/ActiveLogin.Authentication.BankId.AspNetCore.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.Azure/ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
-          dotnet pack ./src/ActiveLogin.Authentication.GrandId.Api/ActiveLogin.Authentication.GrandId.Api.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
-          dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output $env:RUNNER_TEMP"/ci" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore/ActiveLogin.Authentication.BankId.AspNetCore.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.Azure/ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.GrandId.Api/ActiveLogin.Authentication.GrandId.Api.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
+          dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
+        env:
+          ciOutputFolder: $env:RUNNER_TEMP"/ci"
      
       - name: 'Dotnet pack: release'
         run: |
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore/ActiveLogin.Authentication.BankId.AspNetCore.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.Azure/ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
-          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
-          dotnet pack ./src/ActiveLogin.Authentication.GrandId.Api/ActiveLogin.Authentication.GrandId.Api.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
-          dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output $env:RUNNER_TEMP"/release" --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore/ActiveLogin.Authentication.BankId.AspNetCore.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.Azure/ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.GrandId.Api/ActiveLogin.Authentication.GrandId.Api.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
+          dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
         shell: pwsh
+        env:
+          releaseOutputFolder: $env:RUNNER_TEMP"/release"
 
       - name: Dotnet test
         run: dotnet test --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
@@ -73,13 +77,15 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
             name: ${{ matrix.artifactName }}
-            path: ${{ runner.temp }}
+            path: |
+              ${{ runner.temp }}/ci
+              ${{ runner.temp }}/release
 
   sign_nuget:
     name: Sign NuGet packages on Windows
     runs-on: windows-latest
     needs: package_nuget
-    if: ${{ github.event_name != 'pull_request' }}
+  #  if: ${{ github.event_name != 'pull_request' }}
 
     env:
       sourceArtifactName: 'nuget-windows'
@@ -104,12 +110,13 @@ jobs:
           Set-Content $$certFile -Value $encodedBytes -AsByteStream;
         shell: pwsh
         env:
-          cert_fileb64: ""
-      #    cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
+          cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
 
       - name: NuGet sign
-        run: dotnet nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath $env:RUNNER_TEMP"/codesigning-cert.pfx" -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamperUrl }}
+        run: dotnet nuget sign D:\a\_temp\ci\ActiveLogin.Authentication.GrandId.Api.4.0.0-ci-$env:GITHUB_RUN_ID".nupkg" --certificate-path ${{ env.codesigning_cert_path }} --certificate-password ${{ env.codesigning_cert_password }} --timestamper ${{ env.codesigning_timestamperUrl }}
+    #    run: dotnet nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} --certificate-path ${{ env.codesigning_cert_path }} --certificate-password ${{ env.codesigning_cert_password }} --timestamper ${{ env.codesigning_timestamperUrl }}
         env:
+          codesigning_cert_path: $env:RUNNER_TEMP"/codesigning-cert.pfx"
           codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
           codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
         shell: pwsh
@@ -160,14 +167,13 @@ jobs:
       # TODO add publish and zip
       - name: Dotnet publish
         run : |
-          dotnet publish ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
-          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore/ActiveLogin.Authentication.BankId.AspNetCore.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
-          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore.Azure/ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
-          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
-          dotnet publish ./src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
-          dotnet publish ./src/ActiveLogin.Authentication.GrandId.Api/ActiveLogin.Authentication.GrandId.Api.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
-          dotnet publish ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output $env:RUNNER_TEMP --self-contained --runtime win-x86
+          dotnet publish ./samples/AzureProvisioningSample.deployproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ publishOutputFolder }} --self-contained --runtime win-x86
+          dotnet publish ./samples/IdentityServer.ClientSample/IdentityServer.ClientSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ publishOutputFolder }} --self-contained --runtime win-x86
+          dotnet publish ./samples/IdentityServer.ServerSample/IdentityServer.ServerSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ publishOutputFolder }} --self-contained --runtime win-x86
+          dotnet publish ./samples/Standalone.MvcSample/Standalone.MvcSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ publishOutputFolder }} --self-contained --runtime win-x86
         shell: pwsh
+        env:
+          publishOutputFolder: $env:RUNNER_TEMP"/publish"
 
       #- name: 'Copy Files to: AzureProvisioningSample'
       #  run: Copy-Item -Path samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/AzureProvisioningSample -Recurse
@@ -177,4 +183,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ matrix.artifactName }}
-          path: ${{ runner.temp }}
+          path: ${{ runner.temp }}/publish
+            
