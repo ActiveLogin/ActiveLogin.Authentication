@@ -167,7 +167,7 @@ jobs:
       # TODO add publish and zip
       - name: Dotnet publish
         run : |
-          dotnet publish ./samples/AzureProvisioningSample.deployproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
+          dotnet publish ./samples/AzureProvisioningSample --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
           dotnet publish ./samples/IdentityServer.ClientSample/IdentityServer.ClientSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
           dotnet publish ./samples/IdentityServer.ServerSample/IdentityServer.ServerSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
           dotnet publish ./samples/Standalone.MvcSample/Standalone.MvcSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
