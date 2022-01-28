@@ -115,8 +115,8 @@ jobs:
           cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
 
       - name: NuGet sign
-    #    run: dotnet nuget sign D:/a/_temp/release/ActiveLogin.Authentication.BankId.Api.4.0.0.nupkg --certificate-path ${{ env.codesigning_cert_path }} --certificate-password ${{ env.codesigning_cert_password }} --timestamper ${{ env.codesigning_timestamperUrl }}
-        run: nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
+        run: nuget sign D:/a/_temp/release/ActiveLogin.Authentication.BankId.Api.4.0.0.nupkg --certificate-path ${{ env.codesigning_cert_path }} --certificate-password ${{ env.codesigning_cert_password }} --timestamper ${{ env.codesigning_timestamperUrl }}
+    #    run: nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
         env:
           codesigning_cert_path: $env:RUNNER_TEMP"\codesigning-cert.pfx"
           codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
@@ -145,25 +145,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create file BankIdRootCertificate-Prod.crt
-        run: |
-          New-Item -Path ./samples/IdentityServer.ServerSample/Certificates -Name "BankIdRootCertificate-Prod.crt" -ItemType "file" 
-          $certFile = Join-Path -Path ./samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Prod.crt";
-          $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_prod);
-          Set-Content $certFile -Value $encodedBytes -AsByteStream;
-        shell: pwsh
-        env:
-          bankIdRootCert_prod: ${{ secrets.BANKIDROOTCERTIFICATE_PROD_FILEB64 }}
+      #- name: Create file BankIdRootCertificate-Prod.crt
+      #  run: |
+      #    $certFile = Join-Path -Path ./samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Prod.crt";
+      #    $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_prod);
+      #    Set-Content $certFile -Value $encodedBytes -AsByteStream;
+      #  shell: pwsh
+      #  env:
+      #    bankIdRootCert_prod: ${{ secrets.BANKIDROOTCERTIFICATE_PROD_FILEB64 }}
 
-      - name: Create file BankIdRootCertificate-Test.crt
-        run: |
-          New-Item -Path ./samples/IdentityServer.ServerSample/Certificates -Name "BankIdRootCertificate-Test.crt" -ItemType "file"
-          $certFile = Join-Path -Path ./samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Test.crt";
-          $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_test);
-          Set-Content $certFile -Value $encodedBytes -AsByteStream;
-        shell: pwsh
-        env:
-          bankIdRootCert_test: ${{ secrets.BANKIDROOTCERTIFICATE_TEST_FILEB64 }}
+      #- name: Create file BankIdRootCertificate-Test.crt
+      #  run: |
+      #    $certFile = Join-Path -Path ./samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Test.crt";
+      #    $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_test);
+      #    Set-Content $certFile -Value $encodedBytes -AsByteStream;
+      #  shell: pwsh
+      #  env:
+      #    bankIdRootCert_test: ${{ secrets.BANKIDROOTCERTIFICATE_TEST_FILEB64 }}
 
       - name: 'Install: .NET Core SDK'
         uses: actions/setup-dotnet@v1.7.2
