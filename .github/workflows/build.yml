@@ -149,7 +149,7 @@ jobs:
 
       - name: Create file BankIdRootCertificate-Prod.crt
         run: |
-          $certFile = Join-Path -Path $env:GITHUB_WORKSPACE"/samples/IdentityServer.ServerSample/Certificates" -ChildPath "BankIdRootCertificate-Prod.crt";
+          $certFile = Join-Path -Path ./IdentityServer.ServerSample/Certificates" -ChildPath "BankIdRootCertificate-Prod.crt";
           $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_prod);
           Set-Content $certFile -Value $encodedBytes -AsByteStream;
         shell: pwsh
