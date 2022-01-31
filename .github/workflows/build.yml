@@ -115,8 +115,8 @@ jobs:
           cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
 
       - name: NuGet sign
-        run: nuget sign /home/runner/work/_temp/release/ActiveLogin.Authentication.BankId.Api.4.0.0.nupkg -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
-    #    run: nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
+      #  run: nuget sign /home/runner/work/_temp/release/ActiveLogin.Authentication.BankId.Api.4.0.0.nupkg -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
+        run: nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
         env:
           codesigning_cert_path: $env:RUNNER_TEMP"\codesigning-cert.pfx"
           codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
