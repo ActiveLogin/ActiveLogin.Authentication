@@ -18,11 +18,11 @@ jobs:
         matrix:
             include:
             - os: windows-latest
-              artifactName: nuget-windows
-            #- os: macos-latest
-            #  artifactName: nuget-macos
+              artifactName: activelogin-authentication-nuget-windows
+            - os: macos-latest
+              artifactName: activelogin-authentication-nuget-macos
             - os: ubuntu-latest
-              artifactName: nuget-ubuntu
+              artifactName: activelogin-authentication-nuget-ubuntu
     env:
        sourceRepositoryBranch: $env:GITHUB_REF_NAME
        sourceRepositoryCommit: $env:GITHUB_SHA
@@ -53,7 +53,7 @@ jobs:
           dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
         env:
-          ciOutputFolder: $env:RUNNER_TEMP"/ci"
+          ciOutputFolder: ${{ RUNNER_TEMP }}/ci
      
       - name: 'Dotnet pack: release'
         run: |
@@ -88,8 +88,8 @@ jobs:
   #  if: ${{ github.event_name != 'pull_request' }}
 
     env:
-      sourceArtifactName: 'nuget-windows'
-      targetArtifactName: 'nuget-windows-signed'
+      sourceArtifactName: 'activelogin-authentication-nuget-windows'
+      targetArtifactName: 'activelogin-authentication-nuget-windows-signed'
       pathToNugetPackages: '**/*.nupkg'
       
     steps:
@@ -123,6 +123,11 @@ jobs:
           codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
         shell: pwsh
 
+      - name: Delete file codesigning-cert.pfx
+        run: |
+          $certFile = Join-Path -Path $env:RUNNER_TEMP -ChildPath "codesigning-cert.pfx";
+          Remove-Item $certFile
+
       - name: Upload signed packages
         uses: actions/upload-artifact@v2
         with: 
@@ -137,11 +142,11 @@ jobs:
       matrix:
         include:
         - os: windows-latest
-          artifactName: samples-windows
+          artifactName: activelogin-authentication-samples-windows
         - os: macos-latest
-          artifactName: samples-macos
+          artifactName: activelogin-authentication-samples-macos
         - os: ubuntu-latest
-          artifactName: samples-ubuntu
+          artifactName: activelogin-authentication-samples-ubuntu
 
     steps:
       - uses: actions/checkout@v2
@@ -169,24 +174,26 @@ jobs:
       - name: 'Install: .NET Core SDK'
         uses: actions/setup-dotnet@v1.7.2
 
-      # TODO add publish and zip
       - name: Dotnet publish
         run : |
-          dotnet publish ./samples/AzureProvisioningSample --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
-          dotnet publish ./samples/IdentityServer.ClientSample/IdentityServer.ClientSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
-          dotnet publish ./samples/IdentityServer.ServerSample/IdentityServer.ServerSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
-          dotnet publish ./samples/Standalone.MvcSample/Standalone.MvcSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }} --self-contained --runtime win-x86
+          dotnet publish ./samples/AzureProvisioningSample --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/AzureProvisioningSample --self-contained --runtime win-x86
+          dotnet publish ./samples/IdentityServer.ClientSample/IdentityServer.ClientSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/IdentityServer.ClientSample --self-contained --runtime win-x86
+          dotnet publish ./samples/IdentityServer.ServerSample/IdentityServer.ServerSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/IdentityServer.ServerSample --self-contained --runtime win-x86
+          dotnet publish ./samples/Standalone.MvcSample/Standalone.MvcSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/Standalone.MvcSample --self-contained --runtime win-x86
         shell: pwsh
         env:
           publishOutputFolder: $env:RUNNER_TEMP"/publish"
 
-      #- name: 'Copy Files to: AzureProvisioningSample'
-      #  run: Copy-Item -Path samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/AzureProvisioningSample -Recurse
-      #  shell: pwsh
+      - name: Create Zip-files
+        run : |
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/AzureProvisioningSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/AzureProvisioningSample.zip"
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ClientSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ClientSample.zip"
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ServerSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ServerSample.zip"
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/Standalone.MvcSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/Standalone.MvcSample.zip"
 
       - name: Upload samples
         uses: actions/upload-artifact@v2
         with: 
           name: ${{ matrix.artifactName }}
-          path: ${{ runner.temp }}/publish
+          path: ${{ runner.temp }}/zip
             
