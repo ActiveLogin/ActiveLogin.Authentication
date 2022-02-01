@@ -185,7 +185,7 @@ jobs:
           publishOutputFolder: $env:RUNNER_TEMP"/publish"
 
       - name: 'Copy Files to: AzureProvisioningSample'
-        run: Copy-Item -Path ./samples/AzureProvisioningSample/* -Destination $env:RUNNER_TEMP/publish/AzureProvisioningSample -Container false
+        run: Copy-Item -Path ./samples/AzureProvisioningSample/* -Destination $env:RUNNER_TEMP/publish/AzureProvisioningSample -Recurse -Exclude ('bin', 'obj')
         shell: pwsh
 
       - name: Create Zip-files
