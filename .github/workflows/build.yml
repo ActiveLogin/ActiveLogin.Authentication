@@ -67,7 +67,7 @@ jobs:
           dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
         shell: pwsh
         env:
-          releaseOutputFolder: ${{ runner.temp }}/release"
+          releaseOutputFolder: ${{ runner.temp }}/release
 
       - name: Dotnet test
         run: dotnet test --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
