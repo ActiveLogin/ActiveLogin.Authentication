@@ -186,6 +186,7 @@ jobs:
 
       - name: 'Copy Files to: AzureProvisioningSample'
         run: Copy-Item -Path ./samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/publish/AzureProvisioningSample -Recurse
+        shell: pwsh
 
       - name: Create Zip-files
         run : |
