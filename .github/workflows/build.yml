@@ -176,7 +176,6 @@ jobs:
 
       - name: Dotnet publish
         run : |
-          dotnet publish ./samples/AzureProvisioningSample --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/AzureProvisioningSample --self-contained --runtime win-x86
           dotnet publish ./samples/IdentityServer.ClientSample/IdentityServer.ClientSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/IdentityServer.ClientSample --self-contained --runtime win-x86
           dotnet publish ./samples/IdentityServer.ServerSample/IdentityServer.ServerSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/IdentityServer.ServerSample --self-contained --runtime win-x86
           dotnet publish ./samples/Standalone.MvcSample/Standalone.MvcSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/Standalone.MvcSample --self-contained --runtime win-x86
@@ -185,7 +184,7 @@ jobs:
           publishOutputFolder: $env:RUNNER_TEMP"/publish"
 
       - name: 'Copy Files to: AzureProvisioningSample'
-        run: Copy-Item -Path ./samples/AzureProvisioningSample/* -Destination $env:RUNNER_TEMP/publish/AzureProvisioningSample -Recurse -Exclude ('bin', 'obj')
+        run: Copy-Item -Path ./samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/publish -Recurse -Exclude ('bin', 'obj')
         shell: pwsh
 
       - name: Create Zip-files
