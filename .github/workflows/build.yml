@@ -53,7 +53,7 @@ jobs:
           dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
         env:
-          ciOutputFolder: ${{ RUNNER_TEMP }}/ci
+          ciOutputFolder: $RUNNER_TEMP"/ci"
      
       - name: 'Dotnet pack: release'
         run: |
