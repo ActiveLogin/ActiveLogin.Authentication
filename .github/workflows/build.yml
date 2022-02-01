@@ -116,7 +116,6 @@ jobs:
           cert_fileb64: ${{ secrets.CODESIGNING_CERT_FILEB64 }}
 
       - name: NuGet sign
-      #  run: nuget sign /home/runner/work/_temp/release/ActiveLogin.Authentication.BankId.Api.4.0.0.nupkg -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
         run: nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
         env:
           codesigning_cert_path: $env:RUNNER_TEMP"/codesigning-cert.pfx"
@@ -139,8 +138,8 @@ jobs:
         include:
         - os: windows-latest
           artifactName: samples-windows
-        #- os: macos-latest
-        #  artifactName: samples-macos
+        - os: macos-latest
+          artifactName: samples-macos
         - os: ubuntu-latest
           artifactName: samples-ubuntu
 
@@ -160,6 +159,7 @@ jobs:
       - name: Create file BankIdRootCertificate-Test.crt
         run: |
           $certFile = Join-Path -Path ./samples/IdentityServer.ServerSample/Certificates -ChildPath "BankIdRootCertificate-Test.crt";
+          New-Item -Path $certFile -Type file -Force
           $encodedBytes = [System.Convert]::FromBase64String($env:bankIdRootCert_test);
           Set-Content $certFile -Value $encodedBytes -AsByteStream;
         shell: pwsh
