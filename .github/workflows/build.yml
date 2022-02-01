@@ -53,7 +53,7 @@ jobs:
           dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
         env:
-          ciOutputFolder: $RUNNER_TEMP"/ci"
+          ciOutputFolder: $env:RUNNER_TEMP"/ci"
      
       - name: 'Dotnet pack: release'
         run: |
@@ -190,6 +190,7 @@ jobs:
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ClientSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ClientSample.zip"
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ServerSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ServerSample.zip"
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/Standalone.MvcSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/Standalone.MvcSample.zip"
+        shell: pwsh
 
       - name: Upload samples
         uses: actions/upload-artifact@v2
