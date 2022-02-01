@@ -188,7 +188,7 @@ jobs:
         run : |
           New-Item -Path $env:RUNNER_TEMP/ -Name "zip" -ItemType "directory"
           New-Item -Path $env:RUNNER_TEMP/zip/AzureProvisioningSample.zip -Type file -Force
-          New-Item -Path $env:RUNNER_TEMP/zip/IdentityServer.ClientSample.zip -Type file -Force
+
           New-Item -Path $env:RUNNER_TEMP/zip/IdentityServer.ServerSample.zip -Type file -Force
           New-Item -Path $env:RUNNER_TEMP/zip/Standalone.MvcSample.zip -Type file -Force
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/AzureProvisioningSample -DestinationPath $env:RUNNER_TEMP"/zip/AzureProvisioningSample.zip"
