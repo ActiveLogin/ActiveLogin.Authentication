@@ -191,7 +191,7 @@ jobs:
           #New-Item -Path $env:RUNNER_TEMP/zip/IdentityServer.ClientSample.zip -Type file -Force
           #New-Item -Path $env:RUNNER_TEMP/zip/IdentityServer.ServerSample.zip -Type file -Force
           #New-Item -Path $env:RUNNER_TEMP/zip/Standalone.MvcSample.zip -Type file -Force
-          Compress-Archive -Path $env:RUNNER_TEMP"/publish/AzureProvisioningSample/" -DestinationPath $env:RUNNER_TEMP"/zip/AzureProvisioningSample.zip" 
+          #Compress-Archive -Path $env:RUNNER_TEMP"/publish/AzureProvisioningSample" -DestinationPath $env:RUNNER_TEMP"/zip/AzureProvisioningSample.zip" 
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ClientSample" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ClientSample.zip" 
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ServerSample" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ServerSample.zip" 
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/Standalone.MvcSample" -DestinationPath $env:RUNNER_TEMP"/zip/Standalone.MvcSample.zip" 
