@@ -186,7 +186,7 @@ jobs:
 
       - name: Create Zip-files
         run : |
-          #New-Item -Path $env:RUNNER_TEMP/ -Name "zip" -ItemType "directory"
+          New-Item -Path $env:RUNNER_TEMP/ -Name "zip" -ItemType "directory"
           #New-Item -Path $env:RUNNER_TEMP/zip/AzureProvisioningSample.zip -Type file -Force
           #New-Item -Path $env:RUNNER_TEMP/zip/IdentityServer.ClientSample.zip -Type file -Force
           #New-Item -Path $env:RUNNER_TEMP/zip/IdentityServer.ServerSample.zip -Type file -Force
