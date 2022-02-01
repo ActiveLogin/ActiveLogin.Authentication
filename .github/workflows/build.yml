@@ -186,6 +186,7 @@ jobs:
 
       - name: Create Zip-files
         run : |
+          New-Item -Path $env:RUNNER_TEMP -Name "zip" -ItemType "directory"
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/AzureProvisioningSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/AzureProvisioningSample.zip"
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ClientSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ClientSample.zip"
           Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ServerSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ServerSample.zip"
