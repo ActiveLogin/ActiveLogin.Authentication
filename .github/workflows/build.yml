@@ -53,7 +53,7 @@ jobs:
           dotnet pack ./src/ActiveLogin.Authentication.GrandId.AspNetCore/ActiveLogin.Authentication.GrandId.AspNetCore.csproj --output ${{ env.ciOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }} /p:VersionSuffix=ci-$env:GITHUB_RUN_ID
         shell: pwsh
         env:
-          ciOutputFolder: $env:RUNNER_TEMP"/ci"
+          ciOutputFolder: ${{ runner.temp }}/ci
      
       - name: 'Dotnet pack: release'
         run: |
@@ -118,7 +118,7 @@ jobs:
       - name: NuGet sign
         run: nuget sign $env:GITHUB_WORKSPACE"/"${{ env.pathToNugetPackages }} -CertificatePath ${{ env.codesigning_cert_path }} -CertificatePassword ${{ env.codesigning_cert_password }} -Timestamper ${{ env.codesigning_timestamper_url }}
         env:
-          codesigning_cert_path: $env:RUNNER_TEMP"/codesigning-cert.pfx"
+          codesigning_cert_path: ${{ runner.temp }}/codesigning-cert.pfx
           codesigning_cert_password: ${{ secrets.CODESIGNING_CERT_PASSWORD }}
           codesigning_timestamper_url: ${{ secrets.CODESIGNING_TIMESTAMPERURL }}
         shell: pwsh
@@ -181,7 +181,7 @@ jobs:
           dotnet publish ./samples/Standalone.MvcSample/Standalone.MvcSample.csproj --configuration ${{ env.dotnetBuildConfiguration }} --output ${{ env.publishOutputFolder }}/Standalone.MvcSample --self-contained --runtime win-x86
         shell: pwsh
         env:
-          publishOutputFolder: $env:RUNNER_TEMP"/publish"
+          publishOutputFolder: ${{ runner.temp }}/publish
 
       - name: 'Copy Files to: AzureProvisioningSample'
         run: Copy-Item -Path ./samples/AzureProvisioningSample -Destination $env:RUNNER_TEMP/publish -Recurse -Exclude ('bin', 'obj')
@@ -201,4 +201,3 @@ jobs:
         with: 
           name: ${{ matrix.artifactName }}
           path: ${{ runner.temp }}/zip
-            
