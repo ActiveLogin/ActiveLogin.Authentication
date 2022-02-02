@@ -85,7 +85,7 @@ jobs:
     name: Sign NuGet packages on Windows
     runs-on: windows-latest
     needs: package_nuget
-  #  if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name != 'pull_request' }}
 
     env:
       sourceArtifactName: 'activelogin-authentication-nuget-windows'
