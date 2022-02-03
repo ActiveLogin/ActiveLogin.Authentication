@@ -256,13 +256,13 @@ namespace ActiveLogin.Authentication.BankId.Api
                 QrStartSecret = qrStartSecret;
             }
 
-            public string OrderRef { get; set; }
+            public string OrderRef { get; }
 
-            public string AutoStartToken { get; set; }
+            public string AutoStartToken { get; }
 
-            public string QrStartToken { get; set; }
+            public string QrStartToken { get; }
 
-            public string QrStartSecret { get; set; }
+            public string QrStartSecret { get; }
         }
 
         public class CollectState
