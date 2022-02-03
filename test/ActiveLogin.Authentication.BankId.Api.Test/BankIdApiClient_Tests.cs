@@ -158,6 +158,21 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
+        public async Task SignAsync_WithUserVisibleDataFormat__ShouldPostToBankIdSign_WithJsonPayload()
+        {
+            // Arrange
+
+            // Act
+            await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", "userVisibleDataFormat", new byte[1]));
+
+            // Assert
+            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+            var contentString = await request.Content.ReadAsStringAsync();
+
+            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"AA==\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\",\"userVisibleDataFormat\":\"userVisibleDataFormat\"}", contentString);
+        }
+
+        [Fact]
         public async Task SignAsync_WithEndUserIp__ShouldPostJsonPayload_WithEndUserIp_AndUserVisibleData_AndNoPersonalNumber_AndRequirementAsEmptyObject()
         {
             // Arrange
