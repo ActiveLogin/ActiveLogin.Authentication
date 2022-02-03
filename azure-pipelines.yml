@@ -7,7 +7,7 @@ variables:
   dotnetVerbosity: 'Detailed'
 
 trigger:
-- master
+- main
 
 stages:
 - stage: BuildNuget
