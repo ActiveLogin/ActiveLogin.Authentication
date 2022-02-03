@@ -18,7 +18,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
     {
         private readonly Mock<HttpMessageHandler> _messageHandlerMock;
         private readonly BankIdApiClient _bankIdApiClient;
-        private readonly BankIdApiClient _bankIdApiClientv5;
 
         public BankIdApiClient_Tests()
         {
@@ -28,15 +27,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
                 Content = new StringContent("{ }", Encoding.Default, "application/json"),
             });
 
-            _bankIdApiClient = new BankIdApiClient(new HttpClient(_messageHandlerMock.Object)
+            var httpClient = new HttpClient(_messageHandlerMock.Object)
             {
                 BaseAddress = new Uri("https://bankid/")
-            });
-
-            _bankIdApiClientv5 = new BankIdApiClient(new HttpClient(_messageHandlerMock.Object)
-            {
-                BaseAddress = new Uri("https://bankid/v5")
-            });
+            };
+            _bankIdApiClient = new BankIdApiClient(httpClient);
         }
 
         [Fact]
