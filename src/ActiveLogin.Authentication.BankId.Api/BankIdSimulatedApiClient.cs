@@ -112,15 +112,19 @@ namespace ActiveLogin.Authentication.BankId.Api
 
             await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
 
-            var orderRef = Guid.NewGuid().ToString();
+            var orderRef = GetRandomToken();
+            var autoStartToken = GetRandomToken();
+            var qrStartToken = GetRandomToken();
+            var qrStartSecret = GetRandomToken();
+
             var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
-
-            var autoStartToken = Guid.NewGuid().ToString();
-            var qrStartToken = Guid.NewGuid().ToString();
-            var qrStartSecret = Guid.NewGuid().ToString();
-
             return new OrderResponse(orderRef, autoStartToken, qrStartToken, qrStartSecret);
+        }
+
+        private string GetRandomToken()
+        {
+            return Guid.NewGuid().ToString();
         }
 
         private async Task EnsureNoExistingAuth(string personalIdentityNumber)
