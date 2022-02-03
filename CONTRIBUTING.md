@@ -26,6 +26,6 @@ We might(and probably will) reject PR:s that does not follow the requirements ab
 
 ## Discussion
 
-You can join our discussions on Slack to discuss ideas and get early feedback:
+You can join our discussions on GitHub Discussions to discuss ideas and get early feedback:
 
-[![Slack](https://img.shields.io/badge/slack-@ActiveLogin-yellow.svg?logo=slack)](https://join.slack.com/t/activelogin/shared_invite/enQtODQ0ODYyMTgxMjg0LWJhODhiZmFmODYyMWMzZWEwMjdmYWU2NGRhZmQ0MTg0MzIwNzA2OTM3NTJjOTk2MmE1MzIwMzkzYjllMjAyNzg)
+[![Discussion](https://img.shields.io/github/discussions/ActiveLogin/ActiveLogin.Authentication)](https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions)
