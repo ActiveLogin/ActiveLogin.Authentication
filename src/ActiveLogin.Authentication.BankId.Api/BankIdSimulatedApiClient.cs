@@ -116,9 +116,9 @@ namespace ActiveLogin.Authentication.BankId.Api
             var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
             _auths.Add(orderRef, auth);
 
-            var autoStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            var qrStartToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            var qrStartSecret = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var autoStartToken = Guid.NewGuid().ToString();
+            var qrStartToken = Guid.NewGuid().ToString();
+            var qrStartSecret = Guid.NewGuid().ToString();
 
             return new OrderResponse(orderRef, autoStartToken, qrStartToken, qrStartSecret);
         }
