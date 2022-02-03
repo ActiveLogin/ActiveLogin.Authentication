@@ -371,6 +371,12 @@ public class BankIdApiClient : IBankIdApiClient
 }
 ```
 
+___Note:___ The class `BankIdUserVisibleDataFormats` contains constants for valid values of `userVisibleDataFormat`, example:
+
+```csharp
+    BankIdUserVisibleDataFormats.SimpleMarkdownV1
+```
+
 #### ActiveLogin.Authentication.GrandId.Api
 
 ```csharp
