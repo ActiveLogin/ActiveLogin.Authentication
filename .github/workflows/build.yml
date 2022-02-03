@@ -2,9 +2,9 @@ name: Active Login Authentication
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
   dotnetBuildConfiguration: 'Release'
