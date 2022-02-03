@@ -1,9 +1,7 @@
-using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Errors;
-using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.Common.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api
