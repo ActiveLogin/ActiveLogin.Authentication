@@ -8,10 +8,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     [DataContract]
     public class SignResponse
     {
-        public SignResponse(string orderRef, string autoStartToken)
+        public SignResponse(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret)
         {
             OrderRef = orderRef;
             AutoStartToken = autoStartToken;
+            QrStartToken = qrStartToken;
+            QrStartSecret = qrStartSecret;
         }
 
         /// <summary>
@@ -25,5 +27,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// </summary>
         [DataMember(Name = "autoStartToken")]
         public string AutoStartToken { get; private set; }
+
+        /// <summary>
+        /// Used to compute the animated QR code.
+        /// </summary>
+        [DataMember(Name = "qrStartToken")]
+        public string QrStartToken { get; private set; }
+
+        /// <summary>
+        /// Used to compute the animated QR code.
+        /// </summary>
+        [DataMember(Name = "qrStartSecret")]
+        public string QrStartSecret { get; private set; }
     }
 }

@@ -13,7 +13,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 
 - :id: Supports BankID both natively and through GrandID
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Core 3.1
-- :five: Built on V5 (the latest) BankID JSON API released in February 2018
+- :five: Built on V5.1 (the latest) BankID JSON API released in February 2018
 - :white_square_button: Supports BankID QR code and Cancel
 - :lock: GDPR: Security by design
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
@@ -370,6 +370,12 @@ public class BankIdApiClient : IBankIdApiClient
     public Task<CollectResponse> CollectAsync(CollectRequest request) { ... }
     public Task<CancelResponse> CancelAsync(CancelRequest request) { ... }
 }
+```
+
+___Note:___ The class `BankIdUserVisibleDataFormats` contains constants for valid values of `userVisibleDataFormat`, example:
+
+```csharp
+    BankIdUserVisibleDataFormats.SimpleMarkdownV1
 ```
 
 #### ActiveLogin.Authentication.GrandId.Api
