@@ -112,21 +112,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         }
 
         [Fact]
-        public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements_V5()
-        {
-            // Arrange
-
-            // Act
-            await _bankIdApiClientv5.AuthAsync(new AuthRequest("1.1.1.1", "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
-
-            // Assert
-            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-            var contentString = await request.Content.ReadAsStringAsync();
-
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"autoStartTokenRequired\":true}}", contentString);
-        }
-
-        [Fact]
         public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
         {
             // Arrange
@@ -220,21 +205,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var contentString = await request.Content.ReadAsStringAsync();
 
             Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"AA==\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
-        }
-
-        [Fact]
-        public async Task SignAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements_V5()
-        {
-            // Arrange
-
-            // Act
-            await _bankIdApiClientv5.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
-
-            // Assert
-            var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-            var contentString = await request.Content.ReadAsStringAsync();
-
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"autoStartTokenRequired\":true},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
         }
 
         [Fact]
