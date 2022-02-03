@@ -15,12 +15,6 @@ namespace ActiveLogin.Authentication.BankId.Api
         public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
             var requestJson = SystemRuntimeJsonSerializer.Serialize(request);
-            if (httpClient.BaseAddress.AbsolutePath?.EndsWith("v5", StringComparison.InvariantCultureIgnoreCase) == true
-                && requestJson.Contains("\"tokenStartRequired\""))
-            {
-                // Simple solution for fallback compatibility with v5
-                requestJson = requestJson.Replace("\"tokenStartRequired\"", "\"autoStartTokenRequired\"");
-            }
             var requestContent = GetJsonStringContent(requestJson);
 
             HttpResponseMessage httpResponseMessage;
