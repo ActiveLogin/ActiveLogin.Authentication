@@ -1,6 +1,10 @@
-﻿@using Microsoft.Extensions.Localization
+@using Microsoft.Extensions.Localization
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdHandler> Localizer
+
+@{
+    ArgumentNullException.ThrowIfNull(Model);
+}
 
 <div id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
 

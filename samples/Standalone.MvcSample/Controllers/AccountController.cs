@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -24,7 +24,7 @@ namespace Standalone.MvcSample.Controllers
             var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
             var providers = schemes
                 .Where(x => x.DisplayName != null)
-                .Select(x => new ExternalProvider(x.DisplayName, x.Name));
+                .Select(x => new ExternalProvider(x.DisplayName ?? x.Name, x.Name));
             var viewModel = new AccountLoginViewModel(providers, "~/");
 
             return View(viewModel);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -12,8 +13,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
         {
             var httpResponseMessage = await httpClient.GetAsync(url);
             var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            var deserialized = SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
 
-            return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
+            if (deserialized == null)
+            {
+                throw new Exception("Could not deserialize JSON response");
+            }
+
+            return deserialized;
         }
 
         public static async Task<TResult> PostAsync<TResult>(this HttpClient httpClient, string url, Dictionary<string, string?> postData)
@@ -22,8 +29,14 @@ namespace ActiveLogin.Authentication.GrandId.Api
 
             var httpResponseMessage = await httpClient.PostAsync(url, requestContent).ConfigureAwait(false);
             var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            var deserialized = SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
 
-            return SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
+            if (deserialized == null)
+            {
+                throw new Exception("Could not deserialize JSON response");
+            }
+
+            return deserialized;
         }
 
         private static FormUrlEncodedContent GetFormUrlEncodedContent(Dictionary<string, string?> postData)

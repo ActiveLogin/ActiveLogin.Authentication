@@ -136,8 +136,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                             .RequireAuthenticatedUser()
                             .Build();
                         config.Filters.Add(new AuthorizeFilter(policy));
-                    })
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                    });
 
                     services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
                 });

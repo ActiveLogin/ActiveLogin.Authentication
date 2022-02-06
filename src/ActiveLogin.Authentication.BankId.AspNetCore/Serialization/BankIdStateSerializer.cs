@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using Microsoft.AspNetCore.Authentication;
 
@@ -31,6 +32,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
             }
 
             var authenticationProperties = PropertiesSerializer.Default.Read(reader);
+
+            if(authenticationProperties == null)
+            {
+                throw new Exception("Could not deserialize AuthenticationProperties");
+            }
 
             return new BankIdState(authenticationProperties);
         }

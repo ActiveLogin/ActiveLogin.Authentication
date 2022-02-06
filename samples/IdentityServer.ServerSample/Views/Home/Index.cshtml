@@ -1,6 +1,7 @@
-﻿@model IdentityServer.ServerSample.Models.HomeIndexViewModel
+@model IdentityServer.ServerSample.Models.HomeIndexViewModel
 @{
     ViewData["Title"] = "Demo";
+    ArgumentNullException.ThrowIfNull(Model);
 }
 
 <h1 class="text-center">Active Login</h1>

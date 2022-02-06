@@ -1,5 +1,9 @@
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 
+@{
+    ArgumentNullException.ThrowIfNull(Model);
+}
+
 <script>
     (function (options) {
         // Pre check

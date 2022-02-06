@@ -25,7 +25,7 @@ namespace IdentityServer.ServerSample.Controllers
             var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
             var providers = schemes
                 .Where(x => x.DisplayName != null)
-                .Select(x => new ExternalProvider(x.DisplayName, x.Name));
+                .Select(x => new ExternalProvider(x.DisplayName ?? x.Name, x.Name));
             var viewModel = new AccountLoginViewModel(providers, returnUrl);
 
             return View(viewModel);
@@ -56,9 +56,9 @@ namespace IdentityServer.ServerSample.Controllers
                 throw new Exception("External authentication error");
             }
 
-            var returnUrl = result.Properties.Items["returnUrl"];
+            var returnUrl = result.Properties?.Items["returnUrl"];
 
-            if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
+            if (returnUrl != null && _interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }

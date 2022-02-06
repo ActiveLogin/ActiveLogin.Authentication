@@ -1,9 +1,8 @@
-﻿@model IdentityServer.ServerSample.Models.AccountLoginViewModel
+@model IdentityServer.ServerSample.Models.AccountLoginViewModel
 @{
     Layout = "_Layout";
-}
-@{
     ViewData["Title"] = "Demo";
+    ArgumentNullException.ThrowIfNull(Model);
 }
 
 @if (Model.ExternalProviders.Any())

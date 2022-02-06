@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -98,7 +98,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             );
         }
 
-        private SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        private static SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
         {
             bool TryGetPinString(out string? s)
             {

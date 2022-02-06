@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
@@ -7,10 +7,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
     {
         public NoLinuxFactAttribute(string linuxSkipReason)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                Skip = linuxSkipReason;
-            }
+            //if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            //{
+            //    Skip = linuxSkipReason;
+            //}
         }
     }
 }

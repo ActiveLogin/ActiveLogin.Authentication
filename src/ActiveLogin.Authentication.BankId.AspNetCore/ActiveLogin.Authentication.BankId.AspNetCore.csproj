@@ -56,33 +56,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="Areas\BankIdAuthentication\Views\BankId\Login.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-        <Content Update="Areas\BankIdAuthentication\Views\BankId\_Login.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-        <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginForm.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-        <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginStyle.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-        <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginScript.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-        <Content Update="Areas\BankIdAuthentication\Views\BankId\_LoginStatus.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-        <Content Update="Areas\BankIdAuthentication\Views\_ViewImports.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-        <Content Update="Areas\BankIdAuthentication\Views\_ViewStart.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <EmbeddedResource Update="Resources\BankIdHandler.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>BankIdHandler.Designer.cs</LastGenOutput>

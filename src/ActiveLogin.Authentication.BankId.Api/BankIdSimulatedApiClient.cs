@@ -15,7 +15,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         private const string DefaultSurname = "Surname";
         private const string DefaultPersonalIdentityNumber = "199908072391";
 
-        private static readonly List<CollectState> DefaultCollectStates = new List<CollectState>
+        private static readonly List<CollectState> DefaultCollectStates = new()
         {
             new CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
             new CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
@@ -31,7 +31,7 @@ namespace ActiveLogin.Authentication.BankId.Api
         private readonly string _personalIdentityNumber;
         private readonly List<CollectState> _collectStates;
 
-        private readonly Dictionary<string, Auth> _auths = new Dictionary<string, Auth>();
+        private readonly Dictionary<string, Auth> _auths = new();
         private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
         public BankIdSimulatedApiClient()

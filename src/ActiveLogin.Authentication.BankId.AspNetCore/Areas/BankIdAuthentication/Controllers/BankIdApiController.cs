@@ -177,10 +177,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return _bankIdLauncher.GetLaunchInfo(launchUrlRequest, HttpContext);
         }
 
-        private string GetAbsoluteUrl(string returnUrl)
+        private string GetAbsoluteUrl(string? returnUrl)
         {
             var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}";
-            return absoluteUri + returnUrl;
+            return absoluteUri + (returnUrl ?? string.Empty);
         }
 
         [ValidateAntiForgeryToken]
@@ -322,7 +322,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private static string AppendQueryString(string url, string queryString)
         {
-            var delimiter = url.Contains("?") ? "&" : "?";
+            var delimiter = url.Contains('?') ? "&" : "?";
             return $"{url}{delimiter}{queryString}";
         }
 
@@ -361,7 +361,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return OkJsonResult(BankIdLoginApiCancelResponse.Cancelled());
         }
 
-        private ActionResult OkJsonResult(object model)
+        private static ActionResult OkJsonResult(object model)
         {
             return new JsonResult(model, BankIdConstants.JsonSerializerOptions)
             {
@@ -369,7 +369,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             };
         }
 
-        private ActionResult BadRequestJsonResult(object model)
+        private static ActionResult BadRequestJsonResult(object model)
         {
             return new JsonResult(model, BankIdConstants.JsonSerializerOptions)
             {
