@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,7 +46,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false, false, "/", DefaultStateCookieName));
         }
 
-        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
+        [Fact]
         public async Task Challenge_Redirects_To_BankIdAuthentication_Login()
         {
             // Arrange
@@ -69,7 +68,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.StartsWith("/BankIdAuthentication/Login", transaction.Headers.Location.OriginalString);
         }
 
-        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
+        [Fact]
         public async Task Challenge_Redirects_To_BankIdAuthentication_Login_With_Path_Base()
         {
             // Arrange
@@ -118,7 +117,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Contains(callbackParameter, redirectUrl);
         }
 
-        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
+        [Fact]
         public async Task Authentication_UI_Should_Be_Accessible_Even_When_Site_Requires_Auth()
         {
             // Arrange
@@ -150,7 +149,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
         }
 
-        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
+        [Fact]
         public async Task BankIdAuthentication_Login_Returns_Form_With_Resolved_Cancel_Url()
         {
             // Arrange
@@ -185,7 +184,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         }
 
 
-        [NoLinuxFact("Issues with layout pages from unit tests on Linux")]
+        [Fact]
         public async Task BankIdAuthentication_Login_Returns_Form_And_Status()
         {
             // Arrange
