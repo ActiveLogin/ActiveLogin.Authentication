@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using ActiveLogin.Authentication.BankId.AspNetCore;
-using IdentityServer4;
-using IdentityServer4.Models;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer.ServerSample

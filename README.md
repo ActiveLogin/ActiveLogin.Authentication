@@ -463,7 +463,7 @@ _Integrating your systems with market leading authentication services._
 
 Active Login is an Open Source project built on .NET Core that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
-It also provide examples of how to use it with the popular OpenID Connect & OAuth 2.0 Framework [IdentityServer](https://identityserver.io/) and provides a template for hosting the solution in Microsoft Azure.
+It also provide examples of how to use it with the popular OpenID Connect & OAuth 2.0 Framework [Duende.IdentityServer](https://duendesoftware.com/products/identityserver) and provides a template for hosting the solution in Microsoft Azure.
 
 In addition, Active Login also contain convenient modules that help you work with and handle validation of Swedish Personal Identity Number (svenskt personnummer).
 
@@ -488,11 +488,14 @@ Active Login is built on or uses the following great open source products:
 
 * [.NET Core](https://github.com/dotnet/core)
 * [ASP.NET Core](https://github.com/aspnet/Home)
-* [IdentityServer](https://github.com/IdentityServer/)
 * [XUnit](https://github.com/xunit/xunit)
 * [QRCoder](https://github.com/codebude/QRCoder)
 * [Bootstrap](https://github.com/twbs/bootstrap)
 * [Loading.io](https://loading.io/)
+
+For samples, these great products are used:
+
+* [Duende IdentityServer](https://duendesoftware.com/products/identityserver)
 
 ### Sponsors
 

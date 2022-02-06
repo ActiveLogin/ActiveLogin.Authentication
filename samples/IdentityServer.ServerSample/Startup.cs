@@ -21,9 +21,12 @@ namespace IdentityServer.ServerSample
     //
     // These are samples on how to use Active Login in different situations
     // and might not represent optimal way of setting up
-    // ASP.NET MVC, Identity Server or other components.
+    // ASP.NET MVC, IdentityServer or other components.
     //
     // Please see this as inspiration, not a complete template.
+    //
+    // Please note that Duende IdeneityServer might require you to have a license, see:
+    // https://duendesoftware.com/products/identityserver
     //
 
     public class Startup
