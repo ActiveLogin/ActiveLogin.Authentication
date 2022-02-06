@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore;
-using ActiveLogin.Authentication.GrandId.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -91,31 +90,6 @@ namespace Standalone.MvcSample
                         builder.UseProductionEnvironment()
                             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
-                    }
-                })
-                .AddGrandId(builder =>
-                {
-                    builder.AddBankIdSameDevice(GrandIdDefaults.BankIdSameDeviceAuthenticationScheme, "GrandID (SameDevice)", options => { })
-                           .AddBankIdOtherDevice(GrandIdDefaults.BankIdOtherDeviceAuthenticationScheme, "GrandID (OtherDevice)", options => { })
-                           .AddBankIdChooseDevice(GrandIdDefaults.BankIdChooseDeviceAuthenticationScheme, "GrandID (ChooseDevice)", options => { });
-
-                    if (Configuration.GetValue("ActiveLogin:GrandId:UseSimulatedEnvironment", false))
-                    {
-                        builder.UseSimulatedEnvironment();
-                    }
-                    else if (Configuration.GetValue("ActiveLogin:GrandId:UseTestEnvironment", false))
-                    {
-                        builder.UseTestEnvironment(ConfigureEnvironment);
-                    }
-                    else
-                    {
-                        builder.UseProductionEnvironment(ConfigureEnvironment);
-                    }
-
-                    void ConfigureEnvironment(IGrandIdEnvironmentConfiguration config)
-                    {
-                        config.ApiKey = Configuration.GetValue<string>("ActiveLogin:GrandId:ApiKey");
-                        config.BankIdServiceKey = Configuration.GetValue<string>("ActiveLogin:GrandId:BankIdServiceKey");
                     }
                 });
         }

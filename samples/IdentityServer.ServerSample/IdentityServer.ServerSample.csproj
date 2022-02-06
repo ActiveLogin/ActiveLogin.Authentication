@@ -27,14 +27,9 @@
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.AspNetCore\ActiveLogin.Authentication.GrandId.AspNetCore.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="Views\Shared\_LayoutMaster.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
         <None Update="Certificates\BankIdRootCertificate-Prod.crt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
