@@ -12,8 +12,8 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 ## Features
 
 - :id: Supports BankID both natively and through GrandID
-- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET Core 3.1
-- :five: Built on V5.1 (the latest) BankID JSON API released in February 2018
+- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 6
+- :five: Built on V5.1 (the latest) BankID JSON API
 - :white_square_button: Supports BankID QR code and Cancel
 - :lock: GDPR: Security by design
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
@@ -51,7 +51,7 @@ ___Note:___ This Readme reflects the state of our master branch and the code doc
 	+ [How do I override the default UI?](#how-do-i-override-the-default-ui)
 	+ [How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-or-grandid-in-azure-ad-active-directory-b2c)
 	+ [How do I prepopulate the personal identity number for the user?](#how-do-i-prepopulate-the-personal-identity-number-for-the-user)
-	+ [Do I need to use your ASP.NET Core Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-core-auth-provider--or-can-just-use-the-api)
+	+ [Do I need to use your ASP.NET Auth provider, or can just use the API?](#do-i-need-to-use-your-aspnet-auth-provider--or-can-just-use-the-api)
 	+ [Do Active Login Issue any cookies?](#do-active-login-issue-any-cookies)
 	+ [What browsers do you support?](#what-browsers-do-you-support)
     + [What dependencies do I need if I run Active Login on Linux or in a Linux Docker container?](#what-dependencies-do-i-need-if-i-run-active-login-on-linux-or-in-a-linux-docker-container)
@@ -75,7 +75,7 @@ Packages for Swedish BankID.
 | Project | Description | NuGet | Downloads |
 | ------- | ----------- | ----  | --------- |
 | [BankId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.Api) | API client for the Swedish BankID REST API. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) |
-| [BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore) | ASP.NET Core authentication module for Swedish BankID. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) |
+| [BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore) | ASP.NET authentication module for Swedish BankID. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) |
 | [BankId.AspNetCore.Azure](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.Azure) | Azure KeyVault integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) |
 | [BankId.AspNetCore.AzureMonitor](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor) | Azure Monitor (Application Insights) integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) |
 | [BankId.AspNetCore.QRCoder](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder) | QR code generation using QRCoder the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) |
@@ -88,7 +88,7 @@ Packages for GrandID (Svensk E-identitet).
 | Project | Description | NuGet | Downloads |
 | ------- | ----------- | ----- | --------- |
 | [GrandId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.Api) | API client for the GrandID (Svensk E-identitet) REST API. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.GrandId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.Api/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.GrandId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.Api/) |
-| [GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore) | ASP.NET Core authentication module for GrandID (Svensk E-identitet). | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) |
+| [GrandId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/master/src/ActiveLogin.Authentication.GrandId.AspNetCore) | ASP.NET authentication module for GrandID (Svensk E-identitet). | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.GrandId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.GrandId.AspNetCore/) |
 
 ## Getting started
 
@@ -276,15 +276,15 @@ Here is a summary of common technical questions. For commercial / business relat
 
 ### What version of .NET is supported?
 
-The API-wrappers (*.Api) target .NET Standard 2.0, so they can be used from .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The packages that target .NET Standard are strong named as they can be used from .NET Framework where strong naming can be relevant.
+The API-wrappers (*.Api) target .NET Standard 2.0, so they can be used from .NET >= 5.0, .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The packages that target .NET Standard are strong named as they can be used from .NET Framework where strong naming can be relevant.
 
-The authentication modules (*.AspNetCore), and related packages, depend on ASP.NET Core MVC 3.1 and therefore require .NET Core 3.1.
+The authentication modules (*.AspNetCore), and related packages, depend on ASP.NET 6 and therefore require .NET 6.
 
-Our samples target .NET Core 3.1.
+Our samples target .NET 6.
 
 ### How do I build the solution locally?
 
-Active Login is built using .NET Core, make sure you have the relevant version of the SDK and runtime installed.
+Active Login is built using .NET, make sure you have the relevant version of the SDK and runtime installed.
 
 Run the following command in the root to build all projects:
 
@@ -354,7 +354,7 @@ public IActionResult ExternalLogin(string provider, string returnUrl, string per
 }
 ```
 
-### Do I need to use your ASP.NET Core Auth provider, or can just use the API?
+### Do I need to use your ASP.NET Auth provider, or can just use the API?
 
 We have seperated the API-wrappers for both BankID and GrandID into two separate packages so that you can use them in other scenarios we have not covered. They look like this and are both well documented using XML-comments.
 
@@ -402,7 +402,7 @@ The cookies are there to store state during the auth process, as the user will/m
 
 Because they are strictly related to temp storage during auth, you should not have to inform the user about these specific cookies (according to the [EU "cookie law"](https://www.cookielaw.org/the-cookie-law/)).
 
-With the current implementaiton (following the convention from Microsoft ASP.NET Core) the usage of cookies is not optional.
+With the current implementaiton (following the convention from Microsoft ASP.NET) the usage of cookies is not optional.
 
 A more technical deep dive of the cookies can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
 
@@ -461,7 +461,7 @@ The default implementation provided in `ActiveLogin.Authentication.BankId.AspNet
 
 _Integrating your systems with market leading authentication services._
 
-Active Login is an Open Source project built on .NET Core that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
+Active Login is an Open Source project built on .NET that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
 It also provide examples of how to use it with the popular OpenID Connect & OAuth 2.0 Framework [Duende.IdentityServer](https://duendesoftware.com/products/identityserver) and provides a template for hosting the solution in Microsoft Azure.
 
@@ -486,8 +486,8 @@ Active Login is licensed under the very permissive [MIT license](https://opensou
 
 Active Login is built on or uses the following great open source products:
 
-* [.NET Core](https://github.com/dotnet/core)
-* [ASP.NET Core](https://github.com/aspnet/Home)
+* [.NET](https://github.com/dotnet/core)
+* [ASP.NET](https://github.com/aspnet/Home)
 * [XUnit](https://github.com/xunit/xunit)
 * [QRCoder](https://github.com/codebude/QRCoder)
 * [Bootstrap](https://github.com/twbs/bootstrap)

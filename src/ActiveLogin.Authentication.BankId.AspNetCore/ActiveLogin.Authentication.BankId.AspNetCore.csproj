@@ -19,7 +19,7 @@
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-        <Description>ASP.NET Core authentication module that enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow.</Description>
+        <Description>ASP.NET authentication module that enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow.</Description>
         <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
         <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>

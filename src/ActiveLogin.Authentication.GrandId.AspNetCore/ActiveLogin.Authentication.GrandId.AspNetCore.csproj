@@ -19,7 +19,7 @@
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-        <Description>ASP.NET Core authentication module that enables an application to support GrandID's (Svensk E-identitet) authentication workflow.</Description>
+        <Description>ASP.NET authentication module that enables an application to support GrandID's (Svensk E-identitet) authentication workflow.</Description>
         <PackageTags>grandid;bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
         <Authors>Active Solution;Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
