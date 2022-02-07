@@ -4,7 +4,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 
 ## Sample usage
 
-Sample usage of the ASP.NET Core authentication module.
+Sample usage of the ASP.NET authentication module.
 
 ### Development
 
@@ -48,7 +48,7 @@ For full documentation and samples, see the Readme in our [GitHub repo](https://
 
 ## Active Login
 
-Active Login is an Open Source project built on .NET Core that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
+Active Login is an Open Source project built on .NET that makes it easy to integrate with leading Swedish authentication services like [BankID](https://www.bankid.com/).
 
 https://www.activelogin.net/
 

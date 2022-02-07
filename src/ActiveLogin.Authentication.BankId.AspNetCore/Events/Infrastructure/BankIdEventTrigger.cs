@@ -21,10 +21,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
 
         public async Task TriggerAsync(BankIdEvent bankIdEvent)
         {
-            if (bankIdEvent == null)
-            {
-                throw new ArgumentNullException(nameof(bankIdEvent));
-            }
+            ArgumentNullException.ThrowIfNull(nameof(bankIdEvent));
 
             bankIdEvent.SetContext(_bankIdActiveLoginContext);
 

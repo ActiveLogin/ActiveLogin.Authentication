@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     {
         private const string DefaultStateCookieName = "__ActiveLogin.BankIdState";
 
-        private CookieBuilder _stateCookieBuilder = new CookieBuilder
+        private CookieBuilder _stateCookieBuilder = new()
         {
             Name = DefaultStateCookieName,
             SecurePolicy = CookieSecurePolicy.SameAsRequest,

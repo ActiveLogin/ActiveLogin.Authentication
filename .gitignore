@@ -292,3 +292,7 @@ __pycache__/
 
 # Certificates
 *.crt
+
+# Signing credentials
+tempkey.jwk
+/samples/IdentityServer.ServerSample/keys/**

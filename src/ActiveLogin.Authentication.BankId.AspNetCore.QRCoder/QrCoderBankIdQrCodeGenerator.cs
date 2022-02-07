@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -29,15 +30,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
             var queryPart = GetQueryPart(autoStartToken);
             var qrUrl = $"bankid:///{queryPart}";
 
-            using (var qrGenerator = new QRCodeGenerator())
-            {
-                var qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q);
+            using var qrGenerator = new QRCodeGenerator();
+            var qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q);
 
-                using (var qrCode = new Base64QRCode(qrCodeData))
-                {
-                    return qrCode.GetGraphic(PixelsPerModule);
-                }
-            }
+            using var qrCode = new PngByteQRCode(qrCodeData);
+            var pngQrCode = qrCode.GetGraphic(PixelsPerModule);
+            var base64QrCpde = Convert.ToBase64String(pngQrCode);
+
+            return base64QrCpde;
         }
 
         private string GetQueryPart(string autoStartToken)
@@ -47,6 +47,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
                 { "autostarttoken", autoStartToken }
             };
             var queryBuilder = new QueryBuilder(queryStringParams);
+
             return queryBuilder.ToQueryString().ToString();
         }
     }

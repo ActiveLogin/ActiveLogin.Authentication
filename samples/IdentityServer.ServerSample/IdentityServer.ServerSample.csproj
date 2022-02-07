@@ -1,18 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+
+        <Product>Active Login</Product>
+        <Description>ASP.NET sample for Active Login.</Description>
+        <Authors>Active Solution</Authors>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
+
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+
         <UserSecretsId>4f84b1a4-1217-4842-b135-a15f3a61dfae</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="IdentityServer4" Version="3.1.0" />
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.9" />
-        <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.17.0" />
+        <PackageReference Include="Duende.IdentityServer" Version="6.0.4" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.20.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,21 +37,13 @@
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.Api\ActiveLogin.Authentication.GrandId.Api.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.GrandId.AspNetCore\ActiveLogin.Authentication.GrandId.AspNetCore.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="Views\Shared\_LayoutMaster.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
         <None Update="Certificates\BankIdRootCertificate-Prod.crt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="Certificates\BankIdRootCertificate-Test.crt">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="tempkey.rsa">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

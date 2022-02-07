@@ -25,7 +25,7 @@
 
         <Authors>Active Solution;Martin Sjölander;Peter Örneholm;Fredrik Lundin;Conny Sjögren;Peter Carlsson;Robert Folkesson</Authors>
         <Company>Active Solution</Company>
-        <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
+        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
 
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
@@ -42,7 +42,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

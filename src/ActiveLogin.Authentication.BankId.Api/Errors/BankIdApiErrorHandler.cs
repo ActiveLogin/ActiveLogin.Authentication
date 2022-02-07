@@ -34,7 +34,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
                 try
                 {
                     var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return SystemRuntimeJsonSerializer.Deserialize<Error>(content);
+                    var deserialized = SystemRuntimeJsonSerializer.Deserialize<Error>(content);
+
+                    if (deserialized == null)
+                    {
+                        throw new Exception("Could not deserialize JSON response");
+                    }
+
+                    return deserialized;
                 }
                 catch (Exception)
                 {

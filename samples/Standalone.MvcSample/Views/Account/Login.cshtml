@@ -1,9 +1,8 @@
-﻿@model Standalone.MvcSample.Models.AccountLoginViewModel
+@model Standalone.MvcSample.Models.AccountLoginViewModel
 @{
     Layout = "_Layout";
-}
-@{
     ViewData["Title"] = "Demo";
+    ArgumentNullException.ThrowIfNull(Model);
 }
 
 @if (Model.ExternalProviders.Any())

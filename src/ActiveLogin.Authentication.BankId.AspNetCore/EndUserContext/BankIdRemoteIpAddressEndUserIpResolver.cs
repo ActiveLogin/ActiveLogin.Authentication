@@ -11,6 +11,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext
         {
             var remoteIp = httpContext.Connection.RemoteIpAddress;
 
+            if(remoteIp == null)
+            {
+                return string.Empty;
+            }
+
             if (remoteIp.IsIPv4MappedToIPv6)
             {
                 return remoteIp.MapToIPv4().ToString();

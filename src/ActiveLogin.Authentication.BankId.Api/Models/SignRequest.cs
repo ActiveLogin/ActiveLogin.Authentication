@@ -148,17 +148,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// </param>
         public SignRequest(string endUserIp, string userVisibleData, byte[]? userNonVisibleData, string? personalIdentityNumber, Requirement? requirement, string? userVisibleDataFormat)
         {
-            if (endUserIp == null)
-            {
-                throw new ArgumentNullException(nameof(endUserIp));
-            }
-
             if (userVisibleData == null)
             {
                 throw new ArgumentNullException(nameof(userVisibleData));
             }
 
-            EndUserIp = endUserIp;
+            EndUserIp = endUserIp ?? throw new ArgumentNullException(nameof(endUserIp));
             UserVisibleData = ToBase64EncodedString(userVisibleData);
             PersonalIdentityNumber = personalIdentityNumber;
             UserNonVisibleData = ToBase64EncodedString(userNonVisibleData);

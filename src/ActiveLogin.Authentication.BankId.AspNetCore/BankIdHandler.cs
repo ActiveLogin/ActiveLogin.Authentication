@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
@@ -11,6 +12,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,6 +21,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     {
+        private const string DefaultCancelUrl = "/";
+
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
@@ -164,7 +168,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 Options.BankIdAllowBiometric,
                 Options.BankIdUseQrCode,
                 GetCancelReturnUrl(properties),
-                Options.StateCookie.Name
+                Options.StateCookie.Name ?? string.Empty
             );
 
             var detectedDevice = GetDetectedDevice();
@@ -197,7 +201,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private string GetCancelReturnUrl(AuthenticationProperties properties)
         {
             // Default to root if no return url is set
-            var cancelReturnUrl = properties.Items.ContainsKey("returnUrl") ? properties.Items["returnUrl"] : "/";
+            var cancelReturnUrl = properties.Items.ContainsKey("returnUrl") ? properties.Items["returnUrl"] : DefaultCancelUrl;
 
 
             // If cancel url is set, it overrides the regular return url
@@ -213,7 +217,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
                 cancelReturnUrl = string.Empty;
             }
 
-            return cancelReturnUrl;
+            return cancelReturnUrl ?? DefaultCancelUrl;
         }
 
         private string GetLoginUrl(BankIdLoginOptions loginOptions)
@@ -230,10 +234,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
-            if (Options.StateDataFormat == null)
-            {
-                throw new ArgumentNullException(nameof(Options.StateDataFormat));
-            }
+            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+            ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
 
             var state = new BankIdState(properties);
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
@@ -244,10 +246,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private BankIdState? GetStateFromCookie()
         {
-            if (Options.StateDataFormat == null)
-            {
-                throw new ArgumentNullException(nameof(Options.StateDataFormat));
-            }
+            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+            ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
 
             var protectedState = Request.Cookies[Options.StateCookie.Name];
             if (string.IsNullOrEmpty(protectedState))
@@ -261,6 +261,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private void DeleteStateCookie()
         {
+            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
             Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }

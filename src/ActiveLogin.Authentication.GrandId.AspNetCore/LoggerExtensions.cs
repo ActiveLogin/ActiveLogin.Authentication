@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore
@@ -12,7 +12,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         public static void GrandIdBankIdGetSessionFailure(this ILogger logger, string sessionId, Exception exception)
         {
-            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdGetSessionHardFailure, exception, "GrandId (BankId) get session failed for the sessionId '{SessionId}'", sessionId, exception);
+            logger.LogError(GrandIdLoggingEvents.GrandIdBankIdGetSessionHardFailure, exception, "GrandId (BankId) get session failed for the sessionId '{SessionId}'", sessionId);
         }
 
         public static void GrandIdBankIdFederatedLoginSuccess(this ILogger logger, string returnUrl, string sessionId)

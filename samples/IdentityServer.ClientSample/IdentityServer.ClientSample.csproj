@@ -1,14 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.9" />
-  </ItemGroup>
+        <Product>Active Login</Product>
+        <Description>ASP.NET sample for Active Login.</Description>
+        <Authors>Active Solution</Authors>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
+
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.1" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+    </ItemGroup>
 
 </Project>

@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+
 using ActiveLogin.Authentication.Common.Serialization;
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -126,10 +128,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private void AppendStateCookie(AuthenticationProperties properties)
         {
-            if (Options.StateDataFormat == null)
-            {
-                throw new ArgumentNullException(nameof(Options.StateDataFormat));
-            }
+            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+            ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
 
             var state = new GrandIdState(properties);
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
@@ -140,10 +140,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private GrandIdState? GetStateFromCookie()
         {
-            if (Options.StateDataFormat == null)
-            {
-                throw new ArgumentNullException(nameof(Options.StateDataFormat));
-            }
+            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+            ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
 
             var protectedState = Request.Cookies[Options.StateCookie.Name];
             if (string.IsNullOrEmpty(protectedState))
@@ -157,6 +155,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         private void DeleteStateCookie()
         {
+            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+
             var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
             Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
         }

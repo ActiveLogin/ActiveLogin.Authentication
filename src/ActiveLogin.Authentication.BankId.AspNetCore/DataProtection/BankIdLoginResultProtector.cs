@@ -1,4 +1,6 @@
-﻿using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using System;
+
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
@@ -12,7 +14,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
         public BankIdLoginResultProtector(IDataProtectionProvider dataProtectionProvider)
         {
             var dataProtector = dataProtectionProvider.CreateProtector(
-                typeof(BankIdLoginResultProtector).FullName,
+                typeof(BankIdLoginResultProtector).FullName ?? nameof(BankIdLoginResultProtector),
                 "v1"
             );
 
@@ -29,7 +31,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
 
         public BankIdLoginResult Unprotect(string protectedLoginResult)
         {
-            return _secureDataFormat.Unprotect(protectedLoginResult);
+            var unprotected = _secureDataFormat.Unprotect(protectedLoginResult);
+
+            if (unprotected == null)
+            {
+                throw new Exception("Could not unprotect BankIdLoginResult");
+            }
+
+            return unprotected;
         }
     }
 }

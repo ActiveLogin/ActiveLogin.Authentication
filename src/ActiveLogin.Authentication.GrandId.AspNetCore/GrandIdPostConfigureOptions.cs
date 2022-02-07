@@ -22,7 +22,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             if (options.StateDataFormat == null)
             {
                 var dataProtector = options.DataProtectionProvider.CreateProtector(
-                    typeof(THandler).FullName,
+                    typeof(THandler).FullName ?? nameof(GrandIdPostConfigureOptions<TOptions, THandler>),
                     name,
                     "v1"
                 );

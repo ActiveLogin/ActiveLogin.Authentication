@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <NeutralLanguage>en</NeutralLanguage>
@@ -12,7 +12,7 @@
         <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.Azure</PackageId>
 
         <VersionPrefix>5.0.0</VersionPrefix>
-        <VersionSuffix>alpha-1</VersionSuffix>
+        <VersionSuffix>alpha-2</VersionSuffix>
         <AssemblyVersion>5.0.0.0</AssemblyVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
@@ -22,7 +22,7 @@
 
         <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>
         <Company>Active Solution</Company>
-        <Copyright>Copyright © 2018-2020 Active Solution</Copyright>
+        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
 
         <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
@@ -39,13 +39,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Identity" Version="1.3.0" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+        <PackageReference Include="Azure.Identity" Version="1.5.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.1" />
+        <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
     </ItemGroup>
 
     <ItemGroup>

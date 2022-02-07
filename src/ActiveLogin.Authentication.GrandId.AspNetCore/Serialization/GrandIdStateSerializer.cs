@@ -1,5 +1,8 @@
-﻿using System.IO;
+using System;
+using System.IO;
+
 using ActiveLogin.Authentication.GrandId.AspNetCore.Models;
+
 using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
@@ -30,6 +33,11 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
             }
 
             var authenticationProperties = PropertiesSerializer.Default.Read(reader);
+
+            if (authenticationProperties == null)
+            {
+                throw new Exception("Could not deserialize AuthenticationProperties");
+            }
 
             return new GrandIdState(authenticationProperties);
         }

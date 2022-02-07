@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -6,19 +7,20 @@ namespace ActiveLogin.Authentication.Common.Serialization
 {
     internal static class SystemRuntimeJsonSerializer
     {
-        public static T Deserialize<T>(string json)
+        public static T? Deserialize<T>(string json)
         {
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(T));
-                return (T)serializer.ReadObject(stream);
-            }
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+
+            var serializer = new DataContractJsonSerializer(typeof(T));
+            var deserialized = serializer.ReadObject(stream);
+
+            return (T?)deserialized;
         }
 
-        public static T Deserialize<T>(Stream json)
+        public static T? Deserialize<T>(Stream json)
         {
             var serializer = new DataContractJsonSerializer(typeof(T));
-            return (T)serializer.ReadObject(json);
+            return (T?)serializer.ReadObject(json);
         }
 
         public static string Serialize<T>(T value)
@@ -28,13 +30,13 @@ namespace ActiveLogin.Authentication.Common.Serialization
                 return string.Empty;
             }
 
-            using (var stream = new MemoryStream())
-            {
-                var serializer = new DataContractJsonSerializer(typeof(T));
-                serializer.WriteObject(stream, value);
-                var json = stream.ToArray();
-                return Encoding.UTF8.GetString(json, 0, json.Length);
-            }
+            using var stream = new MemoryStream();
+
+            var serializer = new DataContractJsonSerializer(typeof(T));
+            serializer.WriteObject(stream, value);
+            var json = stream.ToArray();
+
+            return Encoding.UTF8.GetString(json, 0, json.Length);
         }
     }
 }
