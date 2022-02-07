@@ -1,10 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+      <TargetFramework>net6.0</TargetFramework>
+      <LangVersion>latest</LangVersion>
+      <Nullable>enable</Nullable>
+
+      <Product>Active Login</Product>
+      <Description>ASP.NET sample for Active Login.</Description>
+      <Authors>Active Solution</Authors>
+      <Company>Active Solution</Company>
+      <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
+
+      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+      <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
   <ItemGroup>
