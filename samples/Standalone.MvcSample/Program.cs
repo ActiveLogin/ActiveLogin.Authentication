@@ -38,7 +38,7 @@ var environment = builder.Environment;
 // Add telemetry
 services.AddApplicationInsightsTelemetry(configuration);
 
-// Add authentication
+// Configure cookie policy
 services.Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.None;
@@ -46,6 +46,7 @@ services.Configure<CookiePolicyOptions>(options =>
     options.Secure = CookieSecurePolicy.Always;
 });
 
+// Add authentication and Active Login
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie()
     .AddBankId(builder =>
@@ -86,11 +87,15 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         }
     });
 
-// Add MVC
-services.AddControllersWithViews(config =>
+// Add Authorization
+builder.Services.AddAuthorization(options =>
 {
-    config.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+    // By default, all incoming requests will be authorized according to the default policy.
+    options.FallbackPolicy = options.DefaultPolicy;
 });
+
+// Add MVC
+services.AddControllersWithViews();
 
 
 

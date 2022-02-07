@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer.ServerSample
 {
-    public static class Config
+    public static class IdentityServerConfig
     {
         private const string PersonalIdentityNumberScopeName = "personalidentitynumber";
 
@@ -23,7 +23,7 @@ namespace IdentityServer.ServerSample
                         new Secret(clientsConfiguration["MvcClient:ClientSecret"].Sha256())
                     },
 
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowedGrantTypes = GrantTypes.Code,
 
                     RedirectUris = { clientsConfiguration["MvcClient:RedirectUri"] },
                     PostLogoutRedirectUris = { clientsConfiguration["MvcClient:PostLogoutRedirectUri"] },
@@ -40,7 +40,7 @@ namespace IdentityServer.ServerSample
                     // We can only obtain the info from BankID on sign in,
                     //  so as long as we don't persist it in a local database
                     //  we have to pass them on right away in the id token
-                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AlwaysIncludeUserClaimsInIdToken = true
                 }
             };
         }
