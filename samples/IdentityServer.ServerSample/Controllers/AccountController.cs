@@ -1,100 +1,96 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using IdentityServer.ServerSample.Models;
 using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityServer.ServerSample.Controllers
+namespace IdentityServer.ServerSample.Controllers;
+
+public class AccountController : Controller
 {
-    public class AccountController : Controller
+    private readonly IIdentityServerInteractionService _interaction;
+    private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
+
+    public AccountController(IIdentityServerInteractionService interaction,
+        IAuthenticationSchemeProvider authenticationSchemeProvider)
     {
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
+        _interaction = interaction;
+        _authenticationSchemeProvider = authenticationSchemeProvider;
+    }
 
-        public AccountController(IIdentityServerInteractionService interaction,
-            IAuthenticationSchemeProvider authenticationSchemeProvider)
+    public async Task<IActionResult> Login(string returnUrl)
+    {
+        var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
+        var providers = schemes
+            .Where(x => x.DisplayName != null)
+            .Select(x => new ExternalProvider(x.DisplayName ?? x.Name, x.Name));
+        var viewModel = new AccountLoginViewModel(providers, returnUrl);
+
+        return View(viewModel);
+    }
+
+    public IActionResult ExternalLogin(string provider, string returnUrl)
+    {
+        var props = new AuthenticationProperties
         {
-            _interaction = interaction;
-            _authenticationSchemeProvider = authenticationSchemeProvider;
-        }
-
-        public async Task<IActionResult> Login(string returnUrl)
-        {
-            var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
-            var providers = schemes
-                .Where(x => x.DisplayName != null)
-                .Select(x => new ExternalProvider(x.DisplayName ?? x.Name, x.Name));
-            var viewModel = new AccountLoginViewModel(providers, returnUrl);
-
-            return View(viewModel);
-        }
-
-        public IActionResult ExternalLogin(string provider, string returnUrl)
-        {
-            var props = new AuthenticationProperties
+            RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
+            Items =
             {
-                RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
-                Items =
-                {
-                    { "returnUrl", returnUrl },
-                    { "scheme", provider },
-                    { "cancelReturnUrl", Url.Action("Login", "Account", new { returnUrl }) }
-                }
-            };
-
-            return Challenge(props, provider);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback()
-        {
-            var result = await HttpContext.AuthenticateAsync();
-            if (result?.Succeeded != true)
-            {
-                throw new Exception("External authentication error");
+                { "returnUrl", returnUrl },
+                { "scheme", provider },
+                { "cancelReturnUrl", Url.Action("Login", "Account", new { returnUrl }) }
             }
+        };
 
-            var returnUrl = result.Properties?.Items["returnUrl"];
+        return Challenge(props, provider);
+    }
 
-            if (returnUrl != null && _interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-
-            return Redirect("~/");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Logout(string logoutId)
+    [HttpGet]
+    public async Task<IActionResult> ExternalLoginCallback()
+    {
+        var result = await HttpContext.AuthenticateAsync();
+        if (result?.Succeeded != true)
         {
-            var logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
-            var returnUrl = logoutRequest?.PostLogoutRedirectUri;
-
-            return await Logout(new LogoutModel(returnUrl));
+            throw new Exception("External authentication error");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Logout(LogoutModel model)
+        var returnUrl = result.Properties?.Items["returnUrl"];
+
+        if (returnUrl != null && _interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
         {
-            await HttpContext.SignOutAsync();
-
-            return Redirect(model?.ReturnUrl ?? "~/");
+            return Redirect(returnUrl);
         }
 
-        public class LogoutModel
+        return Redirect("~/");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Logout(string logoutId)
+    {
+        var logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
+        var returnUrl = logoutRequest?.PostLogoutRedirectUri;
+
+        return await Logout(new LogoutModel(returnUrl));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Logout(LogoutModel model)
+    {
+        await HttpContext.SignOutAsync();
+
+        return Redirect(model?.ReturnUrl ?? "~/");
+    }
+
+    public class LogoutModel
+    {
+        public LogoutModel() : this(null)
         {
-            public LogoutModel() : this(null)
-            {
-            }
-
-            public LogoutModel(string? returnUrl)
-            {
-                ReturnUrl = returnUrl;
-            }
-
-            public string? ReturnUrl { get; }
         }
+
+        public LogoutModel(string? returnUrl)
+        {
+            ReturnUrl = returnUrl;
+        }
+
+        public string? ReturnUrl { get; }
     }
 }

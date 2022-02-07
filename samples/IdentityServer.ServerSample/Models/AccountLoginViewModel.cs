@@ -1,16 +1,13 @@
-﻿using System.Collections.Generic;
+namespace IdentityServer.ServerSample.Models;
 
-namespace IdentityServer.ServerSample.Models
+public class AccountLoginViewModel
 {
-    public class AccountLoginViewModel
+    public AccountLoginViewModel(IEnumerable<ExternalProvider> externalProviders, string returnUrl)
     {
-        public AccountLoginViewModel(IEnumerable<ExternalProvider> externalProviders, string returnUrl)
-        {
-            ExternalProviders = externalProviders;
-            ReturnUrl = returnUrl;
-        }
-
-        public IEnumerable<ExternalProvider> ExternalProviders { get; }
-        public string ReturnUrl { get; }
+        ExternalProviders = externalProviders;
+        ReturnUrl = returnUrl;
     }
+
+    public IEnumerable<ExternalProvider> ExternalProviders { get; }
+    public string ReturnUrl { get; }
 }

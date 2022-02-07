@@ -1,19 +1,10 @@
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 
 using ActiveLogin.Authentication.BankId.AspNetCore;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 
 

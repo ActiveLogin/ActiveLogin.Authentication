@@ -1,36 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
 
-    <Product>Active Login</Product>
-    <Description>ASP.NET sample for Active Login.</Description>
-    <Authors>Active Solution</Authors>
-    <Company>Active Solution</Company>
-    <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
+        <Product>Active Login</Product>
+        <Description>ASP.NET sample for Active Login.</Description>
+        <Authors>Active Solution</Authors>
+        <Company>Active Solution</Company>
+        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
 
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-      
-    <UserSecretsId>b4cfd4f6-5b8d-46dd-a839-6ab31718d85e</UserSecretsId>
-  </PropertyGroup>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj" />
-    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj" />
-    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj" />
-    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj" />
-  </ItemGroup>
+        <UserSecretsId>b4cfd4f6-5b8d-46dd-a839-6ab31718d85e</UserSecretsId>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Certificates\" />
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Certificates\" />
+        <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+    </ItemGroup>
 </Project>

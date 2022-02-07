@@ -4,6 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
 
         <Product>Active Login</Product>
         <Description>ASP.NET sample for Active Login.</Description>
@@ -13,7 +14,7 @@
 
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-        
+
         <UserSecretsId>4f84b1a4-1217-4842-b135-a15f3a61dfae</UserSecretsId>
     </PropertyGroup>
 
