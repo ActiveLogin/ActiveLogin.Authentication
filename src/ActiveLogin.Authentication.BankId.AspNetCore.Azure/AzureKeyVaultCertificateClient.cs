@@ -16,7 +16,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
                 throw new ArgumentException("AzureKeyVaultUri is required");
             }
 
-            if (!options.UseManagedIdentity)
+            if (options.UseManagedIdentity == UseManagedIdentity.None)
             {
                 if (string.IsNullOrWhiteSpace(options.AzureAdTenantId))
                 {
@@ -42,7 +42,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 
         private static TokenCredential GetTokenCredential(ClientCertificateFromAzureKeyVaultOptions options)
         {
-            if (!options.UseManagedIdentity)
+            if (options.UseManagedIdentity == UseManagedIdentity.None)
             {
                 return new ClientSecretCredential(
                     options.AzureAdTenantId,
