@@ -188,6 +188,12 @@ In our [Security Policy](SECURITY.md) you can read about how to report a vulnera
 We are very open to community contributions to Active Login.
 Please see our [contribution guidelines](CONTRIBUTING.md) before getting started.
 
+#### Contributors
+
+Thank you to all who have and are contributing to this project!
+
+![Contributors](https://contrib.rocks/image?repo=ActiveLogin/ActiveLogin.Authentication)
+
 
 ### Stay updated and join the discussion
 
