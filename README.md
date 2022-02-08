@@ -164,14 +164,13 @@ dotnet test
 
 ### How do I run the samples locally?
 
-The samples are configured to run in simulated mode (no BankID certificate required) by default. The _IdentityServer.ClientSample_ is using the _IdentityServer.ServerSample_ as its identity provider. So to run the _IdentityServer.ClientSample_, the _IdentityServer.ServerSample_ needs to be running first.
+The samples are configured to run in simulated mode (no BankID certificate required) by default. The _Standalone.MvcSample_ is using the the most basic sample and is a good start.
 
-The easiest way to try the sample out is to:
+To run the sample: Navigate to `/Samples/Standalone.MvcSample/` and run:
 
-1. Configure the solution to use _Multiple startup projects_, and set it to start both _IdentityServer.ServerSample_ and _IdentityServer.ClientSample_
-1. Press F5
-
-There is also a standalone sample called _Standalone.MvcSample_ which uses only ASP.NET MVC with minimum of code.
+```console
+dotnet run
+```
 
 
 ### How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?
