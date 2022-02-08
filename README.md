@@ -25,7 +25,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 
 _Screenshots on how the default UI for Native BankID looks on different devices._
 
-![Active Login Screenshots](docs/images/activelogin-screenshots-v2.png)
+![Active Login Screenshots](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-screenshots.png)
 
 ## Table of contents
 
@@ -239,7 +239,7 @@ Active Login provides a structured way of generating and logging events. These c
 
 Read more on the topic in [Active Login Monitor](docs/monitor.md).
 
-![Active Login Monitor](docs/images/active-login-monitor-screenshot_1.png)
+![Active Login Monitor](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png)
 
 ## Samples
 
@@ -324,7 +324,7 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 
 Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
 
-![Active Login with Azure AD B2C](docs/images/activelogin-setup-azuread-b2c.png)
+![Active Login with Azure AD B2C](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-setup-azuread-b2c.png)
 
 Please [reach out](#support--training) if you need assistance in setting this up.
 
@@ -501,7 +501,7 @@ For samples, these great products are used:
 
 Active Solution is the main sponsor of Active Login. Active Solution is located in Stockholm (Sweden) and provides IT consulting with focus on web, cloud and AI.
 
-![Active Solution](https://activese-assets-prod.azureedge.net/graphics/activesolution-logo.svg)
+![Active Solution](https://alresourcesprod.blob.core.windows.net/docsassets/activesolution-logo.svg)
 
 _We deliver tomorrow's cloud solutions, today. Our costumers choose us because we are engaged, flexible and efficient. We attract the brightest talent and are one of Microsoft's most valued partners._
 
