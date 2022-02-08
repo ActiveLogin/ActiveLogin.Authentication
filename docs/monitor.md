@@ -5,7 +5,7 @@ When using the `BankIdApplicationInsightsEventListener` (`builder.AddApplication
 ## Dashboard
 In our provisioning samples we include a way to deploy an Azure Dahsboard displaying some of the most important metrics and queries from below. See [ActiveLogin-Monitor.json](/samples/AzureProvisioningSample/ActiveLogin-Monitor.json).
 
-![Active Login Monitor](images/active-login-monitor-screenshot_1.png)
+![Active Login Monitor](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png)
 
 # KQL Samples
 
