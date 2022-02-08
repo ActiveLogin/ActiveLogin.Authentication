@@ -4,7 +4,48 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 
 ## Table of contents
 
-TODO: TOC
+* [Getting started](#getting-started)
+  + [1. Preparation](#1-preparation)
+  + [2. Read the documentation](#2-read-the-documentation)
+  + [3. Install the NuGet package](#3-install-the-nuget-package)
+  + [3. Prepare your project](#3-prepare-your-project)
+  + [4. Get started in development](#4-get-started-in-development)
+  + [5. Use test or production environments](#5-use-test-or-production-environments)
+  + [6. Monitoring](#6-monitoring)
+* [Environments](#environments)
+  + [Simulated environment](#simulated-environment)
+  + [Simulated environment with no config](#simulated-environment-with-no-config)
+  + [Simulated environment with custom person info](#simulated-environment-with-custom-person-info)
+  + [Test environment](#test-environment)
+  + [Production environment](#production-environment)
+  + [Full sample for production](#full-sample-for-production)
+* [Basic configuration samples](#basic-configuration-samples)
+  + [Using client certificate from Azure KeyVault](#using-client-certificate-from-azure-keyvault)
+  + [Using client certificate from custom source](#using-client-certificate-from-custom-source)
+  + [Using root CA certificate](#using-root-ca-certificate)
+  + [Adding schemas](#adding-schemas)
+  + [Customizing schemas](#customizing-schemas)
+  + [Custom schema](#custom-schema)
+  + [Customizing BankID options](#customizing-bankid-options)
+* [Concepts](#concepts)
+  + [Storing certificates in Azure](#storing-certificates-in-azure)
+  + [BankId claim types](#bankid-claim-types)
+  + [BankID Certificate Policies](#bankid-certificate-policies)
+  + [Return URL for cancellation](#return-url-for-cancellation)
+  + [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
+  + [Multi tenant scenario](#multi-tenant-scenario)
+  + [Customize the UI](#customize-the-ui)
+  + [Event listeners](#event-listeners)
+  + [Store data on auth completion](#store-data-on-auth-completion)
+  + [Resolve the end user ip](#resolve-the-end-user-ip)
+  + [Custom QR code generation](#custom-qr-code-generation)
+  + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
+  + [Use api wrapper only](#use-api-wrapper-only)
+  + [Running on Linux](#running-on-linux)
+  + [Localization](#localization)
+  + [Names of the person might be capitalized](#names-of-the-person-might-be-capitalized)
+  + [Cookies issued](#cookies-issued)
+  + [Browser support](#browser-support)
 
 
 ---
@@ -34,12 +75,10 @@ BankID requires you to use a client certificate and trust a specific root CA-cer
 ___Note:___ When using MacOS or Linux, path strings use ```'/'``` for subfolders: ```"Certificates/BankIdRootCertificate-[Test or Prod].crt"```
 
 
-### Dependencies
-
-The BankID packages have UI that uses classes from [Bootstrap 4](https://getbootstrap.com/), please make sure these styles are available in the layout.
-
-
 ### 2. Read the documentation
+
+It is expected that you have a basic understanding of how [ASP.NET](https://docs.microsoft.com/en-us/aspnet/core/), [ASP.NET MVC](https://docs.microsoft.com/en-us/aspnet/core/mvc/overview) and [ASP.NET Authentication](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) works before getting started.
+
 
 Active Login is designed to make it very easy to get started with BankID, but in the end you are responsible for making sure that you are complient with the technical guidelines and/or legal agreements.
 
@@ -60,12 +99,13 @@ dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
 
 ### 3. Prepare your project
 
-It is expected that you have a basic understanding of how [ASP.NET](https://docs.microsoft.com/en-us/aspnet/core/), [ASP.NET MVC](https://docs.microsoft.com/en-us/aspnet/core/mvc/overview) and [ASP.NET Authentication](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) works before getting started.
+The authentication modules for BankID is registered in your `Program.cs`. Depending on your setup, you will probably have to configure challenge and callbacks in `AccountController.cs` or similar.
 
-Also, you are expected to have read up on the [latest information from BankID](https://www.bankid.com/utvecklare/guider). Active Login will help you to implement BankID according to guidelines, but in the end, it's your responsiblity to follow the BankID agreement.
+For the UI to work, it expects there to be a `_Layout.cshtml` available so that it can render within at `@RenderBody()`.
 
-The authentication modules for BankID is registered in your `Program.cs`. Depending on your setup, you will probably have to configure challenge and callbacks in `AccountController.cs` or similar. Our Samples might give you an inspiration on how to do.
+The BankID packages have UI that uses classes from [Bootstrap 4](https://getbootstrap.com/), please make sure these styles are available in the `_Layout.cshtml`.
 
+Our Samples might give you an inspiration on how to do all these.
 
 ### 4. Get started in development
 
@@ -81,12 +121,6 @@ services
             .UseSimulatedEnvironment()
             .AddSameDevice();
     });
-```
-
-___Note:___ Regarding ASP.NET Routes. Also make sure that you map the controller route in ASP.NET Endpoint routing, like this:
-
-```csharp
-app.MapDefaultControllerRoute();
 ```
 
 
@@ -176,7 +210,7 @@ services
 ```
 
 
-### Test
+### Test environment
 
 This will use the real REST API for BankID, connecting to the Test environment. It requires you to have the certificates described under _Preparation_ above.
 
@@ -606,7 +640,9 @@ public class BankIdSampleEventListener : IBankIdEventListener
         return Task.CompletedTask;
     }
 }
+```
 
+```csharp
 services
     .AddAuthentication()
     .AddBankId(builder =>
@@ -809,7 +845,6 @@ services.AddTransient<IBankIdSupportedDeviceDetector, CustomBankIdSupportedDevic
 In Active Login device and browser detection is required for example to determine which URL to use to launch the BankID app, according to the BankID Relaying party Guidelines. This logic is primarily encapsulated into `IBankIdSupportedDeviceDetector`.
 
 The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supports the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.AspNetCore.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
-```
 
 
 ### Use api wrapper only
@@ -907,7 +942,7 @@ A more technical deep dive of the cookies can be found in [this issue](https://g
 
 We aim at supporting the latest version of all major browsers both on desktop and on mobile.
 
-All browsers on mobile are supported, but the redirect flow have been tested and verified on these:
+All browsers on mobile are supported to show the UI, but the redirect flow have been tested and verified on these:
 - iOS
     - Safari
     - Chrome
@@ -921,7 +956,7 @@ All browsers on mobile are supported, but the redirect flow have been tested and
     - Samsung Internet
     - Opera Mini
 
-___Note:___ Brave on iOS/Android is not supported at the moment. It identifies as Safari or Chrome for privacy reasons and will get wrong configuration.
+___Note:___ Brave on iOS/Android identifies as Safari or Chrome for privacy reasons and will get wrong configuration, so the redirect flow will fail.
 
 ___Note:___ If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 

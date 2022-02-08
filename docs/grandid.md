@@ -129,13 +129,13 @@ services
     .AddGrandId(builder =>
     {
         builder
-            .UseDevelopmentEnvironment()
+            .UseSimulatedEnvironment()
             .AddBankIdSameDevice(options => { })
             .AddBankIdOtherDevice(options => { });
     });
 ```
 
-### Development environment with custom person info
+### Simulated environment with custom person info
 
 The faked name and personal identity number can also be customized like this.
 
@@ -145,7 +145,7 @@ services
     .AddGrandId(builder =>
     {
         builder
-            .UseDevelopmentEnvironment("Alice", "Smith", "199908072391")
+            .UseSimulatedEnvironment("Alice", "Smith", "199908072391")
             .AddBankIdSameDevice(options => { })
             .AddBankIdOtherDevice(options => { });
     });
@@ -270,7 +270,7 @@ If you want to apply some options for all BankID schemes, you can do so by using
 
 We have seperated the API-wrapper into a separate package so that you can use it in other scenarios we have not covered. They look like this and are both well documented using XML-comments.
 
-The constructor for these ApiClients takes an `HttpClient` and you need to configure that `HttpClient` with a `BaseAddress`, `Tls12`, client certificates etc. depending on your needs.
+The constructor for the ApiClient takes an `HttpClient` and you need to configure that `HttpClient` with a `BaseAddress`, `Tls12`, client certificates etc. depending on your needs.
 
 ```csharp
 public class GrandIdApiClient : IGrandIdApiClient

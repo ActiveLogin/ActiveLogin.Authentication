@@ -41,7 +41,26 @@ _Screenshot on monitoring dashboard._
 
 ___Note:___ This Readme reflects the state of our main branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our [CI builds](#project--packages-overview).
 
-TODO
+* [Features](#features)
+* [Screenshots](#screenshots)
+* [Projects & Packages overview](#projects--packages-overview)
+* [Usage & Docs](#usage--docs)
+* [Samples](#samples)
+* [Tests](#tests)
+* [FAQ](#faq)
+  + [What version of .NET is supported?](#what-version-of-net-is-supported)
+  + [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
+  + [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
+  + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad--active-directory--b2c)
+  + [Where did the packages for GrandId / Svensk E-identitet go?](#where-did-the-packages-for-grandid--svensk-e-identitet-go)
+* [Active Login](#active-login)
+  + [Security](#security)
+  + [Contribute](#contribute)
+  + [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
+  + [License](#license)
+  + [Acknowledgements](#acknowledgements)
+  + [Sponsors](#sponsors)
+  + [Support & Training](#support--training)
 
 
 ## Projects & Packages overview
@@ -55,7 +74,7 @@ CI-builds from main of all packages are available in [our Azure DevOps Artifacts
 | [BankId.AspNetCore.Azure](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.Azure) | Azure KeyVault integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) |
 | [BankId.AspNetCore.AzureMonitor](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor) | Azure Monitor (Application Insights) integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) |
 | [BankId.AspNetCore.QRCoder](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder) | QR code generation using QRCoder the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) |
-| [BankId.AspNetCore.UAParser](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.UACoder) | Device and browser detection. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) |
+| [BankId.AspNetCore.UAParser](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.UACoder) | Device and browser detection using UAParser. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) |
 
 
 ## Usage & Docs
