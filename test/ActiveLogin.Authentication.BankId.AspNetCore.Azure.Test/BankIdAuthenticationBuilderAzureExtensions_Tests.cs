@@ -37,7 +37,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                 {
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
-                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "true" }
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", UseManagedIdentity.UserAssigned.ToString() }
                 };
 
                 var provider = SetupTest(config);
@@ -77,7 +77,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "clientsecret" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
-                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", UseManagedIdentity.None.ToString() }
                 };
 
                 var provider = SetupTest(config);
@@ -97,7 +97,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "clientsecret" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
-                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", UseManagedIdentity.None.ToString() }
                 };
 
                 var provider = SetupTest(config);
@@ -116,7 +116,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test
                     { "ActiveLogin:BankId:ClientCertificate:AzureAdClientSecret", "" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultUri", "someuri" },
                     { "ActiveLogin:BankId:ClientCertificate:AzureKeyVaultSecretName", "somename" },
-                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", "false" }
+                    { "ActiveLogin:BankId:ClientCertificate:UseManagedIdentity", UseManagedIdentity.None.ToString() }
                 };
 
                 var provider = SetupTest(config);
