@@ -7,7 +7,7 @@
 [![Discussion](https://img.shields.io/github/discussions/ActiveLogin/ActiveLogin.Authentication)](https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions)
 [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with Identity Server it can be configured as a provider for Azure AD B2C. Free to use, [commercial support and training](#support--training) is available if you need assistance or a quick start. 
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Used with IdentityServer it can be configured as a provider for Azure AD B2C. Free to use, [commercial support and training](#support--training) is available if you need assistance or a quick start. 
 
 ## Features
 
@@ -245,7 +245,7 @@ Read more on the topic in [Active Login Monitor](docs/monitor.md).
 
 For more use cases, samples and inspiration; feel free to browse our unit tests and samples.
 
-_Note: These are samples on how to use Active Login in different situations and might not represent optimal way of setting up ASP.NET MVC, Identity Server or other components. Please see this as inspiration._
+_Note: These are samples on how to use Active Login in different situations and might not represent optimal way of setting up ASP.NET MVC, IdentityServer or other components. Please see this as inspiration._
 
 ## Projects and live demos
 
@@ -322,7 +322,7 @@ See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/t
 
 ### How do I use Active Login to get support for BankID or GrandID in Azure AD (Active Directory) B2C?
 
-Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of Identity Server (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
+Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of IdentityServer (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID and/or GrandID support.
 
 ![Active Login with Azure AD B2C](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-setup-azuread-b2c.png)
 
@@ -515,7 +515,7 @@ We can help you out with:
 
 - Education and training on:
 	- Active Login
-	- Identity Server
+	- IdentityServer
 	- Azure AD B2C
 	- Authentication on the .NET platform in general
 - Hands on implementing BankID using Active Login
