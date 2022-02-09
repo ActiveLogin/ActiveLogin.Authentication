@@ -2,9 +2,7 @@
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET.
 
-## Table of contents
-
-* [Getting started](#getting-started)
+## Table of contentsmana
   + [1. Preparation](#1-preparation)
   + [2. Read the documentation](#2-read-the-documentation)
   + [3. Install the NuGet package](#3-install-the-nuget-package)
@@ -420,6 +418,8 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 {
     "ActiveLogin:BankId:ClientCertificate": {
         "UseManagedIdentity": true,
+        "ManagedIdentityType": ManagedIdentityType.SystemAssigned,
+        "ManagedIdentityUserAssignedClientId": "",
 
         "AzureAdTenantId": "",
         "AzureAdClientId": "",

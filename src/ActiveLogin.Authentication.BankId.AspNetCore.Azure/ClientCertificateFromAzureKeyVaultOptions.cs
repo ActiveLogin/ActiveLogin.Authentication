@@ -2,7 +2,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 {
     public class ClientCertificateFromAzureKeyVaultOptions
     {
-        public UseManagedIdentity UseManagedIdentity { get; set; }
+        public bool UseManagedIdentity { get; set; }
+        public ManagedIdentityType ManagedIdentityType { get; set; } = ManagedIdentityType.SystemAssigned;
+        public string? ManagedIdentityUserAssignedClientId { get; set; }
 
         public string? AzureAdTenantId { get; set; }
         public string? AzureAdClientId { get; set; }
@@ -10,12 +12,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 
         public string? AzureKeyVaultUri { get; set; }
         public string? AzureKeyVaultSecretName { get; set; }
-        public string? AZURE_CLIENT_ID { get; set; }
-    }
-    public enum UseManagedIdentity
-    {
-        None,
-        SystemAssigned,
-        UserAssigned
     }
 }
