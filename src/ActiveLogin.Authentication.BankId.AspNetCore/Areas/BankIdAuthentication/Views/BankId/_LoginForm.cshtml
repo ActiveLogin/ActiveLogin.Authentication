@@ -2,10 +2,6 @@
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdHandler> Localizer
 
-@{
-    ArgumentNullException.ThrowIfNull(Model);
-}
-
 <form id="bankIdLoginForm">
     <input name="RequestVerificationToken" type="hidden" value="@Model.AntiXsrfRequestToken">
     <input name="ReturnUrl" type="hidden" value="@Model.ReturnUrl" />

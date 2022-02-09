@@ -197,7 +197,7 @@
         "web_site_detailederrormessages_enabled": "[parameters('web_site_detailederrormessages_enabled')]",
 
         "web_site_config_web": {
-            "netFrameworkVersion": "v4.6",
+            "netFrameworkVersion": "v6.0",
             "phpVersion": "",
             "pythonVersion": "",
             "nodeVersion": "",
@@ -322,6 +322,14 @@
             },
             "resources": [
                 {
+                    "type": "siteextensions",
+                    "apiVersion": "2018-11-01",
+                    "name": "AspNetCoreRuntime.6.0.x86",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('web_serversite_resource_name'))]"
+                    ]
+                },
+                {
                     "apiVersion": "2015-08-01",
                     "name": "web",
                     "type": "config",
@@ -417,6 +425,14 @@
                 "httpsOnly": "[variables('web_site_httpsonly_enabled')]"
             },
             "resources": [
+                {
+                    "type": "siteextensions",
+                    "apiVersion": "2018-11-01",
+                    "name": "AspNetCoreRuntime.6.0.x86",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('web_clientsite_resource_name'))]"
+                    ]
+                },
                 {
                     "apiVersion": "2015-08-01",
                     "name": "web",
