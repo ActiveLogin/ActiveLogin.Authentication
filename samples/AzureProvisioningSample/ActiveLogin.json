@@ -197,7 +197,7 @@
         "web_site_detailederrormessages_enabled": "[parameters('web_site_detailederrormessages_enabled')]",
 
         "web_site_config_web": {
-            "netFrameworkVersion": "v4.6",
+            "netFrameworkVersion": "6.0",
             "phpVersion": "",
             "pythonVersion": "",
             "nodeVersion": "",
