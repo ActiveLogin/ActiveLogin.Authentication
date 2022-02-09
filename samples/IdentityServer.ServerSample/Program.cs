@@ -15,12 +15,12 @@ using Microsoft.AspNetCore.Localization;
 //
 // These are samples on how to use Active Login in different situations
 // and might not represent optimal way of setting up
-// ASP.NET MVC, Identity Server or other components.
+// ASP.NET MVC, IdentityServer or other components.
 //
 // Please see this as inspiration, not a complete template.
 
 //
-// Please note that Duende IdentityServer might require you to have a license, see:
+// Please note that Duende IdentityServer requires a license if you are running it in production
 // https://duendesoftware.com/products/identityserver
 //
 

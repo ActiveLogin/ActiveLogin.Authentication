@@ -85,7 +85,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                         app.UseEndpoints(endpoints =>
                         {
                             endpoints.MapControllers();
-                            endpoints.MapDefaultControllerRoute();
                         });
                         appBuilder.Use(async (context, next) =>
                         {
@@ -508,7 +507,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                    endpoints.MapDefaultControllerRoute();
                 });
 
                 app.Use(async (context, next) =>

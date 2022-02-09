@@ -1,4 +1,4 @@
-name: Active Login Authentication
+name: Build
 
 on:
   push:

@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
 **What area is it related to**
-BankID, GrandID, API etc.
+API, UI etc.
 
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
