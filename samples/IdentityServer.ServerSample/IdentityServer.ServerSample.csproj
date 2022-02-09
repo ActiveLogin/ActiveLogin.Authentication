@@ -46,6 +46,9 @@
         <None Update="Certificates\BankIdRootCertificate-Test.crt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="tempkey.jwk">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
