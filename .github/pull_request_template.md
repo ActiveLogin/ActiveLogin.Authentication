@@ -2,6 +2,12 @@ This PR fixes #NNN.
 
 High level overview of this PR:
 
-- [x] A
-- [x] B
-- [x] C
+- [ ] A
+- [ ] B
+- [ ] C
+
+These things have been implemented (when relevant):
+
+- [ ] Code written
+- [ ] Test added
+- [ ] Documentation updated / written

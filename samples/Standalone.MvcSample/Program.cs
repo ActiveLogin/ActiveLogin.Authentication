@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Localization;
 //
 // These are samples on how to use Active Login in different situations
 // and might not represent optimal way of setting up
-// ASP.NET MVC, Identity Server or other components.
+// ASP.NET MVC, IdentityServer or other components.
 //
 // Please see this as inspiration, not a complete template.
 //

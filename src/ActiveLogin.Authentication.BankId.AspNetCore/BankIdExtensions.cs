@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// {
         ///     builder
         ///         .UseProductionEnvironment()
-        ///         .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+        ///         .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
         ///         .AddSameDevice()
         ///         .AddOtherDevice()
         ///         .UseQrCoderQrCodeGenerator();
