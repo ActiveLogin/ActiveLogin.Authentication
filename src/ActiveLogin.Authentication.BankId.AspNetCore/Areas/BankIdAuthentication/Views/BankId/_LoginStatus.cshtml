@@ -2,10 +2,6 @@
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdHandler> Localizer
 
-@{
-    ArgumentNullException.ThrowIfNull(Model);
-}
-
 <div id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
 
     <img src="" alt="@Localizer["Qr_Code_Image"]" class="qr-code-image img-thumbnail img-fluid mb-2" style="display: none;" />
