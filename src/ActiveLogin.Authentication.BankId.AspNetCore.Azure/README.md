@@ -27,7 +27,7 @@ The expected configuration looks like this:
 {
     "ActiveLogin:BankId:ClientCertificate" {
         "UseManagedIdentity": true,
-        "ManagedIdentityType": ManagedIdentityType.SystemAssigned,
+        "ManagedIdentityType": "SystemAssigned",
         "ManagedIdentityUserAssignedClientId": "",
 
         "AzureAdTenantId": "",
