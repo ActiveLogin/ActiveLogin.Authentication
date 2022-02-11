@@ -51,6 +51,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
                 );
             }
 
+            if (options.ManagedIdentityType == ManagedIdentityType.UserAssigned)
+            {
+                ArgumentNullException.ThrowIfNull(options.ManagedIdentityUserAssignedClientId);
+                return new ManagedIdentityCredential(options.ManagedIdentityUserAssignedClientId);
+            }
+
             return new ManagedIdentityCredential();
         }
 
