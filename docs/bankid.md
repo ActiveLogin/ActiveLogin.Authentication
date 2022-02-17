@@ -413,6 +413,7 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FActiveLogin%2FActiveLogin.Authentication%2Fmain%2Fsamples%2FAzureProvisioningSample%2FActiveLogin.json)
 
 1. Deploy Azure KeyVault to your subscription. The ARM-template available in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample)  contains configuration that creates a KeyVault and enables [Managed Service Identity](https://azure.microsoft.com/en-us/resources/samples/app-service-msi-keyvault-dotnet/) for the App Service.
+1. If you use Managed identities, then you have to choose between system-assigned and user-assigned identities, when using user-assigned identity you need to store its client id to the variable ```ManagedIdentityUserAssignedClientId```
 1. [Import the certificates](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate) to your Azure Key Vault.
 1. Add the following to your config, the secret identifier and auth settings.
 
@@ -420,6 +421,8 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 {
     "ActiveLogin:BankId:ClientCertificate": {
         "UseManagedIdentity": true,
+        "ManagedIdentityType": "SystemAssigned",
+        "ManagedIdentityUserAssignedClientId": "",
 
         "AzureAdTenantId": "",
         "AzureAdClientId": "",
