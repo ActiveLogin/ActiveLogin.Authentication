@@ -1,5 +1,7 @@
 using System.Globalization;
+using System.Text;
 
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 
 using IdentityServer.ServerSample;
@@ -97,6 +99,16 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         builder.UseQrCoderQrCodeGenerator();
         builder.UseUaParserDeviceDetection();
 
+        builder.UseAuthRequestUserData(authUserData => {
+            var message = new StringBuilder();
+            message.AppendLine("# Active Login");
+            message.AppendLine();
+            message.AppendLine("Welcome to the _Active Login_ demo.");
+
+            authUserData.UserVisibleData = message.ToString();
+            authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
+        });
+
         builder.Configure(options =>
         {
             options.IssueBirthdateClaim = true;
@@ -116,6 +128,11 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
     });
+    //.UseStaticAuthUserData(new BankIdAuthUserData()
+    //{
+    //    UserVisibleData = "staticMessage"
+    //});
+  //  .UseAuthUserDataResolver<BankIdAuthUserData>();
 
 // Add MVC
 services.AddControllersWithViews()

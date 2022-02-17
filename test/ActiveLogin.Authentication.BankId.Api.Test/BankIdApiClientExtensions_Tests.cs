@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
                                .ReturnsAsync(It.IsAny<AuthResponse>());
 
             // Act
-            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1");
+            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", null);
 
             // Assert
             var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();

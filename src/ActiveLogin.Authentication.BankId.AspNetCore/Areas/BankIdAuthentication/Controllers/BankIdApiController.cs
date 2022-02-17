@@ -41,6 +41,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
         private readonly IBankIdEndUserIpResolver _bankIdEndUserIpResolver;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
+        private readonly IBankIdAuthRequestUserDataResolver _bankIdAuthUserDataResolver;
 
         public BankIdApiController(
             UrlEncoder urlEncoder,
@@ -54,7 +55,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdLoginResultProtector loginResultProtector,
             IBankIdQrCodeGenerator qrCodeGenerator,
             IBankIdEndUserIpResolver bankIdEndUserIpResolver,
-            IBankIdEventTrigger bankIdEventTrigger)
+            IBankIdEventTrigger bankIdEventTrigger,
+            IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver)
         {
             _urlEncoder = urlEncoder;
             _bankIdUserMessage = bankIdUserMessage;
@@ -68,6 +70,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _qrCodeGenerator = qrCodeGenerator;
             _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
             _bankIdEventTrigger = bankIdEventTrigger;
+            _bankIdAuthUserDataResolver = bankIdAuthUserDataResolver;
         }
 
         [ValidateAntiForgeryToken]
@@ -163,7 +166,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired, loginOptions.AllowBiometric);
 
-            return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement);
+            var authRequestContext = new BankIdAuthRequestContext(endUserIp, personalIdentityNumberString, authRequestRequirement);
+            var userData = _bankIdAuthUserDataResolver.GetUserData(authRequestContext, HttpContext);
+  
+            return new AuthRequest(endUserIp, userData.UserVisibleData, userData.UserNonVisibleData, personalIdentityNumberString, authRequestRequirement, userData.UserVisibleDataFormat);
         }
 
         private BankIdLaunchInfo GetBankIdLaunchInfo(BankIdLoginApiInitializeRequest request, AuthResponse authResponse)
