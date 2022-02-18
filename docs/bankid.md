@@ -820,7 +820,7 @@ builder.UseEndUserIpResolver(httpContext =>
 
 BankID allows you to display a text during authentication to describe the intent. Active Login allows you to set these parameters when authenticating:
 
-![User visible data](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-bankid-loggedin-screenshot.png)
+<img src="https://alresourcesprod.blob.core.windows.net/docsassets/active-login-bankid-uservisibledata-screenshot_1.jpg" width="250" alt="User visible data" />
 
 * `UserVisibleData`
 * `UserNonVisibleData`
