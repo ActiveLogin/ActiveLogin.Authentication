@@ -112,7 +112,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             AuthResponse authResponse;
             try
             {
-                var authRequest = GetAuthRequest(personalIdentityNumber, unprotectedLoginOptions);
+                var authRequest = await GetAuthRequest(personalIdentityNumber, unprotectedLoginOptions);
                 authResponse = await _bankIdApiClient.AuthAsync(authRequest);
             }
             catch (BankIdApiException bankIdApiException)
@@ -152,7 +152,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
         
-        private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
+        private async Task<AuthRequest> GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp(HttpContext);
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
@@ -167,9 +167,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired, loginOptions.AllowBiometric);
 
             var authRequestContext = new BankIdAuthRequestContext(endUserIp, personalIdentityNumberString, authRequestRequirement);
-            var userData = _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext, HttpContext);
+            var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext, HttpContext);
   
-            return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement, userData.Result.UserVisibleData, userData.Result.UserNonVisibleData, userData.Result.UserVisibleDataFormat);
+            return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement, userData.UserVisibleData, userData.UserNonVisibleData, userData.UserVisibleDataFormat);
         }
 
         private BankIdLaunchInfo GetBankIdLaunchInfo(BankIdLoginApiInitializeRequest request, AuthResponse authResponse)

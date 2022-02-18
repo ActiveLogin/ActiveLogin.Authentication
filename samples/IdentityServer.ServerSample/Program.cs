@@ -103,7 +103,7 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             var message = new StringBuilder();
             message.AppendLine("# Active Login");
             message.AppendLine();
-            message.AppendLine("Welcome to the _Active Login_ demo.");
+            message.AppendLine("Welcome to the *Active Login* demo.");
 
             authUserData.UserVisibleData = message.ToString();
             authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;

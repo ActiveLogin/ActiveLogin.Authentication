@@ -171,7 +171,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var authUserDataResult = new BankIdAuthUserData();
             authUserData(authUserDataResult);
-            UseAuthRequestUserData(builder, authUserData);
+            UseAuthRequestUserData(builder, authUserDataResult);
 
             return builder;
         }

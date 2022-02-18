@@ -818,22 +818,57 @@ builder.UseEndUserIpResolver(httpContext =>
 
 ### Resolve user data on Auth request
 
-If you want to display a text during authentication you can do it with parameter 'userVisibleData'.
-You can also add a text which will not be displayed with parameter 'userNonvisibleData' and format text in 'userVisibleData' with parameter 'userVisibleDataFormat'.
+BankID allows you to display a text during authentication to describe the intent. Active Login allows you to set these parameters when authenticating:
 
-You can add a static text on Program.cs:
+![User visible data](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-bankid-loggedin-screenshot.png)
+
+* `UserVisibleData`
+* `UserNonVisibleData`
+* `UserVisibleDataFormat`
+
+These can either be set as static data during startup in `Program.cs` or dynamically by overiding the interface `IBankIdAuthRequestUserDataResolver`.
+
+Sample of static text without formatting:
 
 ```csharp
 builder.UseAuthRequestUserData(authUserData =>
 {
-authUserData.UserVisibleData = "Message that is displayed";
+    authUserData.UserVisibleData = "Login to your account at Active Login";
 });
 ```
 
-Or register a class implementing `IBankIdAuthRequestUserDataResolver`:
+Sample of static text with formatting:
 
 ```csharp
-services.TryAddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestUserDataResolver>();
+builder.UseAuthRequestUserData(authUserData =>
+{
+    var message = new StringBuilder();
+    message.AppendLine("# Active Login");
+    message.AppendLine();
+    message.AppendLine("Welcome to the *Active Login* demo.");
+
+    authUserData.UserVisibleData = message.ToString();
+    authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
+});
+
+For more advanced scenarios, you can generate the user data dynamically by implementing `IBankIdAuthRequestUserDataResolver`:
+
+```csharp
+public class BankIdAuthRequestDynamicUserDataResolver : IBankIdAuthRequestUserDataResolver
+{
+    public Task<BankIdAuthUserData> GetUserDataAsync(BankIdAuthRequestContext authRequestContext, HttpContext httpContext)
+    {
+        return Task.FromResult(new BankIdAuthUserData()
+        {
+            UserVisibleData = "*Time:* " + DateTime.Now.ToLongTimeString(),
+            UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1
+        });;
+    }
+}
+```
+
+```csharp
+services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestDynamicUserDataResolver>();
 ```
 
 ### Custom QR code generation
