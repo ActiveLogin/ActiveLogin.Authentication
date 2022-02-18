@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.Test.TestHelpers;
 using Moq;
@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
                                .ReturnsAsync(It.IsAny<AuthResponse>());
 
             // Act
-            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", null);
+            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1");
 
             // Assert
             var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
@@ -42,6 +42,24 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
             Assert.Equal("1.1.1.1", request.EndUserIp);
             Assert.Equal("201801012392", request.PersonalIdentityNumber);
+        }
+
+        [Fact]
+        public async Task AuthAsync_WithEndUserIp_AndUserData_ShouldMap_ToAuthRequest_WithEndUserIp_AndUserData_Base64Encoded()
+        {
+            // Arrange
+            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+            bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
+                .ReturnsAsync(It.IsAny<AuthResponse>());
+
+            // Act
+            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", "userVisibleDataFormat");
+
+            // Assert
+            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
+            Assert.Equal("1.1.1.1", request.EndUserIp);
+            Assert.Equal("dXNlclZpc2libGVEYXRh", request.UserVisibleData);
+            Assert.Equal("userVisibleDataFormat", request.UserVisibleDataFormat);
         }
 
         [Fact]
