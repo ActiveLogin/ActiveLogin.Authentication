@@ -41,6 +41,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
         private readonly IBankIdEndUserIpResolver _bankIdEndUserIpResolver;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
+        private readonly IBankIdAuthRequestUserDataResolver _bankIdAuthUserDataResolver;
 
         public BankIdApiController(
             UrlEncoder urlEncoder,
@@ -54,7 +55,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdLoginResultProtector loginResultProtector,
             IBankIdQrCodeGenerator qrCodeGenerator,
             IBankIdEndUserIpResolver bankIdEndUserIpResolver,
-            IBankIdEventTrigger bankIdEventTrigger)
+            IBankIdEventTrigger bankIdEventTrigger,
+            IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver)
         {
             _urlEncoder = urlEncoder;
             _bankIdUserMessage = bankIdUserMessage;
@@ -68,6 +70,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _qrCodeGenerator = qrCodeGenerator;
             _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
             _bankIdEventTrigger = bankIdEventTrigger;
+            _bankIdAuthUserDataResolver = bankIdAuthUserDataResolver;
         }
 
         [ValidateAntiForgeryToken]
@@ -109,7 +112,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             AuthResponse authResponse;
             try
             {
-                var authRequest = GetAuthRequest(personalIdentityNumber, unprotectedLoginOptions);
+                var authRequest = await GetAuthRequest(personalIdentityNumber, unprotectedLoginOptions);
                 authResponse = await _bankIdApiClient.AuthAsync(authRequest);
             }
             catch (BankIdApiException bankIdApiException)
@@ -149,7 +152,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
         
-        private AuthRequest GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
+        private async Task<AuthRequest> GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp(HttpContext);
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
@@ -163,7 +166,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired, loginOptions.AllowBiometric);
 
-            return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement);
+            var authRequestContext = new BankIdAuthRequestContext(endUserIp, personalIdentityNumberString, authRequestRequirement);
+            var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext, HttpContext);
+  
+            return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement, userData.UserVisibleData, userData.UserNonVisibleData, userData.UserVisibleDataFormat);
         }
 
         private BankIdLaunchInfo GetBankIdLaunchInfo(BankIdLoginApiInitializeRequest request, AuthResponse authResponse)

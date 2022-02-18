@@ -1,5 +1,7 @@
 using System.Globalization;
+using System.Text;
 
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 
 using IdentityServer.ServerSample;
@@ -96,6 +98,16 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 
         builder.UseQrCoderQrCodeGenerator();
         builder.UseUaParserDeviceDetection();
+
+        builder.UseAuthRequestUserData(authUserData => {
+            var message = new StringBuilder();
+            message.AppendLine("# Active Login");
+            message.AppendLine();
+            message.AppendLine("Welcome to the *Active Login* demo.");
+
+            authUserData.UserVisibleData = message.ToString();
+            authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
+        });
 
         builder.Configure(options =>
         {

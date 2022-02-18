@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http.Headers;
-using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
@@ -48,6 +47,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
 
             services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
+
+            services.TryAddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestEmptyUserDataResolver>();
 
             builder.UseEndUserIpResolver<BankIdRemoteIpAddressEndUserIpResolver>();
 
@@ -143,6 +144,34 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBankIdBuilder UseEndUserIpResolver(this IBankIdBuilder builder, Func<HttpContext, string> resolver)
         {
             builder.AuthenticationBuilder.Services.AddTransient<IBankIdEndUserIpResolver>(x => new BankIdDynamicEndUserIpResolver(resolver));
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Set what user data to supply to the auth request.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="authUserData"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, BankIdAuthUserData authUserData)
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Set what user data to supply to the auth request.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="authUserData"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, Action<BankIdAuthUserData> authUserData)
+        {
+            var authUserDataResult = new BankIdAuthUserData();
+            authUserData(authUserDataResult);
+            UseAuthRequestUserData(builder, authUserDataResult);
 
             return builder;
         }
