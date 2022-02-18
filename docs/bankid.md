@@ -850,6 +850,7 @@ builder.UseAuthRequestUserData(authUserData =>
     authUserData.UserVisibleData = message.ToString();
     authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
 });
+```
 
 For more advanced scenarios, you can generate the user data dynamically by implementing `IBankIdAuthRequestUserDataResolver`:
 
