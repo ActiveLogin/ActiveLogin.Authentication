@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
@@ -11,9 +13,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             _authUserData = authUserData;
         }
 
-        public BankIdAuthUserData GetUserData(BankIdAuthRequestContext authRequestContext, HttpContext httpContext)
+        public async Task<BankIdAuthUserData> GetUserDataAsync(BankIdAuthRequestContext authRequestContext, HttpContext httpContext)
         {
-            return _authUserData;
+            return await Task.FromResult(_authUserData);
         }
     }
 }

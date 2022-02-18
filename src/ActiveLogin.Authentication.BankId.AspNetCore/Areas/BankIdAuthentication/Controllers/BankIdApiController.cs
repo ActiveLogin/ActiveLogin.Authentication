@@ -167,9 +167,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired, loginOptions.AllowBiometric);
 
             var authRequestContext = new BankIdAuthRequestContext(endUserIp, personalIdentityNumberString, authRequestRequirement);
-            var userData = _bankIdAuthUserDataResolver.GetUserData(authRequestContext, HttpContext);
+            var userData = _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext, HttpContext);
   
-            return new AuthRequest(endUserIp, userData.UserVisibleData, userData.UserNonVisibleData, personalIdentityNumberString, authRequestRequirement, userData.UserVisibleDataFormat);
+            return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement, userData.Result.UserVisibleData, userData.Result.UserNonVisibleData, userData.Result.UserVisibleDataFormat);
         }
 
         private BankIdLaunchInfo GetBankIdLaunchInfo(BankIdLoginApiInitializeRequest request, AuthResponse authResponse)

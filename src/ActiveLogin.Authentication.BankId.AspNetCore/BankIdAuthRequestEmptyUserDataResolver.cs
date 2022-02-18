@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore
@@ -6,9 +8,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
     {
         private static readonly BankIdAuthUserData _emptyAuthUserData = new();
 
-        public BankIdAuthUserData GetUserData(BankIdAuthRequestContext authRequestContext, HttpContext httpContext)
+        public async Task<BankIdAuthUserData> GetUserDataAsync(BankIdAuthRequestContext authRequestContext, HttpContext httpContext)
         {
-            return _emptyAuthUserData;
+            return await Task.FromResult(_emptyAuthUserData);
         }
     }
 }

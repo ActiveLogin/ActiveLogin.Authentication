@@ -128,11 +128,6 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
     });
-    //.UseStaticAuthUserData(new BankIdAuthUserData()
-    //{
-    //    UserVisibleData = "staticMessage"
-    //});
-  //  .UseAuthUserDataResolver<BankIdAuthUserData>();
 
 // Add MVC
 services.AddControllersWithViews()

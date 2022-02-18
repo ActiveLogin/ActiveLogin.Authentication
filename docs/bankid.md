@@ -38,6 +38,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
   + [Event listeners](#event-listeners)
   + [Store data on auth completion](#store-data-on-auth-completion)
   + [Resolve the end user ip](#resolve-the-end-user-ip)
+  + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
   + [Custom QR code generation](#custom-qr-code-generation)
   + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
   + [Use api wrapper only](#use-api-wrapper-only)
@@ -815,6 +816,25 @@ builder.UseEndUserIpResolver(httpContext =>
 });
 ```
 
+### Resolve user data on Auth request
+
+If you want to display a text during authentication you can do it with parameter 'userVisibleData'.
+You can also add a text which will not be displayed with parameter 'userNonvisibleData' and format text in 'userVisibleData' with parameter 'userVisibleDataFormat'.
+
+You can add a static text on Program.cs:
+
+```csharp
+builder.UseAuthRequestUserData(authUserData =>
+{
+authUserData.UserVisibleData = "Message that is displayed";
+});
+```
+
+Or register a class implementing `IBankIdAuthRequestUserDataResolver`:
+
+```csharp
+services.TryAddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestUserDataResolver>();
+```
 
 ### Custom QR code generation
 
