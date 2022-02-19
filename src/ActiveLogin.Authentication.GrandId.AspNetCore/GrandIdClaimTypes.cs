@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace ActiveLogin.Authentication.GrandId.AspNetCore
 {
     public static class GrandIdClaimTypes
     {

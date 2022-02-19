@@ -48,17 +48,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure
             }
         }
 
-        private class PersonalIdentityNumberJsonConverter : JsonConverter<SwedishPersonalIdentityNumber>
+        private class PersonalIdentityNumberJsonConverter : JsonConverter<PersonalIdentityNumber>
         {
-            public override SwedishPersonalIdentityNumber Read(
+            public override PersonalIdentityNumber Read(
                 ref Utf8JsonReader reader,
                 Type typeToConvert,
                 JsonSerializerOptions options) =>
-                SwedishPersonalIdentityNumber.Parse(reader.GetString());
+                PersonalIdentityNumber.Parse(reader.GetString());
 
             public override void Write(
                 Utf8JsonWriter writer,
-                SwedishPersonalIdentityNumber personalIdentityNumberValue,
+                PersonalIdentityNumber personalIdentityNumberValue,
                 JsonSerializerOptions options) =>
                 writer.WriteStringValue(personalIdentityNumberValue.To12DigitString());
         }

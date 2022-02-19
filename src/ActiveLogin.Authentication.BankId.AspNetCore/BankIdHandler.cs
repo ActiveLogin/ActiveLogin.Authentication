@@ -74,7 +74,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
                 ticket,
-                SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber),
+                PersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber),
                 detectedDevice
             ));
 
@@ -106,7 +106,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private IEnumerable<Claim> GetClaims(BankIdLoginResult loginResult, DateTimeOffset? expiresUtc)
         {
-            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
+            var personalIdentityNumber = PersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
                 new Claim(BankIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
@@ -123,7 +123,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return claims;
         }
 
-        private void AddOptionalClaims(List<Claim> claims, SwedishPersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
+        private void AddOptionalClaims(List<Claim> claims, PersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
         {
             if (expiresUtc.HasValue)
             {
@@ -162,7 +162,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             var loginOptions = new BankIdLoginOptions(
                 Options.BankIdCertificatePolicies,
-                GetSwedishPersonalIdentityNumber(properties),
+                GetPersonalIdentityNumber(properties),
                 Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdSameDevice,
                 Options.BankIdAllowBiometric,
@@ -183,16 +183,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return _bankIdSupportedDeviceDetector.Detect(Request.Headers[BankIdConstants.UserAgentHttpHeaderName]);
         }
 
-        private static SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        private static PersonalIdentityNumber? GetPersonalIdentityNumber(AuthenticationProperties properties)
         {
             bool TryGetPinString(out string? s)
             {
                 return properties.Items.TryGetValue(BankIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
             }
 
-            if (TryGetPinString(out var swedishPersonalIdentityNumber) && !string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+            if (TryGetPinString(out var personalIdentityNumber) && !string.IsNullOrWhiteSpace(personalIdentityNumber))
             {
-                return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                return PersonalIdentityNumber.Parse(personalIdentityNumber, StrictMode.Off);
             }
 
             return null;

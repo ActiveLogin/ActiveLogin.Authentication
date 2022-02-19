@@ -11,7 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
     /// </summary>
     public class BankIdAspNetAuthenticateSuccessEvent : BankIdEvent
     {
-        internal BankIdAspNetAuthenticateSuccessEvent(AuthenticationTicket authenticationTicket, SwedishPersonalIdentityNumber personalIdentityNumber, BankIdSupportedDevice detectedUserDevice)
+        internal BankIdAspNetAuthenticateSuccessEvent(AuthenticationTicket authenticationTicket, PersonalIdentityNumber personalIdentityNumber, BankIdSupportedDevice detectedUserDevice)
             : base(BankIdEventTypes.AspNetAuthenticateSuccessEventId, BankIdEventTypes.AspNetAuthenticateSuccessEventName, BankIdEventSeverity.Success)
         {
             AuthenticationTicket = authenticationTicket;
@@ -21,7 +21,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Events
 
         [JsonIgnore] // ClaimsPrincipal have self circular references
         public AuthenticationTicket AuthenticationTicket { get; }
-        public SwedishPersonalIdentityNumber PersonalIdentityNumber { get; }
+        public PersonalIdentityNumber PersonalIdentityNumber { get; }
 
         public BankIdSupportedDevice DetectedUserDevice { get; }
     }

@@ -89,7 +89,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
-            SwedishPersonalIdentityNumber? personalIdentityNumber = null;
+            PersonalIdentityNumber? personalIdentityNumber = null;
             if (unprotectedLoginOptions.IsAutoLogin())
             {
                 if (!unprotectedLoginOptions.AllowChangingPersonalIdentityNumber)
@@ -99,7 +99,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
             else
             {
-                if (!SwedishPersonalIdentityNumber.TryParse(request.PersonalIdentityNumber, out personalIdentityNumber))
+                if (!PersonalIdentityNumber.TryParse(request.PersonalIdentityNumber, StrictMode.Off, out personalIdentityNumber))
                 {
                     return BadRequestJsonResult(new
                     {
@@ -152,7 +152,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
         
-        private async Task<AuthRequest> GetAuthRequest(SwedishPersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
+        private async Task<AuthRequest> GetAuthRequest(PersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp(HttpContext);
             var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
