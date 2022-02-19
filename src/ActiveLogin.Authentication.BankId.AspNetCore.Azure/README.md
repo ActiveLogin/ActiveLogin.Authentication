@@ -21,24 +21,50 @@ services
     });
 ```
 
-The expected configuration looks like this:
+By default, the `DefaultAzureCredential` will be used as credentials. For info on how to use that, see [Microsoft docs](https://docs.microsoft.com/en-us/dotnet/api/azure.identity.defaultazurecredential). The minimal configuration then looks like this:
 
 ```json
 {
     "ActiveLogin:BankId:ClientCertificate" {
-        "UseManagedIdentity": true,
-        "ManagedIdentityType": "SystemAssigned",
-        "ManagedIdentityUserAssignedClientId": "",
-
-        "AzureAdTenantId": "",
-        "AzureAdClientId": "",
-        "AzureAdClientSecret": "",
-
         "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
         "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE"
     }
 }
 ```
+
+You can override the specific managed identity client id to use:
+
+```json
+{
+    "ActiveLogin:BankId:ClientCertificate" {
+        "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
+        "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE",
+
+        "AzureManagedIdentityClientId": ""
+    }
+}
+```
+
+You can also override to use client credentials:
+
+```json
+{
+    "ActiveLogin:BankId:ClientCertificate" {
+        "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
+        "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE",
+
+        "AzureAdTenantId": "",
+        "AzureAdClientId": "",
+        "AzureAdClientSecret": ""
+    }
+}
+```
+
+They will be evaluated in the order:
+
+1. `ClientSecretCredential` with `AzureAdTenantId` + `AzureAdClientId` + `AzureAdClientSecret` (if specified)
+2. `DefaultAzureCredential` with `AzureManagedIdentityClientId` (if specified)
+3. `DefaultAzureCredential`
 
 ## Full documentation
 

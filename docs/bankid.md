@@ -414,21 +414,12 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FActiveLogin%2FActiveLogin.Authentication%2Fmain%2Fsamples%2FAzureProvisioningSample%2FActiveLogin.json)
 
 1. Deploy Azure KeyVault to your subscription. The ARM-template available in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample)  contains configuration that creates a KeyVault and enables [Managed Service Identity](https://azure.microsoft.com/en-us/resources/samples/app-service-msi-keyvault-dotnet/) for the App Service.
-1. If you use Managed identities, then you have to choose between system-assigned and user-assigned identities, when using user-assigned identity you need to store its client id to the variable ```ManagedIdentityUserAssignedClientId```
 1. [Import the certificates](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate) to your Azure Key Vault.
 1. Add the following to your config, the secret identifier and auth settings.
 
 ```json
 {
     "ActiveLogin:BankId:ClientCertificate": {
-        "UseManagedIdentity": true,
-        "ManagedIdentityType": "SystemAssigned",
-        "ManagedIdentityUserAssignedClientId": "",
-
-        "AzureAdTenantId": "",
-        "AzureAdClientId": "",
-        "AzureAdClientSecret": "",
-
         "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
         "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE"
     }
@@ -441,14 +432,52 @@ When configuring the AzureKeyVaultSecretName, the name is retrieved from the _Ce
 
 You can read more about the reasoning behind this [in this blog post](https://azidentity.azurewebsites.net/post/2018/07/03/azure-key-vault-certificates-are-secrets) or in the very extensive [official documentation](https://docs.microsoft.com/en-gb/azure/key-vault/about-keys-secrets-and-certificates#BKMK_CompositionOfCertificate).
 
-#### Authentication using Managed Identity
+#### KeyVault credentials
 
-If possible, you should use [Azure AD Managed Identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) to connect to Azure KeyVault. To use Managed Identity, set `UseManagedIdentity` to `true`.
+By default, the `DefaultAzureCredential` will be used as credentials. For info on how to use that, see [Microsoft docs](https://docs.microsoft.com/en-us/dotnet/api/azure.identity.defaultazurecredential). The minimal configuration then looks like this:
 
-#### Authentication using Client Credentials
+```json
+{
+    "ActiveLogin:BankId:ClientCertificate" {
+        "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
+        "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE"
+    }
+}
+```
 
-If Managed Identity can't be used, you can authenticate to Azure Key Vault using Client Credentials. Then set `UseManagedIdentity` to `false` and instead set values for `AzureAdTenantId`, `AzureAdClientId` and `AzureAdClientSecret`.
+You can override the specific managed identity client id to use:
 
+```json
+{
+    "ActiveLogin:BankId:ClientCertificate" {
+        "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
+        "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE",
+
+        "AzureManagedIdentityClientId": ""
+    }
+}
+```
+
+You can also override to use client credentials:
+
+```json
+{
+    "ActiveLogin:BankId:ClientCertificate" {
+        "AzureKeyVaultUri": "TODO-ADD-YOUR-VALUE",
+        "AzureKeyVaultSecretName": "TODO-ADD-YOUR-VALUE",
+
+        "AzureAdTenantId": "",
+        "AzureAdClientId": "",
+        "AzureAdClientSecret": ""
+    }
+}
+```
+
+They will be evaluated in the order:
+
+1. `ClientSecretCredential` with `AzureAdTenantId` + `AzureAdClientId` + `AzureAdClientSecret` (if specified)
+2. `DefaultAzureCredential` with `AzureManagedIdentityClientId` (if specified)
+3. `DefaultAzureCredential`
 
 ### BankId claim types
 

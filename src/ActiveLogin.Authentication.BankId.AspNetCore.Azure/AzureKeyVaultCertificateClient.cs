@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+
 using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
@@ -16,24 +17,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
                 throw new ArgumentException("AzureKeyVaultUri is required");
             }
 
-            if (!options.UseManagedIdentity)
-            {
-                if (string.IsNullOrWhiteSpace(options.AzureAdTenantId))
-                {
-                    throw new ArgumentException("AzureAdTenantId is required when not using ManagedIdentity");
-                }
-
-                if (string.IsNullOrWhiteSpace(options.AzureAdClientId))
-                {
-                    throw new ArgumentException("AzureAdClientId is required when not using ManagedIdentity");
-                }
-
-                if (string.IsNullOrWhiteSpace(options.AzureAdClientSecret))
-                {
-                    throw new ArgumentException("AzureAdClientSecret is required when not using ManagedIdentity");
-                }
-            }
-
             var tokenCredentials = GetTokenCredential(options);
             var secretClient = new SecretClient(new Uri(options.AzureKeyVaultUri), tokenCredentials);
 
@@ -42,7 +25,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
 
         private static TokenCredential GetTokenCredential(ClientCertificateFromAzureKeyVaultOptions options)
         {
-            if (!options.UseManagedIdentity)
+            if (!string.IsNullOrEmpty(options.AzureAdTenantId) &&
+                !string.IsNullOrEmpty(options.AzureAdClientId) &&
+                !string.IsNullOrEmpty(options.AzureAdClientSecret))
             {
                 return new ClientSecretCredential(
                     options.AzureAdTenantId,
@@ -51,13 +36,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure
                 );
             }
 
-            if (options.ManagedIdentityType == ManagedIdentityType.UserAssigned)
+            if (!string.IsNullOrEmpty(options.AzureManagedIdentityClientId))
             {
-                ArgumentNullException.ThrowIfNull(options.ManagedIdentityUserAssignedClientId);
-                return new ManagedIdentityCredential(options.ManagedIdentityUserAssignedClientId);
+                return new DefaultAzureCredential(new DefaultAzureCredentialOptions()
+                {
+                    ManagedIdentityClientId = options.AzureManagedIdentityClientId
+                });
             }
 
-            return new ManagedIdentityCredential();
+            return new DefaultAzureCredential();
         }
 
         private const string CertificateContentType = "application/x-pkcs12";
