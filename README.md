@@ -65,7 +65,7 @@ ___Note:___ This Readme reflects the state of our main branch and the code docum
 
 ## Projects & Packages overview
 
-CI-builds from main of all packages are available in [our Azure DevOps Artifacts feed](https://dev.azure.com/activesolution/ActiveLogin/_packaging?_a=feed&feed=ActiveLogin-CI).
+CI-builds from main of all packages are available in our [GitHub Packages feed](https://github.com/orgs/ActiveLogin/packages).
 
 | Project | Description | NuGet | Downloads |
 | ------- | ----------- | ----  | --------- |
