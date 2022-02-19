@@ -5,7 +5,7 @@ on:
     workflows: [Build]
     types:
       - completed
-    #branches: [main]
+    branches: [main]
 
 jobs:
   release_nuget_to_github_packages:
