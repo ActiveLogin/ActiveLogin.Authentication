@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types:
+      - completed
+    #branches: [main]
+
+jobs:
+  release_nuget_to_github_packages:
+    name: Release NuGet packages to GitHub Packages
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    strategy:
+      matrix:
+        package: [ActiveLogin.Authentication.BankId.Api,ActiveLogin.Authentication.BankId.AspNetCore,ActiveLogin.Authentication.BankId.AspNetCore.Azure,ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor,ActiveLogin.Authentication.BankId.AspNetCore.QRCoder,ActiveLogin.Authentication.BankId.AspNetCore.UAParser,ActiveLogin.Authentication.GrandId.AspNetCore,ActiveLogin.Authentication.GrandId.AspNetCore]
+    steps:
+      - name: 'Download artifact'
+        uses: actions/github-script@v5
+        with:
+          script: |
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "activelogin-authentication-nuget-windows-signed"
+            })[0];
+            let download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            let fs = require('fs');
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/artifact.zip`, Buffer.from(download.data));
+
+      - name: 'Unzip artifact'
+        run: unzip artifact.zip
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          source-url: https://nuget.pkg.github.com/ActiveLogin/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Push NuGet packages
+        run: dotnet nuget push "ci/${{ matrix.package }}.*.nupkg" --skip-duplicate --source "github"
