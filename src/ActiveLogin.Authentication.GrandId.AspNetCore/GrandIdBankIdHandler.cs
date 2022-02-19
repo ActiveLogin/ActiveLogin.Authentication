@@ -36,8 +36,8 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
 
         protected override async Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl)
         {
-            var swedishPersonalIdentityNumber = GetSwedishPersonalIdentityNumber(properties);
-            var request = GetBankIdFederatedLoginRequest(absoluteReturnUrl, Options, swedishPersonalIdentityNumber);
+            var personalIdentityNumber = GetPersonalIdentityNumber(properties);
+            var request = GetBankIdFederatedLoginRequest(absoluteReturnUrl, Options, personalIdentityNumber);
 
             try
             {
@@ -63,7 +63,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             }
         }
 
-        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdOptions options, SwedishPersonalIdentityNumber? swedishPersonalIdentityNumber)
+        private static BankIdFederatedLoginRequest GetBankIdFederatedLoginRequest(string callbackUrl, GrandIdBankIdOptions options, PersonalIdentityNumber? PersonalIdentityNumber)
         {
             bool? useChooseDevice;
             bool? useSameDevice;
@@ -86,7 +86,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                     throw new InvalidOperationException($"Unknown {nameof(options.GrandIdBankIdMode)}.");
             }
 
-            var personalIdentityNumber = swedishPersonalIdentityNumber?.To12DigitString();
+            var personalIdentityNumber = PersonalIdentityNumber?.To12DigitString();
 
             return new BankIdFederatedLoginRequest(
                 callbackUrl,
@@ -98,16 +98,16 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
             );
         }
 
-        private static SwedishPersonalIdentityNumber? GetSwedishPersonalIdentityNumber(AuthenticationProperties properties)
+        private static PersonalIdentityNumber? GetPersonalIdentityNumber(AuthenticationProperties properties)
         {
             bool TryGetPinString(out string? s)
             {
                 return properties.Items.TryGetValue(GrandIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
             }
 
-            if (TryGetPinString(out var swedishPersonalIdentityNumber) && !string.IsNullOrWhiteSpace(swedishPersonalIdentityNumber))
+            if (TryGetPinString(out var personalIdentityNumber) && !string.IsNullOrWhiteSpace(personalIdentityNumber))
             {
-                return SwedishPersonalIdentityNumber.Parse(swedishPersonalIdentityNumber);
+                return PersonalIdentityNumber.Parse(personalIdentityNumber, StrictMode.Off);
             }
 
             return null;
@@ -141,7 +141,7 @@ namespace ActiveLogin.Authentication.GrandId.AspNetCore
                 throw new ArgumentNullException(nameof(loginResult.UserAttributes));
             }
 
-            var personalIdentityNumber = SwedishPersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
+            var personalIdentityNumber = PersonalIdentityNumber.Parse(loginResult.UserAttributes.PersonalIdentityNumber);
             var claims = new List<Claim>
             {
                 new Claim(GrandIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),

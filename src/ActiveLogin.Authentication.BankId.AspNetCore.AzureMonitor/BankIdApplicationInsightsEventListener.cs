@@ -163,11 +163,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
                 properties.Add(PropertyName_BankIdUserCertNotAfter, e.CompletionData.Cert.NotAfter);
             }
 
-            var swedishPersonalIdentityNumber = SwedishPersonalIdentityNumber.Parse(e.CompletionData.User.PersonalIdentityNumber);
+            var personalIdentityNumber = PersonalIdentityNumber.Parse(e.CompletionData.User.PersonalIdentityNumber);
             return Track(
                 e,
                 properties,
-                personalIdentityNumber: swedishPersonalIdentityNumber,
+                personalIdentityNumber: personalIdentityNumber,
                 detectedDevice: e.DetectedUserDevice,
                 loginOptions: e.BankIdOptions
             );
@@ -232,7 +232,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
 
         // Helpers
 
-        private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, Dictionary<string, double>? metrics = null, SwedishPersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null, BankIdLoginOptions? loginOptions = null)
+        private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, Dictionary<string, double>? metrics = null, PersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null, BankIdLoginOptions? loginOptions = null)
         {
             var allProperties = properties == null ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
             var allMetrics = metrics == null ? new Dictionary<string, double>() : new Dictionary<string, double>(metrics);
@@ -277,7 +277,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
             return Task.CompletedTask;
         }
 
-        private void AddPersonalIdentityNumberProperties(Dictionary<string, string> properties, Dictionary<string, double> metrics, SwedishPersonalIdentityNumber personalIdentityNumber)
+        private void AddPersonalIdentityNumberProperties(Dictionary<string, string> properties, Dictionary<string, double> metrics, PersonalIdentityNumber personalIdentityNumber)
         {
             if (_options.LogUserPersonalIdentityNumber)
             {
