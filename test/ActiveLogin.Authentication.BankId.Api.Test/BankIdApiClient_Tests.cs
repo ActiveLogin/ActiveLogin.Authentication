@@ -6,10 +6,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.Test.TestHelpers;
+
 using Moq;
 using Moq.Protected;
+
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test
@@ -88,8 +91,15 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{}}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertPaths(contentString, new[]
+            {
+                "endUserIp",
+                "requirement"
+            });
         }
+        
 
         [Fact]
         public async Task AuthAsync_WithEndUserIp_AndPin__ShouldPostJsonPayload_WithEndUserIp_AndPersonalNumber_AndNoRequirements()
@@ -103,7 +113,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{}}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
         }
 
         [Fact]
@@ -117,6 +129,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             // Assert
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
+
+            JsonTests.AssertSubProperty(contentString, "requirement", "allowFingerprint", true);
 
             Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"tokenStartRequired\":true}}", contentString);
         }

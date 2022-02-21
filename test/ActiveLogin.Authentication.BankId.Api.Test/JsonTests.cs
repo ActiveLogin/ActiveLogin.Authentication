@@ -1,0 +1,41 @@
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
+using Xunit;
+
+namespace ActiveLogin.Authentication.BankId.Api.Test
+{
+    internal class JsonTests
+    {
+        public static void AssertPaths(string jsonContent, string[] expectedPaths)
+        {
+            var jsonDocument = JsonDocument.Parse(jsonContent);
+            var jsonPaths = new List<string>();
+            foreach (var item in jsonDocument.RootElement.EnumerateObject())
+            {
+                jsonPaths.Add(item.Name);
+            }
+
+            Assert.Equal(expectedPaths, jsonPaths);
+        }
+
+        public static void AssertProperty<TValue>(string jsonContent, string expectedProperty, TValue expectedValue)
+        {
+            var jsonContentNode = JsonNode.Parse(jsonContent);
+            Assert.Equal(expectedValue, jsonContentNode[expectedProperty].GetValue<TValue>());
+        }
+
+        public static void AssertSubProperty<TValue>(string jsonContent, string expectedParentProperty, string expectedProperty, TValue expectedValue)
+        {
+            var jsonContentNode = JsonNode.Parse(jsonContent);
+            Assert.Equal(expectedValue, jsonContentNode[expectedParentProperty][expectedProperty].GetValue<TValue>());
+        }
+
+        public static void AssertPropertyIsEmptyObject(string jsonContent, string expectedProperty)
+        {
+            var jsonContentNode = JsonNode.Parse(jsonContent);
+            Assert.Equal("{}", jsonContentNode[expectedProperty].ToJsonString());
+        }
+    }
+}
