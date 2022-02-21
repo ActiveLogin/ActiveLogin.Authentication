@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 {
     internal class JsonTests
     {
-        public static void AssertPaths(string jsonContent, string[] expectedPaths)
+        public static void AssertOnlyProperties(string jsonContent, string[] expectedPaths)
         {
             var jsonDocument = JsonDocument.Parse(jsonContent);
             var jsonPaths = new List<string>();

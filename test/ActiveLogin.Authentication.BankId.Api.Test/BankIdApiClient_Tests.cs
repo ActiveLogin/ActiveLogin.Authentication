@@ -93,13 +93,13 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
 
             JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
             JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
-            JsonTests.AssertPaths(contentString, new[]
+            JsonTests.AssertOnlyProperties(contentString, new[]
             {
                 "endUserIp",
                 "requirement"
             });
         }
-        
+
 
         [Fact]
         public async Task AuthAsync_WithEndUserIp_AndPin__ShouldPostJsonPayload_WithEndUserIp_AndPersonalNumber_AndNoRequirements()
@@ -116,6 +116,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
             JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
             JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+            {
+                "endUserIp",
+                "personalNumber",
+                "requirement"
+            });
         }
 
         [Fact]
