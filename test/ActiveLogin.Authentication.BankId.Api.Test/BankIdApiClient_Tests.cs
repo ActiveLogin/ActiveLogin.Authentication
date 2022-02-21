@@ -124,6 +124,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             });
         }
 
+
         [Fact]
         public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
         {
