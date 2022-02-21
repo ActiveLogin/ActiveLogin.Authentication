@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Api.Errors;
-using ActiveLogin.Authentication.Common.Serialization;
+using ActiveLogin.Authentication.BankId.Api.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
