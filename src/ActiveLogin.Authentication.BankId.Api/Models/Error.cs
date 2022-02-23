@@ -1,8 +1,7 @@
-﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
-    [DataContract]
     internal class Error
     {
         public static Error Empty = new Error(string.Empty, string.Empty);
@@ -13,10 +12,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
             Details = details;
         }
 
-        [DataMember(Name = "errorCode")]
+        [JsonPropertyName("errorCode")]
         public string ErrorCode { get; private set; }
 
-        [DataMember(Name = "details")]
+        [JsonPropertyName("details")]
         public string Details { get; private set; }
     }
 }

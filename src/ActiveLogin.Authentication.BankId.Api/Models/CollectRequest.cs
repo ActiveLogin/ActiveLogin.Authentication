@@ -1,11 +1,10 @@
-﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
     /// Collect request parameters.
     /// </summary>
-    [DataContract]
     public class CollectRequest
     {
         /// <summary>
@@ -14,6 +13,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <param name="orderRef">
         /// The OrderRef returned from auth or sign.
         /// </param>
+      
         public CollectRequest(string orderRef)
         {
             OrderRef = orderRef;
@@ -22,7 +22,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <summary>
         /// The OrderRef returned from auth or sign.
         /// </summary>
-        [DataMember(Name = "orderRef")]
+        [JsonPropertyName("orderRef")]
         public string OrderRef { get; private set; }
     }
 }

@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
     /// Requirements on how the auth or sign order must be performed.
     /// </summary>
-    [DataContract]
     public class Requirement
     {
         /// <summary>
@@ -36,7 +35,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <summary>
         /// The oid in certificate policies in the user certificate. List of String.
         /// </summary>
-        [DataMember(Name = "certificatePolicies", EmitDefaultValue = false)]
+        [JsonPropertyName("certificatePolicies"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public List<string>? CertificatePolicies { get; private set; }
 
         /// <summary>
@@ -45,7 +44,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// 
         /// If set to false, the client does not need to be started using the autoStartToken.
         /// </summary>
-        [DataMember(Name = "tokenStartRequired", EmitDefaultValue = false)]
+        [JsonPropertyName("tokenStartRequired"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool? TokenStartRequired { get; private set; }
 
         /// <summary>
@@ -55,7 +54,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// If set to true, the users are allowed to use fingerprint.
         /// If set to false, the users are not allowed to use fingerprint.
         /// </summary>
-        [DataMember(Name = "allowFingerprint", EmitDefaultValue = false)]
+        [JsonPropertyName("allowFingerprint"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool? AllowFingerprint { get; private set; }
     }
 }

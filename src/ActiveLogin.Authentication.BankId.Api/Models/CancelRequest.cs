@@ -1,11 +1,10 @@
-﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
     /// Cancel request parameters.
     /// </summary>
-    [DataContract]
     public class CancelRequest
     {
         /// <summary></summary>
@@ -20,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <summary>
         /// The OrderRef from the response from auth or sign.
         /// </summary>
-        [DataMember(Name = "orderRef")]
+        [JsonPropertyName("orderRef")]
         public string OrderRef { get; private set; }
     }
 }

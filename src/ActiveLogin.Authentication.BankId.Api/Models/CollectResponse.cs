@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
     /// Collect response result.
     /// </summary>
-    [DataContract]
     public class CollectResponse
     {
         public CollectResponse(string orderRef, string status, string hintCode)
@@ -13,6 +12,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         {
         }
 
+        [JsonConstructor]
         public CollectResponse(string orderRef, string status, string hintCode, CompletionData? completionData)
         {
             OrderRef = orderRef;
@@ -24,13 +24,13 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <summary>
         /// The orderRef in question.
         /// </summary>
-        [DataMember(Name = "orderRef")]
+        [JsonPropertyName("orderRef")]
         public string OrderRef { get; private set; }
 
         /// <summary>
         /// Collect status.
         /// </summary>
-        [DataMember(Name = "status")]
+        [JsonPropertyName("status")]
         public string Status { get; private set; }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// RP should use the HintCode to provide the user with details and instructions and keep on calling collect until failed or complete.
         /// </summary>
         /// <remarks>Only present for pending and failed orders.</remarks>
-        [DataMember(Name = "hintCode")]
+        [JsonPropertyName("hintCode")]
         public string HintCode { get; private set; }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// RP should keep the completion data for future references/compliance/audit.
         /// </summary>
         /// <remarks>Only present for complete orders.</remarks>
-        [DataMember(Name = "completionData")]
+        [JsonPropertyName("completionData")]
         public CompletionData? CompletionData { get; private set; }
     }
 }

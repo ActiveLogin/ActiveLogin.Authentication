@@ -1,8 +1,7 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
-    [DataContract]
     public class CompletionData
     {
         public CompletionData(User user, Device device, Cert cert, string signature, string ocspResponse)
@@ -17,26 +16,26 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <summary>
         /// Information related to the user.
         /// </summary>
-        [DataMember(Name = "user")]
+        [JsonPropertyName("user")]
         public User User { get; private set; }
 
         /// <summary>
         /// Information related to the device.
         /// </summary>
-        [DataMember(Name = "device")]
+        [JsonPropertyName("device")]
         public Device Device { get; private set; }
 
         /// <summary>
         /// Information related to the users certificate (BankID).
         /// </summary>
-        [DataMember(Name = "cert")]
+        [JsonPropertyName("cert")]
         public Cert Cert { get; private set; }
 
         /// <summary>
         /// The signature. Base64-encoded.
         /// The content of the signature is described in BankID Signature Profile specification.
         /// </summary>
-        [DataMember(Name = "signature")]
+        [JsonPropertyName("signature")]
         public string Signature { get; private set; }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// The OCSP response is signed by a certificate that has the same issuer as the certificate being verified.
         /// The OSCP response has an extension for Nonce.
         /// </summary>
-        [DataMember(Name = "ocspResponse")]
+        [JsonPropertyName("ocspResponse")]
         public string OcspResponse { get; private set; }
     }
 }

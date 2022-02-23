@@ -1,13 +1,12 @@
 using System;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
     /// Sign request parameters.
     /// </summary>
-    [DataContract]
     public class SignRequest
     {
         /// <summary></summary>
@@ -169,39 +168,39 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// In some use cases the IP address is not available, for instance for voice based services.
         /// In this case, the internal representation of those systems IP address is ok to use.
         /// </summary>
-        [DataMember(Name = "endUserIp")]
+        [JsonPropertyName("endUserIp")]
         public string EndUserIp { get; private set; }
 
         /// <summary>
         /// The personal number of the user. 12 digits, century must be included (YYYYMMDDSSSC).
         /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
         /// </summary>
-        [DataMember(Name = "personalNumber", EmitDefaultValue = false)]
+        [JsonPropertyName("personalNumber"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? PersonalIdentityNumber { get; private set; }
 
         /// <summary>
         /// Requirements on how the auth or sign order must be performed.
         /// </summary>
-        [DataMember(Name = "requirement", EmitDefaultValue = false)]
+        [JsonPropertyName("requirement"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public Requirement Requirement { get; private set; }
 
         /// <summary>
         /// The text to be displayed and signed. String. The text can be formatted using CR, LF and CRLF for new lines.
         /// </summary>
-        [DataMember(Name = "userVisibleData")]
+        [JsonPropertyName("userVisibleData")]
         public string UserVisibleData { get; private set; }
 
         /// <summary>
         /// If present, and set to "simpleMarkdownV1", this parameter indicates that userVisibleData holds formatting characters which, if used correctly, will make the text displayed with the user nicer to look at.
         /// For further information of formatting options, please study the document Guidelines for Formatted Text.
         /// </summary>
-        [DataMember(Name = "userVisibleDataFormat", EmitDefaultValue = false)]
+        [JsonPropertyName("userVisibleDataFormat"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? UserVisibleDataFormat { get; private set; }
 
         /// <summary>
         /// Data not displayed to the user.
         /// </summary>
-        [DataMember(Name = "userNonVisibleData", EmitDefaultValue = false)]
+        [JsonPropertyName("userNonVisibleData"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? UserNonVisibleData { get; private set; }
 
         private static string ToBase64EncodedString(string value)
