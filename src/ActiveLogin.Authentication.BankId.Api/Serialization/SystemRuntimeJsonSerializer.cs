@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Serialization
     {
         public static async Task<T?> DeserializeAsync<T>(string json)
         {
-            var stream = new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(json));
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             var deserialized = await JsonSerializer.DeserializeAsync<T>(stream);
             return deserialized;
         }
