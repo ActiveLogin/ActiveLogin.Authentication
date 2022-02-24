@@ -34,15 +34,8 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
         public static void AssertSubProperty<TValue>(string jsonContent, string expectedParentProperty, string expectedProperty, List<TValue> expectedValue)
         {
             var jsonContentNode = JsonNode.Parse(jsonContent);
-            string expectedAsString = "[";
-            for (int i = 0; i < expectedValue.Count; i++)
-            {
-                expectedAsString += $"\"{expectedValue[i]}\"";
-                if (i != expectedValue.Count - 1)
-                    expectedAsString += ",";
-                else
-                    expectedAsString += "]";
-            }
+            var expectedAsString = JsonSerializer.Serialize(expectedValue);
+
             Assert.Equal(expectedAsString, jsonContentNode[expectedParentProperty][expectedProperty].ToJsonString());
         }
 
