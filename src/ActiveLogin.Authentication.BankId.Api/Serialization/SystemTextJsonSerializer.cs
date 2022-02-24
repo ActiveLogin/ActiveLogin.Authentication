@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -7,20 +6,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Serialization
 {
     internal static class SystemTextJsonSerializer
     {
-        public static async Task<T?> DeserializeAsync<T>(string json)
+        public static ValueTask<T?> DeserializeAsync<T>(Stream json)
         {
-            var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-            var deserialized = await JsonSerializer.DeserializeAsync<T>(stream);
-            return deserialized;
+            return JsonSerializer.DeserializeAsync<T>(json);
         }
 
-        public static async Task<T?> DeserializeAsync<T>(Stream json)
-        {
-            var deserialized = await JsonSerializer.DeserializeAsync<T>(json);
-            return deserialized;
-        }
-
-        public static async Task<string> SerializeAsync<T>(T value)
+        public static string Serialize<T>(T value)
         {
             if (value == null)
             {
@@ -28,16 +19,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Serialization
             }
 
             var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            var json = string.Empty;
-            using (var stream = new MemoryStream())
-            {
-                await JsonSerializer.SerializeAsync(stream, value, value.GetType(), options);
-                stream.Position = 0;
-                using var reader = new StreamReader(stream);
-                json = await reader.ReadToEndAsync();
-            }
-
-            return json;
+            return JsonSerializer.Serialize(value, value.GetType(), options);
         }
     }
 }

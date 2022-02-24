@@ -57,7 +57,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
-            var viewModel = await GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
+            var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
             return View(viewModel);
         }
 
@@ -72,7 +72,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return !string.IsNullOrEmpty(HttpContext.Request.Cookies[loginOptions.StateCookieName]);
         }
 
-        private async Task<BankIdLoginViewModel> GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
+        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
         {
             var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
             var loginScriptOptions = new BankIdLoginScriptOptions(
@@ -97,7 +97,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 loginOptions,
                 unprotectedLoginOptions,
                 loginScriptOptions,
-                await SystemTextJsonSerializer.SerializeAsync(loginScriptOptions),
+                SystemTextJsonSerializer.Serialize(loginScriptOptions),
                 antiforgeryTokens.RequestToken ?? throw new ArgumentNullException(nameof(antiforgeryTokens.RequestToken))
             );
         }

@@ -14,7 +14,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
-            var requestJson = await SystemTextJsonSerializer.SerializeAsync(request);
+            var requestJson = SystemTextJsonSerializer.Serialize(request);
             var requestContent = GetJsonStringContent(requestJson);
 
             HttpResponseMessage httpResponseMessage;
@@ -28,15 +28,15 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage).ConfigureAwait(false);
-            var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            var deserialized = await SystemTextJsonSerializer.DeserializeAsync<TResult>(content);
+            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            var deserializedContent = await SystemTextJsonSerializer.DeserializeAsync<TResult>(contentStream).ConfigureAwait(false);
 
-            if (deserialized == null)
+            if (deserializedContent == null)
             {
                 throw new Exception("Could not deserialize JSON response");
             }
 
-            return deserialized;
+            return deserializedContent;
         }
 
         private static StringContent GetJsonStringContent(string requestJson)
