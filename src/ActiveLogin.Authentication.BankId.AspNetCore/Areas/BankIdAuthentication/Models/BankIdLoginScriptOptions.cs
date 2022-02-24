@@ -1,9 +1,8 @@
-﻿using System;
-using System.Runtime.Serialization;
+using System;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
 {
-    [DataContract]
     public class BankIdLoginScriptOptions
     {
         internal BankIdLoginScriptOptions(string bankIdInitializeApiUrl, string bankIdStatusApiUrl, string bankIdCancelApiUrl)
@@ -16,7 +15,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private const int MinimumRefreshIntervalMs = 1000;
         private int _refreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs;
 
-        [DataMember(Name = "refreshIntervalMs")]
+        [JsonPropertyName("refreshIntervalMs")]
         public int RefreshIntervalMs
         {
             get => _refreshIntervalMs;
@@ -31,22 +30,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
         }
 
-        [DataMember(Name = "bankIdInitializeApiUrl")]
+        [JsonPropertyName("bankIdInitializeApiUrl")]
         public string BankIdInitializeApiUrl { get; set; }
 
-        [DataMember(Name = "bankIdStatusApiUrl")]
+        [JsonPropertyName("bankIdStatusApiUrl")]
         public string BankIdStatusApiUrl { get; set; }
 
-        [DataMember(Name = "bankIdCancelApiUrl")]
+        [JsonPropertyName("bankIdCancelApiUrl")]
         public string BankIdCancelApiUrl { get; set; }
 
-        [DataMember(Name = "initialStatusMessage")]
+        [JsonPropertyName("initialStatusMessage")]
         public string InitialStatusMessage { get; set; } = string.Empty;
 
-        [DataMember(Name = "unknownErrorMessage")]
+        [JsonPropertyName("unknownErrorMessage")]
         public string UnknownErrorMessage { get; set; } = string.Empty;
 
-        [DataMember(Name = "unsupportedBrowserErrorMessage")]
+        [JsonPropertyName("unsupportedBrowserErrorMessage")]
         public string UnsupportedBrowserErrorMessage { get; set; } = string.Empty;
     }
 }
