@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Models;
-using ActiveLogin.Authentication.Common.Serialization;
+using ActiveLogin.Authentication.BankId.Api.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Errors
 {
@@ -33,15 +33,15 @@ namespace ActiveLogin.Authentication.BankId.Api.Errors
             {
                 try
                 {
-                    var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var deserialized = SystemRuntimeJsonSerializer.Deserialize<Error>(content);
+                    var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                    var deserializedContent = await SystemTextJsonSerializer.DeserializeAsync<Error>(contentStream).ConfigureAwait(false);
 
-                    if (deserialized == null)
+                    if (deserializedContent == null)
                     {
                         throw new Exception("Could not deserialize JSON response");
                     }
 
-                    return deserialized;
+                    return deserializedContent;
                 }
                 catch (Exception)
                 {

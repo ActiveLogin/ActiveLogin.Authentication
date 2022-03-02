@@ -43,19 +43,12 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Common\Serialization\" />
+        <PackageReference Include="System.Text.Json" Version="6.0.2" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
         <None Include="README.md" Pack="True" PackagePath="README.md" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\SystemRuntimeJsonSerializer.cs" Link="Common\Serialization\SystemRuntimeJsonSerializer.cs" />
     </ItemGroup>
 </Project>

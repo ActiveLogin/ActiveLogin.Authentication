@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models
 {
     /// <summary>
     /// Information related to the device.
     /// </summary>
-    [DataContract]
     public class Device
     {
         public Device(string ipAddress)
@@ -16,7 +15,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
         /// <summary>
         /// The IP address of the user agent as the BankID server discovers it.
         /// </summary>
-        [DataMember(Name = "ipAddress")]
+        [JsonPropertyName("ipAddress")]
         public string IpAddress { get; private set; }
     }
 }

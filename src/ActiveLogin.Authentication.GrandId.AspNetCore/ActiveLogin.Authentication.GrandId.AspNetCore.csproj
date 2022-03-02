@@ -56,16 +56,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Common\Serialization\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
         <None Include="README.md" Pack="True" PackagePath="README.md" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
     </ItemGroup>
 </Project>

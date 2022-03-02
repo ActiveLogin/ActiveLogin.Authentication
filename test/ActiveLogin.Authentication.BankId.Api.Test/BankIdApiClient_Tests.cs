@@ -6,10 +6,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.Test.TestHelpers;
+
 using Moq;
 using Moq.Protected;
+
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test
@@ -88,8 +91,15 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{}}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+            {
+                "endUserIp",
+                "requirement"
+            });
         }
+
 
         [Fact]
         public async Task AuthAsync_WithEndUserIp_AndPin__ShouldPostJsonPayload_WithEndUserIp_AndPersonalNumber_AndNoRequirements()
@@ -103,8 +113,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{}}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+            {
+                "endUserIp",
+                "personalNumber",
+                "requirement"
+            });
         }
+
 
         [Fact]
         public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
@@ -118,7 +137,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"tokenStartRequired\":true}}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+            JsonTests.AssertSubProperty(contentString, "requirement", "allowFingerprint", true);
+            JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
+            JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
         }
 
         [Fact]
@@ -153,7 +176,19 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"" + asBase64 + "\",\"userVisibleData\":\"" + asBase64 + "\",\"userVisibleDataFormat\":\"simpleMarkdownV1\"}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertProperty(contentString, "userVisibleData", asBase64);
+            JsonTests.AssertProperty(contentString, "userNonVisibleData", asBase64);
+            JsonTests.AssertProperty(contentString, "userVisibleDataFormat", "simpleMarkdownV1");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+           {
+                "endUserIp",
+                "requirement",
+                "userVisibleData",
+                "userNonVisibleData",
+                "userVisibleDataFormat"
+            });
         }
 
         [Fact]
@@ -186,7 +221,19 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"AA==\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\",\"userVisibleDataFormat\":\"userVisibleDataFormat\"}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+            JsonTests.AssertProperty(contentString, "userVisibleDataFormat", "userVisibleDataFormat");
+            JsonTests.AssertProperty(contentString, "userNonVisibleData", "AA==");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+           {
+                "endUserIp",
+                "requirement",
+                "userVisibleData",
+                "userVisibleDataFormat",
+                "userNonVisibleData"
+            });
         }
 
         [Fact]
@@ -201,7 +248,15 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+           {
+                "endUserIp",
+                "requirement",
+                "userVisibleData"
+            });
         }
 
         [Fact]
@@ -216,7 +271,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{},\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+           {
+                "endUserIp",
+                "personalNumber",
+                "requirement",
+                "userVisibleData"
+            });
         }
 
         [Fact]
@@ -231,7 +296,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"requirement\":{},\"userNonVisibleData\":\"AA==\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+            JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+            JsonTests.AssertProperty(contentString, "userNonVisibleData", "AA==");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+           {
+                "endUserIp",
+                "requirement",
+                "userVisibleData",
+                "userNonVisibleData"
+            });
         }
 
         [Fact]
@@ -246,7 +321,21 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"endUserIp\":\"1.1.1.1\",\"personalNumber\":\"201801012392\",\"requirement\":{\"allowFingerprint\":true,\"certificatePolicies\":[\"req1\",\"req2\"],\"tokenStartRequired\":true},\"userNonVisibleData\":\"dXNlck5vblZpc2libGVEYXRh\",\"userVisibleData\":\"dXNlclZpc2libGVEYXRh\"}", contentString);
+            JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+            JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+            JsonTests.AssertSubProperty(contentString, "requirement", "allowFingerprint", true);
+            JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
+            JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
+            JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+            JsonTests.AssertProperty(contentString, "userNonVisibleData", "dXNlck5vblZpc2libGVEYXRh");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+           {
+                "endUserIp",
+                "personalNumber",
+                "requirement",
+                "userVisibleData",
+                "userNonVisibleData"
+            });
         }
 
         [Fact]
@@ -297,7 +386,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"orderRef\":\"abc123\"}", contentString);
+            JsonTests.AssertProperty(contentString, "orderRef", "abc123");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+            {
+                "orderRef"
+            });    
         }
 
         [Fact]
@@ -459,7 +552,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Test
             var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
             var contentString = await request.Content.ReadAsStringAsync();
 
-            Assert.Equal("{\"orderRef\":\"abc123\"}", contentString);
+            JsonTests.AssertProperty(contentString, "orderRef", "abc123");
+            JsonTests.AssertOnlyProperties(contentString, new[]
+            {
+                "orderRef"
+            });
         }
 
         private static HttpClient GetHttpClientMockWithOkResponse(string jsonResponse)

@@ -6,7 +6,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
-using ActiveLogin.Authentication.Common.Serialization;
+using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -97,7 +97,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 loginOptions,
                 unprotectedLoginOptions,
                 loginScriptOptions,
-                SystemRuntimeJsonSerializer.Serialize(loginScriptOptions),
+                SystemTextJsonSerializer.Serialize(loginScriptOptions),
                 antiforgeryTokens.RequestToken ?? throw new ArgumentNullException(nameof(antiforgeryTokens.RequestToken))
             );
         }

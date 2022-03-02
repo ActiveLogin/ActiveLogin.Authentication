@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-namespace ActiveLogin.Authentication.Common.Serialization
+namespace ActiveLogin.Authentication.GrandId.Api.Serialization
 {
     internal static class SystemRuntimeJsonSerializer
     {

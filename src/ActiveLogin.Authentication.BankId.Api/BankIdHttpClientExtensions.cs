@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Api.Errors;
-using ActiveLogin.Authentication.Common.Serialization;
+using ActiveLogin.Authentication.BankId.Api.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api
 {
@@ -14,7 +14,7 @@ namespace ActiveLogin.Authentication.BankId.Api
 
         public static async Task<TResult> PostAsync<TRequest, TResult>(this HttpClient httpClient, string url, TRequest request)
         {
-            var requestJson = SystemRuntimeJsonSerializer.Serialize(request);
+            var requestJson = SystemTextJsonSerializer.Serialize(request);
             var requestContent = GetJsonStringContent(requestJson);
 
             HttpResponseMessage httpResponseMessage;
@@ -28,15 +28,15 @@ namespace ActiveLogin.Authentication.BankId.Api
             }
 
             await BankIdApiErrorHandler.EnsureSuccessAsync(httpResponseMessage).ConfigureAwait(false);
-            var content = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            var deserialized = SystemRuntimeJsonSerializer.Deserialize<TResult>(content);
+            var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            var deserializedContent = await SystemTextJsonSerializer.DeserializeAsync<TResult>(contentStream).ConfigureAwait(false);
 
-            if (deserialized == null)
+            if (deserializedContent == null)
             {
                 throw new Exception("Could not deserialize JSON response");
             }
 
-            return deserialized;
+            return deserializedContent;
         }
 
         private static StringContent GetJsonStringContent(string requestJson)

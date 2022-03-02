@@ -1,7 +1,8 @@
 using System;
+
 using ActiveLogin.Identity.Swedish;
 
-namespace ActiveLogin.Authentication.Common.Serialization
+namespace ActiveLogin.Authentication.GrandId.AspNetCore.Serialization
 {
     internal static class JwtSerializer
     {

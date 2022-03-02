@@ -86,13 +86,4 @@
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
         <None Include="README.md" Pack="True" PackagePath="README.md" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Common\Serialization\" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\SystemRuntimeJsonSerializer.cs" Link="Common\Serialization\SystemRuntimeJsonSerializer.cs" />
-        <Compile Include="..\ActiveLogin.Authentication.Common\Serialization\JwtSerializer.cs" Link="Common\Serialization\JwtSerializer.cs" />
-    </ItemGroup>
 </Project>
