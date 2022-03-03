@@ -266,7 +266,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedDevice, loginOptions));
 
-            var returnUri = GetSuccessReturnUri(collectResponse.CompletionData.User, request.ReturnUrl);
+            var returnUri = GetSuccessReturnUri(collectResponse.OrderRef, collectResponse.CompletionData.User, request.ReturnUrl);
             if (!Url.IsLocalUrl(returnUri))
             {
                 throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
@@ -317,9 +317,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return statusMessage;
         }
 
-        private string GetSuccessReturnUri(User user, string returnUrl)
+        private string GetSuccessReturnUri(string orderRef, User user, string returnUrl)
         {
-            var loginResult = BankIdLoginResult.Success(user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
+            var loginResult = BankIdLoginResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
             var protectedLoginResult = _loginResultProtector.Protect(loginResult);
             var queryString = $"loginResult={_urlEncoder.Encode(protectedLoginResult)}";
 

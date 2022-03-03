@@ -898,7 +898,7 @@ public class BankIdAuthRequestDynamicUserDataResolver : IBankIdAuthRequestUserDa
 ```
 
 ```csharp
-services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestDynamicUserDataResolver>();
+builder.UseAuthRequestUserDataResolver<BankIdAuthRequestDynamicUserDataResolver>();
 ```
 
 ### Custom QR code generation

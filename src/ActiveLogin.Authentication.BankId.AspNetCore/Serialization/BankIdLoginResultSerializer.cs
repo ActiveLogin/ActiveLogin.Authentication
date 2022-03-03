@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using Microsoft.AspNetCore.Authentication;
 
@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
     internal class BankIdLoginResultSerializer : IDataSerializer<BankIdLoginResult>
     {
-        private const int FormatVersion = 1;
+        private const int FormatVersion = 2;
 
         public byte[] Serialize(BankIdLoginResult model)
         {
@@ -16,6 +16,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
             writer.Write(FormatVersion);
 
             writer.Write(model.IsSuccessful);
+
+            writer.Write(model.BankIdOrderRef);
 
             writer.Write(model.PersonalIdentityNumber);
 
@@ -40,6 +42,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 
             return new BankIdLoginResult(
                 reader.ReadBoolean(),
+                reader.ReadString(),
                 reader.ReadString(),
                 reader.ReadString(),
                 reader.ReadString(),
