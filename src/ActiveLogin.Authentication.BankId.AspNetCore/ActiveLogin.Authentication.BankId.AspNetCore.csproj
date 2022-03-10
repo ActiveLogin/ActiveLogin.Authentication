@@ -86,4 +86,10 @@
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
         <None Include="README.md" Pack="True" PackagePath="README.md" />
     </ItemGroup>
+
+    <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+    <_Parameter1>ActiveLogin.Authentication.BankId.AspNetCore.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

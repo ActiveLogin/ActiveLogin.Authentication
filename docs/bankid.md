@@ -901,6 +901,11 @@ public class BankIdAuthRequestDynamicUserDataResolver : IBankIdAuthRequestUserDa
 builder.UseAuthRequestUserDataResolver<BankIdAuthRequestDynamicUserDataResolver>();
 ```
 
+### Transform claims
+
+BankID contains a collection of claims which are transformed with 'BankIdDefaultClaimsTransformer'. There you are able to add, remove or change claims.
+You are also able to create your own transformer by inheriting it from the interface 'IBankIdClaimsTransformer'.
+
 ### Custom QR code generation
 
 By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
