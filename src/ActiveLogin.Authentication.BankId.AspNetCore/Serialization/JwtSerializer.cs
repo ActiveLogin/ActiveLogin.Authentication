@@ -32,9 +32,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
             return birthdate.Date.ToString("yyyy-MM-dd");
         }
 
+        /// <summary>
+        /// Specified in: https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.2
+        /// </summary>
+        /// <param name="expiresUtc"></param>
+        /// <returns></returns>
         public static string GetExpires(DateTimeOffset expiresUtc)
         {
-            return expiresUtc.Date.ToString("yyyy-MM-dd");
+            return expiresUtc.ToUnixTimeSeconds().ToString("D");
         }
     }
 }

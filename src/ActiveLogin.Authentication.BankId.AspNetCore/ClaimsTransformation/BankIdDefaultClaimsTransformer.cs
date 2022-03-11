@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
 using ActiveLogin.Identity.Swedish;

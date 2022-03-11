@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Authentication;
-
+using Moq;
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
@@ -61,15 +60,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
         {
             // Arrange
             var bankIdOptions = new BankIdOptions();
-            var date = DateTime.Now.ToShortDateString();
+            bankIdOptions.TokenExpiresIn = TimeSpan.FromHours(2);
 
             var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+            var systemClockMock = new Mock<ISystemClock>();
+            var dateTime = new DateTime(2022, 03, 11, 05, 30, 30, DateTimeKind.Utc);
+            systemClockMock.Setup(x => x.UtcNow).Returns(dateTime);
+            var claimsTransformer = new BankIdDefaultClaimsTransformer(systemClockMock.Object);
 
             // Act
-            var claims = await TransformClaims(context);
+            await claimsTransformer.TransformClaims(context);
+            var claims = context.Claims;
 
             // Assert
-            AssertClaim(claims, "exp", date);
+            AssertClaim(claims, "exp", "1646983830");
         }
 
         [Fact]
@@ -77,6 +81,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
         {
             // Arrange
             var bankIdOptions = new BankIdOptions();
+            bankIdOptions.AuthenticationMethodName = "AUTH_METHOD";
 
             var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
 
@@ -84,7 +89,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
             var claims = await TransformClaims(context);
 
             // Assert
-            AssertClaim(claims, "amr", bankIdOptions.AuthenticationMethodName);
+            AssertClaim(claims, "amr", "AUTH_METHOD");
+        }
+
+        [Fact]
+        public async Task Should_Not_Add_Birth_Date_As_birthdate_Claim()
+        {
+            // Arrange
+            var bankIdOptions = new BankIdOptions()
+            {
+                IssueBirthdateClaim = false
+            };
+
+            var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+
+            // Act
+            var claims = await TransformClaims(context);
+
+            // Assert
+            AssertNoClaim(claims, "birthdate");
         }
 
         [Fact]
@@ -106,7 +129,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
         }
 
         [Fact]
-        public async Task Should_Add_Gender_As_gender_Claim()
+        public async Task Should_Not_Add_Gender_As_gender_Claim()
+        {
+            // Arrange
+            var bankIdOptions = new BankIdOptions()
+            {
+                IssueGenderClaim = false
+            };
+
+            var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "350824-9079", "", "", "");
+
+            // Act
+            var claims = await TransformClaims(context);
+
+            // Assert
+            AssertNoClaim(claims, "gender");
+        }
+
+        [Fact]
+        public async Task Should_Add_Male_Gender_As_gender_Claim_When_Male()
         {
             // Arrange
             var bankIdOptions = new BankIdOptions()
@@ -120,7 +161,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
             var claims = await TransformClaims(context);
 
             // Assert
-            AssertClaim(claims, "gender", GenderFromPIN(context));
+            AssertClaim(claims, "gender", "male");
+        }
+
+        [Fact]
+        public async Task Should_Add_Female_Gender_As_gender_Claim_When_Female()
+        {
+            // Arrange
+            var bankIdOptions = new BankIdOptions()
+            {
+                IssueGenderClaim = true
+            };
+
+            var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "900105-2381", "", "", "");
+
+            // Act
+            var claims = await TransformClaims(context);
+
+            // Assert
+            AssertClaim(claims, "gender", "female");
         }
 
         private async Task<List<Claim>> TransformClaims(BankIdClaimsTransformationContext context)
@@ -136,13 +195,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
             Assert.NotEmpty(claims.Where(x => x.Type == type && x.Value == value));
         }
 
-        private string GenderFromPIN(BankIdClaimsTransformationContext context)
+        private void AssertNoClaim(List<Claim> claims, string type)
         {
-            int secondLastNumber = int.Parse(context.PersonalIdentityNumber.Substring(context.PersonalIdentityNumber.Length - 2, 1));
-            if (secondLastNumber % 2 == 0)
-                return "female";
-            else
-                return "male";
+            Assert.Empty(claims.Where(x => x.Type == type));
         }
     }
 }
