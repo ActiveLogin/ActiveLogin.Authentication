@@ -1,7 +1,6 @@
 body {
-    font-family:sans-serif;
-    
-    
+font-family:sans-serif;
+background-color: ghostwhite;  
 }
 
 
@@ -23,7 +22,5 @@ background-color: steelblue;
 }
 
 .active {
-    background-color: steelblue;
+background-color: steelblue;
 }
-
-.navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.active>a:focus,.navbar-inverse .navbar-nav>.active>a:hover{color:#fff;background-color:steelblue}
