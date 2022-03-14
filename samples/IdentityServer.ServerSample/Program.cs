@@ -99,7 +99,8 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         builder.UseQrCoderQrCodeGenerator();
         builder.UseUaParserDeviceDetection();
 
-        builder.UseAuthRequestUserData(authUserData => {
+        builder.UseAuthRequestUserData(authUserData =>
+        {
             var message = new StringBuilder();
             message.AppendLine("# Active Login");
             message.AppendLine();
@@ -109,13 +110,8 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
         });
 
-        builder.Configure(options =>
-        {
-            options.IssueBirthdateClaim = true;
-            options.IssueGenderClaim = true;
-        })
-        .AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
-        .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+        builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
+        builder.AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
 
         if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
         {
@@ -123,9 +119,9 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         }
         else
         {
-            builder.UseProductionEnvironment()
-                .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+            builder.UseProductionEnvironment();
+            builder.UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+            builder.UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
     });
 
