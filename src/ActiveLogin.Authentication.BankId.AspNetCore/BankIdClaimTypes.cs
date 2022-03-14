@@ -15,10 +15,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public const string Name = "name";
         public const string GivenName = "given_name";
         public const string FamilyName = "family_name";
-
-        public const string Gender = "gender";
-        public const string Birthdate = "birthdate";
-
+        
         public const string SwedishPersonalIdentityNumber = "swedish_personal_identity_number";
     }
 }

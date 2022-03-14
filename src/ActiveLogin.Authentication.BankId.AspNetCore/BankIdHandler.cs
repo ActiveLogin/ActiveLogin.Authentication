@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
+using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
@@ -92,11 +93,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private async Task<AuthenticationTicket> GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
         {
-            DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
             {
-                expiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
-                properties.ExpiresUtc = expiresUtc;
+                properties.ExpiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
             }
 
             var claims = await GetClaims(loginResult);

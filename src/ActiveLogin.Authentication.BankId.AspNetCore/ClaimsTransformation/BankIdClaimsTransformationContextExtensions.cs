@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation
 {
     public static class BankIdClaimsTransformationContextExtensions
     {

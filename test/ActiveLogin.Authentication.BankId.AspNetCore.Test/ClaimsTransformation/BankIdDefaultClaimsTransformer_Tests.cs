@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
+using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+
 using Microsoft.AspNetCore.Authentication;
 using Moq;
 using Xunit;
@@ -77,11 +80,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
         }
 
         [Fact]
-        public async Task Should_Add_Authentication_Method_As_amr_Claim()
+        public async Task Should_Add_AuthenticationMethod_As_amr_Claim()
         {
             // Arrange
-            var bankIdOptions = new BankIdOptions();
-            bankIdOptions.AuthenticationMethodName = "AUTH_METHOD";
+            var bankIdOptions = new BankIdOptions
+            {
+                IssueAuthenticationMethodClaim = true,
+                AuthenticationMethodName = "AUTH_METHOD"
+            };
 
             var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
 
@@ -93,12 +99,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
         }
 
         [Fact]
-        public async Task Should_Not_Add_Birth_Date_As_birthdate_Claim()
+        public async Task Should_Not_Add_AuthenticationMethod_As_amr_Claim_When_Disabled()
         {
             // Arrange
-            var bankIdOptions = new BankIdOptions()
+            var bankIdOptions = new BankIdOptions
             {
-                IssueBirthdateClaim = false
+                IssueAuthenticationMethodClaim = false,
+                AuthenticationMethodName = "AUTH_METHOD"
             };
 
             var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
@@ -107,16 +114,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
             var claims = await TransformClaims(context);
 
             // Assert
-            AssertNoClaim(claims, "birthdate");
+            AssertNoClaim(claims, "amr");
         }
 
         [Fact]
-        public async Task Should_Add_Birth_Date_As_birthdate_Claim()
+        public async Task Should_Add_IdentityProvider_As_idp_Claim()
         {
             // Arrange
-            var bankIdOptions = new BankIdOptions()
+            var bankIdOptions = new BankIdOptions
             {
-                IssueBirthdateClaim = true
+                IssueIdentityProviderClaim = true,
+                IdentityProviderName = "IDENTITY_PROVIDER"
             };
 
             var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
@@ -125,61 +133,26 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
             var claims = await TransformClaims(context);
 
             // Assert
-            AssertClaim(claims, "birthdate", "1938-11-23");
+            AssertClaim(claims, "idp", "IDENTITY_PROVIDER");
         }
 
         [Fact]
-        public async Task Should_Not_Add_Gender_As_gender_Claim()
+        public async Task Should_Not_Should_Add_IdentityProvider_As_idp_Claim_When_Disabled()
         {
             // Arrange
-            var bankIdOptions = new BankIdOptions()
+            var bankIdOptions = new BankIdOptions
             {
-                IssueGenderClaim = false
+                IssueIdentityProviderClaim = false,
+                IdentityProviderName = "IDENTITY_PROVIDER"
             };
 
-            var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "350824-9079", "", "", "");
+            var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
 
             // Act
             var claims = await TransformClaims(context);
 
             // Assert
-            AssertNoClaim(claims, "gender");
-        }
-
-        [Fact]
-        public async Task Should_Add_Male_Gender_As_gender_Claim_When_Male()
-        {
-            // Arrange
-            var bankIdOptions = new BankIdOptions()
-            {
-                IssueGenderClaim = true
-            };
-
-            var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "350824-9079", "", "", "");
-
-            // Act
-            var claims = await TransformClaims(context);
-
-            // Assert
-            AssertClaim(claims, "gender", "male");
-        }
-
-        [Fact]
-        public async Task Should_Add_Female_Gender_As_gender_Claim_When_Female()
-        {
-            // Arrange
-            var bankIdOptions = new BankIdOptions()
-            {
-                IssueGenderClaim = true
-            };
-
-            var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "900105-2381", "", "", "");
-
-            // Act
-            var claims = await TransformClaims(context);
-
-            // Assert
-            AssertClaim(claims, "gender", "female");
+            AssertNoClaim(claims, "idp");
         }
 
         private async Task<List<Claim>> TransformClaims(BankIdClaimsTransformationContext context)

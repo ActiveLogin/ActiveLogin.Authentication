@@ -1,7 +1,6 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation
 {
     public interface IBankIdClaimsTransformer
     {
