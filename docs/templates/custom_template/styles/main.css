@@ -1,4 +1,29 @@
 body {
-    background-color: pink;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family:sans-serif;
+    
+    
 }
+
+
+.navbar-brand {
+background-color: white;
+padding: 15px;
+
+}
+
+
+.navbar-inverse {
+background-color: steelblue;
+color: aliceblue;
+
+}
+
+.navbar-nav {
+background-color: steelblue;
+}
+
+.active {
+    background-color: steelblue;
+}
+
+.navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.active>a:focus,.navbar-inverse .navbar-nav>.active>a:hover{color:#fff;background-color:steelblue}
