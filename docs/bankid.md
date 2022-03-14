@@ -30,6 +30,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
 * [Concepts](#concepts)
   + [Storing certificates in Azure](#storing-certificates-in-azure)
   + [BankId claim types](#bankid-claim-types)
+  + [Transform claim types](#transform-claim-types)
   + [BankID Certificate Policies](#bankid-certificate-policies)
   + [Return URL for cancellation](#return-url-for-cancellation)
   + [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
@@ -483,6 +484,28 @@ They will be evaluated in the order:
 
 The claims beeing issued have the names/keys specified in `BankIdClaimTypes`.
 
+### Transform claim types
+
+BankID contains a collection of claims which are transformed with 'BankIdDefaultClaimsTransformer'. There you are able to add, remove or change claims.
+Claims are divided into profile and optional claims, if you want to add an optional claim you can do it with ```AddOptionalClaim```.
+
+´´`c#
+ private Task AddOptionalClaims(BankIdClaimsTransformationContext context, PersonalIdentityNumber personalIdentityNumber)
+ {          
+    if (context.BankIdOptions.IssueYourClaim)
+    {
+        context.AddClaim(BankIdClaimTypes.YourClaimType, context.BankIdOptions.YourClaimValue);
+    }
+```
+
+You are also able to create your own transformer by inheriting it from the interface 'IBankIdClaimsTransformer'.
+
+´´´c#
+ public interface IBankIdClaimsTransformer
+ {
+    public Task TransformClaims(BankIdClaimsTransformationContext context);
+ }
+```
 
 ### BankID Certificate Policies
 
@@ -900,11 +923,6 @@ public class BankIdAuthRequestDynamicUserDataResolver : IBankIdAuthRequestUserDa
 ```csharp
 builder.UseAuthRequestUserDataResolver<BankIdAuthRequestDynamicUserDataResolver>();
 ```
-
-### Transform claims
-
-BankID contains a collection of claims which are transformed with 'BankIdDefaultClaimsTransformer'. There you are able to add, remove or change claims.
-You are also able to create your own transformer by inheriting it from the interface 'IBankIdClaimsTransformer'.
 
 ### Custom QR code generation
 
