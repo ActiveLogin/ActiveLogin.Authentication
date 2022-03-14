@@ -486,9 +486,9 @@ We've made the claims issuing pipeline pluggable so you can add your own transfo
 
 All of the default claims behaviour are implemented in `BankIdDefaultClaimsTransformer` and this is the only transformer added by default.
 
-#### IBankIdClaimsTransformer
+#### Implementing IBankIdClaimsTransformer
 
-You are also able to create your own transformer by inheriting it from the interface 'IBankIdClaimsTransformer'. `BankIdClaimsTransformationContext` will contain the relevant context, and also the already issued list of claims that you can transform.
+You are also able to create your own transformer by inheriting it from the interface `IBankIdClaimsTransformer`. `BankIdClaimsTransformationContext` will contain the relevant context, and also the already issued list of claims that you can transform.
 
 Once implemented, register your implementation using:
 
@@ -501,9 +501,9 @@ The claims beeing issued by default have the names/keys specified in the public 
 
 #### Example: Add orderref as txn claim
 
-If the application that uses ActiveLogin BankId needs to keep an audit trail of the sign-in, the txn claim could preferably be used for this.
+If the application that uses ActiveLogin BankId needs to keep an audit trail of the sign-in, the _txn_ claim could preferably be used for this.
 
-From OpenId Connect for Identity Assurance (https://openid.net/specs/openid-connect-4-identity-assurance-1_0.html):
+From [OpenId Connect for Identity Assurance](https://openid.net/specs/openid-connect-4-identity-assurance-1_0.html):
 > The txn Claim as defined in [RFC8417] is used in the context of this extension to build audit trails across the parties involved in an OpenID Connect transaction.
 
 ```csharp
