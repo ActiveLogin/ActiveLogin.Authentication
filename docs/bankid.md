@@ -506,7 +506,7 @@ If the application that uses ActiveLogin BankId needs to keep an audit trail of 
 From OpenId Connect for Identity Assurance (https://openid.net/specs/openid-connect-4-identity-assurance-1_0.html):
 > The txn Claim as defined in [RFC8417] is used in the context of this extension to build audit trails across the parties involved in an OpenID Connect transaction.
 
-´´´csharp
+```csharp
 public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
 {
     public Task TransformClaims(BankIdClaimsTransformationContext context)
