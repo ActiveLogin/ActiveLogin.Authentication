@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=main)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=main)
 [![Build Status](https://github.com/ActiveLogin/ActiveLogin.Authentication/actions/workflows/build.yml/badge.svg)](https://github.com/ActiveLogin/ActiveLogin.Authentication/actions/workflows/build.yml)
-[![Live demo](https://img.shields.io/static/v1?label=Demo&message=Live%20demo&color=008bc3)](https://al-samples-mvcclient.azurewebsites.net/)
+[![Live demo](https://img.shields.io/static/v1?label=Demo&message=Live%20demo&color=008bc3)](https://demo.activelogin.net/)
 [![Discussion](https://img.shields.io/github/discussions/ActiveLogin/ActiveLogin.Authentication)](https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions)
 [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
@@ -106,16 +106,16 @@ For more use cases, samples and inspiration; feel free to browse our [unit tests
 
 _Note: These are samples on how to use Active Login in different situations and might not represent optimal way of setting up ASP.NET MVC, IdentityServer or other components. Please see them as inspiration._
 
-Our samples are deployed with the latest version from main and available for you to try out:
-
-| Project | Live demo | Description |
-| ------- | --------- | ----------- |
-| [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ClientSample) | [https://al-samples-mvcclient.azurewebsites.net](https://al-samples-mvcclient.azurewebsites.net) | ASP.NET MVC site using the IdentityServer.ServerSample as auth provider. |
-| [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ServerSample) | [https://al-samples-identityserver.azurewebsites.net](https://al-samples-identityserver.azurewebsites.net) | IdentityServer with Active Login as auth provider for BankID. |
-| [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) | Not available | ASP.NET MVC with Active Login as auth provider for BankID. |
-| [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample) | [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FActiveLogin%2FActiveLogin.Authentication%2Fmain%2Fsamples%2FAzureProvisioningSample%2FActiveLogin.json) | ARM template with Azure KeyVault, Azure App Service, Azure Monitor / Application Insights etc. |
+| Project | Description |
+| ------- | ----------- |
+| [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ClientSample) | ASP.NET MVC site using the IdentityServer.ServerSample as auth provider. |
+| [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ServerSample) | IdentityServer with Active Login as auth provider for BankID. |
+| [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) | ASP.NET MVC with Active Login as auth provider for BankID. |
+| [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample) | ARM template with Azure KeyVault, Azure App Service, Azure Monitor / Application Insights etc. |
 
 _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
+
+A live demo is available at [https://demo.activelogin.net/](https://demo.activelogin.net/).
 
 ## Tests
 

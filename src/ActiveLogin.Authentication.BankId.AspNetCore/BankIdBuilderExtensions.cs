@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore;
+using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
@@ -48,9 +49,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
-            services.TryAddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestEmptyUserDataResolver>();
-
+            builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
             builder.UseEndUserIpResolver<BankIdRemoteIpAddressEndUserIpResolver>();
+
+            builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
 
             builder.AddEventListener<BankIdLoggerEventListener>();
             builder.AddEventListener<BankIdResultStoreEventListener>();
@@ -210,6 +212,32 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
         {
             builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Use a custom user data resolver.
+        /// </summary>
+        /// <typeparam name="TBankIdAuthRequestUserDataResolverImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Add a custom claims transaformer.
+        /// </summary>
+        /// <typeparam name="TBankIdClaimsTransformerImplementation"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBankIdBuilder AddClaimsTransformer<TBankIdClaimsTransformerImplementation>(this IBankIdBuilder builder) where TBankIdClaimsTransformerImplementation : class, IBankIdClaimsTransformer
+        {
+            builder.AuthenticationBuilder.Services.AddTransient<IBankIdClaimsTransformer, TBankIdClaimsTransformerImplementation>();
 
             return builder;
         }
