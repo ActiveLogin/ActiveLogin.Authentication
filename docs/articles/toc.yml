@@ -1,2 +1,6 @@
-- name: Introduction
-  href: intro.md
+- name: BankID
+  href: bankid.md
+- name: Monitoring
+  href: monitor.md
+- name: GrandID (Deprecated)
+  href: grandid.md

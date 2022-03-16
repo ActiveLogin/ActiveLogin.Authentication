@@ -1,11 +1,11 @@
 - name: Home
-  href: index.md
+  href: /
+  topicHref: index.md
 - name: Articles
-  href: bankid.md
-- name: Api Documentation
+  href: articles/
+  topicHref: articles/bankid.md
+- name: Api Reference
   href: api/
-  homepage: api/index.md
-- name: Monitor
-  href: monitor.md
+
 
  

@@ -7,20 +7,39 @@ background-color: ghostwhite;
 .navbar-brand {
 background-color: white;
 padding: 15px;
+}
 
+.navbar-header {
+background-color: white;
 }
 
 
 .navbar-inverse {
 background-color: steelblue;
 color: aliceblue;
-
 }
 
-.navbar-nav {
+.footer-content {
+margin-left: 20px;
+margin-top: 10px;
+}
+
+.row {
+padding-bottom: 200px;
+}
+
+
+/* .navbar-nav {
 background-color: steelblue;
+} */
+
+/* .active {
+background-color: steelblue;
+} */
+
+@media (min-width:768px)
+{
+    .container-fluid>.navbar-collapse,.container-fluid>.navbar-header,.container>.navbar-collapse,.container>.navbar-header{margin-right:0;margin-left:0; font-size: 18px;}
 }
 
-.active {
-background-color: steelblue;
-}
+    .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.active>a:focus,.navbar-inverse .navbar-nav>.active>a:hover{color:steelblue;background-color:white}
