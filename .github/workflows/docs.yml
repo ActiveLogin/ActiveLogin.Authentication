@@ -18,7 +18,6 @@ on:
 
 jobs:
   generate-docs:
-
     runs-on: windows-latest
 
     steps:
@@ -40,7 +39,7 @@ jobs:
       continue-on-error: false
 
     - name: Publish
-      if: github.event_name == 'push'
+      #if: github.event_name == 'push'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

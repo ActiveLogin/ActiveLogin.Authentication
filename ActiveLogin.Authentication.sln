@@ -34,11 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4764448D-A014-403F-A956-3F4CFFA00AF2}"
 	ProjectSection(SolutionItems) = preProject
-		docs\bankid.md = docs\bankid.md
-		docs\getting-started-bankid.md = docs\getting-started-bankid.md
-		docs\getting-started-grandid-bankid.md = docs\getting-started-grandid-bankid.md
-		docs\grandid.md = docs\grandid.md
-		docs\monitor.md = docs\monitor.md
+		docs\docfx.json = docs\docfx.json
+		docs\index.md = docs\index.md
+		docs\toc.yml = docs\toc.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7D32EBEE-65D6-46D3-BC7E-65951C143969}"
@@ -90,7 +88,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
+		.github\workflows\docs.yml = .github\workflows\docs.yml
 		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "articles", "articles", "{A66B2FFF-0CB6-4F48-83DA-6C1F7DC98EBF}"
+	ProjectSection(SolutionItems) = preProject
+		docs\articles\bankid.md = docs\articles\bankid.md
+		docs\articles\grandid.md = docs\articles\grandid.md
+		docs\articles\monitor.md = docs\articles\monitor.md
+		docs\articles\toc.yml = docs\articles\toc.yml
 	EndProjectSection
 EndProject
 Global
@@ -198,6 +205,7 @@ Global
 		{BB808E5D-A5E6-4195-A815-37209CFD8ABD} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
 		{56AC5092-82E5-47D4-8520-1DE424845E58} = {84E9CCEE-4BF2-4D8D-B70B-3FB317328F29}
+		{A66B2FFF-0CB6-4F48-83DA-6C1F7DC98EBF} = {4764448D-A014-403F-A956-3F4CFFA00AF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}

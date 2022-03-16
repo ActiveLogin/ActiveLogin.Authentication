@@ -55,12 +55,16 @@
     ],
     "dest": "_site",
     "globalMetadata": {
-      "_enableSearch": true,
-      "_enableNewTab" : true,
-      "_appFaviconPath": "images/active-login-logo-fingerprint-blue-v2-256x256.png",
-      "_appTitle": "Active Login",
-      "_appFooter": "Copyright (c) Active Login",
-      "_disableContribution": true
+        "_enableSearch": true,
+        "_enableNewTab": true,
+        "_appFaviconPath": "https://activelogin.net/images/favicon/favicon-32x32.png",
+        "_appTitle": "Active Login",
+        "_appFooter": "Copyright (c) Active Login",
+        "_disableContribution": false,
+        "_gitContribute": {
+            "repo": "https://github.com/ActiveLogin/ActiveLogin.Authentication",
+            "branch": "main"
+        }
     },
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
