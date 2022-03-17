@@ -3,7 +3,8 @@
 When using the `BankIdApplicationInsightsEventListener` (`builder.AddApplicationInsightsEventListener()`) structured events from the Active Login flow will be published to Application Insights (Azure Monitor). Below are samples on how to query these using [KQL](https://docs.microsoft.com/en-us/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference).
 
 ## Dashboard
-In our provisioning samples we include a way to deploy an Azure Dahsboard displaying some of the most important metrics and queries from below. See [ActiveLogin-Monitor.json](/samples/AzureProvisioningSample/ActiveLogin-Monitor.json).
+In our provisioning samples we include a way to deploy an Azure Dashboard displaying some of the most important metrics and queries from below. See [ActiveLogin-Monitor.json](https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/samples/AzureProvisioningSample/ActiveLogin-Monitor.json).
+<!--(/samples/AzureProvisioningSample/ActiveLogin-Monitor.json)-->
 
 ![Active Login Monitor](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png)
 

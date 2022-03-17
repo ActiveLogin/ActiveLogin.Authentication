@@ -163,7 +163,7 @@ ___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentica
 
 Active Login provides a structured way of generating and logging events. These coould be monitored to get statistics and health status of your BankID login method.
 
-Read more on the topic in [Active Login Monitor](docs/monitor.md).
+Read more on the topic in [Active Login Monitor](monitor.md).
 
 ![Active Login Monitor](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png)
 
