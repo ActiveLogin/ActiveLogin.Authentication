@@ -15,11 +15,15 @@
         "disableDefaultFilter": false
     }],
     "build": {
-        "content": [{
+        "content": [
+            {
                 "files": [
                     "api/**.yml",
                     "api/index.md"
                 ]
+            },
+            {
+                "files": [ "../README.MD" ]
             },
             {
                 "files": [
@@ -48,7 +52,7 @@
         "globalMetadata": {
             "_enableSearch": true,
             "_enableNewTab": true,
-            "_appFaviconPath": "https://activelogin.net/images/favicon/favicon-32x32.png",
+            "_appFaviconPath": "/images/favicon.ico",
             "_appTitle": "Active Login",
             "_appFooter": "© Active Solution",
             "_disableContribution": false,

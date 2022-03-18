@@ -1,4 +1,4 @@
-# Documentation for ActiveLogin.Authentication.GrandId
+# ActiveLogin.Authentication.GrandId
 
 ___DISCLAIMER:___ The packages in ActiveLogin for Svensk E-identitet / GrandID are not beeing worked on anymore, and are therefore not supported. See this [announcement](https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions/323) for more info. The documentation below is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
 
