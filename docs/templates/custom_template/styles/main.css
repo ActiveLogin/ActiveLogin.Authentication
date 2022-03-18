@@ -1,6 +1,6 @@
 body {
     font-family: sans-serif;
-    background-color: ghostwhite;
+    background-color: #fafafa;
 }
 
 .navbar-brand {
@@ -54,5 +54,8 @@ article.content {
     padding-left: 0;
 }
 
-
-/* test */
+@media (min-width: 992px) {
+    .col-md-10 {
+        width: 75%;
+    }
+}
