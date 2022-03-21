@@ -1,16 +1,16 @@
 # ActiveLogin.Authentication
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://dev.azure.com/activesolution/ActiveLogin/_apis/build/status/ActiveLogin.Authentication?branchName=main)](https://dev.azure.com/activesolution/ActiveLogin/_build/latest?definitionId=192&branchName=main)
 [![Build Status](https://github.com/ActiveLogin/ActiveLogin.Authentication/actions/workflows/build.yml/badge.svg)](https://github.com/ActiveLogin/ActiveLogin.Authentication/actions/workflows/build.yml)
 [![Live demo](https://img.shields.io/static/v1?label=Demo&message=Live%20demo&color=008bc3)](https://demo.activelogin.net/)
+[![Docs](https://img.shields.io/static/v1?label=Docs&message=Documentation&color=008bc3)](https://docs.activelogin.net/)
 [![Discussion](https://img.shields.io/github/discussions/ActiveLogin/ActiveLogin.Authentication)](https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions)
 [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms.
 
- Free to use, [commercial support and training](#support--training) is available if you need assistance or a quick start.
+Free to use, [commercial support and training](#support--training) is available if you need assistance or a quick start.
 
 
 ## Features
@@ -39,7 +39,7 @@ _Screenshot on monitoring dashboard._
 
 ## Table of contents
 
-___Note:___ This Readme reflects the state of our main branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our [CI builds](#project--packages-overview).
+___Note:___ This Readme reflects the state of our main branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our [CI builds](#projects--packages-overview).
 
 * [Features](#features)
 * [Screenshots](#screenshots)
@@ -51,7 +51,7 @@ ___Note:___ This Readme reflects the state of our main branch and the code docum
   + [What version of .NET is supported?](#what-version-of-net-is-supported)
   + [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
   + [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
-  + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad--active-directory--b2c)
+  + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
   + [Where did the packages for GrandId / Svensk E-identitet go?](#where-did-the-packages-for-grandid--svensk-e-identitet-go)
 * [Active Login](#active-login)
   + [Security](#security)
@@ -81,7 +81,7 @@ CI-builds from main of all packages are available in our [GitHub Packages feed](
 
 Full documentation with step by step instructions, samples, customization and details on how to configure the options is available here:
 
-[Documentation for ActiveLogin.Authentication.BankID](docs/bankid.md)
+[Documentation for ActiveLogin.Authentication.BankID](docs/articles/bankid.md)
 
 Active Login is designed to make it easy to get started with BankID in .NET. The most basic setup looks like this:
 
@@ -120,7 +120,7 @@ A live demo is available at [https://demo.activelogin.net/](https://demo.activel
 ## Tests
 
 * [BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.Api.Test)
-* [BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AspNetCore.TestActiveLogin.Authentication.BankId.Api.Test)
+* [BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AspNetCore.Test)
 * [BankId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test)
 
 
@@ -131,7 +131,7 @@ A live demo is available at [https://demo.activelogin.net/](https://demo.activel
 
 Here is a summary of common, general technical questions.
 
-The [docs for ActiveLogin.Authentication.BankId](docs/bankid.md) contains an FAQ specific to BankID.
+The [docs for ActiveLogin.Authentication.BankId](docs/articles/bankid.md) contains an FAQ specific to BankID.
 
 For commercial / business related questions, see the [FAQ at ActiveLogin.net](https://activelogin.net/#faq).
 
@@ -184,7 +184,7 @@ Azure AD B2C supports using custom identity providers that supports [Open ID Con
 
 The packages in ActiveLogin for Svensk E-identitet / GrandID are not beeing worked on anymore, and are therefore not supported as part of this open source project.
 
-The [documentation available](docs/grandid.md) is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
+The [documentation available](docs/articles/grandid.md) is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
 
 
 

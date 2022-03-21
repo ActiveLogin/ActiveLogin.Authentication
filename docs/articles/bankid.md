@@ -1,4 +1,4 @@
-# Documentation for  ActiveLogin.Authentication.BankId
+# ActiveLogin.Authentication.BankId
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET.
 
@@ -29,7 +29,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
   + [Customizing BankID options](#customizing-bankid-options)
 * [Concepts](#concepts)
   + [Storing certificates in Azure](#storing-certificates-in-azure)
-  + [Claims Issuing](#claims-issuing)
+  + [BankId claim types](#bankid-claim-types)
   + [BankID Certificate Policies](#bankid-certificate-policies)
   + [Return URL for cancellation](#return-url-for-cancellation)
   + [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
@@ -163,7 +163,7 @@ ___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentica
 
 Active Login provides a structured way of generating and logging events. These coould be monitored to get statistics and health status of your BankID login method.
 
-Read more on the topic in [Active Login Monitor](docs/monitor.md).
+Read more on the topic in [Active Login Monitor](monitor.md).
 
 ![Active Login Monitor](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png)
 
@@ -479,100 +479,9 @@ They will be evaluated in the order:
 2. `DefaultAzureCredential` with `AzureManagedIdentityClientId` (if specified)
 3. `DefaultAzureCredential`
 
-### Claims Issuing
+### BankId claim types
 
-Active Login aims to issue the most relevant claims that can be extracted from the information provided by BankID. There are scenarios where you might like to change issued claims or add new ones yourself.
-We've made the claims issuing pipeline pluggable so you can add your own transformer.
-
-All of the default claims behaviour are implemented in `BankIdDefaultClaimsTransformer` and this is the only transformer added by default.
-
-#### Implementing IBankIdClaimsTransformer
-
-You are also able to create your own transformer by inheriting it from the interface `IBankIdClaimsTransformer`. `BankIdClaimsTransformationContext` will contain the relevant context, and also the already issued list of claims that you can transform.
-
-Once implemented, register your implementation using:
-
-```csharp
-builder.AddClaimsTransformer<BankIdYourCustomClaimsTransformer>();
-```
-
-The claims beeing issued by default have the names/keys specified in the public class `BankIdClaimTypes` so you can refer to them by these constants.
-
-
-#### Example: Add orderref as txn claim
-
-If the application that uses ActiveLogin BankId needs to keep an audit trail of the sign-in, the _txn_ claim could preferably be used for this.
-
-From [OpenId Connect for Identity Assurance](https://openid.net/specs/openid-connect-4-identity-assurance-1_0.html):
-> The txn Claim as defined in [RFC8417] is used in the context of this extension to build audit trails across the parties involved in an OpenID Connect transaction.
-
-```csharp
-public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
-{
-    public Task TransformClaims(BankIdClaimsTransformationContext context)
-    {
-        context.AddClaim("txn", context.BankIdOrderRef);
-
-        return Task.CompletedTask;
-    }
-}
-```
-
-__Note:__ If the _txn_ claim is issued, you are responsible for making sure to keep relevant audit informaiton given that session. See the OpenId Connect spec linked above for more information.
-
-
-#### Example: Add birthdate and gender claims
-
-It is possible to extract some information from the swedish personal identity number. In previous versions of Active Login this was a built in feature, but is now removed from the default set of claims beeing issued.
-If you still are interested in such functionality, you can easily implement the functionality using the code below.
-
-See information on the limitations of hint information in the [ActiveLogin.Identity readme](https://github.com/ActiveLogin/ActiveLogin.Identity#hints).
-
-```csharp
-public class BankIdPinHintClaimsTransformer : IBankIdClaimsTransformer
-{
-    private const string GenderJwtType = "gender";
-    private const string BirthdateJwtType = "birthdate";
-
-    public Task TransformClaims(BankIdClaimsTransformationContext context)
-    {
-        var personalIdentityNumber = PersonalIdentityNumber.Parse(context.PersonalIdentityNumber);
-
-        // Add gender from gender hint
-        // See https://github.com/ActiveLogin/ActiveLogin.Identity#hints for limitations
-        var jwtGender = GetJwtGender(personalIdentityNumber.GetGenderHint());
-        if (!string.IsNullOrEmpty(jwtGender))
-        {
-            context.AddClaim(GenderJwtType, jwtGender);
-        }
-
-        // Add birthdate from birthdate hint
-        // See https://github.com/ActiveLogin/ActiveLogin.Identity#hints for limitations
-        var jwtBirthdate = GetJwtBirthdate(personalIdentityNumber.GetDateOfBirthHint());
-        context.AddClaim(BirthdateJwtType, jwtBirthdate);
-
-        return Task.CompletedTask;
-    }
-
-    private static string GetJwtGender(Gender gender)
-    {
-        // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-        return gender switch
-        {
-            Gender.Female => "female",
-            Gender.Male => "male",
-
-            _ => string.Empty,
-        };
-    }
-
-    private static string GetJwtBirthdate(DateTime birthdate)
-    {
-        // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
-        return birthdate.Date.ToString("yyyy-MM-dd");
-    }
-}
-```
+The claims beeing issued have the names/keys specified in `BankIdClaimTypes`.
 
 
 ### BankID Certificate Policies
@@ -636,7 +545,7 @@ return Challenge(props, provider);
 
 ### Handle missing or invalid state cookie
 
-If the user navigates directly to the BankdID status page (*/BankIdAuthentication/Login*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#setting-the-return-url-for-cancellation).
+If the user navigates directly to the BankdID status page (*/BankIdAuthentication/Login*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#return-url-for-cancellation).
 
 This behaviour can be overriden by implementing `IBankIdInvalidStateHandler` and adding that to the IOC-container.
 
@@ -989,7 +898,7 @@ public class BankIdAuthRequestDynamicUserDataResolver : IBankIdAuthRequestUserDa
 ```
 
 ```csharp
-builder.UseAuthRequestUserDataResolver<BankIdAuthRequestDynamicUserDataResolver>();
+services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestDynamicUserDataResolver>();
 ```
 
 ### Custom QR code generation
