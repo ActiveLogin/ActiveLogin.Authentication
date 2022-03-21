@@ -15,7 +15,7 @@ ___DISCLAIMER:___ The packages in ActiveLogin for Svensk E-identitet / GrandID a
 * [Samples](#samples)
   + [Simulated environment](#simulated-environment)
   + [Simulated environment with no config](#simulated-environment-with-no-config)
-  + [Development environment with custom person info](#development-environment-with-custom-person-info)
+  + [Simulated environment with custom person info](#simulated-environment-with-custom-person-info)
   + [Production environment](#production-environment)
   + [Test environment](#test-environment)
   + [Using schemes for same device and other device](#using-schemes-for-same-device-and-other-device)

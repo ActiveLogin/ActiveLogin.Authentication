@@ -545,7 +545,7 @@ return Challenge(props, provider);
 
 ### Handle missing or invalid state cookie
 
-If the user navigates directly to the BankdID status page (*/BankIdAuthentication/Login*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#setting-the-return-url-for-cancellation).
+If the user navigates directly to the BankdID status page (*/BankIdAuthentication/Login*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#return-url-for-cancellation).
 
 This behaviour can be overriden by implementing `IBankIdInvalidStateHandler` and adding that to the IOC-container.
 
