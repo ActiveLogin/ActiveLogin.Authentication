@@ -37,6 +37,10 @@ jobs:
       run: Copy-Item -Path ./*.md -Destination ./docs/articles
       shell: pwsh
 
+    - name: Fix paths for Readme
+      run: (Get-Content ./docs/articles/README.md).replace('docs/articles/', '') | Set-Content ./docs/articles/README.md
+      shell: pwsh
+
     - name: DocFX Build
       working-directory: docs
       run: docfx .\docfx.json
