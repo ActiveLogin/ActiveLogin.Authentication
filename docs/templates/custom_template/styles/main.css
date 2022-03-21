@@ -7,34 +7,34 @@ body {
     padding: 15px;
 }
 
-.navbar-brand .svg:not(:root) {
-    padding-bottom: inherit;
-    height: 38px;
-    width: 38px;
-}
+    .navbar-brand .svg:not(:root) {
+        padding-bottom: inherit;
+        height: 38px;
+        width: 38px;
+    }
 
 .navbar-inverse {
     background-color: #008BC3;
     color: #fff;
 }
 
-.navbar-inverse .navbar-nav>.active>a,
-.navbar-inverse .navbar-nav>.active>a:focus,
-.navbar-inverse .navbar-nav>.active>a:hover {
-    color: #008BC3;
-    background-color: #fff;
-}
+    .navbar-inverse .navbar-nav > .active > a,
+    .navbar-inverse .navbar-nav > .active > a:focus,
+    .navbar-inverse .navbar-nav > .active > a:hover {
+        color: #008BC3;
+        background-color: #fff;
+    }
 
-.navbar-inverse .navbar-nav>li>a,
-.navbar-inverse .navbar-text {
-    color: #fff;
-}
+    .navbar-inverse .navbar-nav > li > a,
+    .navbar-inverse .navbar-text {
+        color: #fff;
+    }
 
 @media (min-width:768px) {
-    .container-fluid>.navbar-collapse,
-    .container-fluid>.navbar-header,
-    .container>.navbar-collapse,
-    .container>.navbar-header {
+    .container-fluid > .navbar-collapse,
+    .container-fluid > .navbar-header,
+    .container > .navbar-collapse,
+    .container > .navbar-header {
         margin-right: 0;
         margin-left: 0;
         font-size: 18px;
@@ -55,7 +55,9 @@ article.content {
 }
 
 @media (min-width: 992px) {
-    .col-md-10 {
-        width: 75%;
+    @media (min-width: 992px) {
+        .sidetoc, .sidefilter { width: 330px; }
+
+        .article.grid-right { margin-left: 330px; }
     }
 }
