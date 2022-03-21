@@ -23,9 +23,6 @@
                 ]
             },
             {
-                "files": [ "../README.MD" ]
-            },
-            {
                 "files": [
                     "articles/**.md",
                     "articles/**/toc.yml",

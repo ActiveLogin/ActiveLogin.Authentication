@@ -1,6 +1,22 @@
+- name: Active Login
+  href: README.md
+  items:
+    - name: Overview
+      href: README.md
+    - name: License
+      href: license.md
+    - name: Contributing guidelines
+      href: CONTRIBUTING.md
+    - name: Code of Conduct
+      href: CODE_OF_CONDUCT.md
+    - name: Security Policy
+      href: SECURITY.md
 - name: BankID
   href: bankid.md
-- name: Monitoring
-  href: monitor.md
+  items:
+    - name: Overview
+      href: bankid.md
+    - name: Monitoring
+      href: monitor.md
 - name: GrandID (Deprecated)
   href: grandid.md

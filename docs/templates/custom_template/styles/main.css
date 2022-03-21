@@ -42,7 +42,7 @@ body {
 }
 
 .container.body-content {
-    width: auto !important;
+    width: auto;
     padding-left: 0;
 }
 

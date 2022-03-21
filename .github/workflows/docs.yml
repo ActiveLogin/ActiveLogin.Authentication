@@ -33,12 +33,8 @@ jobs:
       with:
         args: install docfx
 
-    - name: Copy README.md as docs index
-      run: Copy-Item -Path ./README.md -Destination ./docs/index.md
-      shell: pwsh
-
     - name: Copy *.md to docs
-      run: Copy-Item -Path ./*.md -Destination ./docs
+      run: Copy-Item -Path ./*.md -Destination ./docs/articles
       shell: pwsh
 
     - name: DocFX Build

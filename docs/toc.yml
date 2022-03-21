@@ -2,6 +2,6 @@
   href: index.md
 - name: Articles
   href: articles/
-  topicHref: articles/bankid.md
+  topicHref: articles/README.md
 - name: API Reference
   href: api/

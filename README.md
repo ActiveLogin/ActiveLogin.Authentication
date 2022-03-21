@@ -39,7 +39,7 @@ _Screenshot on monitoring dashboard._
 
 ## Table of contents
 
-___Note:___ This Readme reflects the state of our main branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our [CI builds](#project--packages-overview).
+___Note:___ This Readme reflects the state of our main branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our [CI builds](#projects--packages-overview).
 
 * [Features](#features)
 * [Screenshots](#screenshots)
@@ -51,7 +51,7 @@ ___Note:___ This Readme reflects the state of our main branch and the code docum
   + [What version of .NET is supported?](#what-version-of-net-is-supported)
   + [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
   + [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
-  + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad--active-directory--b2c)
+  + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
   + [Where did the packages for GrandId / Svensk E-identitet go?](#where-did-the-packages-for-grandid--svensk-e-identitet-go)
 * [Active Login](#active-login)
   + [Security](#security)
