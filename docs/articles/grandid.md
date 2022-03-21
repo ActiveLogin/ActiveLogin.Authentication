@@ -1,4 +1,4 @@
-# Documentation for ActiveLogin.Authentication.GrandId
+# ActiveLogin.Authentication.GrandId
 
 ___DISCLAIMER:___ The packages in ActiveLogin for Svensk E-identitet / GrandID are not beeing worked on anymore, and are therefore not supported. See this [announcement](https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions/323) for more info. The documentation below is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
 
@@ -15,7 +15,7 @@ ___DISCLAIMER:___ The packages in ActiveLogin for Svensk E-identitet / GrandID a
 * [Samples](#samples)
   + [Simulated environment](#simulated-environment)
   + [Simulated environment with no config](#simulated-environment-with-no-config)
-  + [Development environment with custom person info](#development-environment-with-custom-person-info)
+  + [Simulated environment with custom person info](#simulated-environment-with-custom-person-info)
   + [Production environment](#production-environment)
   + [Test environment](#test-environment)
   + [Using schemes for same device and other device](#using-schemes-for-same-device-and-other-device)

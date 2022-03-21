@@ -1,4 +1,4 @@
-# Documentation for  ActiveLogin.Authentication.BankId
+# ActiveLogin.Authentication.BankId
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET.
 
@@ -163,7 +163,7 @@ ___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentica
 
 Active Login provides a structured way of generating and logging events. These coould be monitored to get statistics and health status of your BankID login method.
 
-Read more on the topic in [Active Login Monitor](docs/monitor.md).
+Read more on the topic in [Active Login Monitor](monitor.md).
 
 ![Active Login Monitor](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png)
 
@@ -545,7 +545,7 @@ return Challenge(props, provider);
 
 ### Handle missing or invalid state cookie
 
-If the user navigates directly to the BankdID status page (*/BankIdAuthentication/Login*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#setting-the-return-url-for-cancellation).
+If the user navigates directly to the BankdID status page (*/BankIdAuthentication/Login*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#return-url-for-cancellation).
 
 This behaviour can be overriden by implementing `IBankIdInvalidStateHandler` and adding that to the IOC-container.
 

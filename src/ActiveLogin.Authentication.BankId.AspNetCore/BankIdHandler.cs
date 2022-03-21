@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
+using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
-using ActiveLogin.Identity.Swedish.Extensions;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -27,6 +27,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
         private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
+        private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers;
 
         public BankIdHandler(
             IOptionsMonitor<BankIdOptions> options,
@@ -36,13 +37,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
             IBankIdEventTrigger bankIdEventTrigger,
-            IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector)
+            IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
+            IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
             : base(options, loggerFactory, encoder, clock)
         {
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
             _bankIdEventTrigger = bankIdEventTrigger;
             _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+            _bankIdClaimsTransformers = bankIdClaimsTransformers.ToList();
         }
 
         protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
@@ -70,7 +73,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             }
 
             var properties = state.AuthenticationProperties;
-            var ticket = GetAuthenticationTicket(loginResult, properties);
+            var ticket = await GetAuthenticationTicket(loginResult, properties);
 
             await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
                 ticket,
@@ -88,72 +91,37 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             return HandleRequestResult.Fail(reason);
         }
 
-        private AuthenticationTicket GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
+        private async Task<AuthenticationTicket> GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
         {
-            DateTimeOffset? expiresUtc = null;
             if (Options.TokenExpiresIn.HasValue)
             {
-                expiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
-                properties.ExpiresUtc = expiresUtc;
+                properties.ExpiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
             }
 
-            var claims = GetClaims(loginResult, expiresUtc);
+            var claims = await GetClaims(loginResult);
             var identity = new ClaimsIdentity(claims, Scheme.Name, BankIdClaimTypes.Name, BankIdClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
 
             return new AuthenticationTicket(principal, properties, Scheme.Name);
         }
 
-        private IEnumerable<Claim> GetClaims(BankIdLoginResult loginResult, DateTimeOffset? expiresUtc)
+        private async Task<IEnumerable<Claim>> GetClaims(BankIdLoginResult loginResult)
         {
-            var personalIdentityNumber = PersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber);
-            var claims = new List<Claim>
+            var context = new BankIdClaimsTransformationContext(
+                Options,
+                loginResult.BankIdOrderRef,
+                loginResult.PersonalIdentityNumber,
+                loginResult.Name,
+                loginResult.GivenName,
+                loginResult.Surname
+            );
+
+            foreach (var transformer in _bankIdClaimsTransformers)
             {
-                new Claim(BankIdClaimTypes.Subject, personalIdentityNumber.To12DigitString()),
-
-                new Claim(BankIdClaimTypes.Name, loginResult.Name),
-                new Claim(BankIdClaimTypes.FamilyName, loginResult.Surname),
-                new Claim(BankIdClaimTypes.GivenName, loginResult.GivenName),
-
-                new Claim(BankIdClaimTypes.SwedishPersonalIdentityNumber, personalIdentityNumber.To10DigitString())
-            };
-
-            AddOptionalClaims(claims, personalIdentityNumber, expiresUtc);
-
-            return claims;
-        }
-
-        private void AddOptionalClaims(List<Claim> claims, PersonalIdentityNumber personalIdentityNumber, DateTimeOffset? expiresUtc)
-        {
-            if (expiresUtc.HasValue)
-            {
-                claims.Add(new Claim(BankIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
+                await transformer.TransformClaims(context);
             }
 
-            if (Options.IssueAuthenticationMethodClaim)
-            {
-                claims.Add(new Claim(BankIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
-            }
-
-            if (Options.IssueIdentityProviderClaim)
-            {
-                claims.Add(new Claim(BankIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
-            }
-
-            if (Options.IssueGenderClaim)
-            {
-                var jwtGender = JwtSerializer.GetGender(personalIdentityNumber.GetGenderHint());
-                if (!string.IsNullOrEmpty(jwtGender))
-                {
-                    claims.Add(new Claim(BankIdClaimTypes.Gender, jwtGender));
-                }
-            }
-
-            if (Options.IssueBirthdateClaim)
-            {
-                var jwtBirthdate = JwtSerializer.GetBirthdate(personalIdentityNumber.GetDateOfBirthHint());
-                claims.Add(new Claim(BankIdClaimTypes.Birthdate, jwtBirthdate));
-            }
+            return context.Claims;
         }
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
