@@ -34,10 +34,8 @@ jobs:
         args: install docfx
 
     - name: Copy README.md as docs index
-      uses: canastro/copy-file-action@master
-      with:
-        source: "README.md"
-        target: "docs/index.md"
+      run: Copy-Item -Path ./README.md -Destination ./docs/index.md
+      shell: pwsh
 
     - name: DocFX Build
       working-directory: docs
