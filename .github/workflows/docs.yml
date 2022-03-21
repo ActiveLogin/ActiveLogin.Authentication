@@ -37,6 +37,10 @@ jobs:
       run: Copy-Item -Path ./README.md -Destination ./docs/index.md
       shell: pwsh
 
+    - name: Copy *.md to docs
+      run: Copy-Item -Path ./*.md -Destination ./docs
+      shell: pwsh
+
     - name: DocFX Build
       working-directory: docs
       run: docfx .\docfx.json

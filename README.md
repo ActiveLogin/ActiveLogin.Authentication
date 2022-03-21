@@ -81,7 +81,7 @@ CI-builds from main of all packages are available in our [GitHub Packages feed](
 
 Full documentation with step by step instructions, samples, customization and details on how to configure the options is available here:
 
-[Documentation for ActiveLogin.Authentication.BankID](docs/bankid.md)
+[Documentation for ActiveLogin.Authentication.BankID](docs/articles/bankid.md)
 
 Active Login is designed to make it easy to get started with BankID in .NET. The most basic setup looks like this:
 
@@ -131,7 +131,7 @@ A live demo is available at [https://demo.activelogin.net/](https://demo.activel
 
 Here is a summary of common, general technical questions.
 
-The [docs for ActiveLogin.Authentication.BankId](docs/bankid.md) contains an FAQ specific to BankID.
+The [docs for ActiveLogin.Authentication.BankId](docs/articles/bankid.md) contains an FAQ specific to BankID.
 
 For commercial / business related questions, see the [FAQ at ActiveLogin.net](https://activelogin.net/#faq).
 
@@ -184,7 +184,7 @@ Azure AD B2C supports using custom identity providers that supports [Open ID Con
 
 The packages in ActiveLogin for Svensk E-identitet / GrandID are not beeing worked on anymore, and are therefore not supported as part of this open source project.
 
-The [documentation available](docs/grandid.md) is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
+The [documentation available](docs/articles/grandid.md) is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
 
 
 
