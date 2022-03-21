@@ -1,6 +1,5 @@
 - name: Home
-  href: /
-  topicHref: README.html
+  href: index.md
 - name: Articles
   href: articles/
   topicHref: articles/bankid.md
