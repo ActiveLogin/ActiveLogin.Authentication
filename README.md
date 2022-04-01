@@ -255,8 +255,7 @@ Active Solution is the main sponsor of Active Login. Active Solution is located 
 
 ![Active Solution](https://alresourcesprod.blob.core.windows.net/docsassets/activesolution-logo.svg)
 
-
-_We deliver tomorrow's cloud solutions, today. Our costumers choose us because we are engaged, flexible and efficient. We attract the brightest talent and are one of Microsoft's most valued partners._
+_Bright cloud solutions - System development that shines. Together, we create systems that will rocket your business._
 
 And yes, [we are hiring](https://www.activesolution.se/jobb/) :woman_technologist: :)
 
