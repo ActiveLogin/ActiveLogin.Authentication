@@ -45,6 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
+            services.TryAddTransient<IBankIdQrCodeContentGenerator, BankIdQrCodeContentGenerator>();
             services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
 
             services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 
-internal class BankIdQrCodeContentGenerator
+internal class BankIdQrCodeContentGenerator : IBankIdQrCodeContentGenerator
 {
     public string Generate(string qrStartToken, string qrStartSecret, int time)
     {

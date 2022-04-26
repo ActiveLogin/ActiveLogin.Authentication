@@ -40,6 +40,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
+        private readonly IBankIdQrCodeContentGenerator _bankIdQrCodeContentGenerator;
         private readonly IBankIdEndUserIpResolver _bankIdEndUserIpResolver;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
         private readonly IBankIdAuthRequestUserDataResolver _bankIdAuthUserDataResolver;
@@ -55,6 +56,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
             IBankIdQrCodeGenerator qrCodeGenerator,
+            IBankIdQrCodeContentGenerator bankIdQrCodeContentGenerator,
             IBankIdEndUserIpResolver bankIdEndUserIpResolver,
             IBankIdEventTrigger bankIdEventTrigger,
             IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver)
@@ -69,6 +71,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
             _qrCodeGenerator = qrCodeGenerator;
+            _bankIdQrCodeContentGenerator = bankIdQrCodeContentGenerator;
             _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
             _bankIdEventTrigger = bankIdEventTrigger;
             _bankIdAuthUserDataResolver = bankIdAuthUserDataResolver;
@@ -146,21 +149,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (unprotectedLoginOptions.UseQrCode)
             {
-                var queryPart = GetQueryPart(authResponse.AutoStartToken);
-                var qrUrl = $"bankid:///{queryPart}";
-
-                string GetQueryPart(string autoStartToken)
-                {
-                    var queryStringParams = new Dictionary<string, string>
-                    {
-                        { "autostarttoken", autoStartToken }
-                    };
-                    var queryBuilder = new QueryBuilder(queryStringParams);
-
-                    return queryBuilder.ToQueryString().ToString();
-                }
-
-                var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrUrl);
+                var time = 0;
+                var qrCodeContent = _bankIdQrCodeContentGenerator.Generate(authResponse.QrStartToken, authResponse.QrStartSecret, time);
+                var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrCodeContent);
                 return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, qrCode));
             }
 
