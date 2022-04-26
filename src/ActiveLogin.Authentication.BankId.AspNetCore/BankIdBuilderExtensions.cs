@@ -35,6 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
+            services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
             services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
             services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
 

@@ -78,10 +78,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             var loginScriptOptions = new BankIdLoginScriptOptions(
                 Url.Action("Initialize", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Initialize"),
                 Url.Action("Status", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Status"),
+                Url.Action("QrCode", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.QrCode"),
                 Url.Action("Cancel", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Cancel")
                 )
             {
-                RefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs,
+                StatusRefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs,
+                QrCodeRefreshIntervalMs = BankIdDefaults.QrCodeRefreshIntervalMs,
 
                 InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(initialStatusMessage),
                 UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),

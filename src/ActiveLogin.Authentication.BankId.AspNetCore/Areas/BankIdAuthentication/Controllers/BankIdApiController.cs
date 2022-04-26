@@ -20,7 +20,6 @@ using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -37,6 +36,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdLauncher _bankIdLauncher;
         private readonly IBankIdApiClient _bankIdApiClient;
         private readonly IBankIdOrderRefProtector _orderRefProtector;
+        private readonly IBankIdQrStartStateProtector _qrStartStateProtector;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
@@ -53,6 +53,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             IBankIdLauncher bankIdLauncher,
             IBankIdApiClient bankIdApiClient,
             IBankIdOrderRefProtector orderRefProtector,
+            IBankIdQrStartStateProtector qrStartStateProtector,
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
             IBankIdQrCodeGenerator qrCodeGenerator,
@@ -68,6 +69,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             _bankIdLauncher = bankIdLauncher;
             _bankIdApiClient = bankIdApiClient;
             _orderRefProtector = orderRefProtector;
+            _qrStartStateProtector = qrStartStateProtector;
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
             _qrCodeGenerator = qrCodeGenerator;
@@ -114,10 +116,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var detectedUserDevice = GetDetectedUserDevice();
             AuthResponse authResponse;
+            DateTimeOffset bankIdResponseTime;
             try
             {
                 var authRequest = await GetAuthRequest(personalIdentityNumber, unprotectedLoginOptions);
                 authResponse = await _bankIdApiClient.AuthAsync(authRequest);
+                bankIdResponseTime = DateTimeOffset.UtcNow;
             }
             catch (BankIdApiException bankIdApiException)
             {
@@ -149,15 +153,32 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (unprotectedLoginOptions.UseQrCode)
             {
-                var time = 0;
-                var qrCodeContent = _bankIdQrCodeContentGenerator.Generate(authResponse.QrStartToken, authResponse.QrStartSecret, time);
-                var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrCodeContent);
-                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, qrCode));
+                var qrStartState = new BankIdQrStartState(
+                    bankIdResponseTime,
+                    authResponse.QrStartToken,
+                    authResponse.QrStartSecret
+                );
+
+                var qrCodeAsBase64 = GetQrCode(qrStartState);
+                var protectedQrStartState = _qrStartStateProtector.Protect(qrStartState);
+
+                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, qrCodeAsBase64));
             }
 
             return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
-        
+
+        private string GetQrCode(BankIdQrStartState qrStartState)
+        {
+            var elapsedTime = DateTimeOffset.UtcNow - qrStartState.QrStartTime;
+            var elapsedTotalSeconds = (int)Math.Round(elapsedTime.TotalSeconds);
+
+            var qrCodeContent = _bankIdQrCodeContentGenerator.Generate(qrStartState.QrStartToken, qrStartState.QrStartSecret, elapsedTotalSeconds);
+            var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrCodeContent);
+
+            return qrCode;
+        }
+
         private async Task<AuthRequest> GetAuthRequest(PersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
         {
             var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp(HttpContext);
@@ -336,6 +357,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var delimiter = url.Contains('?') ? "&" : "?";
             return $"{url}{delimiter}{queryString}";
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost("QrCode")]
+        public ActionResult QrCode(BankIdLoginApiQrCodeRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.QrStartState))
+            {
+                throw new ArgumentNullException(nameof(request.QrStartState));
+            }
+
+            var unprotectedQrStartState = _qrStartStateProtector.Unprotect(request.QrStartState);
+            var qrCodeAsBase64 = GetQrCode(unprotectedQrStartState);
+
+            return OkJsonResult(new BankIdLoginApiQrCodeResponse(qrCodeAsBase64));
         }
 
         [ValidateAntiForgeryToken]
