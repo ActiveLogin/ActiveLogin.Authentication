@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using Microsoft.AspNetCore.Authentication;
 

@@ -18,7 +18,7 @@ Free to use, [commercial support and training](#support--training) is available 
 - :id: Supports BankID Auth and Sign
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 6
 - :five: Built on V5.1 (the latest) BankID JSON API
-- :white_square_button: Supports BankID QR code and Cancel
+- :white_square_button: Supports BankID animated QR code (Safe start)
 - :lock: GDPR: Security by design
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
@@ -255,8 +255,7 @@ Active Solution is the main sponsor of Active Login. Active Solution is located 
 
 ![Active Solution](https://alresourcesprod.blob.core.windows.net/docsassets/activesolution-logo.svg)
 
-
-_We deliver tomorrow's cloud solutions, today. Our costumers choose us because we are engaged, flexible and efficient. We attract the brightest talent and are one of Microsoft's most valued partners._
+_Bright cloud solutions - System development that shines. Together, we create systems that will rocket your business._
 
 And yes, [we are hiring](https://www.activesolution.se/jobb/) :woman_technologist: :)
 
