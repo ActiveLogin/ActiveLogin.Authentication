@@ -161,6 +161,9 @@ Run the following command in the root to run all tests:
 dotnet test
 ```
 
+#### Devcontainer and GitHub Codespaces
+
+We also support [devcontainer.json](https://code.visualstudio.com/docs/remote/containers#_create-a-devcontainerjson-file) so that you can [build the solution in a container](https://code.visualstudio.com/docs/remote/containers) and use [GitHub Codespaces](https://docs.github.com/en/codespaces/overview).
 
 ### How do I run the samples locally?
 
