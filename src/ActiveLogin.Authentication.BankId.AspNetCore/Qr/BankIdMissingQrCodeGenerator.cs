@@ -14,7 +14,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Qr
             _localizer = localizer;
         }
 
-        public string GenerateQrCodeAsBase64(string autoStartToken)
+        public string GenerateQrCodeAsBase64(string content)
         {
             var fileName = _localizer["Qr_Code_Default_Image"];
             var assembly = typeof(BankIdMissingQrCodeGenerator).GetTypeInfo().Assembly;

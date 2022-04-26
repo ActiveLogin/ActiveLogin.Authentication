@@ -20,6 +20,7 @@ using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -145,7 +146,21 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (unprotectedLoginOptions.UseQrCode)
             {
-                var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(authResponse.AutoStartToken);
+                var queryPart = GetQueryPart(authResponse.AutoStartToken);
+                var qrUrl = $"bankid:///{queryPart}";
+
+                string GetQueryPart(string autoStartToken)
+                {
+                    var queryStringParams = new Dictionary<string, string>
+                    {
+                        { "autostarttoken", autoStartToken }
+                    };
+                    var queryBuilder = new QueryBuilder(queryStringParams);
+
+                    return queryBuilder.ToQueryString().ToString();
+                }
+
+                var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrUrl);
                 return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, qrCode));
             }
 

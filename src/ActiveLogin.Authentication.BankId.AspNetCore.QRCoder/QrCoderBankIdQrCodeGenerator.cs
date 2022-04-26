@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
-using Microsoft.AspNetCore.Http.Extensions;
 using QRCoder;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
@@ -23,32 +21,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.QrCoder
         /// First the token is added to the BankID URL for auto start and
         /// then the QR code is generated from the resulting URL.
         /// </remarks>
-        /// <param name="autoStartToken"></param>
+        /// <param name="content"></param>
         /// <returns>A base 64 representation of the QR code</returns>
-        public string GenerateQrCodeAsBase64(string autoStartToken)
+        public string GenerateQrCodeAsBase64(string content)
         {
-            var queryPart = GetQueryPart(autoStartToken);
-            var qrUrl = $"bankid:///{queryPart}";
 
             using var qrGenerator = new QRCodeGenerator();
-            var qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q);
+            var qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
 
             using var qrCode = new PngByteQRCode(qrCodeData);
             var pngQrCode = qrCode.GetGraphic(PixelsPerModule);
             var base64QrCpde = Convert.ToBase64String(pngQrCode);
 
             return base64QrCpde;
-        }
-
-        private string GetQueryPart(string autoStartToken)
-        {
-            var queryStringParams = new Dictionary<string, string>
-            {
-                { "autostarttoken", autoStartToken }
-            };
-            var queryBuilder = new QueryBuilder(queryStringParams);
-
-            return queryBuilder.ToQueryString().ToString();
         }
     }
 }
