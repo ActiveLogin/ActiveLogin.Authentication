@@ -5,30 +5,35 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 {
     public class BankIdLoginScriptOptions
     {
-        internal BankIdLoginScriptOptions(string bankIdInitializeApiUrl, string bankIdStatusApiUrl, string bankIdCancelApiUrl)
+        internal BankIdLoginScriptOptions(string bankIdInitializeApiUrl, string bankIdStatusApiUrl, string bankIdQrCodeApiUrl, string bankIdCancelApiUrl)
         {
             BankIdInitializeApiUrl = bankIdInitializeApiUrl;
             BankIdStatusApiUrl = bankIdStatusApiUrl;
+            BankIdQrCodeApiUrl = bankIdQrCodeApiUrl;
             BankIdCancelApiUrl = bankIdCancelApiUrl;
         }
 
-        private const int MinimumRefreshIntervalMs = 1000;
-        private int _refreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs;
+        private const int MinimumStatusRefreshIntervalMs = 1000;
+        private int _statusRefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs;
 
-        [JsonPropertyName("refreshIntervalMs")]
-        public int RefreshIntervalMs
+        [JsonPropertyName("statusRefreshIntervalMs")]
+        public int StatusRefreshIntervalMs
         {
-            get => _refreshIntervalMs;
+            get => _statusRefreshIntervalMs;
             set
             {
-                if (value < MinimumRefreshIntervalMs)
+                if (value < MinimumStatusRefreshIntervalMs)
                 {
                     throw new ArgumentException("BankID does not allow collecting status more than once a second.", nameof(value));
                 }
 
-                _refreshIntervalMs = value;
+                _statusRefreshIntervalMs = value;
             }
         }
+
+        [JsonPropertyName("qrCodeRefreshIntervalMs")]
+        public int QrCodeRefreshIntervalMs { get; set; }
+
 
         [JsonPropertyName("bankIdInitializeApiUrl")]
         public string BankIdInitializeApiUrl { get; set; }
@@ -36,8 +41,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [JsonPropertyName("bankIdStatusApiUrl")]
         public string BankIdStatusApiUrl { get; set; }
 
+        [JsonPropertyName("bankIdQrCodeApiUrl")]
+        public string BankIdQrCodeApiUrl { get; set; }
+
         [JsonPropertyName("bankIdCancelApiUrl")]
         public string BankIdCancelApiUrl { get; set; }
+
 
         [JsonPropertyName("initialStatusMessage")]
         public string InitialStatusMessage { get; set; } = string.Empty;

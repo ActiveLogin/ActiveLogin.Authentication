@@ -13,6 +13,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         public static readonly TimeSpan MaximumSessionLifespan = TimeSpan.FromHours(1);
 
         public const int StatusRefreshIntervalMs = 2000;
+        public const int QrCodeRefreshIntervalMs = 1000;
         public const string ResourcesPath = "Resources";
 
 

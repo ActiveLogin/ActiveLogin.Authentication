@@ -129,9 +129,9 @@
                         }
                     }
 
-                    if (!!data.qrCodeAsBase64) {
-                        qrCodeElement.src = 'data:image/png;base64, ' + data.qrCodeAsBase64;
-                        show(qrCodeElement);
+                    if (!!data.qrStartState && !!data.qrCodeAsBase64) {
+                        setQrCode(data.qrCodeAsBase64);
+                        refreshQrCode(requestVerificationToken, data.qrStartState);
                     }
 
                     if (!!data.personalIdentityNumber) {
@@ -183,7 +183,7 @@
                         showStatus(data.statusMessage, 'white', true);
                         setTimeout(function () {
                             checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
-                        }, options.refreshIntervalMs);
+                        }, options.statusRefreshIntervalMs);
                     }
                 }).catch(function (error) {
                     if (!loginIsCancelledByUser) {
@@ -192,6 +192,36 @@
                     }
                     hide(qrCodeElement);
                 });
+        }
+
+        function refreshQrCode(requestVerificationToken, qrStartState) {
+            if (loginIsCancelledByUser) {
+                return;
+            }
+
+            postJson(options.bankIdQrCodeApiUrl, requestVerificationToken, {
+                    'qrStartState': qrStartState
+                })
+                .then(function (data) {
+                    if (!!data.qrCodeAsBase64) {
+                        setQrCode(data.qrCodeAsBase64);
+
+                        setTimeout(function () {
+                            refreshQrCode(requestVerificationToken, qrStartState);
+                        }, options.qrCodeRefreshIntervalMs);
+                    }
+                }).catch(function (error) {
+                    if (!loginIsCancelledByUser) {
+                        showStatus(error.message, 'danger', false);
+                        hide(startBankIdAppButtonElement);
+                    }
+                    hide(qrCodeElement);
+                });
+        }
+
+        function setQrCode(qrCodeAsBase64) {
+            qrCodeElement.src = 'data:image/png;base64, ' + qrCodeAsBase64;
+            show(qrCodeElement);
         }
 
         function cancel(requestVerificationToken, cancelReturnUrl, orderRef, loginOptions) {
