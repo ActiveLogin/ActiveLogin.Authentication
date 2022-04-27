@@ -148,7 +148,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         private BankIdSupportedDevice GetDetectedDevice()
         {
-            return _bankIdSupportedDeviceDetector.Detect(Request.Headers[BankIdConstants.UserAgentHttpHeaderName]);
+            return _bankIdSupportedDeviceDetector.Detect();
         }
 
         private static PersonalIdentityNumber? GetPersonalIdentityNumber(AuthenticationProperties properties)

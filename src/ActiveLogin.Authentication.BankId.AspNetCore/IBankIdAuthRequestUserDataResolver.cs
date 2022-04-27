@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 
-using Microsoft.AspNetCore.Http;
-
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     /// <summary>
@@ -13,8 +11,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// Returns the user data for the current context/request.
         /// </summary>
         /// <param name="authRequestContext">BankID auth request context.</param>
-        /// <param name="httpContext">HttpContext for the current http request.</param>
         /// <returns></returns>
-        Task<BankIdAuthUserData> GetUserDataAsync(BankIdAuthRequestContext authRequestContext, HttpContext httpContext);
+        Task<BankIdAuthUserData> GetUserDataAsync(BankIdAuthRequestContext authRequestContext);
     }
 }

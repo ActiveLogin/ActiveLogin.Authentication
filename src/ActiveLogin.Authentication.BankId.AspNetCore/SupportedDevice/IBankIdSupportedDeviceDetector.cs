@@ -6,10 +6,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
     public interface IBankIdSupportedDeviceDetector
     {
         /// <summary>
-        /// Detect the device.
+        /// Detect the current device.
         /// </summary>
-        /// <param name="userAgent">The user agent string to extract device information from.</param>
         /// <returns></returns>
-        BankIdSupportedDevice Detect(string userAgent);
+        BankIdSupportedDevice Detect();
     }
 }

@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     internal class BankIdLauncher : IBankIdLauncher
     {
-        private const string UserAgentHeaderName = "User-Agent";
-
         private const string BankIdSchemePrefix = "bankid:///";
         private const string BankIdAppLinkPrefix = "https://app.bankid.com/";
 
@@ -27,9 +26,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
             _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         }
 
-        public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request, HttpContext httpContext)
+        public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request)
         {
-            var detectedDevice = _bankIdSupportedDeviceDetector.Detect(httpContext.Request.Headers[UserAgentHeaderName]);
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
             var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
             var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice);
 

@@ -32,5 +32,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice
         /// Device browser (Chrome, Firefox, Safari, Edge etc)
         /// </summary>
         public BankIdSupportedDeviceBrowser DeviceBrowser { get; }
+
+
+        public static BankIdSupportedDevice Unknown = new(BankIdSupportedDeviceType.Unknown, BankIdSupportedDeviceOs.Unknown, BankIdSupportedDeviceBrowser.Unknown, new BankIdSupportedDeviceOsVersion(0));
     }
 }

@@ -7,9 +7,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext
     /// </summary>
     public class BankIdRemoteIpAddressEndUserIpResolver : IBankIdEndUserIpResolver
     {
-        public string GetEndUserIp(HttpContext httpContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public BankIdRemoteIpAddressEndUserIpResolver(IHttpContextAccessor httpContextAccessor)
         {
-            var remoteIp = httpContext.Connection.RemoteIpAddress;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public string GetEndUserIp()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var remoteIp = httpContext?.Connection.RemoteIpAddress;
 
             if(remoteIp == null)
             {

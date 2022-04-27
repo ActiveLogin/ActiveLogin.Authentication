@@ -140,19 +140,6 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Set resolver that will be used to resolve the ip of the end user.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="resolver"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseEndUserIpResolver(this IBankIdBuilder builder, Func<HttpContext, string> resolver)
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEndUserIpResolver>(x => new BankIdDynamicEndUserIpResolver(resolver));
-
-            return builder;
-        }
-
-        /// <summary>
         /// Set what user data to supply to the auth request.
         /// </summary>
         /// <param name="builder"></param>

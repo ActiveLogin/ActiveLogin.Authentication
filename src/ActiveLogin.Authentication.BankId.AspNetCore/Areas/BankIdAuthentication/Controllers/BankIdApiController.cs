@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
@@ -9,17 +7,14 @@ using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
-using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
-using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
-using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ActiveLogin.Authentication.BankId.AspNetCore.Flow;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -33,113 +28,72 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private readonly IBankIdUserMessage _bankIdUserMessage;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
-        private readonly IBankIdLauncher _bankIdLauncher;
         private readonly IBankIdApiClient _bankIdApiClient;
         private readonly IBankIdOrderRefProtector _orderRefProtector;
         private readonly IBankIdQrStartStateProtector _qrStartStateProtector;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
         private readonly IBankIdLoginResultProtector _loginResultProtector;
-        private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
-        private readonly IBankIdQrCodeContentGenerator _bankIdQrCodeContentGenerator;
-        private readonly IBankIdEndUserIpResolver _bankIdEndUserIpResolver;
         private readonly IBankIdEventTrigger _bankIdEventTrigger;
-        private readonly IBankIdAuthRequestUserDataResolver _bankIdAuthUserDataResolver;
+        private readonly IBankIdFlowService _bankIdFlowService;
 
         public BankIdApiController(
             UrlEncoder urlEncoder,
             IBankIdUserMessage bankIdUserMessage,
             IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
             IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
-            IBankIdLauncher bankIdLauncher,
             IBankIdApiClient bankIdApiClient,
             IBankIdOrderRefProtector orderRefProtector,
             IBankIdQrStartStateProtector qrStartStateProtector,
             IBankIdLoginOptionsProtector loginOptionsProtector,
             IBankIdLoginResultProtector loginResultProtector,
-            IBankIdQrCodeGenerator qrCodeGenerator,
-            IBankIdQrCodeContentGenerator bankIdQrCodeContentGenerator,
-            IBankIdEndUserIpResolver bankIdEndUserIpResolver,
             IBankIdEventTrigger bankIdEventTrigger,
-            IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver)
+            IBankIdFlowService bankIdFlowService)
         {
             _urlEncoder = urlEncoder;
             _bankIdUserMessage = bankIdUserMessage;
             _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
             _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
-            _bankIdLauncher = bankIdLauncher;
             _bankIdApiClient = bankIdApiClient;
             _orderRefProtector = orderRefProtector;
             _qrStartStateProtector = qrStartStateProtector;
             _loginOptionsProtector = loginOptionsProtector;
             _loginResultProtector = loginResultProtector;
-            _qrCodeGenerator = qrCodeGenerator;
-            _bankIdQrCodeContentGenerator = bankIdQrCodeContentGenerator;
-            _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
             _bankIdEventTrigger = bankIdEventTrigger;
-            _bankIdAuthUserDataResolver = bankIdAuthUserDataResolver;
+            _bankIdFlowService = bankIdFlowService;
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost("Initialize")]
         public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.LoginOptions))
-            {
-                throw new ArgumentNullException(nameof(request.LoginOptions));
-            }
-
-            if (string.IsNullOrWhiteSpace(request.ReturnUrl))
-            {
-                throw new ArgumentNullException(nameof(request.ReturnUrl));
-            }
+            ArgumentNullException.ThrowIfNull(request.LoginOptions, nameof(request.LoginOptions));
+            ArgumentNullException.ThrowIfNull(request.ReturnUrl, nameof(request.ReturnUrl));
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
-            PersonalIdentityNumber? personalIdentityNumber = null;
-            if (unprotectedLoginOptions.IsAutoLogin())
-            {
-                if (!unprotectedLoginOptions.AllowChangingPersonalIdentityNumber)
-                {
-                    personalIdentityNumber = unprotectedLoginOptions.PersonalIdentityNumber;
-                }
-            }
-            else
-            {
-                if (!PersonalIdentityNumber.TryParse(request.PersonalIdentityNumber, StrictMode.Off, out personalIdentityNumber))
-                {
-                    return BadRequestJsonResult(new
-                    {
-                        PersonalIdentityNumber = "Invalid PersonalIdentityNumber."
-                    });
-                }
-            }
-
-            var detectedUserDevice = GetDetectedUserDevice();
-            AuthResponse authResponse;
-            DateTimeOffset bankIdResponseTime;
+            InitializeAuthFlowResult initializeAuthFlowResult;
             try
             {
-                var authRequest = await GetAuthRequest(personalIdentityNumber, unprotectedLoginOptions);
-                authResponse = await _bankIdApiClient.AuthAsync(authRequest);
-                bankIdResponseTime = DateTimeOffset.UtcNow;
+                var returnRedirectUrl = GetAbsoluteUrl(Url.Action("Login", "BankId", new
+                {
+                    returnUrl = request.ReturnUrl,
+                    loginOptions = request.LoginOptions
+                }));
+                initializeAuthFlowResult = await _bankIdFlowService.InitializeAuth(unprotectedLoginOptions, returnRedirectUrl);
             }
             catch (BankIdApiException bankIdApiException)
             {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber, bankIdApiException, detectedUserDevice, unprotectedLoginOptions));
-
                 var errorStatusMessage = GetStatusMessage(bankIdApiException);
                 return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
 
-            var orderRef = authResponse.OrderRef;
-            var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(orderRef));
-
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber, orderRef, detectedUserDevice, unprotectedLoginOptions));
-
+            var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(initializeAuthFlowResult.BankIdAuthResponse.OrderRef));
             if (unprotectedLoginOptions.SameDevice)
             {
-                var launchInfo = GetBankIdLaunchInfo(request, authResponse);
-                
+                ArgumentNullException.ThrowIfNull(initializeAuthFlowResult.BankIdLaunchInfo);
+
+                var launchInfo = initializeAuthFlowResult.BankIdLaunchInfo;
+
                 // Don't check for status if the browser will reload on return
                 if (launchInfo.DeviceWillReloadPageOnReturnFromBankIdApp)
                 {
@@ -153,62 +107,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             if (unprotectedLoginOptions.UseQrCode)
             {
-                var qrStartState = new BankIdQrStartState(
-                    bankIdResponseTime,
-                    authResponse.QrStartToken,
-                    authResponse.QrStartSecret
-                );
+                ArgumentNullException.ThrowIfNull(initializeAuthFlowResult.QrStartState);
+                ArgumentNullException.ThrowIfNull(initializeAuthFlowResult.QrCodeBase64Encoded);
 
-                var qrCodeAsBase64 = GetQrCode(qrStartState);
-                var protectedQrStartState = _qrStartStateProtector.Protect(qrStartState);
+                var protectedQrStartState = _qrStartStateProtector.Protect(initializeAuthFlowResult.QrStartState);
 
-                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, qrCodeAsBase64));
+                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, initializeAuthFlowResult.QrCodeBase64Encoded));
             }
 
             return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
         }
 
-        private string GetQrCode(BankIdQrStartState qrStartState)
-        {
-            var elapsedTime = DateTimeOffset.UtcNow - qrStartState.QrStartTime;
-            var elapsedTotalSeconds = (int)Math.Round(elapsedTime.TotalSeconds);
 
-            var qrCodeContent = _bankIdQrCodeContentGenerator.Generate(qrStartState.QrStartToken, qrStartState.QrStartSecret, elapsedTotalSeconds);
-            var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrCodeContent);
-
-            return qrCode;
-        }
-
-        private async Task<AuthRequest> GetAuthRequest(PersonalIdentityNumber? personalIdentityNumber, BankIdLoginOptions loginOptions)
-        {
-            var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp(HttpContext);
-            var personalIdentityNumberString = personalIdentityNumber?.To12DigitString();
-            var tokenStartRequired = string.IsNullOrEmpty(personalIdentityNumberString) ? true : (bool?)null;
-
-            List<string>? certificatePolicies = null;
-            if (loginOptions.CertificatePolicies != null && loginOptions.CertificatePolicies.Any())
-            {
-                certificatePolicies = loginOptions.CertificatePolicies;
-            }
-
-            var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired, loginOptions.AllowBiometric);
-
-            var authRequestContext = new BankIdAuthRequestContext(endUserIp, personalIdentityNumberString, authRequestRequirement);
-            var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext, HttpContext);
-  
-            return new AuthRequest(endUserIp, personalIdentityNumberString, authRequestRequirement, userData.UserVisibleData, userData.UserNonVisibleData, userData.UserVisibleDataFormat);
-        }
-
-        private BankIdLaunchInfo GetBankIdLaunchInfo(BankIdLoginApiInitializeRequest request, AuthResponse authResponse)
-        {
-            var returnRedirectUri = GetAbsoluteUrl(Url.Action("Login", "BankId", new
-            {
-                returnUrl = request.ReturnUrl,
-                loginOptions = request.LoginOptions
-            }));
-            var launchUrlRequest = new LaunchUrlRequest(returnRedirectUri, authResponse.AutoStartToken);
-            return _bankIdLauncher.GetLaunchInfo(launchUrlRequest, HttpContext);
-        }
 
         private string GetAbsoluteUrl(string? returnUrl)
         {
@@ -220,20 +130,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         [HttpPost("Status")]
         public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.LoginOptions))
-            {
-                throw new ArgumentNullException(nameof(request.LoginOptions));
-            }
-
-            if (string.IsNullOrWhiteSpace(request.ReturnUrl))
-            {
-                throw new ArgumentNullException(nameof(request.ReturnUrl));
-            }
-
-            if (string.IsNullOrWhiteSpace(request.OrderRef))
-            {
-                throw new ArgumentNullException(nameof(request.OrderRef));
-            }
+            ArgumentNullException.ThrowIfNull(request.LoginOptions);
+            ArgumentNullException.ThrowIfNull(request.ReturnUrl);
+            ArgumentNullException.ThrowIfNull(request.OrderRef);
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
@@ -327,7 +226,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private BankIdSupportedDevice GetDetectedUserDevice()
         {
-            return _bankIdSupportedDeviceDetector.Detect(HttpContext.Request.Headers[BankIdConstants.UserAgentHttpHeaderName]);
+            return _bankIdSupportedDeviceDetector.Detect();
         }
 
         private static bool PersonalIdentityNumberProvided(BankIdLoginOptions unprotectedLoginOptions)
@@ -369,7 +268,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             var unprotectedQrStartState = _qrStartStateProtector.Unprotect(request.QrStartState);
-            var qrCodeAsBase64 = GetQrCode(unprotectedQrStartState);
+            var qrCodeAsBase64 = _bankIdFlowService.GetQrCode(unprotectedQrStartState);
 
             return OkJsonResult(new BankIdLoginApiQrCodeResponse(qrCodeAsBase64));
         }

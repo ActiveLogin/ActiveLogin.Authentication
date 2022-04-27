@@ -1,5 +1,8 @@
 using System;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
+
+using Microsoft.AspNetCore.Http;
+
 using UAParser;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
@@ -14,8 +17,25 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser
     /// </remarks>
     public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
     {
-        public BankIdSupportedDevice Detect(string userAgent)
+        private const string UserAgentHttpHeaderName = "User-Agent";
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UAParserDeviceDetector(IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public BankIdSupportedDevice Detect()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null)
+            {
+                return BankIdSupportedDevice.Unknown;
+            }
+
+            var userAgent = httpContext.Request.Headers[UserAgentHttpHeaderName].ToString();
+
+
             var uaParser = Parser.GetDefault();
             var clientInfo = uaParser.Parse(userAgent);
 

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
 {
     /// <summary>
@@ -11,8 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher
         /// Get info on how to launch the BankID app given the current HttpContext. Use (for example) User Agent to detect device.
         /// </summary>
         /// <param name="request">Launch info</param>
-        /// <param name="httpContext">HttpContext to extract info from.</param>
         /// <returns></returns>
-        BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request, HttpContext httpContext);
+        BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request);
     }
 }
