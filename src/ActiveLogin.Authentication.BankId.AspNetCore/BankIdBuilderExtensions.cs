@@ -9,6 +9,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.AspNetCore.Flow;
 using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
@@ -33,6 +34,8 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 options.ResourcesPath = BankIdDefaults.ResourcesPath;
             });
+
+            services.TryAddTransient<IBankIdFlowService, BankIdFlowService>();
 
             services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
             services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
