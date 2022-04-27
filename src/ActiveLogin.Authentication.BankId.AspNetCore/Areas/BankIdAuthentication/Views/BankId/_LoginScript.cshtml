@@ -16,6 +16,9 @@
             return;
         }
 
+        var qrLastRefreshTimestamp = null;
+        var qrIsRefreshing = false;
+
         // OrderRef
 
         var sessionStorageOrderRefKey = 'ActiveLogin_BankId_OrderRef';
@@ -131,6 +134,7 @@
 
                     if (!!data.qrStartState && !!data.qrCodeAsBase64) {
                         setQrCode(data.qrCodeAsBase64);
+                        qrLastRefreshTimestamp = new Date();
                         refreshQrCode(requestVerificationToken, data.qrStartState);
                     }
 
@@ -199,13 +203,27 @@
                 return;
             }
 
+            if (qrIsRefreshing) {
+                return;
+            }
+
+            var currentTime = new Date();
+            var timeSinceLastRefresh = currentTime - qrLastRefreshTimestamp;
+            if (timeSinceLastRefresh < options.qrCodeRefreshIntervalMs) {
+                setTimeout(function () {
+                    refreshQrCode(requestVerificationToken, qrStartState);
+                }, options.qrCodeRefreshIntervalMs);
+                return;
+            }
+            qrIsRefreshing = true;
+
             postJson(options.bankIdQrCodeApiUrl, requestVerificationToken, {
                     'qrStartState': qrStartState
                 })
                 .then(function (data) {
                     if (!!data.qrCodeAsBase64) {
+                        qrLastRefreshTimestamp = new Date();
                         setQrCode(data.qrCodeAsBase64);
-
                         setTimeout(function () {
                             refreshQrCode(requestVerificationToken, qrStartState);
                         }, options.qrCodeRefreshIntervalMs);
@@ -216,6 +234,8 @@
                         hide(startBankIdAppButtonElement);
                     }
                     hide(qrCodeElement);
+                }).finally(() => {
+                    qrIsRefreshing = false;
                 });
         }
 
