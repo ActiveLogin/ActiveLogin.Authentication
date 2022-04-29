@@ -1,5 +1,7 @@
 using System.Text.Json;
 
+using ActiveLogin.Authentication.BankId.Api;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore
 {
     public static class BankIdConstants
@@ -10,7 +12,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         internal const string InvalidReturnUrlErrorMessage = "Invalid returnUrl. Needs to be a local url.";
 
-        internal const string BankIdApiVersion = "5.1";
+        internal const string BankIdApiVersion = BankIdUrls.BankIdApiVersion;
 
         internal static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
         {
