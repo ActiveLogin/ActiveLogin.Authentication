@@ -88,37 +88,28 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(initializeAuthFlowResult.BankIdAuthResponse.OrderRef));
-            if (unprotectedLoginOptions.SameDevice)
+            if(initializeAuthFlowResult.LaunchType is InitializeAuthFlowLaunchTypeOtherDevice otherDeviceLaunchType)
             {
-                ArgumentNullException.ThrowIfNull(initializeAuthFlowResult.BankIdLaunchInfo);
-
-                var launchInfo = initializeAuthFlowResult.BankIdLaunchInfo;
-
+                var protectedQrStartState = _qrStartStateProtector.Protect(otherDeviceLaunchType.QrStartState);
+                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDeviceLaunchType.QrCodeBase64Encoded));
+            }
+            else if (initializeAuthFlowResult.LaunchType is InitializeAuthFlowLaunchTypeSameDevice sameDeviceLaunchType)
+            {
                 // Don't check for status if the browser will reload on return
-                if (launchInfo.DeviceWillReloadPageOnReturnFromBankIdApp)
+                if (sameDeviceLaunchType.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp)
                 {
-                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, launchInfo.LaunchUrl, launchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDeviceLaunchType.BankIdLaunchInfo.LaunchUrl, sameDeviceLaunchType.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
                 }
                 else
                 {
-                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, launchInfo.LaunchUrl, launchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDeviceLaunchType.BankIdLaunchInfo.LaunchUrl, sameDeviceLaunchType.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
                 }
             }
-
-            if (unprotectedLoginOptions.UseQrCode)
+            else
             {
-                ArgumentNullException.ThrowIfNull(initializeAuthFlowResult.QrStartState);
-                ArgumentNullException.ThrowIfNull(initializeAuthFlowResult.QrCodeBase64Encoded);
-
-                var protectedQrStartState = _qrStartStateProtector.Protect(initializeAuthFlowResult.QrStartState);
-
-                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, initializeAuthFlowResult.QrCodeBase64Encoded));
-            }
-
-            return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef));
+                throw new InvalidOperationException("Unknown launch type");
+            }    
         }
-
-
 
         private string GetAbsoluteUrl(string? returnUrl)
         {

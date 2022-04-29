@@ -15,22 +15,52 @@ using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
 {
+    public abstract class InitializeAuthFlowLaunchType
+    {
+    }
+
+    public class InitializeAuthFlowLaunchTypeSameDevice : InitializeAuthFlowLaunchType
+    {
+        public BankIdLaunchInfo BankIdLaunchInfo { get; init; }
+
+        public InitializeAuthFlowLaunchTypeSameDevice(BankIdLaunchInfo bankIdLaunchInfo)
+        {
+            BankIdLaunchInfo = bankIdLaunchInfo;
+        }
+    }
+
+    public class InitializeAuthFlowLaunchTypeOtherDevice : InitializeAuthFlowLaunchType
+    {
+        public InitializeAuthFlowLaunchTypeOtherDevice(BankIdQrStartState qrStartState, string qrCodeBase64Encoded)
+        {
+            QrStartState = qrStartState;
+            QrCodeBase64Encoded = qrCodeBase64Encoded;
+        }
+
+        public BankIdQrStartState QrStartState { get; init; }
+
+        public string QrCodeBase64Encoded { get; init; }
+    }
+
+
     public class InitializeAuthFlowResult
     {
-        public InitializeAuthFlowResult(AuthResponse bankIdAuthResponse, BankIdSupportedDevice detectedUserDevice)
+        public InitializeAuthFlowResult(AuthResponse bankIdAuthResponse, BankIdSupportedDevice detectedUserDevice, InitializeAuthFlowLaunchType launchType)
         {
             BankIdAuthResponse = bankIdAuthResponse;
             DetectedUserDevice = detectedUserDevice;
+            LaunchType = launchType;
         }
 
         public AuthResponse BankIdAuthResponse { get; init; }
 
         public BankIdSupportedDevice DetectedUserDevice { get; init; }
 
-        public BankIdQrStartState? QrStartState { get; init; }
-        public string? QrCodeBase64Encoded { get; init; }
+        public InitializeAuthFlowLaunchType LaunchType { get; init; }
+    }
 
-        public BankIdLaunchInfo? BankIdLaunchInfo { get; init; }
+    public class InitializeAuthFlowSameDeviceResult
+    {
     }
 
     internal class BankIdFlowService : IBankIdFlowService
@@ -73,7 +103,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
 
             await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber: null, authResponse.OrderRef, detectedUserDevice, loginOptions));
 
-            if (loginOptions.UseQrCode)
+            if (loginOptions.SameDevice)
+            {
+                var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, authResponse);
+                return new InitializeAuthFlowResult(authResponse, detectedUserDevice, new InitializeAuthFlowLaunchTypeSameDevice(launchInfo));
+            }
+            else
             {
                 var qrStartState = new BankIdQrStartState(
                     DateTimeOffset.UtcNow,
@@ -82,23 +117,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
                 );
 
                 var qrCodeAsBase64 = GetQrCode(qrStartState);
-                return new InitializeAuthFlowResult(authResponse, detectedUserDevice)
-                {
-                    QrCodeBase64Encoded = qrCodeAsBase64,
-                    QrStartState = qrStartState
-                };
+                return new InitializeAuthFlowResult(authResponse, detectedUserDevice, new InitializeAuthFlowLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
             }
-
-            if(loginOptions.SameDevice)
-            {
-                var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, authResponse);
-                return new InitializeAuthFlowResult(authResponse, detectedUserDevice)
-                {
-                    BankIdLaunchInfo = launchInfo
-                };
-            }
-
-            return new InitializeAuthFlowResult(authResponse, detectedUserDevice);
         }
 
         public string GetQrCode(BankIdQrStartState qrStartState)
