@@ -19,6 +19,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
     [AllowAnonymous]
     public class BankIdController : Controller
     {
+        private const string UnsupportedBrowserErrorMessageLocalizationKey = "UnsupportedBrowser_ErrorMessage";
+
         private readonly IAntiforgery _antiforgery;
         private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
         private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
@@ -76,11 +78,11 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         {
             var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
             var loginScriptOptions = new BankIdLoginScriptOptions(
-                Url.Action("Initialize", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Initialize"),
-                Url.Action("Status", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Status"),
-                Url.Action("QrCode", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.QrCode"),
-                Url.Action("Cancel", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Cancel")
-                )
+                GetBankIdApiActionUrl("Initialize"),
+                GetBankIdApiActionUrl("Status"),
+                GetBankIdApiActionUrl("QrCode"),
+                GetBankIdApiActionUrl("Cancel")
+            )
             {
                 StatusRefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs,
                 QrCodeRefreshIntervalMs = BankIdDefaults.QrCodeRefreshIntervalMs,
@@ -88,14 +90,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
                 InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(initialStatusMessage),
                 UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
 
-                UnsupportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"]
+                UnsupportedBrowserErrorMessage = _localizer[UnsupportedBrowserErrorMessageLocalizationKey]
             };
 
             return new BankIdLoginViewModel(
                 returnUrl,
                 Url.Content(unprotectedLoginOptions.CancelReturnUrl),
-                unprotectedLoginOptions.IsAutoLogin(),
-                unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
                 loginOptions,
                 unprotectedLoginOptions,
                 loginScriptOptions,
@@ -104,19 +104,16 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             );
         }
 
+        private string GetBankIdApiActionUrl(string action)
+        {
+            return Url.Action(action, "BankIdApi") ?? throw new Exception($"Could not get URL for BankIdApi.{action}");
+        }
+
         private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)
         {
-            if (loginOptions.SameDevice)
-            {
-                return MessageShortName.RFA13;
-            }
-
-            if (loginOptions.UseQrCode)
-            {
-                return MessageShortName.RFA1QR;
-            }
-
-            return MessageShortName.RFA1;
+            return loginOptions.SameDevice
+                    ? MessageShortName.RFA13
+                    : MessageShortName.RFA1QR;
         }
     }
 }

@@ -50,7 +50,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
         protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
         {
-            var detectedDevice = GetDetectedDevice();
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
 
             var state = GetStateFromCookie();
             if (state == null)
@@ -130,40 +130,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
 
             var loginOptions = new BankIdLoginOptions(
                 Options.BankIdCertificatePolicies,
-                GetPersonalIdentityNumber(properties),
-                Options.BankIdAllowChangingPersonalIdentityNumber,
                 Options.BankIdSameDevice,
                 Options.BankIdAllowBiometric,
-                Options.BankIdUseQrCode,
                 GetCancelReturnUrl(properties),
                 Options.StateCookie.Name ?? string.Empty
             );
 
-            var detectedDevice = GetDetectedDevice();
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
             await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, loginOptions));
 
             var loginUrl = GetLoginUrl(loginOptions);
             Response.Redirect(loginUrl);
-        }
-
-        private BankIdSupportedDevice GetDetectedDevice()
-        {
-            return _bankIdSupportedDeviceDetector.Detect();
-        }
-
-        private static PersonalIdentityNumber? GetPersonalIdentityNumber(AuthenticationProperties properties)
-        {
-            bool TryGetPinString(out string? s)
-            {
-                return properties.Items.TryGetValue(BankIdConstants.AuthenticationPropertyItemSwedishPersonalIdentityNumber, out s);
-            }
-
-            if (TryGetPinString(out var personalIdentityNumber) && !string.IsNullOrWhiteSpace(personalIdentityNumber))
-            {
-                return PersonalIdentityNumber.Parse(personalIdentityNumber, StrictMode.Off);
-            }
-
-            return null;
         }
 
         private string GetCancelReturnUrl(AuthenticationProperties properties)
@@ -176,13 +153,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
             if (properties.Items.TryGetValue("cancelReturnUrl", out var cancelUrl))
             {
                 cancelReturnUrl = cancelUrl;
-            }
-
-            // If we are using other device authentication and manual PIN entry we do not redirect back to
-            // returnUrl. Instead we let the GUI decide what to display. Preferably the PIN entry form.
-            if (Scheme.Name.Equals(BankIdDefaults.OtherDeviceAuthenticationScheme) && !Options.BankIdUseQrCode)
-            {
-                cancelReturnUrl = string.Empty;
             }
 
             return cancelReturnUrl ?? DefaultCancelUrl;

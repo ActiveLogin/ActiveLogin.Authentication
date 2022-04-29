@@ -19,7 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class BankIdHandler {
@@ -268,15 +268,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Personal Identity Number.
-        /// </summary>
-        internal static string PersonalIdentityNumber_Label {
-            get {
-                return ResourceManager.GetString("PersonalIdentityNumber_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to qr-default-en.png.
         /// </summary>
         internal static string Qr_Code_Default_Image {
@@ -309,15 +300,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         internal static string SignIn_Header {
             get {
                 return ResourceManager.GetString("SignIn_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to YYMMDD-XXXX.
-        /// </summary>
-        internal static string SignIn_SwedishPersonalIdentityNumber_Placeholder {
-            get {
-                return ResourceManager.GetString("SignIn_SwedishPersonalIdentityNumber_Placeholder", resourceCulture);
             }
         }
         

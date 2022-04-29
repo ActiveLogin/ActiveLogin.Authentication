@@ -71,7 +71,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     options.CallbackPath = BankIdDefaults.SameDeviceCallbackPath;
                     options.BankIdSameDevice = true;
-                    options.BankIdAllowChangingPersonalIdentityNumber = false;
                 });
 
 
@@ -111,8 +110,6 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 options.CallbackPath = BankIdDefaults.OtherDeviceCallbackPath;
                 options.BankIdSameDevice = false;
-                options.BankIdAllowChangingPersonalIdentityNumber = true;
-                options.BankIdUseQrCode = true;
             });
     }
 }

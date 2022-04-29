@@ -43,7 +43,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             _bankIdLoginOptionsProtector = new Mock<IBankIdLoginOptionsProtector>();
             _bankIdLoginOptionsProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-                .Returns(new BankIdLoginOptions(new List<string>(), null, false, false, false, false, "/", DefaultStateCookieName));
+                .Returns(new BankIdLoginOptions(new List<string>(), false, false, "/", DefaultStateCookieName));
         }
 
         [Fact]
@@ -152,7 +152,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task BankIdAuthentication_Login_Returns_Form_With_Resolved_Cancel_Url()
         {
             // Arrange
-            var options = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, "~/cru", DefaultStateCookieName);
+            var options = new BankIdLoginOptions(new List<string>(), true, false, "~/cru", DefaultStateCookieName);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -216,7 +216,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
             Assert.Equal("/", document.GetInputValue("input[name='ReturnUrl']"));
             Assert.Equal("/", document.GetInputValue("input[name='CancelReturnUrl']"));
             Assert.Equal("X", document.GetInputValue("input[name='LoginOptions']"));
-            Assert.Equal("true", document.GetInputValue("input[name='AutoLogin']"));
         }
 
         [Fact]
@@ -251,7 +250,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task AutoLaunch_Sets_Correct_RedirectUri()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty, DefaultStateCookieName);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), true, false, string.Empty, DefaultStateCookieName);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -296,7 +295,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Api_Always_Returns_CamelCase_Json_For_Http200Ok()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty, DefaultStateCookieName);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -343,7 +342,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Api_Always_Returns_CamelCase_Json_For_Http400BadRequest()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty, DefaultStateCookieName);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -388,7 +387,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test
         public async Task Cancel_Calls_CancelApi()
         {
             // Arrange mocks
-            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), null, false, true, false, false, string.Empty, DefaultStateCookieName);
+            var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
             var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
             mockProtector
                 .Setup(protector => protector.Unprotect(It.IsAny<string>()))

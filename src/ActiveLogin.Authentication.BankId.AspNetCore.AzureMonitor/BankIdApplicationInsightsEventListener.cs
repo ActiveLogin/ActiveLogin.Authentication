@@ -67,7 +67,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         {
             return Track(
                 e,
-                personalIdentityNumber: e.BankIdOptions.PersonalIdentityNumber,
                 detectedDevice: e.DetectedUserDevice,
                 loginOptions: e.BankIdOptions
             );
@@ -311,7 +310,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
         private void AddLoginOptionsProperties(Dictionary<string, string> properties, BankIdLoginOptions loginOptions)
         {
             properties.Add(PropertyName_LoginOptionsLaunchType, GetLaunchType(loginOptions.SameDevice));
-            properties.Add(PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(loginOptions.UseQrCode));
+            properties.Add(PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(!loginOptions.SameDevice));
         }
 
         private static string GetLaunchType(bool isSameDevice)

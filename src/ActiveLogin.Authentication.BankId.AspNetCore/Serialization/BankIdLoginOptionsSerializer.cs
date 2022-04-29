@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 {
     internal class BankIdLoginOptionsSerializer : IDataSerializer<BankIdLoginOptions>
     {
-        private const int FormatVersion = 4;
+        private const int FormatVersion = 5;
         private const char CertificatePoliciesSeparator = ';';
 
         public byte[] Serialize(BankIdLoginOptions model)
@@ -20,12 +20,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
 
             writer.Write(FormatVersion);
 
-            writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies ?? new List<string>()));
-            writer.Write(model.PersonalIdentityNumber?.To12DigitString() ?? string.Empty);
-            writer.Write(model.AllowChangingPersonalIdentityNumber);
+            writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies));
             writer.Write(model.SameDevice);
             writer.Write(model.AllowBiometric);
-            writer.Write(model.UseQrCode);
             writer.Write(model.CancelReturnUrl ?? string.Empty);
             writer.Write(model.StateCookieName);
 
@@ -44,22 +41,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Serialization
             }
 
             var certificatePolicies = reader.ReadString().Split(new[] { CertificatePoliciesSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var personalIdentityNumberString = reader.ReadString();
-            var personalIdentityNumber = string.IsNullOrEmpty(personalIdentityNumberString) ? null : PersonalIdentityNumber.Parse(personalIdentityNumberString, StrictMode.Off);
-            var allowChangingPersonalIdentityNumber = reader.ReadBoolean();
             var autoLaunch = reader.ReadBoolean();
             var allowBiometric = reader.ReadBoolean();
-            var displayQrCode = reader.ReadBoolean();
             var cancelReturnUrl = reader.ReadString();
             var stateCookieName = reader.ReadString();
 
             return new BankIdLoginOptions(
                 certificatePolicies,
-                personalIdentityNumber,
-                allowChangingPersonalIdentityNumber,
                 autoLaunch,
                 allowBiometric,
-                displayQrCode,
                 cancelReturnUrl,
                 stateCookieName
             );

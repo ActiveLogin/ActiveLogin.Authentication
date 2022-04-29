@@ -22,13 +22,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// <summary>
         /// The oid in certificate policies in the user certificate. List of String.
         /// </summary>
-        public List<string> BankIdCertificatePolicies { get; set; } = new List<string>();
-
-        /// <summary>
-        /// Allow the user to set and/or change the personal identity number in the UI.
-        /// </summary>
-        internal bool BankIdAllowChangingPersonalIdentityNumber { get; set; } = true;
-
+        public List<string> BankIdCertificatePolicies { get; set; } = new();
+        
         /// <summary>
         /// Auto launch the BankID app on the current device.
         /// </summary>
@@ -39,13 +34,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore
         /// </summary>
         public bool BankIdAllowBiometric { get; set; } = true;
 
-        /// <summary>
-        /// When using other device authentication it is possible to use a qr code
-        /// instead of personal identity number.
-        /// </summary>
-        public bool BankIdUseQrCode { get; set; } = false;
 
-        public PathString LoginPath { get; set; } = new PathString($"/{BankIdConstants.AreaName}/Login");
+        public PathString LoginPath { get; set; } = new($"/{BankIdConstants.AreaName}/Login");
         public TimeSpan? TokenExpiresIn { get; set; } = BankIdDefaults.MaximumSessionLifespan;
 
         public bool IssueAuthenticationMethodClaim { get; set; } = true;

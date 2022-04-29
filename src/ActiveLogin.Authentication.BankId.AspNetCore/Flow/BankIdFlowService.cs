@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -74,7 +73,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
         private readonly IBankIdLauncher _bankIdLauncher;
 
-        public BankIdFlowService(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IBankIdEndUserIpResolver bankIdEndUserIpResolver, IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver, IBankIdApiClient bankIdApiClient, IBankIdEventTrigger bankIdEventTrigger, IBankIdQrCodeContentGenerator bankIdQrCodeContentGenerator, IBankIdQrCodeGenerator qrCodeGenerator, IBankIdLauncher bankIdLauncher)
+        public BankIdFlowService(
+            IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
+            IBankIdEndUserIpResolver bankIdEndUserIpResolver,
+            IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver,
+            IBankIdApiClient bankIdApiClient,
+            IBankIdEventTrigger bankIdEventTrigger,
+            IBankIdQrCodeContentGenerator bankIdQrCodeContentGenerator,
+            IBankIdQrCodeGenerator qrCodeGenerator,
+            IBankIdLauncher bankIdLauncher)
         {
             _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
             _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
@@ -98,7 +105,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
             catch (BankIdApiException bankIdApiException)
             {
                 await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, loginOptions));
-                throw bankIdApiException;
+                throw;
             }
 
             await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber: null, authResponse.OrderRef, detectedUserDevice, loginOptions));
@@ -121,26 +128,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
             }
         }
 
-        public string GetQrCode(BankIdQrStartState qrStartState)
-        {
-            var elapsedTime = DateTimeOffset.UtcNow - qrStartState.QrStartTime;
-            var elapsedTotalSeconds = (int)Math.Round(elapsedTime.TotalSeconds);
-
-            var qrCodeContent = _bankIdQrCodeContentGenerator.Generate(qrStartState.QrStartToken, qrStartState.QrStartSecret, elapsedTotalSeconds);
-            var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrCodeContent);
-
-            return qrCode;
-        }
-
         private async Task<AuthRequest> GetAuthRequest(BankIdLoginOptions loginOptions)
         {
             var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-
-            List<string>? certificatePolicies = null;
-            if (loginOptions.CertificatePolicies != null && loginOptions.CertificatePolicies.Any())
-            {
-                certificatePolicies = loginOptions.CertificatePolicies;
-            }
+            var certificatePolicies = loginOptions.CertificatePolicies.Any() ? loginOptions.CertificatePolicies : null;
 
             var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, loginOptions.AllowBiometric);
 
@@ -153,7 +144,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
         private BankIdLaunchInfo GetBankIdLaunchInfo(string redirectUrl, AuthResponse authResponse)
         {
             var launchUrlRequest = new LaunchUrlRequest(redirectUrl, authResponse.AutoStartToken);
+
             return _bankIdLauncher.GetLaunchInfo(launchUrlRequest);
+        }
+
+        public string GetQrCode(BankIdQrStartState qrStartState)
+        {
+            var elapsedTime = DateTimeOffset.UtcNow - qrStartState.QrStartTime;
+            var elapsedTotalSeconds = (int)Math.Round(elapsedTime.TotalSeconds);
+
+            var qrCodeContent = _bankIdQrCodeContentGenerator.Generate(qrStartState.QrStartToken, qrStartState.QrStartSecret, elapsedTotalSeconds);
+            var qrCode = _qrCodeGenerator.GenerateQrCodeAsBase64(qrCodeContent);
+
+            return qrCode;
         }
     }
 }

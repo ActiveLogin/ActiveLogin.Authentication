@@ -347,26 +347,6 @@ services
     });
 ```
 
-
-### Custom schema
-
-If you want to roll your own, complete custom config, that can be done using `.AddCustom()`. This is not recomended and in most scenarios not needed.
-
-```csharp
-services
-    .AddAuthentication()
-    .AddBankId(builder =>
-    {
-        builder
-            ...
-            .AddCustom(options => {
-                options.BankIdAutoLaunch = true;
-                options.BankIdAllowChangingPersonalIdentityNumber = false;
-            });
-    });
-```
-
-
 ### Customizing BankID options
 
 BankId options allows you to set and override some options such as these.
@@ -379,9 +359,6 @@ BankId options allows you to set and override some options such as these.
 
     // Limit possible login methods to, for example, only allow BankID on smartcard.
     options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(...);
-
-    // Turn off qr code and use personal identity number instead
-    options.BankIdUseQrCode = false;
 });
 ```
 

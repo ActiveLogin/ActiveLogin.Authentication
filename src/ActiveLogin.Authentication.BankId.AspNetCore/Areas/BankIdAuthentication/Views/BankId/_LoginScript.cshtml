@@ -3,18 +3,14 @@
 <script>
     (function (options) {
         // Pre check
-        var statusElement = document.querySelector('#bankIdLoginStatus');
-        var statusWrapperElement = statusElement.querySelector('.status-wrapper');
-        var statusSpinnerElement = statusElement.querySelector('.status-spinner');
-        var statusMessageElement = statusElement.querySelector('.status-message');
-        var cancelButtonElement = statusElement.querySelector('.btn-cancel');
-
         var requiredFeatures = [window.fetch, window.sessionStorage];
         var isMissingSomeFeature = requiredFeatures.some(function(x) { return !x; });
         if (isMissingSomeFeature) {
             showStatus(options.unsupportedBrowserErrorMessage, 'danger', false, true);
             return;
         }
+
+        // QR
 
         var qrLastRefreshTimestamp = null;
         var qrIsRefreshing = false;
@@ -27,35 +23,23 @@
 
         // Elements
 
-        var startBankIdAppButtonElement = document.querySelector('#bankIdLoginStartApp');
+        var formElement = document.querySelector('#bankIdLoginForm');
+
+        var statusElement = document.querySelector('#bankIdLoginStatus');
+        var statusWrapperElement = statusElement.querySelector('.status-wrapper');
+        var statusSpinnerElement = statusElement.querySelector('.status-spinner');
+        var statusMessageElement = statusElement.querySelector('.status-message');
+        var cancelButtonElement = statusElement.querySelector('.btn-cancel');
         var qrCodeElement = statusElement.querySelector('.qr-code-image');
 
-        var formElement = document.querySelector('#bankIdLoginForm');
-        var formFieldsetElement = formElement.querySelector('fieldset');
-        var autoLoginElement = formElement.querySelector('[name="AutoLogin"]');
-        var autoLogin = autoLoginElement.value === 'true';
-
-        var formSubmitButtonElement = formElement.querySelector('button[type="submit"]');
-        var formSubmitButtonTextElement = null;
-        var formSubmitButtonSpinnerElement = null;
-        if (formSubmitButtonElement) {
-            formSubmitButtonTextElement = formSubmitButtonElement.querySelector('.submit-text');
-            formSubmitButtonSpinnerElement = formSubmitButtonElement.querySelector('.status-spinner');
-        }
-
+        var startBankIdAppButtonElement = document.querySelector('#bankIdLoginStartApp');
+        
         // Events
 
         if (orderRef) {
             showOrderRefStatus(orderRef);
-        } else if (autoLogin) {
-            document.addEventListener('DOMContentLoaded', function () {
-                resetUi();
-                login();
-            });
         } else {
-            formElement.addEventListener('submit', function (event) {
-                event.preventDefault();
-
+            document.addEventListener('DOMContentLoaded', function () {
                 resetUi();
                 login();
             });
@@ -68,9 +52,7 @@
             var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
             var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
 
-            hide(formElement);
             showStatus(options.initialStatusMessage, 'white', true);
-
             checkStatus(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, orderRef);
         }
 
@@ -79,16 +61,11 @@
             var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
             var cancelReturnUrlElement = formElement.querySelector('[name="CancelReturnUrl"]');
             var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
-            var personalIdentityNumberElement = formElement.querySelector('[name="PersonalIdentityNumber"]');
-            var personalIdentityNumber = !!personalIdentityNumberElement ? personalIdentityNumberElement.value : '';
 
-            initialize(requestVerificationTokenElement.value, returnUrlElement.value, cancelReturnUrlElement.value, loginOptionsElement.value, personalIdentityNumber, personalIdentityNumberElement);
+            initialize(requestVerificationTokenElement.value, returnUrlElement.value, cancelReturnUrlElement.value, loginOptionsElement.value);
         }
 
         function resetUi() {
-            formFieldsetElement.disabled = true;
-            show(formSubmitButtonSpinnerElement);
-            hide(formSubmitButtonTextElement);
             hide(qrCodeElement);
         }
 
@@ -96,7 +73,7 @@
 
         var autoStartAttempts = 0;
         var loginIsCancelledByUser = false;
-        function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions, personalIdentityNumber, personalIdentityNumberElement) {
+        function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions) {
             loginIsCancelledByUser = false;
 
             function enableCancelButton(orderRef) {
@@ -108,7 +85,6 @@
             }
 
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
-                'personalIdentityNumber': personalIdentityNumber,
                 'returnUrl': returnUrl,
                 'loginOptions': loginOptions
             })
@@ -138,29 +114,18 @@
                         refreshQrCode(requestVerificationToken, data.qrStartState);
                     }
 
-                    if (!!data.personalIdentityNumber) {
-                        setInvalidUntilChange(personalIdentityNumberElement);
-                        formFieldsetElement.disabled = false;
-                    } else {
-                        enableCancelButton(data.orderRef);
+                    enableCancelButton(data.orderRef);
 
-                        hide(formElement);
-                        showStatus(options.initialStatusMessage, 'white', true);
+                    hide(formElement);
+                    showStatus(options.initialStatusMessage, 'white', true);
 
-                        if (data.checkStatus) {
-                            checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
-                        }
+                    if (data.checkStatus) {
+                        checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
                     }
-
-                    show(formSubmitButtonTextElement);
-                    hide(formSubmitButtonSpinnerElement);
                 }).catch(function (error) {
                     showStatus(error.message, 'danger', false);
                     hide(qrCodeElement);
                     hide(startBankIdAppButtonElement);
-                    show(formSubmitButtonTextElement);
-                    hide(formSubmitButtonSpinnerElement);
-                    formFieldsetElement.disabled = false;
                     enableCancelButton();
                 });
         }
@@ -330,20 +295,6 @@
             }
 
             element.style.display = 'none';
-        }
-
-        function setInvalidUntilChange(element) {
-            if (!element || !element.classList) {
-                return;
-            }
-
-            element.classList.add('is-invalid');
-            element.addEventListener('input', removeInvalid);
-
-            function removeInvalid() {
-                element.removeEventListener('input', removeInvalid);
-                element.classList.remove('is-invalid');
-            }
         }
     }(@Html.Raw(Model.LoginScriptOptionsJson)));
 </script>

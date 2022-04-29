@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
 {
@@ -7,34 +6,23 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
     {
         public BankIdLoginOptions(
             List<string> certificatePolicies,
-            PersonalIdentityNumber? personalIdentityNumber,
-            bool allowChangingPersonalIdentityNumber,
             bool sameDevice,
             bool allowBiometric,
-            bool useQrCode,
             string cancelReturnUrl,
             string stateCookieName)
         {
             CertificatePolicies = certificatePolicies;
-            PersonalIdentityNumber = personalIdentityNumber;
-            AllowChangingPersonalIdentityNumber = allowChangingPersonalIdentityNumber;
             SameDevice = sameDevice;
             AllowBiometric = allowBiometric;
-            UseQrCode = useQrCode;
             CancelReturnUrl = cancelReturnUrl;
             StateCookieName = stateCookieName;
         }
 
         public List<string> CertificatePolicies { get; }
-
-        public PersonalIdentityNumber? PersonalIdentityNumber { get; }
-        public bool AllowChangingPersonalIdentityNumber { get; }
-
+        
         public bool SameDevice { get; }
 
         public bool AllowBiometric { get; }
-
-        public bool UseQrCode { get; set; }
 
         public string CancelReturnUrl { get; }
 

@@ -18,7 +18,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation
             Surname = surname;
         }
 
-        public List<Claim> Claims { get; set; } = new List<Claim>();
+        public List<Claim> Claims { get; set; } = new();
 
         public BankIdOptions BankIdOptions { get; }
 

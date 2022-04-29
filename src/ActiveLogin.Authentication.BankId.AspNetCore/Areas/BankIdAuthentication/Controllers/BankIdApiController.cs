@@ -74,12 +74,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             InitializeAuthFlowResult initializeAuthFlowResult;
             try
             {
-                var returnRedirectUrl = GetAbsoluteUrl(Url.Action("Login", "BankId", new
+                var returnRedirectLocalUrl = Url.Action("Login", "BankId", new
                 {
                     returnUrl = request.ReturnUrl,
                     loginOptions = request.LoginOptions
-                }));
-                initializeAuthFlowResult = await _bankIdFlowService.InitializeAuth(unprotectedLoginOptions, returnRedirectUrl);
+                });
+                var returnRedirectAbsoluteUrl = GetAbsoluteUrl(returnRedirectLocalUrl);
+                initializeAuthFlowResult = await _bankIdFlowService.InitializeAuth(unprotectedLoginOptions, returnRedirectAbsoluteUrl);
             }
             catch (BankIdApiException bankIdApiException)
             {
@@ -88,26 +89,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             }
 
             var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(initializeAuthFlowResult.BankIdAuthResponse.OrderRef));
-            if(initializeAuthFlowResult.LaunchType is InitializeAuthFlowLaunchTypeOtherDevice otherDeviceLaunchType)
+            switch (initializeAuthFlowResult.LaunchType)
             {
-                var protectedQrStartState = _qrStartStateProtector.Protect(otherDeviceLaunchType.QrStartState);
-                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDeviceLaunchType.QrCodeBase64Encoded));
-            }
-            else if (initializeAuthFlowResult.LaunchType is InitializeAuthFlowLaunchTypeSameDevice sameDeviceLaunchType)
-            {
-                // Don't check for status if the browser will reload on return
-                if (sameDeviceLaunchType.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp)
+                case InitializeAuthFlowLaunchTypeOtherDevice otherDeviceLaunchType:
                 {
+                    var protectedQrStartState = _qrStartStateProtector.Protect(otherDeviceLaunchType.QrStartState);
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDeviceLaunchType.QrCodeBase64Encoded));
+                }
+                case InitializeAuthFlowLaunchTypeSameDevice sameDeviceLaunchType when sameDeviceLaunchType.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp:
                     return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDeviceLaunchType.BankIdLaunchInfo.LaunchUrl, sameDeviceLaunchType.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
-                }
-                else
-                {
+                case InitializeAuthFlowLaunchTypeSameDevice sameDeviceLaunchType:
                     return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDeviceLaunchType.BankIdLaunchInfo.LaunchUrl, sameDeviceLaunchType.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
-                }
-            }
-            else
-            {
-                throw new InvalidOperationException("Unknown launch type");
+                default:
+                    throw new InvalidOperationException("Unknown launch type");
             }    
         }
 
@@ -200,14 +194,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions, BankIdSupportedDevice detectedDevice)
         {
-            var authPersonalIdentityNumberProvided = PersonalIdentityNumberProvided(unprotectedLoginOptions);
             var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
-            var usingQrCode = unprotectedLoginOptions.UseQrCode;
+            var usingQrCode = !unprotectedLoginOptions.SameDevice;
 
             var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
                 collectResponse.GetCollectStatus(),
                 collectResponse.GetCollectHintCode(),
-                authPersonalIdentityNumberProvided,
+                authPersonalIdentityNumberProvided: false,
                 accessedFromMobileDevice,
                 usingQrCode);
             var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
@@ -218,12 +211,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
         private BankIdSupportedDevice GetDetectedUserDevice()
         {
             return _bankIdSupportedDeviceDetector.Detect();
-        }
-
-        private static bool PersonalIdentityNumberProvided(BankIdLoginOptions unprotectedLoginOptions)
-        {
-            return unprotectedLoginOptions.AllowChangingPersonalIdentityNumber
-                   || unprotectedLoginOptions.PersonalIdentityNumber != null;
         }
 
         private string GetStatusMessage(BankIdApiException bankIdApiException)
