@@ -8,9 +8,8 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <Product>Active Login</Product>
-        <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.UAParser</AssemblyName>
-        <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.UAParser</PackageId>
-        <RootNamespace>ActiveLogin.Authentication.BankId.AspNetCore.UaParser</RootNamespace>
+        <AssemblyName>ActiveLogin.Authentication.BankId.Core</AssemblyName>
+        <PackageId>ActiveLogin.Authentication.BankId.Core</PackageId>
 
         <VersionPrefix>6.0.0</VersionPrefix>
         <VersionSuffix>alpha-1</VersionSuffix>
@@ -18,10 +17,10 @@
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
-        <Description>Device detection for ActiveLogin.Authentication.BankId.AspNetCore using UA Parser.</Description>
-        <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;qr</PackageTags>
+        <Description>Core functionality to support Swedish BankID's (svenskt BankIDs) authentication workflow.</Description>
+        <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
-        <Authors>Active Solution;Elin Fokine;Peter Örneholm</Authors>
+        <Authors>Active Solution;Peter Örneholm;Tobias Lolax</Authors>
         <Company>Active Solution</Company>
         <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
 
@@ -44,17 +43,21 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="UAParser" Version="3.1.47" />
+        <PackageReference Include="ActiveLogin.Identity.Swedish" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
-        <None Include="README.md" Pack="True" PackagePath="README.md" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>ActiveLogin.Authentication.BankId.AspNetCore.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project>
