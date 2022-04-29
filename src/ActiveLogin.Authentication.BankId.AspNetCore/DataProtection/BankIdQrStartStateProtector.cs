@@ -1,7 +1,7 @@
 using System;
 
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
+using ActiveLogin.Authentication.BankId.Core.Models;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;

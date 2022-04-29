@@ -8,230 +8,235 @@ using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
-using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
-using ActiveLogin.Authentication.BankId.AspNetCore.Flow;
-using ActiveLogin.Authentication.BankId.AspNetCore.Persistence;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.Core.EndUserContext;
+using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.Core.Flow;
+using ActiveLogin.Authentication.BankId.Core.Persistence;
+using ActiveLogin.Authentication.BankId.Core.Qr;
+using ActiveLogin.Authentication.BankId.Core.StateHandling;
+using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class BankIdBuilderExtensions
 {
-    public static class BankIdBuilderExtensions
+    internal static IBankIdBuilder AddDefaultServices(this IBankIdBuilder builder)
     {
-        internal static IBankIdBuilder AddDefaultServices(this IBankIdBuilder builder)
+        var services = builder.AuthenticationBuilder.Services;
+
+        services.AddControllersWithViews();
+        services.AddHttpContextAccessor();
+
+        services.AddLocalization(options =>
         {
-            var services = builder.AuthenticationBuilder.Services;
+            options.ResourcesPath = BankIdDefaults.ResourcesPath;
+        });
 
-            services.AddControllersWithViews();
-            services.AddHttpContextAccessor();
+        services.TryAddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
+        services.TryAddTransient<IBankIdFlowService, BankIdFlowService>();
 
-            services.AddLocalization(options =>
-            {
-                options.ResourcesPath = BankIdDefaults.ResourcesPath;
-            });
+        services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
+        services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
+        services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
+        services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
 
-            services.TryAddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
-            services.TryAddTransient<IBankIdFlowService, BankIdFlowService>();
+        services.TryAddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
 
-            services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
-            services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-            services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
-            services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+        services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
+        services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
-            services.TryAddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
+        services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
-            services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
-            services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
+        services.TryAddTransient<IBankIdQrCodeContentGenerator, BankIdQrCodeContentGenerator>();
+        services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
 
-            services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
+        services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
-            services.TryAddTransient<IBankIdQrCodeContentGenerator, BankIdQrCodeContentGenerator>();
-            services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
+        builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
+        builder.UseEndUserIpResolver<BankIdRemoteIpAddressEndUserIpResolver>();
 
-            services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
+        builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
 
-            builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
-            builder.UseEndUserIpResolver<BankIdRemoteIpAddressEndUserIpResolver>();
+        builder.AddEventListener<BankIdLoggerEventListener>();
+        builder.AddEventListener<BankIdResultStoreEventListener>();
 
-            builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
+        builder.AddResultStore<BankIdResultTraceLoggerStore>();
 
-            builder.AddEventListener<BankIdLoggerEventListener>();
-            builder.AddEventListener<BankIdResultStoreEventListener>();
+        return builder;
+    }
 
-            builder.AddResultStore<BankIdResultTraceLoggerStore>();
-
-            return builder;
-        }
-
-        internal static IBankIdBuilder UseUserAgent(this IBankIdBuilder builder, ProductInfoHeaderValue productInfoHeaderValue)
+    internal static IBankIdBuilder UseUserAgent(this IBankIdBuilder builder, ProductInfoHeaderValue productInfoHeaderValue)
+    {
+        builder.ConfigureHttpClient(httpClient =>
         {
-            builder.ConfigureHttpClient(httpClient =>
-            {
-                httpClient.DefaultRequestHeaders.UserAgent.Clear();
-                httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
-            });
+            httpClient.DefaultRequestHeaders.UserAgent.Clear();
+            httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
+        });
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Use client certificate for authenticating against the BankID API.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="configureClientCertificate">The certificate to use.</param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
+    /// <summary>
+    /// Use client certificate for authenticating against the BankID API.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="configureClientCertificate">The certificate to use.</param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
+    {
+        builder.ConfigureHttpClientHandler(httpClientHandler =>
         {
-            builder.ConfigureHttpClientHandler(httpClientHandler =>
-            {
-                var clientCertificate = configureClientCertificate();
-                httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
-                httpClientHandler.SslOptions.ClientCertificates.Add(clientCertificate);
-            });
+            var clientCertificate = configureClientCertificate();
+            httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
+            httpClientHandler.SslOptions.ClientCertificates.Add(clientCertificate);
+        });
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Use this root certificate for verifying the certificate of BankID API.
-        /// Use only if the root certificate can't be installed on the machine.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="configureRootCaCertificate">The root certificate provided by BankID (*.crt)</param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
+    /// <summary>
+    /// Use this root certificate for verifying the certificate of BankID API.
+    /// Use only if the root certificate can't be installed on the machine.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="configureRootCaCertificate">The root certificate provided by BankID (*.crt)</param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
+    {
+        builder.ConfigureHttpClientHandler(httpClientHandler =>
         {
-            builder.ConfigureHttpClientHandler(httpClientHandler =>
-            {
-                var rootCaCertificate = configureRootCaCertificate();
-                var validator = new X509CertificateChainValidator(rootCaCertificate);
-                httpClientHandler.SslOptions.RemoteCertificateValidationCallback = validator.Validate;
-            });
+            var rootCaCertificate = configureRootCaCertificate();
+            var validator = new X509CertificateChainValidator(rootCaCertificate);
+            httpClientHandler.SslOptions.RemoteCertificateValidationCallback = validator.Validate;
+        });
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Use this root certificate for verifying the certificate of BankID API.
-        /// Use only if the root certificate can't be installed on the machine.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="certificateFilePath">The file path to the root certificate provided by BankID (*.crt)</param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
-        {
-            builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
+    /// <summary>
+    /// Use this root certificate for verifying the certificate of BankID API.
+    /// Use only if the root certificate can't be installed on the machine.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="certificateFilePath">The file path to the root certificate provided by BankID (*.crt)</param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
+    {
+        builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Set the class that will be used to resolve end user ip.
-        /// </summary>
-        /// <typeparam name="TEndUserIpResolverImplementation"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseEndUserIpResolver<TEndUserIpResolverImplementation>(this IBankIdBuilder builder) where TEndUserIpResolverImplementation : class, IBankIdEndUserIpResolver
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEndUserIpResolver, TEndUserIpResolverImplementation>();
+    /// <summary>
+    /// Set the class that will be used to resolve end user ip.
+    /// </summary>
+    /// <typeparam name="TEndUserIpResolverImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseEndUserIpResolver<TEndUserIpResolverImplementation>(this IBankIdBuilder builder) where TEndUserIpResolverImplementation : class, IBankIdEndUserIpResolver
+    {
+        builder.AuthenticationBuilder.Services.AddTransient<IBankIdEndUserIpResolver, TEndUserIpResolverImplementation>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Set what user data to supply to the auth request.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="authUserData"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, BankIdAuthUserData authUserData)
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
+    /// <summary>
+    /// Set what user data to supply to the auth request.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="authUserData"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, BankIdAuthUserData authUserData)
+    {
+        builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Set what user data to supply to the auth request.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="authUserData"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, Action<BankIdAuthUserData> authUserData)
-        {
-            var authUserDataResult = new BankIdAuthUserData();
-            authUserData(authUserDataResult);
-            UseAuthRequestUserData(builder, authUserDataResult);
+    /// <summary>
+    /// Set what user data to supply to the auth request.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="authUserData"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, Action<BankIdAuthUserData> authUserData)
+    {
+        var authUserDataResult = new BankIdAuthUserData();
+        authUserData(authUserDataResult);
+        UseAuthRequestUserData(builder, authUserDataResult);
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Add a custom event listener.
-        /// </summary>
-        /// <typeparam name="TBankIdEventListenerImplementation"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder AddEventListener<TBankIdEventListenerImplementation>(this IBankIdBuilder builder) where TBankIdEventListenerImplementation : class, IBankIdEventListener
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener, TBankIdEventListenerImplementation>();
+    /// <summary>
+    /// Add a custom event listener.
+    /// </summary>
+    /// <typeparam name="TBankIdEventListenerImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddEventListener<TBankIdEventListenerImplementation>(this IBankIdBuilder builder) where TBankIdEventListenerImplementation : class, IBankIdEventListener
+    {
+        builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener, TBankIdEventListenerImplementation>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Add an event listener that will serialize and write all events to debug.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder AddDebugEventListener(this IBankIdBuilder builder)
-        {
-            builder.AddEventListener<BankIdDebugEventListener>();
+    /// <summary>
+    /// Add an event listener that will serialize and write all events to debug.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddDebugEventListener(this IBankIdBuilder builder)
+    {
+        builder.AddEventListener<BankIdDebugEventListener>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Adds a class that will be called when BankID returns a valid signed in user.
-        /// </summary>
-        /// <typeparam name="TResultStoreImplementation"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
+    /// <summary>
+    /// Adds a class that will be called when BankID returns a valid signed in user.
+    /// </summary>
+    /// <typeparam name="TResultStoreImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
+    {
+        builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Use a custom user data resolver.
-        /// </summary>
-        /// <typeparam name="TBankIdAuthRequestUserDataResolverImplementation"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
+    /// <summary>
+    /// Use a custom user data resolver.
+    /// </summary>
+    /// <typeparam name="TBankIdAuthRequestUserDataResolverImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
+    {
+        builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Add a custom claims transaformer.
-        /// </summary>
-        /// <typeparam name="TBankIdClaimsTransformerImplementation"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IBankIdBuilder AddClaimsTransformer<TBankIdClaimsTransformerImplementation>(this IBankIdBuilder builder) where TBankIdClaimsTransformerImplementation : class, IBankIdClaimsTransformer
-        {
-            builder.AuthenticationBuilder.Services.AddTransient<IBankIdClaimsTransformer, TBankIdClaimsTransformerImplementation>();
+    /// <summary>
+    /// Add a custom claims transaformer.
+    /// </summary>
+    /// <typeparam name="TBankIdClaimsTransformerImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddClaimsTransformer<TBankIdClaimsTransformerImplementation>(this IBankIdBuilder builder) where TBankIdClaimsTransformerImplementation : class, IBankIdClaimsTransformer
+    {
+        builder.AuthenticationBuilder.Services.AddTransient<IBankIdClaimsTransformer, TBankIdClaimsTransformerImplementation>();
 
-            return builder;
-        }
+        return builder;
     }
 }

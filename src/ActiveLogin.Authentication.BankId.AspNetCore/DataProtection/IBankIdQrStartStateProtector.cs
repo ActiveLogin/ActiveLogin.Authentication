@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core.Models;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 

@@ -1,4 +1,4 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
 {

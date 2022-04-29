@@ -1,5 +1,6 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UAParser;
+using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
 using Microsoft.AspNetCore.Http;
 

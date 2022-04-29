@@ -1,12 +1,11 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
-{
-    public class BankIdOrderRef
-    {
-        public BankIdOrderRef(string orderRef)
-        {
-            OrderRef = orderRef;
-        }
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
-        public string OrderRef { get; }
+public class BankIdOrderRef
+{
+    public BankIdOrderRef(string orderRef)
+    {
+        OrderRef = orderRef;
     }
+
+    public string OrderRef { get; }
 }

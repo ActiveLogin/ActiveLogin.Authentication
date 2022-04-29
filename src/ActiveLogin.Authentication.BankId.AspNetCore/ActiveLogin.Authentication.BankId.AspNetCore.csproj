@@ -53,6 +53,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Core\ActiveLogin.Authentication.BankId.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

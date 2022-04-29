@@ -1,22 +1,20 @@
 using System;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
-using ActiveLogin.Authentication.BankId.AspNetCore.Events;
-using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ActiveLogin.Authentication.BankId.AspNetCore.Flow;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Collections.Generic;
+
+using ActiveLogin.Authentication.BankId.Core.Flow;
+using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {

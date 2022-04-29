@@ -1,4 +1,4 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
+using ActiveLogin.Authentication.BankId.Core.Launcher;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
 {

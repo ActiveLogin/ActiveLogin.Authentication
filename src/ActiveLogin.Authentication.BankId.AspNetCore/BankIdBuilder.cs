@@ -6,45 +6,44 @@ using ActiveLogin.Authentication.BankId.Api;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace ActiveLogin.Authentication.BankId.AspNetCore;
+
+internal class BankIdBuilder : IBankIdBuilder
 {
-    internal class BankIdBuilder : IBankIdBuilder
+    public AuthenticationBuilder AuthenticationBuilder { get; }
+
+    private readonly List<Action<HttpClient>> _httpClientConfigurators = new();
+    private readonly List<Action<SocketsHttpHandler>> _httpClientHandlerConfigurators = new();
+
+    public BankIdBuilder(AuthenticationBuilder authenticationBuilder)
     {
-        public AuthenticationBuilder AuthenticationBuilder { get; }
+        AuthenticationBuilder = authenticationBuilder;
 
-        private readonly List<Action<HttpClient>> _httpClientConfigurators = new List<Action<HttpClient>>();
-        private readonly List<Action<SocketsHttpHandler>> _httpClientHandlerConfigurators = new List<Action<SocketsHttpHandler>>();
+        ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
+        ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
+    }
 
-        public BankIdBuilder(AuthenticationBuilder authenticationBuilder)
-        {
-            AuthenticationBuilder = authenticationBuilder;
+    public void ConfigureHttpClient(Action<HttpClient> configureHttpClient)
+    {
+        _httpClientConfigurators.Add(configureHttpClient);
+    }
 
-            ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
-            ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
-        }
+    public void ConfigureHttpClientHandler(Action<SocketsHttpHandler> configureHttpClientHandler)
+    {
+        _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
+    }
 
-        public void ConfigureHttpClient(Action<HttpClient> configureHttpClient)
-        {
-            _httpClientConfigurators.Add(configureHttpClient);
-        }
-
-        public void ConfigureHttpClientHandler(Action<SocketsHttpHandler> configureHttpClientHandler)
-        {
-            _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
-        }
-
-        public void EnableHttpBankIdApiClient()
-        {
-            AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
-                {
-                    _httpClientConfigurators.ForEach(configurator => configurator(httpClient));
-                })
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                {
-                    var httpClientHandler = new SocketsHttpHandler();
-                    _httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
-                    return httpClientHandler;
-                });
-        }
+    public void EnableHttpBankIdApiClient()
+    {
+        AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
+            {
+                _httpClientConfigurators.ForEach(configurator => configurator(httpClient));
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var httpClientHandler = new SocketsHttpHandler();
+                _httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
+                return httpClientHandler;
+            });
     }
 }

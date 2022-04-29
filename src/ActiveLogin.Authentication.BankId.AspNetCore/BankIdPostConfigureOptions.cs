@@ -1,37 +1,37 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore
+namespace ActiveLogin.Authentication.BankId.AspNetCore;
+
+public class BankIdPostConfigureOptions : IPostConfigureOptions<BankIdOptions>
 {
-    public class BankIdPostConfigureOptions : IPostConfigureOptions<BankIdOptions>
+    private readonly IDataProtectionProvider _dp;
+
+    public BankIdPostConfigureOptions(IDataProtectionProvider dataProtection)
     {
-        private readonly IDataProtectionProvider _dp;
+        _dp = dataProtection;
+    }
 
-        public BankIdPostConfigureOptions(IDataProtectionProvider dataProtection)
+    public void PostConfigure(string name, BankIdOptions options)
+    {
+        options.DataProtectionProvider ??= _dp;
+
+        if (options.StateDataFormat == null)
         {
-            _dp = dataProtection;
-        }
+            var dataProtector = options.DataProtectionProvider.CreateProtector(
+                typeof(BankIdHandler).FullName ?? nameof(BankIdHandler),
+                name,
+                "v1"
+            );
 
-        public void PostConfigure(string name, BankIdOptions options)
-        {
-            options.DataProtectionProvider ??= _dp;
-
-            if (options.StateDataFormat == null)
-            {
-                var dataProtector = options.DataProtectionProvider.CreateProtector(
-                    typeof(BankIdHandler).FullName ?? nameof(BankIdHandler),
-                    name,
-                    "v1"
-                );
-
-                options.StateDataFormat = new SecureDataFormat<BankIdState>(
-                    new BankIdStateSerializer(),
-                    dataProtector
-                );
-            }
+            options.StateDataFormat = new SecureDataFormat<BankIdState>(
+                new BankIdStateSerializer(),
+                dataProtector
+            );
         }
     }
 }

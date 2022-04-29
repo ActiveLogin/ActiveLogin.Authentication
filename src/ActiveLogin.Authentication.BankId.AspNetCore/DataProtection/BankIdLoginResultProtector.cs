@@ -1,44 +1,44 @@
 using System;
 
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
+namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+
+internal class BankIdLoginResultProtector : IBankIdLoginResultProtector
 {
-    internal class BankIdLoginResultProtector : IBankIdLoginResultProtector
+    private readonly ISecureDataFormat<BankIdLoginResult> _secureDataFormat;
+
+    public BankIdLoginResultProtector(IDataProtectionProvider dataProtectionProvider)
     {
-        private readonly ISecureDataFormat<BankIdLoginResult> _secureDataFormat;
+        var dataProtector = dataProtectionProvider.CreateProtector(
+            typeof(BankIdLoginResultProtector).FullName ?? nameof(BankIdLoginResultProtector),
+            "v1"
+        );
 
-        public BankIdLoginResultProtector(IDataProtectionProvider dataProtectionProvider)
+        _secureDataFormat = new SecureDataFormat<BankIdLoginResult>(
+            new BankIdLoginResultSerializer(),
+            dataProtector
+        );
+    }
+
+    public string Protect(BankIdLoginResult loginResult)
+    {
+        return _secureDataFormat.Protect(loginResult);
+    }
+
+    public BankIdLoginResult Unprotect(string protectedLoginResult)
+    {
+        var unprotected = _secureDataFormat.Unprotect(protectedLoginResult);
+
+        if (unprotected == null)
         {
-            var dataProtector = dataProtectionProvider.CreateProtector(
-                typeof(BankIdLoginResultProtector).FullName ?? nameof(BankIdLoginResultProtector),
-                "v1"
-            );
-
-            _secureDataFormat = new SecureDataFormat<BankIdLoginResult>(
-                new BankIdLoginResultSerializer(),
-                dataProtector
-            );
+            throw new Exception("Could not unprotect BankIdLoginResult");
         }
 
-        public string Protect(BankIdLoginResult loginResult)
-        {
-            return _secureDataFormat.Protect(loginResult);
-        }
-
-        public BankIdLoginResult Unprotect(string protectedLoginResult)
-        {
-            var unprotected = _secureDataFormat.Unprotect(protectedLoginResult);
-
-            if (unprotected == null)
-            {
-                throw new Exception("Could not unprotect BankIdLoginResult");
-            }
-
-            return unprotected;
-        }
+        return unprotected;
     }
 }

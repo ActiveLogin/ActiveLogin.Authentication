@@ -1,4 +1,4 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
+using ActiveLogin.Authentication.BankId.Core.Qr;
 
 using Xunit;
 

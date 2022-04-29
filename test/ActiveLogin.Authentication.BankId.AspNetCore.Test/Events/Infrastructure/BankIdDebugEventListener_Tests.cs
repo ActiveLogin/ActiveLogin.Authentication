@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
-using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
+
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
+
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
