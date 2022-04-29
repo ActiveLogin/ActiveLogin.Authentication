@@ -16,7 +16,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -35,6 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.ResourcesPath = BankIdDefaults.ResourcesPath;
             });
 
+            services.TryAddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
             services.TryAddTransient<IBankIdFlowService, BankIdFlowService>();
 
             services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();

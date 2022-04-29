@@ -9,8 +9,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
         }
 
-        public string? PersonalIdentityNumber { get; set; }
-
         [Required]
         public string? ReturnUrl { get; set; }
 

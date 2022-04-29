@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext
 {
     /// <summary>
