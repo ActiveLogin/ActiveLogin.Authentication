@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ActiveLogin.Authentication.BankId.AspNetCore.Flow;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Collections.Generic;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
 {
@@ -69,151 +71,103 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             ArgumentNullException.ThrowIfNull(request.LoginOptions, nameof(request.LoginOptions));
             ArgumentNullException.ThrowIfNull(request.ReturnUrl, nameof(request.ReturnUrl));
 
-            var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
+            var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
             InitializeAuthFlowResult initializeAuthFlowResult;
             try
             {
-                var returnRedirectLocalUrl = Url.Action("Login", "BankId", new
+                var returnRedirectUrl = Url.Action("Login", "BankId", new
                 {
                     returnUrl = request.ReturnUrl,
                     loginOptions = request.LoginOptions
-                });
-                var returnRedirectAbsoluteUrl = GetAbsoluteUrl(returnRedirectLocalUrl);
-                initializeAuthFlowResult = await _bankIdFlowService.InitializeAuth(unprotectedLoginOptions, returnRedirectAbsoluteUrl);
+                },
+                protocol: Request.Scheme) ?? throw new Exception($"Could not get URL for BankId.Login");
+
+                initializeAuthFlowResult = await _bankIdFlowService.InitializeAuth(loginOptions, returnRedirectUrl);
             }
             catch (BankIdApiException bankIdApiException)
             {
-                var errorStatusMessage = GetStatusMessage(bankIdApiException);
+                var errorStatusMessage = GetBankIdApiExceptionStatusMessage(bankIdApiException);
                 return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
             }
 
             var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(initializeAuthFlowResult.BankIdAuthResponse.OrderRef));
             switch (initializeAuthFlowResult.LaunchType)
             {
-                case InitializeAuthFlowLaunchTypeOtherDevice otherDeviceLaunchType:
+                case InitializeAuthFlowLaunchTypeOtherDevice otherDevice:
                 {
-                    var protectedQrStartState = _qrStartStateProtector.Protect(otherDeviceLaunchType.QrStartState);
-                    return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDeviceLaunchType.QrCodeBase64Encoded));
+                    var protectedQrStartState = _qrStartStateProtector.Protect(otherDevice.QrStartState);
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDevice.QrCodeBase64Encoded));
                 }
-                case InitializeAuthFlowLaunchTypeSameDevice sameDeviceLaunchType when sameDeviceLaunchType.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp:
-                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDeviceLaunchType.BankIdLaunchInfo.LaunchUrl, sameDeviceLaunchType.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
-                case InitializeAuthFlowLaunchTypeSameDevice sameDeviceLaunchType:
-                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDeviceLaunchType.BankIdLaunchInfo.LaunchUrl, sameDeviceLaunchType.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                case InitializeAuthFlowLaunchTypeSameDevice sameDevice when sameDevice.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp:
+                {
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                }
+                case InitializeAuthFlowLaunchTypeSameDevice sameDevice:
+                {
+                    return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                }
                 default:
+                {
                     throw new InvalidOperationException("Unknown launch type");
+                }
             }    
-        }
-
-        private string GetAbsoluteUrl(string? returnUrl)
-        {
-            var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}";
-            return absoluteUri + (returnUrl ?? string.Empty);
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost("Status")]
         public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
         {
-            ArgumentNullException.ThrowIfNull(request.LoginOptions);
-            ArgumentNullException.ThrowIfNull(request.ReturnUrl);
-            ArgumentNullException.ThrowIfNull(request.OrderRef);
+            ArgumentNullException.ThrowIfNull(request.LoginOptions, nameof(request.LoginOptions));
+            ArgumentNullException.ThrowIfNull(request.ReturnUrl, nameof(request.ReturnUrl));
+            ArgumentNullException.ThrowIfNull(request.OrderRef, nameof(request.OrderRef));
 
-            var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
-            var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
-            var detectedDevice = GetDetectedUserDevice();
-
-            CollectResponse collectResponse;
-            try
-            {
-                collectResponse = await _bankIdApiClient.CollectAsync(orderRef.OrderRef);
-            }
-            catch (BankIdApiException bankIdApiException)
-            {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef.OrderRef, bankIdApiException, detectedDevice, unprotectedLoginOptions));
-                var errorStatusMessage = GetStatusMessage(bankIdApiException);
-                return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
-            }
-
-            var statusMessage = GetStatusMessage(collectResponse, unprotectedLoginOptions, detectedDevice);
-
-            if (collectResponse.GetCollectStatus() == CollectStatus.Pending)
-            {
-                return await CollectPending(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
-            }
-
-            if (collectResponse.GetCollectStatus() == CollectStatus.Complete)
-            {
-                return await CollectComplete(request, collectResponse, detectedDevice, unprotectedLoginOptions);
-            }
-
-            var hintCode = collectResponse.GetCollectHintCode();
-            if (hintCode.Equals(CollectHintCode.StartFailed)
-                && request.AutoStartAttempts < BankIdConstants.MaxRetryLoginAttempts)
-            {
-                return OkJsonResult(BankIdLoginApiStatusResponse.Retry(statusMessage));
-            }
-
-            return await CollectFailure(collectResponse, statusMessage, detectedDevice, unprotectedLoginOptions);
-        }
-
-        private async Task<ActionResult> CollectFailure(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
-        {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
-            return BadRequestJsonResult(new BankIdLoginApiErrorResponse(statusMessage));
-        }
-
-        private async Task<ActionResult> CollectComplete(BankIdLoginApiStatusRequest request, CollectResponse collectResponse, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
-        {
-            if (collectResponse.CompletionData == null)
-            {
-                throw new ArgumentNullException(nameof(collectResponse.CompletionData));
-            }
-
-            if (request.ReturnUrl == null)
-            {
-                throw new ArgumentNullException(nameof(request.ReturnUrl));
-            }
-
-            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedDevice, loginOptions));
-
-            var returnUri = GetSuccessReturnUri(collectResponse.OrderRef, collectResponse.CompletionData.User, request.ReturnUrl);
-            if (!Url.IsLocalUrl(returnUri))
+            if (!Url.IsLocalUrl(request.ReturnUrl))
             {
                 throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
             }
 
-            return OkJsonResult(BankIdLoginApiStatusResponse.Finished(returnUri));
+            var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
+            var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
+
+            BankIdFlowCollectResult result;
+            try
+            {
+                result = await _bankIdFlowService.TryCollect(orderRef.OrderRef, request.AutoStartAttempts, loginOptions);
+            }
+            catch (BankIdApiException bankIdApiException)
+            {
+                var errorStatusMessage = GetBankIdApiExceptionStatusMessage(bankIdApiException);
+                return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
+            }
+
+            switch(result)
+            {
+                case BankIdFlowCollectResultPending pending:
+                {
+                    return OkJsonResult(BankIdLoginApiStatusResponse.Pending(pending.StatusMessage));
+                }
+                case BankIdFlowCollectResultComplete complete:
+                {
+                    var returnUri = GetSuccessReturnUrl(orderRef.OrderRef, complete.CompletionData.User, request.ReturnUrl);
+                    return OkJsonResult(BankIdLoginApiStatusResponse.Finished(returnUri));
+                }
+                case BankIdFlowCollectResultRetry retry:
+                {
+                    return OkJsonResult(BankIdLoginApiStatusResponse.Retry(retry.StatusMessage));
+                }
+                case BankIdFlowCollectResultFailure failure:
+                {
+                    return BadRequestJsonResult(new BankIdLoginApiErrorResponse(failure.StatusMessage));
+                }
+                default:
+                {
+                    throw new InvalidOperationException("Unknown collect result type");
+                }
+            }
         }
 
-        private async Task<ActionResult> CollectPending(CollectResponse collectResponse, string statusMessage, BankIdSupportedDevice detectedDevice, BankIdLoginOptions loginOptions)
-        {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedDevice, loginOptions));
-            return OkJsonResult(BankIdLoginApiStatusResponse.Pending(statusMessage));
-        }
-
-        private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions, BankIdSupportedDevice detectedDevice)
-        {
-            var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
-            var usingQrCode = !unprotectedLoginOptions.SameDevice;
-
-            var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
-                collectResponse.GetCollectStatus(),
-                collectResponse.GetCollectHintCode(),
-                authPersonalIdentityNumberProvided: false,
-                accessedFromMobileDevice,
-                usingQrCode);
-            var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
-
-            return statusMessage;
-        }
-
-        private BankIdSupportedDevice GetDetectedUserDevice()
-        {
-            return _bankIdSupportedDeviceDetector.Detect();
-        }
-
-        private string GetStatusMessage(BankIdApiException bankIdApiException)
+        private string GetBankIdApiExceptionStatusMessage(BankIdApiException bankIdApiException)
         {
             var messageShortName = _bankIdUserMessage.GetMessageShortNameForErrorResponse(bankIdApiException.ErrorCode);
             var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
@@ -221,19 +175,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
             return statusMessage;
         }
 
-        private string GetSuccessReturnUri(string orderRef, User user, string returnUrl)
+        private string GetSuccessReturnUrl(string orderRef, User user, string returnUrl)
         {
             var loginResult = BankIdLoginResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
             var protectedLoginResult = _loginResultProtector.Protect(loginResult);
-            var queryString = $"loginResult={_urlEncoder.Encode(protectedLoginResult)}";
 
-            return AppendQueryString(returnUrl, queryString);
-        }
-
-        private static string AppendQueryString(string url, string queryString)
-        {
-            var delimiter = url.Contains('?') ? "&" : "?";
-            return $"{url}{delimiter}{queryString}";
+            return QueryHelpers.AddQueryString(returnUrl, new Dictionary<string, string?>
+            {
+                { "loginResult", protectedLoginResult }
+            });
         }
 
         [ValidateAntiForgeryToken]
@@ -267,7 +217,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 
             var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
             var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
-            var detectedDevice = GetDetectedUserDevice();
+            var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
 
             try
             {

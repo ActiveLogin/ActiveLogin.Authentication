@@ -6,7 +6,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
 {
     public interface IBankIdFlowService
     {
-        Task<InitializeAuthFlowResult> InitializeAuth(BankIdLoginOptions loginOptions, string returnRedirectUrl);
         string GetQrCode(BankIdQrStartState qrStartState);
+        Task<InitializeAuthFlowResult> InitializeAuth(BankIdLoginOptions loginOptions, string returnRedirectUrl);
+
+        Task<BankIdFlowCollectResult> TryCollect(string orderReference, int autoStartAttempts, BankIdLoginOptions loginOptions);
     }
 }

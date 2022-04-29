@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events;
 using ActiveLogin.Authentication.BankId.AspNetCore.Events.Infrastructure;
@@ -11,6 +12,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
 {
@@ -72,6 +74,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
         private readonly IBankIdQrCodeContentGenerator _bankIdQrCodeContentGenerator;
         private readonly IBankIdQrCodeGenerator _qrCodeGenerator;
         private readonly IBankIdLauncher _bankIdLauncher;
+        private readonly IBankIdUserMessage _bankIdUserMessage;
+        private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
 
         public BankIdFlowService(
             IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
@@ -81,7 +85,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
             IBankIdEventTrigger bankIdEventTrigger,
             IBankIdQrCodeContentGenerator bankIdQrCodeContentGenerator,
             IBankIdQrCodeGenerator qrCodeGenerator,
-            IBankIdLauncher bankIdLauncher)
+            IBankIdLauncher bankIdLauncher,
+            IBankIdUserMessage bankIdUserMessage,
+            IBankIdUserMessageLocalizer bankIdUserMessageLocalizer)
         {
             _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
             _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
@@ -91,22 +97,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
             _bankIdQrCodeContentGenerator = bankIdQrCodeContentGenerator;
             _qrCodeGenerator = qrCodeGenerator;
             _bankIdLauncher = bankIdLauncher;
+            _bankIdUserMessage = bankIdUserMessage;
+            _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
         }
 
         public async Task<InitializeAuthFlowResult> InitializeAuth(BankIdLoginOptions loginOptions, string returnRedirectUrl)
         {
             var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
-            AuthResponse authResponse;
-            try
-            {
-                var authRequest = await GetAuthRequest(loginOptions);
-                authResponse = await _bankIdApiClient.AuthAsync(authRequest);
-            }
-            catch (BankIdApiException bankIdApiException)
-            {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, loginOptions));
-                throw;
-            }
+            var authResponse = await GetAuthResponse(loginOptions, detectedUserDevice);
 
             await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber: null, authResponse.OrderRef, detectedUserDevice, loginOptions));
 
@@ -128,6 +126,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
             }
         }
 
+        private async Task<AuthResponse> GetAuthResponse(BankIdLoginOptions loginOptions, BankIdSupportedDevice detectedUserDevice)
+        {
+            try
+            {
+                var authRequest = await GetAuthRequest(loginOptions);
+                return await _bankIdApiClient.AuthAsync(authRequest);
+            }
+            catch (BankIdApiException bankIdApiException)
+            {
+                await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, loginOptions));
+                throw;
+            }
+        }
+
         private async Task<AuthRequest> GetAuthRequest(BankIdLoginOptions loginOptions)
         {
             var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
@@ -146,6 +158,79 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Flow
             var launchUrlRequest = new LaunchUrlRequest(redirectUrl, authResponse.AutoStartToken);
 
             return _bankIdLauncher.GetLaunchInfo(launchUrlRequest);
+        }
+
+        public async Task<BankIdFlowCollectResult> TryCollect(string orderReference, int autoStartAttempts, BankIdLoginOptions loginOptions)
+        {
+            var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
+
+            var collectResponse = await GetCollectResponse(orderReference, loginOptions, detectedUserDevice);
+            var statusMessage = GetStatusMessage(collectResponse, loginOptions, detectedUserDevice);
+
+            var collectStatus = collectResponse.GetCollectStatus();
+            switch (collectStatus)
+            {
+                case CollectStatus.Pending:
+                {
+                    await _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, loginOptions));
+                    return new BankIdFlowCollectResultPending(statusMessage);
+                }
+                case CollectStatus.Complete:
+                {
+                    if (collectResponse.CompletionData == null)
+                    {
+                        throw new InvalidOperationException("Missing CompletionData from BankID API");
+                    }
+
+                    await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedUserDevice, loginOptions));
+                    return new BankIdFlowCollectResultComplete(collectResponse.CompletionData);
+                }
+                case CollectStatus.Failed:
+                {
+                    var hintCode = collectResponse.GetCollectHintCode();
+                    if (hintCode.Equals(CollectHintCode.StartFailed) && autoStartAttempts < BankIdConstants.MaxRetryLoginAttempts)
+                    {
+                        return new BankIdFlowCollectResultRetry(statusMessage);
+                    }
+
+                    await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, loginOptions));
+                    return new BankIdFlowCollectResultFailure(statusMessage);
+                }
+                default:
+                {
+                    await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, loginOptions));
+                    return new BankIdFlowCollectResultFailure(statusMessage);
+                }
+            }
+        }
+
+        private async Task<CollectResponse> GetCollectResponse(string orderReference, BankIdLoginOptions loginOptions, BankIdSupportedDevice detectedUserDevice)
+        {
+            try
+            {
+                return await _bankIdApiClient.CollectAsync(orderReference);
+            }
+            catch (BankIdApiException bankIdApiException)
+            {
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderReference, bankIdApiException, detectedUserDevice, loginOptions));
+                throw;
+            }
+        }
+
+        private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions, BankIdSupportedDevice detectedDevice)
+        {
+            var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
+            var usingQrCode = !unprotectedLoginOptions.SameDevice;
+
+            var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
+                collectResponse.GetCollectStatus(),
+                collectResponse.GetCollectHintCode(),
+                authPersonalIdentityNumberProvided: false,
+                accessedFromMobileDevice,
+                usingQrCode);
+            var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
+
+            return statusMessage;
         }
 
         public string GetQrCode(BankIdQrStartState qrStartState)
