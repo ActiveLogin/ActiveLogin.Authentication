@@ -160,6 +160,6 @@ public class BankIdLauncher : IBankIdLauncher
         }
 
         var queryBuilder = new QueryBuilder(queryStringParams);
-        return queryBuilder.ToQueryString().ToString();
+        return queryBuilder.ToString();
     }
 }
