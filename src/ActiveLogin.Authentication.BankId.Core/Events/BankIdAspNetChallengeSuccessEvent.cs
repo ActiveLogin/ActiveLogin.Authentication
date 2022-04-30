@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// </summary>
 public class BankIdAspNetChallengeSuccessEvent : BankIdEvent
 {
-    internal BankIdAspNetChallengeSuccessEvent(BankIdSupportedDevice detectedUserDevice, BankIdLoginOptions bankIdOptions)
+    public BankIdAspNetChallengeSuccessEvent(BankIdSupportedDevice detectedUserDevice, BankIdLoginOptions bankIdOptions)
         : base(BankIdEventTypes.AspNetChallengeSuccessEventId, BankIdEventTypes.AspNetChallengeSuccessEventName, BankIdEventSeverity.Success)
     {
         DetectedUserDevice = detectedUserDevice;

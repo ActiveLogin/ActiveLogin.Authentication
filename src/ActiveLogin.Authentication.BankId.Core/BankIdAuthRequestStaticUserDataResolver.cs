@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 
-internal class BankIdAuthRequestStaticUserDataResolver : IBankIdAuthRequestUserDataResolver
+public class BankIdAuthRequestStaticUserDataResolver : IBankIdAuthRequestUserDataResolver
 {
     private readonly BankIdAuthUserData _authUserData;
 

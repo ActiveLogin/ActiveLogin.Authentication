@@ -55,7 +55,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.Core.csproj" />
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Core\ActiveLogin.Authentication.BankId.Core.csproj" />
         <ProjectReference Include="..\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
     </ItemGroup>
 </Project>

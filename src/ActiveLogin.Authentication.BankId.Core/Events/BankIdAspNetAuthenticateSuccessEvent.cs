@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// </summary>
 public class BankIdAspNetAuthenticateSuccessEvent : BankIdEvent
 {
-    internal BankIdAspNetAuthenticateSuccessEvent(PersonalIdentityNumber personalIdentityNumber, BankIdSupportedDevice detectedUserDevice)
+    public BankIdAspNetAuthenticateSuccessEvent(PersonalIdentityNumber personalIdentityNumber, BankIdSupportedDevice detectedUserDevice)
         : base(BankIdEventTypes.AspNetAuthenticateSuccessEventId, BankIdEventTypes.AspNetAuthenticateSuccessEventName, BankIdEventSeverity.Success)
     {
         PersonalIdentityNumber = personalIdentityNumber;

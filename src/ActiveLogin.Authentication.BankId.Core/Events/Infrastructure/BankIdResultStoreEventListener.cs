@@ -9,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 /// <summary>
 /// To comply with BankID Technical requirement RFT5 you need to store the data in completion data.
 /// </summary>
-internal class BankIdResultStoreEventListener : BankIdTypedEventListener
+public class BankIdResultStoreEventListener : BankIdTypedEventListener
 {
     private readonly List<IBankIdResultStore> _bankIdResultStores;
 

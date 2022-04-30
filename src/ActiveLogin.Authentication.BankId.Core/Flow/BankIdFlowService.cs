@@ -16,7 +16,7 @@ using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 namespace ActiveLogin.Authentication.BankId.Core.Flow;
 
-internal class BankIdFlowService : IBankIdFlowService
+public class BankIdFlowService : IBankIdFlowService
 {
     private const int MaxRetryLoginAttempts = 5;
 

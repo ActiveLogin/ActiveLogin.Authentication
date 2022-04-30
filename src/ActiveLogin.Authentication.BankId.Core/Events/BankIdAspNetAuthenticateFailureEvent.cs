@@ -8,7 +8,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// </summary>
 public class BankIdAspNetAuthenticateFailureEvent : BankIdEvent
 {
-    internal BankIdAspNetAuthenticateFailureEvent(string errorReason, BankIdSupportedDevice detectedUserDevice)
+    public BankIdAspNetAuthenticateFailureEvent(string errorReason, BankIdSupportedDevice detectedUserDevice)
         : base(BankIdEventTypes.AspNetAuthenticateErrorEventId, BankIdEventTypes.AspNetAuthenticateFailureEventName, BankIdEventSeverity.Failure)
     {
         ErrorReason = errorReason;

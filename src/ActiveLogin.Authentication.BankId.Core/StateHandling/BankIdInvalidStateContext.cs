@@ -1,8 +1,8 @@
 namespace ActiveLogin.Authentication.BankId.Core.StateHandling;
 
 public class BankIdInvalidStateContext
-{  
-    internal BankIdInvalidStateContext(string cancelReturnUrl) 
+{
+    public BankIdInvalidStateContext(string cancelReturnUrl) 
     {
         CancelReturnUrl = cancelReturnUrl;
     }
