@@ -53,8 +53,11 @@ public class BankId_Authentication_Tests
         // Arrange
         using var client = CreateServer(o =>
             {
-                o.UseSimulatedEnvironment()
-                    .AddSameDevice();
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -75,8 +78,11 @@ public class BankId_Authentication_Tests
         // Arrange
         using var client = CreateServer(o =>
             {
-                o.UseSimulatedEnvironment()
-                    .AddSameDevice();
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             app =>
             {
@@ -123,8 +129,11 @@ public class BankId_Authentication_Tests
         // Arrange
         using var server = CreateServer(o =>
             {
-                o.UseSimulatedEnvironment()
-                    .AddSameDevice();
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(context => Task.CompletedTask),
             services =>
@@ -160,8 +169,11 @@ public class BankId_Authentication_Tests
             .Returns(options);
         using var server = CreateServer(o =>
             {
-                o.UseSimulatedEnvironment()
-                    .AddSameDevice();
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -190,8 +202,11 @@ public class BankId_Authentication_Tests
         // Arrange
         using var server = CreateServer(o =>
             {
-                o.UseSimulatedEnvironment()
-                    .AddSameDevice();
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -225,8 +240,11 @@ public class BankId_Authentication_Tests
         // Arrange
         using var server = CreateServer(o =>
             {
-                o.UseSimulatedEnvironment()
-                    .AddSameDevice();
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -260,8 +278,12 @@ public class BankId_Authentication_Tests
         using var server = CreateServer(
             o =>
             {
-                o.UseSimulatedEnvironment().AddSameDevice();
-                o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                o.UseSimulatedEnvironment();
+                o.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -305,8 +327,12 @@ public class BankId_Authentication_Tests
         using var server = CreateServer(
             o =>
             {
-                o.UseSimulatedEnvironment().AddSameDevice();
-                o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                o.UseSimulatedEnvironment();
+                o.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -352,8 +378,12 @@ public class BankId_Authentication_Tests
         using var server = CreateServer(
             o =>
             {
-                o.UseSimulatedEnvironment().AddOtherDevice();
-                o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                o.UseSimulatedEnvironment();
+                o.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+            },
+            o =>
+            {
+                o.AddOtherDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -398,8 +428,12 @@ public class BankId_Authentication_Tests
         using var server = CreateServer(
             o =>
             {
-                o.UseSimulatedEnvironment().AddSameDevice();
-                o.AuthenticationBuilder.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+                o.UseSimulatedEnvironment();
+                o.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
+            },
+            o =>
+            {
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {
@@ -468,6 +502,7 @@ public class BankId_Authentication_Tests
 
     private TestServer CreateServer(
         Action<IBankIdBuilder> configureBankId,
+        Action<IBankIdAuthBuilder> configureBankIdAuth,
         Action<IApplicationBuilder> configureApplication,
         Action<IServiceCollection> configureServices = null)
     {
@@ -479,7 +514,8 @@ public class BankId_Authentication_Tests
             })
             .ConfigureServices(services =>
             {
-                services.AddAuthentication().AddBankId(configureBankId);
+                services.AddBankId(configureBankId);
+                services.AddAuthentication().AddBankId(configureBankIdAuth);
                 services.AddMvc();
                 configureServices?.Invoke(services);
             });
