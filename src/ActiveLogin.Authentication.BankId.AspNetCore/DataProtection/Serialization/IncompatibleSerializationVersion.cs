@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.AspNetCore;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
 public class IncompatibleSerializationVersion : Exception
 {

@@ -11,6 +11,7 @@ using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -64,7 +65,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         }
 
         var loginResult = _loginResultProtector.Unprotect(loginResultProtected);
-        if (loginResult == null || !loginResult.IsSuccessful)
+        if (!loginResult.IsSuccessful)
         {
             return await HandleRemoteAuthenticateFail("Invalid login result", detectedDevice);
         }
@@ -144,7 +145,6 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         // Default to root if no return url is set
         var cancelReturnUrl = properties.Items.ContainsKey("returnUrl") ? properties.Items["returnUrl"] : DefaultCancelUrl;
 
-
         // If cancel url is set, it overrides the regular return url
         if (properties.Items.TryGetValue("cancelReturnUrl", out var cancelUrl))
         {
@@ -158,12 +158,13 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     {
         var pathBase = Context.Request.PathBase;
         var loginUrl = pathBase.Add(Options.LoginPath);
-        var returnUrl = UrlEncoder.Encode(pathBase.Add(Options.CallbackPath));
-        var protectedOptions = UrlEncoder.Encode(_loginOptionsProtector.Protect(loginOptions));
+        var queryBuilder = new QueryBuilder(new Dictionary<string, string>
+        {
+            { "returnUrl", pathBase.Add(Options.CallbackPath)},
+            { "loginOptions", _loginOptionsProtector.Protect(loginOptions)}
+        });
 
-        return $"{loginUrl}" +
-               $"?returnUrl={returnUrl}" +
-               $"&loginOptions={protectedOptions}";
+        return $"{loginUrl}?{queryBuilder.ToQueryString()}";
     }
 
     private void AppendStateCookie(AuthenticationProperties properties)
