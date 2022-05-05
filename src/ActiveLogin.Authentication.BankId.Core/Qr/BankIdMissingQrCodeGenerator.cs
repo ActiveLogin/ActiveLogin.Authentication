@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Qr;
 
 public class BankIdMissingQrCodeGenerator : IBankIdQrCodeGenerator
 {
-    const string DefaultImageResourceIdentifier = "ActiveLogin.Authentication.BankId.AspNetCore.Resources.qr-default.png";
+    const string DefaultImageResourceIdentifier = "ActiveLogin.Authentication.BankId.Core.Qr.qr-default.png";
 
     public string GenerateQrCodeAsBase64(string content)
     {
