@@ -31,7 +31,7 @@ internal class BankIdBuilder : IBankIdBuilder
         _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
     }
 
-    public void EnableHttpBankIdApiClient()
+    public void AfterConfiguration()
     {
         Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
             {

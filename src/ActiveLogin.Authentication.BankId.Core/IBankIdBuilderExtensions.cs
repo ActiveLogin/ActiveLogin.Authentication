@@ -155,11 +155,6 @@ public static class IBankIdBuilderExtensions
 
         builder.Services.TryAddTransient<IBankIdLauncher, BankIdLauncher>();
 
-        if (builder is BankIdBuilder bankIdBuilder)
-        {
-            bankIdBuilder.EnableHttpBankIdApiClient();
-        }
-
         return builder;
     }
 

@@ -51,6 +51,8 @@ public static class ServiceCollectionExtensions
 
         bankId(bankIdBuilder);
 
+        bankIdBuilder.AfterConfiguration();
+
         return services;
     }
 

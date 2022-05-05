@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.Core;
@@ -17,4 +19,7 @@ public interface IBankIdBuilder
     /// </summary>
     /// <param name="configureHttpClientHandler"></param>
     void ConfigureHttpClientHandler(Action<SocketsHttpHandler> configureHttpClientHandler);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    void AfterConfiguration();
 }
