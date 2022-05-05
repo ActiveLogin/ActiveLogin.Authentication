@@ -268,15 +268,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to qr-default-en.png.
-        /// </summary>
-        internal static string Qr_Code_Default_Image {
-            get {
-                return ResourceManager.GetString("Qr_Code_Default_Image", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to QR Code for BankID.
         /// </summary>
         internal static string Qr_Code_Image {

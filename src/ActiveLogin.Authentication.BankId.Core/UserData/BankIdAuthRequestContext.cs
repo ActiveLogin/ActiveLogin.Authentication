@@ -1,6 +1,6 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
 
-namespace ActiveLogin.Authentication.BankId.Core;
+namespace ActiveLogin.Authentication.BankId.Core.UserData;
 
 public class BankIdAuthRequestContext
 {

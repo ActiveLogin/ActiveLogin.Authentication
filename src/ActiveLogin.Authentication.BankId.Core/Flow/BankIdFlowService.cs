@@ -8,6 +8,7 @@ using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.Qr;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.Core.UserData;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 namespace ActiveLogin.Authentication.BankId.Core.Flow;

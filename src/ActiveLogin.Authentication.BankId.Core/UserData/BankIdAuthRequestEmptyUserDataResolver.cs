@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.Core;
+namespace ActiveLogin.Authentication.BankId.Core.UserData;
 
 public class BankIdAuthRequestEmptyUserDataResolver : IBankIdAuthRequestUserDataResolver
 {

@@ -192,9 +192,6 @@
   <data name="Qr_Code_Image" xml:space="preserve">
     <value>QR-kod för BankID</value>
   </data>
-  <data name="Qr_Code_Default_Image" xml:space="preserve">
-    <value>qr-default-sv.png</value>
-  </data>
   <data name="Cancel_Button" xml:space="preserve">
     <value>Avbryt</value>
   </data>

@@ -1,8 +1,6 @@
-using ActiveLogin.Authentication.BankId.Core.Launcher;
+namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
-
-internal class BankIdDevelopmentLauncher : IBankIdLauncher
+public class BankIdDevelopmentLauncher : IBankIdLauncher
 {
     public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request)
     {

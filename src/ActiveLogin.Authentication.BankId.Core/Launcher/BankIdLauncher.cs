@@ -1,6 +1,9 @@
 using System.Text;
 
+using ActiveLogin.Authentication.BankId.Core.Helpers;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+
+using Microsoft.FSharp.Linq;
 
 namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
@@ -156,7 +159,6 @@ public class BankIdLauncher : IBankIdLauncher
             return string.Empty;
         }
 
-        var queryBuilder = new QueryBuilder(queryStringParams);
-        return queryBuilder.ToString();
+        return QueryStringGenerator.ToQueryString(queryStringParams);
     }
 }

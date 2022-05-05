@@ -6,7 +6,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
-using ActiveLogin.Authentication.BankId.AspNetCore.Qr;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
@@ -19,6 +18,7 @@ using ActiveLogin.Authentication.BankId.Core.Persistence;
 using ActiveLogin.Authentication.BankId.Core.Qr;
 using ActiveLogin.Authentication.BankId.Core.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.Core.UserData;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
