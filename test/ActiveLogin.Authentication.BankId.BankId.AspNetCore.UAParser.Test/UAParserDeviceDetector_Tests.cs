@@ -1,10 +1,6 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.UAParser;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
-using Microsoft.AspNetCore.Http;
-
-using Moq;
-
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test;
