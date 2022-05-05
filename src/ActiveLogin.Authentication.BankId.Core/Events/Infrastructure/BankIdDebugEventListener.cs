@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 
-public class BankIdDebugEventListener : IBankIdEventListener
+internal class BankIdDebugEventListener : IBankIdEventListener
 {
     private readonly ILogger<BankIdDebugEventListener> _logger;
     private readonly JsonSerializerOptions _serializerOptions;

@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Qr;
 
 public class BankIdMissingQrCodeGenerator : IBankIdQrCodeGenerator
 {
-    const string DefaultImageResourceIdentifier = "ActiveLogin.Authentication.BankId.Core.Qr.qr-default.png";
+    private const string DefaultImageResourceIdentifier = "ActiveLogin.Authentication.BankId.Core.Qr.qr-default.png";
 
     public string GenerateQrCodeAsBase64(string content)
     {
@@ -14,7 +14,7 @@ public class BankIdMissingQrCodeGenerator : IBankIdQrCodeGenerator
 
         if (resourceStream == null)
         {
-            throw new Exception($"Can't find QR Code image: {DefaultImageResourceIdentifier}");
+            throw new Exception($"Can't find QR Code image as embedded resource: {DefaultImageResourceIdentifier}");
         }
 
         var base64EncodedImage = ConvertToBase64(resourceStream);

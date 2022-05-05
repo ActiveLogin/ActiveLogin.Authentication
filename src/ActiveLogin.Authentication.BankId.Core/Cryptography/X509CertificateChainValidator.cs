@@ -3,7 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace ActiveLogin.Authentication.BankId.Core.Cryptography;
 
-public class X509CertificateChainValidator
+internal class X509CertificateChainValidator
 {
     private readonly X509Certificate2 _certificateAuthority;
 

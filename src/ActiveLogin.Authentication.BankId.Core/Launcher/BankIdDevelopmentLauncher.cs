@@ -1,10 +1,12 @@
 namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
-public class BankIdDevelopmentLauncher : IBankIdLauncher
+internal class BankIdDevelopmentLauncher : IBankIdLauncher
 {
+    private const string DevelopmentLaunchUrl = "#";
+
     public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request)
     {
         // Always stay on same page, without reloading, in simulated mode
-        return new BankIdLaunchInfo("#", false, false);
+        return new BankIdLaunchInfo(DevelopmentLaunchUrl, false, false);
     }
 }

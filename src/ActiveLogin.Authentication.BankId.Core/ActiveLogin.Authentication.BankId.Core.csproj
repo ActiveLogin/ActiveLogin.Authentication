@@ -74,4 +74,10 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </EmbeddedResource>
     </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>ActiveLogin.Authentication.BankId.Core.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project>

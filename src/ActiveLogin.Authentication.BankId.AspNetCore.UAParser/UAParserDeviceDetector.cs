@@ -14,27 +14,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser;
 /// <remarks>
 /// It uses the ua_parser C# library for user agent parsing.
 /// </remarks>
-public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
+public class UAParserDeviceDetector : IBankIdSupportedDeviceDetectorByUserAgent
 {
-    private const string UserAgentHttpHeaderName = "User-Agent";
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public UAParserDeviceDetector(IHttpContextAccessor httpContextAccessor)
+    public BankIdSupportedDevice Detect(string userAgent)
     {
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-    public BankIdSupportedDevice Detect()
-    {
-        var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
-        {
-            return BankIdSupportedDevice.Unknown;
-        }
-
-        var userAgent = httpContext.Request.Headers[UserAgentHttpHeaderName].ToString();
-
-
         var uaParser = Parser.GetDefault();
         var clientInfo = uaParser.Parse(userAgent);
 
@@ -46,7 +29,7 @@ public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
         return new BankIdSupportedDevice(deviceType, deviceOs, deviceBrowser, deviceOsVersion);
     }
 
-    private BankIdSupportedDeviceBrowser GetDeviceBrowser(ClientInfo clientInfo) => clientInfo switch
+    private static BankIdSupportedDeviceBrowser GetDeviceBrowser(ClientInfo clientInfo) => clientInfo switch
     {
         _ when IsEdge(clientInfo) => BankIdSupportedDeviceBrowser.Edge,
         _ when IsSamsungBrowser(clientInfo) => BankIdSupportedDeviceBrowser.SamsungBrowser,
@@ -59,7 +42,7 @@ public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
         _ => BankIdSupportedDeviceBrowser.Unknown
     };
 
-    private BankIdSupportedDeviceOs GetDeviceOs(ClientInfo clientInfo) => clientInfo.OS switch
+    private static BankIdSupportedDeviceOs GetDeviceOs(ClientInfo clientInfo) => clientInfo.OS switch
     {
         var os when IsIos(os) => BankIdSupportedDeviceOs.Ios,
         var os when IsAndroid(os) => BankIdSupportedDeviceOs.Android,
@@ -69,7 +52,7 @@ public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
         _ => BankIdSupportedDeviceOs.Unknown
     };
 
-    private BankIdSupportedDeviceOsVersion GetDeviceOsVersion(ClientInfo clientInfo)
+    private static BankIdSupportedDeviceOsVersion GetDeviceOsVersion(ClientInfo clientInfo)
     {
         var hasMajor = int.TryParse(clientInfo.OS.Major, out var major);
         var hasMinor = int.TryParse(clientInfo.OS.Minor, out var minor);
@@ -84,7 +67,7 @@ public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
         };
     }
 
-    private BankIdSupportedDeviceType GetDeviceType(ClientInfo clientInfo)
+    private static BankIdSupportedDeviceType GetDeviceType(ClientInfo clientInfo)
     {
         var deviceOs = GetDeviceOs(clientInfo);
         var deviceType = GetDeviceType(deviceOs);
@@ -97,7 +80,7 @@ public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
         };
     }
 
-    private BankIdSupportedDeviceType GetDeviceType(BankIdSupportedDeviceOs deviceOs)
+    private static BankIdSupportedDeviceType GetDeviceType(BankIdSupportedDeviceOs deviceOs)
     {
         return deviceOs switch
         {
@@ -112,44 +95,44 @@ public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
         };
     }
 
-    private bool IsChrome(ClientInfo clientInfo)
+    private static bool IsChrome(ClientInfo clientInfo)
     {
         return IsBrowser(clientInfo.UA, "chrome");
     }
 
-    private bool IsSafari(ClientInfo clientInfo)
+    private static bool IsSafari(ClientInfo clientInfo)
     {
         return IsBrowser(clientInfo.UA, "safari");
     }
 
-    private bool IsEdge(ClientInfo clientInfo)
+    private static bool IsEdge(ClientInfo clientInfo)
     {
         return IsBrowser(clientInfo.UA, "edge")
                || IsBrowserRaw(clientInfo.String, "edgios");
     }
 
-    private bool IsFirefox(ClientInfo clientInfo)
+    private static bool IsFirefox(ClientInfo clientInfo)
     {
         return IsBrowser(clientInfo.UA, "firefox");
     }
 
-    private bool IsSamsungBrowser(ClientInfo clientInfo)
+    private static bool IsSamsungBrowser(ClientInfo clientInfo)
     {
         return IsBrowser(clientInfo.UA, "samsung");
     }
 
-    private bool IsOpera(ClientInfo clientInfo)
+    private static bool IsOpera(ClientInfo clientInfo)
     {
         return IsBrowser(clientInfo.UA, "opera")
                || IsBrowserRaw(clientInfo.String, "opt");
     }
 
-    private bool IsMobileBrowser(UserAgent userAgent)
+    private static bool IsMobileBrowser(UserAgent userAgent)
     {
         return IsBrowser(userAgent, "mobile");
     }
 
-    private bool IsBrowser(UserAgent userAgent, string browser)
+    private static bool IsBrowser(UserAgent userAgent, string browser)
     {
         return userAgent.Family.Contains(browser, StringComparison.InvariantCultureIgnoreCase);
     }
@@ -160,32 +143,32 @@ public class UAParserDeviceDetector : IBankIdSupportedDeviceDetector
         return userAgent.Contains(fullKey, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    private bool IsIos(OS os)
+    private static bool IsIos(OS os)
     {
         return IsOs(os, "ios");
     }
 
-    private bool IsAndroid(OS os)
+    private static bool IsAndroid(OS os)
     {
         return IsOs(os, "android");
     }
 
-    private bool IsWindowsPhone(OS os)
+    private static bool IsWindowsPhone(OS os)
     {
         return IsOs(os, "windows phone");
     }
 
-    private bool IsWindows(OS os)
+    private static bool IsWindows(OS os)
     {
         return IsOs(os, "windows");
     }
 
-    private bool IsMacOs(OS os)
+    private static bool IsMacOs(OS os)
     {
         return IsOs(os, "mac os");
     }
 
-    private bool IsOs(OS os, string osName)
+    private static bool IsOs(OS os, string osName)
     {
         return os.Family.Contains(osName, StringComparison.InvariantCultureIgnoreCase);
     }

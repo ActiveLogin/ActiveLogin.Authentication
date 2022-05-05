@@ -3,15 +3,17 @@ using System.Text;
 
 namespace ActiveLogin.Authentication.BankId.Core.Qr;
 
-public class BankIdQrCodeContentGenerator : IBankIdQrCodeContentGenerator
+internal static class BankIdQrCodeContentGenerator
 {
-    public string Generate(string qrStartToken, string qrStartSecret, int time)
+    private const string BankIdQrCodePrefix = "bankid";
+
+    public static string Generate(string qrStartToken, string qrStartSecret, int time)
     {
         var qrAuthCode = GetQrAuthCode(qrStartSecret, time);
-        return $"bankid.{qrStartToken}.{TimeAsString(time)}.{qrAuthCode}";
+        return $"{BankIdQrCodePrefix}.{qrStartToken}.{TimeAsString(time)}.{qrAuthCode}";
     }
 
-    private string GetQrAuthCode(string qrStartSecret, int time)
+    private static string GetQrAuthCode(string qrStartSecret, int time)
     {
         var keyByteArray = Encoding.ASCII.GetBytes(qrStartSecret);
         using var hmac = new HMACSHA256(keyByteArray);
@@ -22,5 +24,5 @@ public class BankIdQrCodeContentGenerator : IBankIdQrCodeContentGenerator
         return Convert.ToHexString(hash).ToLower();
     }
 
-    private string TimeAsString(int time) => time.ToString("D");
+    private static string TimeAsString(int time) => time.ToString("D");
 }

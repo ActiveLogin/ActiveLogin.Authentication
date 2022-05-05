@@ -17,7 +17,7 @@ public static class BankIdBuilderUaParserExtensions
     public static IBankIdBuilder UseUaParserDeviceDetection(this IBankIdBuilder builder)
     {
         var services = builder.Services;
-        var descriptor = new ServiceDescriptor(typeof(IBankIdSupportedDeviceDetector),typeof(UAParserDeviceDetector), ServiceLifetime.Transient);
+        var descriptor = new ServiceDescriptor(typeof(IBankIdSupportedDeviceDetectorByUserAgent),typeof(UAParserDeviceDetector), ServiceLifetime.Transient);
         services.Replace(descriptor);
 
         return builder;

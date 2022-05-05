@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Persistence;
 /// <summary>
 /// Will store the completion data as a trace log
 /// </summary>
-public class BankIdResultTraceLoggerStore : IBankIdResultStore
+internal class BankIdResultTraceLoggerStore : IBankIdResultStore
 {
     private readonly EventId _eventId = new EventId(101, "StoreCollectCompletedCompletionData");
     private readonly ILogger<BankIdResultTraceLoggerStore> _logger;

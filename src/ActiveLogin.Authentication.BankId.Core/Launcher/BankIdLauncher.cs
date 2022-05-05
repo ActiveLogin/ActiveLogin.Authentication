@@ -3,14 +3,16 @@ using System.Text;
 using ActiveLogin.Authentication.BankId.Core.Helpers;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
-using Microsoft.FSharp.Linq;
-
 namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
-public class BankIdLauncher : IBankIdLauncher
+internal class BankIdLauncher : IBankIdLauncher
 {
     private const string BankIdSchemePrefix = "bankid:///";
     private const string BankIdAppLinkPrefix = "https://app.bankid.com/";
+
+    private const string BankIdAutoStartTokenQueryStringParamName = "autostarttoken";
+    private const string BankIdRpRefQueryStringParamName = "rpref";
+    private const string BankIdRedirectQueryStringParamName = "redirect";
 
     private const string NullRedirectUrl = "null";
 
@@ -101,17 +103,17 @@ public class BankIdLauncher : IBankIdLauncher
 
         if (!string.IsNullOrWhiteSpace(request.AutoStartToken))
         {
-            queryStringParams.Add("autostarttoken", request.AutoStartToken);
+            queryStringParams.Add(BankIdAutoStartTokenQueryStringParamName, request.AutoStartToken);
         }
 
         if (!string.IsNullOrWhiteSpace(request.RelyingPartyReference))
         {
-            queryStringParams.Add("rpref", Base64Encode(request.RelyingPartyReference));
+            queryStringParams.Add(BankIdRpRefQueryStringParamName, Base64Encode(request.RelyingPartyReference));
         }
 
-        queryStringParams.Add("redirect", GetRedirectUrl(device, request));
+        queryStringParams.Add(BankIdRedirectQueryStringParamName, GetRedirectUrl(device, request));
 
-        return GetQueryString(queryStringParams);
+        return QueryStringGenerator.ToQueryString(queryStringParams);
     }
 
     private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
@@ -150,15 +152,5 @@ public class BankIdLauncher : IBankIdLauncher
     {
         var encodedBytes = Encoding.Unicode.GetBytes(value);
         return Convert.ToBase64String(encodedBytes);
-    }
-
-    private static string GetQueryString(Dictionary<string, string> queryStringParams)
-    {
-        if (!queryStringParams.Any())
-        {
-            return string.Empty;
-        }
-
-        return QueryStringGenerator.ToQueryString(queryStringParams);
     }
 }

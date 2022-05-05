@@ -25,7 +25,6 @@ public class BankIdFlowService : IBankIdFlowService
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly IBankIdEndUserIpResolver _bankIdEndUserIpResolver;
     private readonly IBankIdAuthRequestUserDataResolver _bankIdAuthUserDataResolver;
-    private readonly IBankIdQrCodeContentGenerator _bankIdQrCodeContentGenerator;
     private readonly IBankIdQrCodeGenerator _bankIdQrCodeGenerator;
     private readonly IBankIdLauncher _bankIdLauncher;
 
@@ -38,7 +37,6 @@ public class BankIdFlowService : IBankIdFlowService
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
         IBankIdEndUserIpResolver bankIdEndUserIpResolver,
         IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver,
-        IBankIdQrCodeContentGenerator bankIdQrCodeContentGenerator,
         IBankIdQrCodeGenerator bankIdQrCodeGenerator,
         IBankIdLauncher bankIdLauncher
     )
@@ -51,7 +49,6 @@ public class BankIdFlowService : IBankIdFlowService
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
         _bankIdAuthUserDataResolver = bankIdAuthUserDataResolver;
-        _bankIdQrCodeContentGenerator = bankIdQrCodeContentGenerator;
         _bankIdQrCodeGenerator = bankIdQrCodeGenerator;
         _bankIdLauncher = bankIdLauncher;
     }
@@ -199,7 +196,7 @@ public class BankIdFlowService : IBankIdFlowService
         var elapsedTime = _bankIdFlowSystemClock.UtcNow - qrStartState.QrStartTime;
         var elapsedTotalSeconds = (int)Math.Round(elapsedTime.TotalSeconds);
 
-        var qrCodeContent = _bankIdQrCodeContentGenerator.Generate(qrStartState.QrStartToken, qrStartState.QrStartSecret, elapsedTotalSeconds);
+        var qrCodeContent = BankIdQrCodeContentGenerator.Generate(qrStartState.QrStartToken, qrStartState.QrStartSecret, elapsedTotalSeconds);
         var qrCode = _bankIdQrCodeGenerator.GenerateQrCodeAsBase64(qrCodeContent);
 
         return qrCode;

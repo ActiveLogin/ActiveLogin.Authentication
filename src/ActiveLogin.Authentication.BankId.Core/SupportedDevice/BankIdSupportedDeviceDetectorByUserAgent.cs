@@ -1,8 +1,8 @@
 namespace ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
-public static class BankIdSupportedDeviceDetectorByUserAgent
+internal class BankIdSupportedDeviceDetectorByUserAgent : IBankIdSupportedDeviceDetectorByUserAgent
 {
-    public static BankIdSupportedDevice Detect(string userAgent)
+    public BankIdSupportedDevice Detect(string userAgent)
     {
         var normalizedUserAgent = userAgent.ToLower().Trim();
 
