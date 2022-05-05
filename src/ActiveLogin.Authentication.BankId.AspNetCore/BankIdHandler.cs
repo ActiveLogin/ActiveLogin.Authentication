@@ -164,7 +164,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
             { "loginOptions", _loginOptionsProtector.Protect(loginOptions)}
         });
 
-        return $"{loginUrl}?{queryBuilder.ToQueryString()}";
+        return $"{loginUrl}{queryBuilder.ToQueryString()}";
     }
 
     private void AppendStateCookie(AuthenticationProperties properties)
