@@ -19,6 +19,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 [Route("/[area]/Api/")]
 [ApiController]
 [AllowAnonymous]
+[NonController]
 public class BankIdApiController : Controller
 {
     private readonly IBankIdFlowService _bankIdFlowService;

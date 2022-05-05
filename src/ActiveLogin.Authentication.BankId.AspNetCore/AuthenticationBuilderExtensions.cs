@@ -1,6 +1,18 @@
 using System.Reflection;
+
 using ActiveLogin.Authentication.BankId.AspNetCore;
+using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
+using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
+using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
+using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.Core.EndUserContext;
+using ActiveLogin.Authentication.BankId.Core.StateHandling;
+using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -31,11 +43,47 @@ public static class AuthenticationBuilderExtensions
 
         var bankIdBuilder = new BankIdAuthBuilder(services, authenticationBuilder);
 
-        bankIdBuilder.AddDefaultServices();
+        AddBankIdAuthAspNetServices(bankIdBuilder.Services);
+        AddBankIdAuthDefaultServices(bankIdBuilder);
 
         bankId(bankIdBuilder);
 
         return authenticationBuilder;
+    }
+
+    private static void AddBankIdAuthAspNetServices(IServiceCollection services)
+    {
+        services.AddControllersWithViews()
+                .ConfigureApplicationPartManager(apm =>
+                {
+                    apm.FeatureProviders.Add(new BankIdControllerFeatureProvider());
+                    apm.FeatureProviders.Add(new BankIdApiControllerFeatureProvider());
+                });
+        services.AddHttpContextAccessor();
+
+        services.AddLocalization(options =>
+        {
+            options.ResourcesPath = BankIdDefaults.ResourcesPath;
+        });
+    }
+
+    private static void AddBankIdAuthDefaultServices(IBankIdAuthBuilder builder)
+    {
+        var services = builder.Services;
+
+        services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
+        services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
+        services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
+        services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+
+        services.TryAddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
+
+        services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
+
+        services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
+        services.TryAddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+
+        builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
     }
 
     private static (string name, string version) GetActiveLoginInfo()

@@ -1,50 +1,10 @@
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
-using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
-using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
-using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
-using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
-using ActiveLogin.Authentication.BankId.Core.EndUserContext;
-using ActiveLogin.Authentication.BankId.Core.StateHandling;
-using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
-using ActiveLogin.Authentication.BankId.Core.UserMessage;
-
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class IBankIdAuthBuilderExtensions
 {
-    internal static IBankIdAuthBuilder AddDefaultServices(this IBankIdAuthBuilder builder)
-    {
-        var services = builder.Services;
-
-        services.AddControllersWithViews();
-        services.AddHttpContextAccessor();
-
-        services.AddLocalization(options =>
-        {
-            options.ResourcesPath = BankIdDefaults.ResourcesPath;
-        });
-
-        services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
-        services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-        services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
-        services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
-
-        services.TryAddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
-
-        services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
-
-        services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
-        services.TryAddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
-
-        builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
-
-        return builder;
-    }
-
     /// <summary>
     /// Add a custom claims transformer.
     /// </summary>

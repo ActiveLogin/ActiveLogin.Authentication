@@ -17,6 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthenticatio
 [Area(BankIdConstants.AreaName)]
 [Route("/[area]/[action]")]
 [AllowAnonymous]
+[NonController]
 public class BankIdController : Controller
 {
     private const string UnsupportedBrowserErrorMessageLocalizationKey = "UnsupportedBrowser_ErrorMessage";

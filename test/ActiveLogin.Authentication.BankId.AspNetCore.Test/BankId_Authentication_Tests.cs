@@ -48,6 +48,48 @@ public class BankId_Authentication_Tests
     }
 
     [Fact]
+    public async Task BankIdController_Returns_404_If_BankId_Is_Not_Registered()
+    {
+        // Arrange
+        var webHostBuilder = new WebHostBuilder()
+            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
+            .Configure(app => DefaultAppConfiguration(x => Task.CompletedTask))
+            .ConfigureServices(services =>
+            {
+                services.AddAuthentication();
+                services.AddMvc();
+            });
+        using var client = new TestServer(webHostBuilder).CreateClient();
+
+        // Act
+        var transaction = await client.GetAsync("/BankIdAuthentication/Login");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, transaction.StatusCode);
+    }
+
+    [Fact]
+    public async Task BankIdApiController_Returns_404_If_BankId_Is_Not_Registered()
+    {
+        // Arrange
+        var webHostBuilder = new WebHostBuilder()
+            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
+            .Configure(app => DefaultAppConfiguration(x => Task.CompletedTask))
+            .ConfigureServices(services =>
+            {
+                services.AddAuthentication();
+                services.AddMvc();
+            });
+        using var client = new TestServer(webHostBuilder).CreateClient();
+
+        // Act
+        var transaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", null);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, transaction.StatusCode);
+    }
+
+    [Fact]
     public async Task Challenge_Redirects_To_BankIdAuthentication_Login()
     {
         // Arrange
