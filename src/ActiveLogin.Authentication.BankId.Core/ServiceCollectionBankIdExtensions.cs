@@ -7,6 +7,7 @@ using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.Persistence;
 using ActiveLogin.Authentication.BankId.Core.Qr;
+using ActiveLogin.Authentication.BankId.Core.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
@@ -63,12 +64,11 @@ public static class ServiceCollectionBankIdExtensions
         services.TryAddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
         services.TryAddTransient<IBankIdFlowService, BankIdFlowService>();
 
+        services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
         services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
-
+        services.TryAddTransient<IBankIdInvalidStateHandler, BankIdInvalidStateHandlerNoop>();
         services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
         services.TryAddTransient<IBankIdSupportedDeviceDetectorByUserAgent, BankIdSupportedDeviceDetectorByUserAgent>();
-
-        services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
         builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
 
