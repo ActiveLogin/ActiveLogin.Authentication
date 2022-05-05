@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore;
+namespace ActiveLogin.Authentication.BankId.Core;
 
 public interface IBankIdBuilder
 {
-    AuthenticationBuilder AuthenticationBuilder { get; }
+    IServiceCollection Services { get; }
 
     /// <summary>
     /// Configure the <see cref="HttpClient"/> used for making calls to the BankID API.

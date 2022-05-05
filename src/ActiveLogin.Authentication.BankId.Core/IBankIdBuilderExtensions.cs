@@ -1,57 +1,31 @@
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
-using ActiveLogin.Authentication.BankId.AspNetCore;
-using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
-using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
-using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
-using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
-using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Cryptography;
-using ActiveLogin.Authentication.BankId.Core.EndUserContext;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
+using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Persistence;
 using ActiveLogin.Authentication.BankId.Core.Qr;
-using ActiveLogin.Authentication.BankId.Core.StateHandling;
-using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserData;
-using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class BankIdBuilderExtensions
+public static class IBankIdBuilderExtensions
 {
     internal static IBankIdBuilder AddDefaultServices(this IBankIdBuilder builder)
     {
-        var services = builder.AuthenticationBuilder.Services;
-
-        services.AddControllersWithViews();
-        services.AddHttpContextAccessor();
-
-        services.AddLocalization(options =>
-        {
-            options.ResourcesPath = BankIdDefaults.ResourcesPath;
-        });
+        var services = builder.Services;
 
         services.TryAddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
         services.TryAddTransient<IBankIdFlowService, BankIdFlowService>();
 
-        services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
-        services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-        services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
-        services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
-
-        services.TryAddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
-
         services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
-        services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
-
-        services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
 
         services.TryAddTransient<IBankIdQrCodeContentGenerator, BankIdQrCodeContentGenerator>();
         services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
@@ -59,9 +33,6 @@ public static class BankIdBuilderExtensions
         services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
 
         builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
-        builder.UseEndUserIpResolver<BankIdRemoteIpAddressEndUserIpResolver>();
-
-        builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
 
         builder.AddEventListener<BankIdLoggerEventListener>();
         builder.AddEventListener<BankIdResultStoreEventListener>();
@@ -134,19 +105,6 @@ public static class BankIdBuilderExtensions
     }
 
     /// <summary>
-    /// Set the class that will be used to resolve end user ip.
-    /// </summary>
-    /// <typeparam name="TEndUserIpResolverImplementation"></typeparam>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseEndUserIpResolver<TEndUserIpResolverImplementation>(this IBankIdBuilder builder) where TEndUserIpResolverImplementation : class, IBankIdEndUserIpResolver
-    {
-        builder.AuthenticationBuilder.Services.AddTransient<IBankIdEndUserIpResolver, TEndUserIpResolverImplementation>();
-
-        return builder;
-    }
-
-    /// <summary>
     /// Set what user data to supply to the auth request.
     /// </summary>
     /// <param name="builder"></param>
@@ -154,7 +112,7 @@ public static class BankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, BankIdAuthUserData authUserData)
     {
-        builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
+        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
 
         return builder;
     }
@@ -182,7 +140,7 @@ public static class BankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder AddEventListener<TBankIdEventListenerImplementation>(this IBankIdBuilder builder) where TBankIdEventListenerImplementation : class, IBankIdEventListener
     {
-        builder.AuthenticationBuilder.Services.AddTransient<IBankIdEventListener, TBankIdEventListenerImplementation>();
+        builder.Services.AddTransient<IBankIdEventListener, TBankIdEventListenerImplementation>();
 
         return builder;
     }
@@ -207,7 +165,7 @@ public static class BankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
     {
-        builder.AuthenticationBuilder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
+        builder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
 
         return builder;
     }
@@ -220,21 +178,95 @@ public static class BankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
     {
-        builder.AuthenticationBuilder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
+        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
+
+        return builder;
+    }
+
+    internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl, string environment)
+    {
+        SetActiveLoginContext(builder.Services, environment, BankIdUrls.BankIdApiVersion);
+
+        builder.ConfigureHttpClient(httpClient =>
+        {
+            httpClient.BaseAddress = apiBaseUrl;
+        });
+
+        builder.Services.TryAddTransient<IBankIdLauncher, BankIdLauncher>();
+
+        if (builder is BankIdBuilder bankIdBuilder)
+        {
+            bankIdBuilder.EnableHttpBankIdApiClient();
+        }
 
         return builder;
     }
 
     /// <summary>
-    /// Add a custom claims transformer.
+    /// Use the BankID test environment (https://appapi2.test.bankid.com/rp/vX/)
     /// </summary>
-    /// <typeparam name="TBankIdClaimsTransformerImplementation"></typeparam>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IBankIdBuilder AddClaimsTransformer<TBankIdClaimsTransformerImplementation>(this IBankIdBuilder builder) where TBankIdClaimsTransformerImplementation : class, IBankIdClaimsTransformer
+    public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder)
     {
-        builder.AuthenticationBuilder.Services.AddTransient<IBankIdClaimsTransformer, TBankIdClaimsTransformerImplementation>();
+        return builder.UseEnvironment(BankIdUrls.TestApiBaseUrl, BankIdEnvironments.Test);
+    }
+
+    /// <summary>
+    /// Use the BankID production environment (https://appapi2.bankid.com/rp/vX/)
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder)
+    {
+        return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl, BankIdEnvironments.Production);
+    }
+
+    /// <summary>
+    /// Use simulated (in memory) environment. To be used for automated testing.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder)
+        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient());
+
+    /// <summary>
+    /// Use simulated (in memory) environment. To be used for automated testing.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="givenName">Fake given name</param>
+    /// <param name="surname">Fake surname</param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname)
+        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname));
+
+    /// <summary>
+    /// Use simulated (in memory) environment. To be used for automated testing.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="givenName">Fake given name</param>
+    /// <param name="surname">Fake surname</param>
+    /// <param name="personalIdentityNumber">Fake personal identity number</param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname, string personalIdentityNumber)
+        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
+
+    private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
+    {
+        SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedApiClient.Version);
+
+        builder.Services.AddSingleton(bankIdDevelopmentApiClient);
+        builder.Services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();
 
         return builder;
+    }
+
+    private static void SetActiveLoginContext(IServiceCollection services, string environment, string apiVersion)
+    {
+        services.Configure<BankIdActiveLoginContext>(context =>
+        {
+            context.BankIdApiEnvironment = environment;
+            context.BankIdApiVersion = apiVersion;
+        });
     }
 }

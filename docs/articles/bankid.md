@@ -892,19 +892,10 @@ services.RemoveAll(typeof(IBankIdResultStore));
 
 In some scenarios, like running behind a proxy, you might want to resolve the end user IP yourself and override the default implementaion.
 
-Either register a class implementing `IEndUserIpResolver`:
+Either register a class implementing `IBankIdEndUserIpResolver`:
 
 ```csharp
-builder.UseEndUserIpResolver<EndUserIpResolver>();
-```
-
-Or use the shorthand version:
-
-```csharp
-builder.UseEndUserIpResolver(httpContext =>
-{
-    return httpContext.Connection.RemoteIpAddress.ToString();
-});
+services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
 ### Resolve user data on Auth request

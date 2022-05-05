@@ -1,20 +1,16 @@
 using System.Net.Http.Headers;
 using System.Reflection;
-using ActiveLogin.Authentication.BankId.AspNetCore;
-using ActiveLogin.Authentication.BankId.Core;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
+using ActiveLogin.Authentication.BankId.Core;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class BankIdExtensions
+public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Add BankID authentication provider from Active Login.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="services"></param>
     /// <param name="bankId">BankID configuration.</param>
     /// <example>
     /// <code>
@@ -30,25 +26,23 @@ public static class BankIdExtensions
     /// </code>
     /// </example>
     /// <returns></returns>
-    public static AuthenticationBuilder AddBankId(this AuthenticationBuilder builder, Action<IBankIdBuilder> bankId)
+    public static IServiceCollection AddBankId(this IServiceCollection services, Action<IBankIdBuilder> bankId)
     {
         var (activeLoginName, activeLoginVersion) = GetActiveLoginInfo();
-        builder.Services.Configure<BankIdActiveLoginContext>(context =>
+        services.Configure<BankIdActiveLoginContext>(context =>
         {
             context.ActiveLoginProductName = activeLoginName;
             context.ActiveLoginProductVersion = activeLoginVersion;
         });
 
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<BankIdOptions>, BankIdPostConfigureOptions>());
-
-        var bankIdBuilder = new BankIdBuilder(builder);
+        var bankIdBuilder = new BankIdBuilder(services);
 
         bankIdBuilder.AddDefaultServices();
         bankIdBuilder.UseUserAgent(GetActiveLoginUserAgent(activeLoginName, activeLoginVersion));
 
         bankId(bankIdBuilder);
 
-        return builder;
+        return services;
     }
 
     private static ProductInfoHeaderValue GetActiveLoginUserAgent(string name, string version)
@@ -59,7 +53,7 @@ public static class BankIdExtensions
     private static (string name, string version) GetActiveLoginInfo()
     {
         var productName = BankIdConstants.ProductName;
-        var productAssembly = typeof(BankIdExtensions).Assembly;
+        var productAssembly = typeof(ServiceCollectionExtensions).Assembly;
         var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
         var productVersion = assemblyFileVersion?.Version ?? "Unknown";
 

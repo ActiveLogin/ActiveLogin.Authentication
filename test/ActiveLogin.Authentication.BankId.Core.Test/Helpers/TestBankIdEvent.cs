@@ -1,6 +1,6 @@
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+namespace ActiveLogin.Authentication.BankId.Core.Test.Helpers;
 
 public class TestBankIdEvent : BankIdEvent
 {

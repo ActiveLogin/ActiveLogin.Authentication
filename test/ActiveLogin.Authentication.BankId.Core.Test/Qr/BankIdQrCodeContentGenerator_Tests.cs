@@ -2,7 +2,7 @@ using ActiveLogin.Authentication.BankId.Core.Qr;
 
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Qr;
+namespace ActiveLogin.Authentication.BankId.Core.Test.Qr;
 
 public class BankIdQrCodeContentGenerator_Tests
 {

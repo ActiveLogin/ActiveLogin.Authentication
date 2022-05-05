@@ -7,7 +7,6 @@ public class BankIdEventTrigger : IBankIdEventTrigger
     private readonly List<IBankIdEventListener> _listeners;
     private readonly BankIdActiveLoginContext _bankIdActiveLoginContext;
     
-
     public BankIdEventTrigger(IEnumerable<IBankIdEventListener> listeners, IOptions<BankIdActiveLoginContext> bankIdActiveLoginContext)
     {
         _listeners = listeners.ToList();

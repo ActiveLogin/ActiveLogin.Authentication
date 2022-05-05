@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using ActiveLogin.Authentication.BankId.Api;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,12 +19,12 @@ public class BankIdBuilderAzureExtension
                 .Build();
 
             var collection = new ServiceCollection();
-            _ = new AuthenticationBuilder(collection)
-                .AddBankId(builder =>
-                {
-                    builder.UseTestEnvironment()
-                        .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
-                });
+
+            collection.AddBankId(bankId =>
+            {
+                bankId.UseTestEnvironment()
+                      .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+            });
 
             return collection.BuildServiceProvider();
         }
@@ -56,12 +55,12 @@ public class BankIdBuilderAzureExtension
             var exception = Assert.Throws<ArgumentException>(() =>
             {
                 var collection = new ServiceCollection();
-                _ = new AuthenticationBuilder(collection)
-                    .AddBankId(builder =>
-                    {
-                        builder.UseTestEnvironment()
-                            .UseClientCertificateFromAzureKeyVault(new ClientCertificateFromAzureKeyVaultOptions());
-                    });
+
+                collection.AddBankId(bankId =>
+                {
+                    bankId.UseTestEnvironment()
+                        .UseClientCertificateFromAzureKeyVault(new ClientCertificateFromAzureKeyVaultOptions());
+                });
             });
 
             Assert.Contains("AzureKeyVaultSecretName", exception.Message);

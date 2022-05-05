@@ -1,20 +1,21 @@
 using System.Security.Authentication;
+
 using ActiveLogin.Authentication.BankId.Api;
-using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore;
+namespace ActiveLogin.Authentication.BankId.Core;
 
 internal class BankIdBuilder : IBankIdBuilder
 {
-    public AuthenticationBuilder AuthenticationBuilder { get; }
+    public IServiceCollection Services { get; }
 
     private readonly List<Action<HttpClient>> _httpClientConfigurators = new();
     private readonly List<Action<SocketsHttpHandler>> _httpClientHandlerConfigurators = new();
 
-    public BankIdBuilder(AuthenticationBuilder authenticationBuilder)
+    public BankIdBuilder(IServiceCollection services)
     {
-        AuthenticationBuilder = authenticationBuilder;
+        Services = services;
 
         ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
         ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
@@ -32,7 +33,7 @@ internal class BankIdBuilder : IBankIdBuilder
 
     public void EnableHttpBankIdApiClient()
     {
-        AuthenticationBuilder.Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
+        Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
             {
                 _httpClientConfigurators.ForEach(configurator => configurator(httpClient));
             })

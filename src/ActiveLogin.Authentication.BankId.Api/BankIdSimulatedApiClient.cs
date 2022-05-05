@@ -7,6 +7,8 @@ namespace ActiveLogin.Authentication.BankId.Api;
 /// </summary>
 public class BankIdSimulatedApiClient : IBankIdApiClient
 {
+    public const string Version = "1.0";
+
     private const string DefaultGivenName = "GivenName";
     private const string DefaultSurname = "Surname";
     private const string DefaultPersonalIdentityNumber = "199908072391";

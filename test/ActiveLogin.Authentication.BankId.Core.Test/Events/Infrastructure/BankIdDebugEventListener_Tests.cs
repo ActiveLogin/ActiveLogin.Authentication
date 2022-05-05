@@ -1,13 +1,15 @@
 using System.Threading.Tasks;
 
-using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
+using ActiveLogin.Authentication.BankId.Core.Test.Helpers;
 
 using Microsoft.Extensions.Logging;
+
 using Moq;
+
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Events.Infrastructure;
+namespace ActiveLogin.Authentication.BankId.Core.Test.Events.Infrastructure;
 
 public class BankIdDebugEventListener_Tests
 {
