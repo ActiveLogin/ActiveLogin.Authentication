@@ -3,9 +3,9 @@ using System.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Cryptography;
+namespace ActiveLogin.Authentication.BankId.Core.Cryptography;
 
-internal class X509CertificateChainValidator
+public class X509CertificateChainValidator
 {
     private readonly X509Certificate2 _certificateAuthority;
 

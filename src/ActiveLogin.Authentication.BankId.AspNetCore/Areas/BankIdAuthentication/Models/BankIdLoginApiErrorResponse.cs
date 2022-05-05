@@ -1,12 +1,11 @@
-﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
-{
-    public class BankIdLoginApiErrorResponse
-    {
-        internal BankIdLoginApiErrorResponse(string errorMessage)
-        {
-            ErrorMessage = errorMessage;
-        }
+﻿namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 
-        public string ErrorMessage { get; }
+public class BankIdLoginApiErrorResponse
+{
+    internal BankIdLoginApiErrorResponse(string errorMessage)
+    {
+        ErrorMessage = errorMessage;
     }
+
+    public string ErrorMessage { get; }
 }

@@ -1,14 +1,12 @@
+namespace ActiveLogin.Authentication.BankId.Api.Models;
 
-namespace ActiveLogin.Authentication.BankId.Api.Models
+/// <summary>
+/// Cancel response result.
+/// </summary>
+public class CancelResponse
 {
-    /// <summary>
-    /// Cancel response result.
-    /// </summary>
-    public class CancelResponse
+    public CancelResponse()
     {
-        public CancelResponse()
-        {
 
-        }
     }
 }

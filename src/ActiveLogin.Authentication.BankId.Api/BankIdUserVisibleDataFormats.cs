@@ -1,7 +1,6 @@
-namespace ActiveLogin.Authentication.BankId.Api
+namespace ActiveLogin.Authentication.BankId.Api;
+
+public class BankIdUserVisibleDataFormats
 {
-    public class BankIdUserVisibleDataFormats
-    {
-        public const string SimpleMarkdownV1 = "simpleMarkdownV1";
-    }
+    public const string SimpleMarkdownV1 = "simpleMarkdownV1";
 }

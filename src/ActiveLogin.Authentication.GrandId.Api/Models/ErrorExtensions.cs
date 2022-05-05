@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace ActiveLogin.Authentication.GrandId.Api.Models
+namespace ActiveLogin.Authentication.GrandId.Api.Models;
+
+internal static class ErrorExtensions
 {
-    internal static class ErrorExtensions
+    public static ErrorCode GetErrorCode(this Error error)
     {
-        public static ErrorCode GetErrorCode(this Error error)
-        {
-            return Enum.TryParse<ErrorCode>(error.Code, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
-        }
+        return Enum.TryParse<ErrorCode>(error.Code, true, out var errorCode) ? errorCode : ErrorCode.Unknown;
     }
 }

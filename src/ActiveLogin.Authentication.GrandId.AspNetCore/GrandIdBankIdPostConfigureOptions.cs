@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace ActiveLogin.Authentication.GrandId.AspNetCore;
+
+public class GrandIdBankIdPostConfigureOptions : GrandIdPostConfigureOptions<GrandIdBankIdOptions, GrandIdBankIdHandler>
 {
-    public class GrandIdBankIdPostConfigureOptions : GrandIdPostConfigureOptions<GrandIdBankIdOptions, GrandIdBankIdHandler>
+    public GrandIdBankIdPostConfigureOptions(IDataProtectionProvider dataProtection)
+        : base(dataProtection)
     {
-        public GrandIdBankIdPostConfigureOptions(IDataProtectionProvider dataProtection)
-            : base(dataProtection)
-        {
-        }
     }
 }
