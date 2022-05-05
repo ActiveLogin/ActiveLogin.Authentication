@@ -4,6 +4,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Serialization;
 
 internal static class SystemTextJsonSerializer
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public static ValueTask<T?> DeserializeAsync<T>(Stream json)
     {
         return JsonSerializer.DeserializeAsync<T>(json);
@@ -15,8 +20,7 @@ internal static class SystemTextJsonSerializer
         {
             return string.Empty;
         }
-
-        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        return JsonSerializer.Serialize(value, value.GetType(), options);
+        
+        return JsonSerializer.Serialize(value, value.GetType(), JsonSerializerOptions);
     }
 }

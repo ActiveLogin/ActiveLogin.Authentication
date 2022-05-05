@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
-public class BankIdPostConfigureOptions : IPostConfigureOptions<BankIdOptions>
+internal class BankIdPostConfigureOptions : IPostConfigureOptions<BankIdOptions>
 {
     private readonly IDataProtectionProvider _dp;
 

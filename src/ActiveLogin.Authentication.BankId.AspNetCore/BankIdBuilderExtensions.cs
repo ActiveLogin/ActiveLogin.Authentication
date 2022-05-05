@@ -9,7 +9,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
-using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Cryptography;
 using ActiveLogin.Authentication.BankId.Core.EndUserContext;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
@@ -227,7 +226,7 @@ public static class BankIdBuilderExtensions
     }
 
     /// <summary>
-    /// Add a custom claims transaformer.
+    /// Add a custom claims transformer.
     /// </summary>
     /// <typeparam name="TBankIdClaimsTransformerImplementation"></typeparam>
     /// <param name="builder"></param>
