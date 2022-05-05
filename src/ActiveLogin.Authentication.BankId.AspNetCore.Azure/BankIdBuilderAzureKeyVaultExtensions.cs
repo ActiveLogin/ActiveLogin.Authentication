@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class BankIdBuilderAzureExtensions
+public static class BankIdBuilderAzureKeyVaultExtensions
 {
     /// <summary>
     /// Use client certificate for authenticating against the BankID API from Azure Key Vault.

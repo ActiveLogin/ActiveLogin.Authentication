@@ -20,7 +20,7 @@ using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class AuthenticationBuilderExtensions
+public static class AuthenticationBuilderBankIdExtensions
 {
     /// <summary>
     /// Add BankID authentication provider from Active Login.
@@ -89,7 +89,7 @@ public static class AuthenticationBuilderExtensions
     private static (string name, string version) GetActiveLoginInfo()
     {
         var productName = BankIdConstants.ProductName;
-        var productAssembly = typeof(ServiceCollectionExtensions).Assembly;
+        var productAssembly = typeof(ServiceCollectionBankIdExtensions).Assembly;
         var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
         var productVersion = assemblyFileVersion?.Version ?? "Unknown";
 
