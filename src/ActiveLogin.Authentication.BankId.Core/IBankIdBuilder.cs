@@ -19,7 +19,4 @@ public interface IBankIdBuilder
     /// </summary>
     /// <param name="configureHttpClientHandler"></param>
     void ConfigureHttpClientHandler(Action<SocketsHttpHandler> configureHttpClientHandler);
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    void AfterConfiguration();
 }

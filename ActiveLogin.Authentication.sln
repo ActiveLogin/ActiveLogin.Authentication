@@ -104,6 +104,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.Core.Test", "test\ActiveLogin.Authentication.BankId.Core.Test\ActiveLogin.Authentication.BankId.Core.Test.csproj", "{D3673E53-A774-46F0-9E44-97DF8F52D6D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console.FlowSample", "samples\Console.FlowSample\Console.FlowSample.csproj", "{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +192,10 @@ Global
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -220,6 +226,7 @@ Global
 		{A66B2FFF-0CB6-4F48-83DA-6C1F7DC98EBF} = {4764448D-A014-403F-A956-3F4CFFA00AF2}
 		{61360399-F211-4B18-88EE-2A6F4D2C1FE6} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}
