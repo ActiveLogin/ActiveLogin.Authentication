@@ -1,4 +1,3 @@
-using System;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;

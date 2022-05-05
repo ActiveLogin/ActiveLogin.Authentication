@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 using ActiveLogin.Authentication.BankId.Core.StateHandling;
 
 using Microsoft.AspNetCore.Http;

@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 using ActiveLogin.Authentication.BankId.Core.Models;
 
 using Microsoft.AspNetCore.Authentication;

@@ -1,4 +1,3 @@
-using System;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
 using Microsoft.Extensions.Configuration;

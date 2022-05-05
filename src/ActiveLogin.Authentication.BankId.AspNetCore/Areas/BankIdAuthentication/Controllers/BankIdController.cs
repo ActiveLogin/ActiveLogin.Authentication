@@ -1,6 +1,5 @@
-using System;
 using System.Text.Json;
-using System.Threading.Tasks;
+
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;

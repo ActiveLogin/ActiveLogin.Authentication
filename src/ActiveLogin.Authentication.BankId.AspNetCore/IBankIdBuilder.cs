@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http;
 using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore;

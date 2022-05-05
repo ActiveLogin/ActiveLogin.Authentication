@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 using ActiveLogin.Authentication.BankId.Api.Models;
 
 using Microsoft.Extensions.Logging;

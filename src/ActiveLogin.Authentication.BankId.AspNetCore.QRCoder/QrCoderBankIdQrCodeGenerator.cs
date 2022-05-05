@@ -1,5 +1,3 @@
-using System;
-
 using ActiveLogin.Authentication.BankId.Core.Qr;
 
 using QRCoder;

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;

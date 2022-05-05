@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using ActiveLogin.Authentication.BankId.Core.Persistence;
 
 namespace ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;

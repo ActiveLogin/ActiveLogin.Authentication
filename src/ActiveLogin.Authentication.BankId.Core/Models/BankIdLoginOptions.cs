@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace ActiveLogin.Authentication.BankId.Core.Models;
 
 public class BankIdLoginOptions

@@ -1,4 +1,3 @@
-using System;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;

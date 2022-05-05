@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 
 /// <summary>

@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Authentication;

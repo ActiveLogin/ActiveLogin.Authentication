@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models;

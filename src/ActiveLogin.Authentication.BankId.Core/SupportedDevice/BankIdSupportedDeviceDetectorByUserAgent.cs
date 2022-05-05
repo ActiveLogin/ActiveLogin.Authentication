@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 namespace ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
 public static class BankIdSupportedDeviceDetectorByUserAgent

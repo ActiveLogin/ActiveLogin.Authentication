@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Security.Authentication;
 using ActiveLogin.Authentication.BankId.Api;
 using Microsoft.AspNetCore.Authentication;

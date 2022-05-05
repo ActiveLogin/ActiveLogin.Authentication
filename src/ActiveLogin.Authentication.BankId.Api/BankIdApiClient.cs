@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using ActiveLogin.Authentication.BankId.Api.Models;
+﻿using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api;
 

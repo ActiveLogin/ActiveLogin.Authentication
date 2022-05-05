@@ -1,6 +1,4 @@
-using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ActiveLogin.Authentication.BankId.Api.Serialization;
 

@@ -1,4 +1,3 @@
-using System;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 
 namespace Microsoft.Extensions.DependencyInjection;

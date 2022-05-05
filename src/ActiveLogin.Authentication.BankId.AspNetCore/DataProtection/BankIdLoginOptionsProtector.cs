@@ -1,5 +1,3 @@
-using System;
-
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 using ActiveLogin.Authentication.BankId.Core.Models;
 

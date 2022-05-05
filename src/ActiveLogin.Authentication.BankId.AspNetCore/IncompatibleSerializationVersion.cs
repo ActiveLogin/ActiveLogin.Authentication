@@ -1,5 +1,3 @@
-using System;
-
 namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
 public class IncompatibleSerializationVersion : Exception

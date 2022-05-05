@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 

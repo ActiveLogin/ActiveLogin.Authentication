@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;

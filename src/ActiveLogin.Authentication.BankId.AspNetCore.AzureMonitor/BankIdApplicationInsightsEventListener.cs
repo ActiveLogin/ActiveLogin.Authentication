@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;

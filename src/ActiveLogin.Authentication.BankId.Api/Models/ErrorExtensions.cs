@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ActiveLogin.Authentication.BankId.Api.Models;
+﻿namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 internal static class ErrorExtensions
 {

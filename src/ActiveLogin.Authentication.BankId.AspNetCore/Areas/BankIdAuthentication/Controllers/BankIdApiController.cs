@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
@@ -11,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Collections.Generic;
 
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
