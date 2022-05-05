@@ -10,6 +10,7 @@ internal static class BankIdConstants
     public static readonly TimeSpan QrCodeRefreshInterval = TimeSpan.FromSeconds(1);
 
     public const string DefaultCancelUrl = "/";
+    public const string DefaultStateCookieName = "__ActiveLogin.BankIdState";
 
     public const string LocalizationResourcesPath = "Resources";
 

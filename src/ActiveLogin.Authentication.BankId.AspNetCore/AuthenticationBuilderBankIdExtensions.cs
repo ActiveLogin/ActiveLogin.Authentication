@@ -71,17 +71,17 @@ public static class AuthenticationBuilderBankIdExtensions
     {
         var services = builder.Services;
 
-        services.TryAddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
-        services.TryAddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-        services.TryAddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
-        services.TryAddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+        services.AddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
+        services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
+        services.AddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
+        services.AddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
 
-        services.TryAddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
+        services.AddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
 
-        services.TryAddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
+        services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
-        services.TryAddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
-        services.TryAddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+        services.AddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
+        services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
     }

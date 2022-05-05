@@ -159,10 +159,13 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     {
         var pathBase = Context.Request.PathBase;
         var loginUrl = pathBase.Add(Options.LoginPath);
+        var returnUrl = pathBase.Add(Options.CallbackPath);
+        var protectedLoginOptions = _loginOptionsProtector.Protect(loginOptions);
+
         var queryBuilder = new QueryBuilder(new Dictionary<string, string>
         {
-            { BankIdConstants.QueryStringParameters.ReturnUrl, pathBase.Add(Options.CallbackPath)},
-            { BankIdConstants.QueryStringParameters.LoginOptions, _loginOptionsProtector.Protect(loginOptions)}
+            { BankIdConstants.QueryStringParameters.ReturnUrl, returnUrl },
+            { BankIdConstants.QueryStringParameters.LoginOptions, protectedLoginOptions }
         });
 
         return $"{loginUrl}{queryBuilder.ToQueryString()}";

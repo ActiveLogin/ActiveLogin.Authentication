@@ -425,7 +425,7 @@ public class BankId_Authentication_Tests
             },
             o =>
             {
-                o.AddOtherDevice();
+                o.AddSameDevice();
             },
             DefaultAppConfiguration(async context =>
             {

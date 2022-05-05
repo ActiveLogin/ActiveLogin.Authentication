@@ -61,14 +61,14 @@ public static class ServiceCollectionBankIdExtensions
     {
         var services = builder.Services;
 
-        services.TryAddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
-        services.TryAddTransient<IBankIdFlowService, BankIdFlowService>();
+        services.AddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
+        services.AddTransient<IBankIdFlowService, BankIdFlowService>();
 
-        services.TryAddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
-        services.TryAddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
-        services.TryAddTransient<IBankIdInvalidStateHandler, BankIdInvalidStateHandlerNoop>();
-        services.TryAddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
-        services.TryAddTransient<IBankIdSupportedDeviceDetectorByUserAgent, BankIdSupportedDeviceDetectorByUserAgent>();
+        services.AddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
+        services.AddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
+        services.AddTransient<IBankIdInvalidStateHandler, BankIdInvalidStateHandlerNoop>();
+        services.AddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
+        services.AddTransient<IBankIdSupportedDeviceDetectorByUserAgent, BankIdSupportedDeviceDetectorByUserAgent>();
 
         builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
 

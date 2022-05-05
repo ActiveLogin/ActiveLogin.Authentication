@@ -6,11 +6,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
 public class BankIdOptions : RemoteAuthenticationOptions
 {
-    private const string DefaultStateCookieName = "__ActiveLogin.BankIdState";
-
     private CookieBuilder _stateCookieBuilder = new()
     {
-        Name = DefaultStateCookieName,
+        Name = BankIdConstants.DefaultStateCookieName,
         SecurePolicy = CookieSecurePolicy.SameAsRequest,
         HttpOnly = true,
         SameSite = SameSiteMode.Lax,
@@ -33,7 +31,7 @@ public class BankIdOptions : RemoteAuthenticationOptions
     public bool BankIdAllowBiometric { get; set; } = true;
 
 
-    public PathString LoginPath { get; set; } = new($"/{BankIdConstants.AreaName}/Login");
+    public PathString LoginPath { get; set; } = new($"/{BankIdConstants.Routes.BankIdAreaName}/{BankIdConstants.Routes.BankIdLoginActionName}");
     public TimeSpan? TokenExpiresIn { get; set; } = BankIdDefaults.MaximumSessionLifespan;
 
     public bool IssueAuthenticationMethodClaim { get; set; } = true;

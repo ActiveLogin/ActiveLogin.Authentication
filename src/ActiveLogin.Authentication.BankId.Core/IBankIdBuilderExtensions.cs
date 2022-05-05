@@ -153,7 +153,7 @@ public static class IBankIdBuilderExtensions
             httpClient.BaseAddress = apiBaseUrl;
         });
 
-        builder.Services.TryAddTransient<IBankIdLauncher, BankIdLauncher>();
+        builder.Services.AddTransient<IBankIdLauncher, BankIdLauncher>();
 
         return builder;
     }

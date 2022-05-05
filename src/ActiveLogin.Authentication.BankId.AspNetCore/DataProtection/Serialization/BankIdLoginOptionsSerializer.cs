@@ -19,7 +19,7 @@ internal class BankIdLoginOptionsSerializer : IDataSerializer<BankIdLoginOptions
         writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies));
         writer.Write(model.SameDevice);
         writer.Write(model.AllowBiometric);
-        writer.Write(model.CancelReturnUrl ?? string.Empty);
+        writer.Write(model.CancelReturnUrl);
         writer.Write(model.StateCookieName);
 
         writer.Flush();
