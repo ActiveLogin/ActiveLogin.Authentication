@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
@@ -19,8 +20,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
 public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 {
-    private const string DefaultCancelUrl = "/";
-
     private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
     private readonly IBankIdLoginResultProtector _loginResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
@@ -53,21 +52,21 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         var state = GetStateFromCookie();
         if (state == null)
         {
-            return await HandleRemoteAuthenticateFail("Invalid state cookie", detectedDevice);
+            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice);
         }
 
         DeleteStateCookie();
 
-        var loginResultProtected = Request.Query["loginResult"];
-        if (string.IsNullOrEmpty(loginResultProtected))
+        var protectedLoginResult = Request.Query[BankIdConstants.QueryStringParameters.LoginResult];
+        if (string.IsNullOrEmpty(protectedLoginResult))
         {
-            return await HandleRemoteAuthenticateFail("Missing login result", detectedDevice);
+            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidLoginResult, detectedDevice);
         }
 
-        var loginResult = _loginResultProtector.Unprotect(loginResultProtected);
+        var loginResult = _loginResultProtector.Unprotect(protectedLoginResult);
         if (!loginResult.IsSuccessful)
         {
-            return await HandleRemoteAuthenticateFail("Invalid login result", detectedDevice);
+            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidLoginResult, detectedDevice);
         }
 
         var properties = state.AuthenticationProperties;
@@ -143,15 +142,17 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     private string GetCancelReturnUrl(AuthenticationProperties properties)
     {
         // Default to root if no return url is set
-        var cancelReturnUrl = properties.Items.ContainsKey("returnUrl") ? properties.Items["returnUrl"] : DefaultCancelUrl;
+        var cancelReturnUrl = properties.Items.ContainsKey(BankIdConstants.QueryStringParameters.ReturnUrl)
+                                        ? properties.Items[BankIdConstants.QueryStringParameters.ReturnUrl]
+                                        : BankIdConstants.DefaultCancelUrl;
 
         // If cancel url is set, it overrides the regular return url
-        if (properties.Items.TryGetValue("cancelReturnUrl", out var cancelUrl))
+        if (properties.Items.TryGetValue(BankIdConstants.AuthenticationPropertiesKeys.CancelReturnUrl, out var cancelUrl))
         {
             cancelReturnUrl = cancelUrl;
         }
 
-        return cancelReturnUrl ?? DefaultCancelUrl;
+        return cancelReturnUrl ?? BankIdConstants.DefaultCancelUrl;
     }
 
     private string GetLoginUrl(BankIdLoginOptions loginOptions)
@@ -160,8 +161,8 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         var loginUrl = pathBase.Add(Options.LoginPath);
         var queryBuilder = new QueryBuilder(new Dictionary<string, string>
         {
-            { "returnUrl", pathBase.Add(Options.CallbackPath)},
-            { "loginOptions", _loginOptionsProtector.Protect(loginOptions)}
+            { BankIdConstants.QueryStringParameters.ReturnUrl, pathBase.Add(Options.CallbackPath)},
+            { BankIdConstants.QueryStringParameters.LoginOptions, _loginOptionsProtector.Protect(loginOptions)}
         });
 
         return $"{loginUrl}{queryBuilder.ToQueryString()}";

@@ -34,7 +34,7 @@ internal class BankIdStateSerializer : IDataSerializer<BankIdState>
 
         if(authenticationProperties == null)
         {
-            throw new Exception("Could not deserialize AuthenticationProperties");
+            throw new Exception(BankIdConstants.ErrorMessages.CouldNotDeserialize(nameof(AuthenticationProperties)));
         }
 
         return new BankIdState(authenticationProperties);

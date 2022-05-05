@@ -13,7 +13,7 @@ public class BankIdLoginScriptOptions
     }
 
     private const int MinimumStatusRefreshIntervalMs = 1000;
-    private int _statusRefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs;
+    private int _statusRefreshIntervalMs = (int)BankIdConstants.StatusRefreshInterval.TotalMilliseconds;
 
     [JsonPropertyName("statusRefreshIntervalMs")]
     public int StatusRefreshIntervalMs

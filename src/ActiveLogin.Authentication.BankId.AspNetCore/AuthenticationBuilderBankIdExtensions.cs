@@ -63,7 +63,7 @@ public static class AuthenticationBuilderBankIdExtensions
 
         services.AddLocalization(options =>
         {
-            options.ResourcesPath = BankIdDefaults.ResourcesPath;
+            options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
         });
     }
 

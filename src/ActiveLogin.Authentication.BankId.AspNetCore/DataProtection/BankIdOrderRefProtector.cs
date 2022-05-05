@@ -8,13 +8,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 
 internal class BankIdOrderRefProtector : IBankIdOrderRefProtector
 {
+    private const string ProtectorVersion = "v1";
+
     private readonly ISecureDataFormat<BankIdOrderRef> _secureDataFormat;
 
     public BankIdOrderRefProtector(IDataProtectionProvider dataProtectionProvider)
     {
         var dataProtector = dataProtectionProvider.CreateProtector(
             typeof(BankIdLoginResultProtector).FullName ?? nameof(BankIdLoginResultProtector),
-            "v1"
+            ProtectorVersion
         );
 
         _secureDataFormat = new SecureDataFormat<BankIdOrderRef>(
@@ -34,7 +36,7 @@ internal class BankIdOrderRefProtector : IBankIdOrderRefProtector
 
         if (unprotected == null)
         {
-            throw new Exception("Could not unprotect BankIdOrderRef");
+            throw new Exception(BankIdConstants.ErrorMessages.CouldNotUnprotect(nameof(BankIdOrderRef)));
         }
 
         return unprotected;

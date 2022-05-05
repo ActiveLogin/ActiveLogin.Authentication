@@ -15,8 +15,8 @@ using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers;
 
-[Area(BankIdConstants.AreaName)]
-[Route("/[area]/Api/")]
+[Area(BankIdConstants.Routes.BankIdAreaName)]
+[Route("/[area]/Api/[action]")]
 [ApiController]
 [AllowAnonymous]
 [NonController]
@@ -57,7 +57,7 @@ public class BankIdApiController : Controller
     }
 
     [ValidateAntiForgeryToken]
-    [HttpPost("Initialize")]
+    [HttpPost(BankIdConstants.Routes.BankIdApiInitializeActionName)]
     public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
     {
         ArgumentNullException.ThrowIfNull(request.ReturnUrl, nameof(request.ReturnUrl));
@@ -68,11 +68,11 @@ public class BankIdApiController : Controller
         BankIdFlowInitializeAuthResult bankIdFlowInitializeAuthResult;
         try
         {
-            var returnRedirectUrl = Url.Action("Login", "BankId", new
+            var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdLoginActionName, BankIdConstants.Routes.BankIdControllerName, new
             {
                 returnUrl = request.ReturnUrl,
                 loginOptions = request.LoginOptions
-            },  protocol: Request.Scheme) ?? throw new Exception($"Could not get URL for BankId.Login");
+            },  protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdControllerName, BankIdConstants.Routes.BankIdLoginActionName));
 
             bankIdFlowInitializeAuthResult = await _bankIdFlowService.InitializeAuth(loginOptions, returnRedirectUrl);
         }
@@ -100,13 +100,13 @@ public class BankIdApiController : Controller
             }
             default:
             {
-                throw new InvalidOperationException("Unknown launch type");
+                throw new InvalidOperationException(BankIdConstants.ErrorMessages.UnknownFlowLaunchType);
             }
         }    
     }
 
     [ValidateAntiForgeryToken]
-    [HttpPost("Status")]
+    [HttpPost(BankIdConstants.Routes.BankIdApiStatusActionName)]
     public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
     {
         ArgumentNullException.ThrowIfNull(request.OrderRef, nameof(request.OrderRef));
@@ -115,7 +115,7 @@ public class BankIdApiController : Controller
 
         if (!Url.IsLocalUrl(request.ReturnUrl))
         {
-            throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
+            throw new Exception(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
         var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
@@ -153,13 +153,13 @@ public class BankIdApiController : Controller
             }
             default:
             {
-                throw new InvalidOperationException("Unknown collect result type");
+                throw new InvalidOperationException(BankIdConstants.ErrorMessages.UnknownFlowCollectResultType);
             }
         }
     }
 
     [ValidateAntiForgeryToken]
-    [HttpPost("QrCode")]
+    [HttpPost(BankIdConstants.Routes.BankIdApiQrCodeActionName)]
     public ActionResult QrCode(BankIdLoginApiQrCodeRequest request)
     {
         ArgumentNullException.ThrowIfNull(request.QrStartState, nameof(request.QrStartState));
@@ -171,7 +171,7 @@ public class BankIdApiController : Controller
     }
 
     [ValidateAntiForgeryToken]
-    [HttpPost("Cancel")]
+    [HttpPost(BankIdConstants.Routes.BankIdApiCancelActionName)]
     public async Task<ActionResult> Cancel(BankIdLoginApiCancelRequest request)
     {
         ArgumentNullException.ThrowIfNull(request.OrderRef, nameof(request.OrderRef));
@@ -200,7 +200,7 @@ public class BankIdApiController : Controller
 
         return QueryHelpers.AddQueryString(returnUrl, new Dictionary<string, string?>
         {
-            { "loginResult", protectedLoginResult }
+            { BankIdConstants.QueryStringParameters.LoginResult, protectedLoginResult }
         });
     }
 

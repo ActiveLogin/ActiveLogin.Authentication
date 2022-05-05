@@ -14,14 +14,12 @@ using Microsoft.Extensions.Localization;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers;
 
-[Area(BankIdConstants.AreaName)]
+[Area(BankIdConstants.Routes.BankIdAreaName)]
 [Route("/[area]/[action]")]
 [AllowAnonymous]
 [NonController]
 public class BankIdController : Controller
 {
-    private const string UnsupportedBrowserErrorMessageLocalizationKey = "UnsupportedBrowser_ErrorMessage";
-
     private readonly IAntiforgery _antiforgery;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
     private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
@@ -47,7 +45,7 @@ public class BankIdController : Controller
     {
         if (!Url.IsLocalUrl(returnUrl))
         {
-            throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
+            throw new Exception(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
         var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
@@ -79,19 +77,19 @@ public class BankIdController : Controller
     {
         var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
         var loginScriptOptions = new BankIdLoginScriptOptions(
-            GetBankIdApiActionUrl("Initialize"),
-            GetBankIdApiActionUrl("Status"),
-            GetBankIdApiActionUrl("QrCode"),
-            GetBankIdApiActionUrl("Cancel")
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiStatusActionName),
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiQrCodeActionName),
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiCancelActionName)
         )
         {
-            StatusRefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs,
-            QrCodeRefreshIntervalMs = BankIdDefaults.QrCodeRefreshIntervalMs,
+            StatusRefreshIntervalMs = (int)BankIdConstants.StatusRefreshInterval.TotalMilliseconds,
+            QrCodeRefreshIntervalMs = (int)BankIdConstants.QrCodeRefreshInterval.TotalMilliseconds,
 
             InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(initialStatusMessage),
             UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
 
-            UnsupportedBrowserErrorMessage = _localizer[UnsupportedBrowserErrorMessageLocalizationKey]
+            UnsupportedBrowserErrorMessage = _localizer[BankIdConstants.LocalizationKeys.UnsupportedBrowserErrorMessage]
         };
 
         return new BankIdLoginViewModel(
@@ -107,7 +105,7 @@ public class BankIdController : Controller
 
     private string GetBankIdApiActionUrl(string action)
     {
-        return Url.Action(action, "BankIdApi") ?? throw new Exception($"Could not get URL for BankIdApi.{action}");
+        return Url.Action(action, BankIdConstants.Routes.BankIdApiControllerName) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdApiControllerName, action));
     }
 
     private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)
@@ -123,11 +121,7 @@ public class BankIdController : Controller
         {
             return string.Empty;
         }
-
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        return JsonSerializer.Serialize(value, value.GetType(), options);
+        
+        return JsonSerializer.Serialize(value, value.GetType(), BankIdConstants.JsonSerializerOptions);
     }
 }
