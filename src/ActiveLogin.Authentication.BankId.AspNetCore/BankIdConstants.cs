@@ -18,6 +18,7 @@ internal static class BankIdConstants
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
+
     public static class AuthenticationPropertiesKeys
     {
         public const string CancelReturnUrl = "cancelReturnUrl";
@@ -47,7 +48,7 @@ internal static class BankIdConstants
         public static string CouldNotDeserialize(string classType) => $"{CouldNotDeserializePrefix} {classType}";
 
         private const string CouldNotGetUrlForPrefix = "Could not get URL for";
-        public static string CouldNotGetUrlFor(string controller, string action) => $"{CouldNotDeserializePrefix} {controller}.{action}";
+        public static string CouldNotGetUrlFor(string controller, string action) => $"{CouldNotGetUrlForPrefix} {controller}.{action}";
     }
 
     public static class LocalizationKeys
