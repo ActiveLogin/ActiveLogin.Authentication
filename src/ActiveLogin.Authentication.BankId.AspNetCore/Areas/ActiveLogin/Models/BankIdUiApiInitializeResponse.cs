@@ -1,8 +1,8 @@
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
-public class BankIdLoginApiInitializeResponse
+public class BankIdUiApiInitializeResponse
 {
-    internal BankIdLoginApiInitializeResponse(
+    internal BankIdUiApiInitializeResponse(
         bool isAutoLaunch,
         bool deviceMightRequireUserInteractionToLaunchBankIdApp,
         bool checkStatus,
@@ -30,23 +30,23 @@ public class BankIdLoginApiInitializeResponse
     public string? QrCodeAsBase64 { get; set; }
 
 
-    public static BankIdLoginApiInitializeResponse AutoLaunch(string orderRef, string redirectUri, bool showLaunchButton)
+    public static BankIdUiApiInitializeResponse AutoLaunch(string orderRef, string redirectUri, bool showLaunchButton)
     {
-        return new BankIdLoginApiInitializeResponse(true, showLaunchButton, false, orderRef, redirectUri, null, null);
+        return new BankIdUiApiInitializeResponse(true, showLaunchButton, false, orderRef, redirectUri, null, null);
     }
 
-    public static BankIdLoginApiInitializeResponse AutoLaunchAndCheckStatus(string orderRef, string redirectUri, bool showLaunchButton)
+    public static BankIdUiApiInitializeResponse AutoLaunchAndCheckStatus(string orderRef, string redirectUri, bool showLaunchButton)
     {
-        return new BankIdLoginApiInitializeResponse(true, showLaunchButton, true, orderRef, redirectUri, null, null);
+        return new BankIdUiApiInitializeResponse(true, showLaunchButton, true, orderRef, redirectUri, null, null);
     }
 
-    public static BankIdLoginApiInitializeResponse ManualLaunch(string orderRef, string qrStartState, string qrCodeAsBase64)
+    public static BankIdUiApiInitializeResponse ManualLaunch(string orderRef, string qrStartState, string qrCodeAsBase64)
     {
-        return new BankIdLoginApiInitializeResponse(false, false, true, orderRef, null, qrStartState, qrCodeAsBase64);
+        return new BankIdUiApiInitializeResponse(false, false, true, orderRef, null, qrStartState, qrCodeAsBase64);
     }
 
-    public static BankIdLoginApiInitializeResponse ManualLaunch(string orderRef)
+    public static BankIdUiApiInitializeResponse ManualLaunch(string orderRef)
     {
-        return new BankIdLoginApiInitializeResponse(false, false, true, orderRef, null, null, null);
+        return new BankIdUiApiInitializeResponse(false, false, true, orderRef, null, null, null);
     }
 }

@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
-public class BankIdState
+public class BankIdUiState
 {
-    public BankIdState(AuthenticationProperties authenticationProperties)
+    public BankIdUiState(AuthenticationProperties authenticationProperties)
     {
         AuthenticationProperties = authenticationProperties;
     }

@@ -1,8 +1,8 @@
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
-public class BankIdLoginResult
+public abstract class BankIdUiResult
 {
-    internal BankIdLoginResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname)
+    internal BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname)
     {
         IsSuccessful = isSuccessful;
 
@@ -13,11 +13,6 @@ public class BankIdLoginResult
         Name = name;
         GivenName = givenName;
         Surname = surname;
-    }
-
-    public static BankIdLoginResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname)
-    {
-        return new BankIdLoginResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname);
     }
 
     public bool IsSuccessful { get; }

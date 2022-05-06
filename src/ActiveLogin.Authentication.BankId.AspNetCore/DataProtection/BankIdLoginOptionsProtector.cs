@@ -15,7 +15,7 @@ internal class BankIdLoginOptionsProtector : IBankIdLoginOptionsProtector
     public BankIdLoginOptionsProtector(IDataProtectionProvider dataProtectionProvider)
     {
         var dataProtector = dataProtectionProvider.CreateProtector(
-            typeof(BankIdLoginResultProtector).FullName ?? nameof(BankIdLoginResultProtector),
+            typeof(BankIdUiAuthResultProtector).FullName ?? nameof(BankIdUiAuthResultProtector),
             ProtectorVersion
         );
 

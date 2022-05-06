@@ -28,7 +28,7 @@ internal class BankIdPostConfigureOptions : IPostConfigureOptions<BankIdOptions>
                 "v1"
             );
 
-            options.StateDataFormat = new SecureDataFormat<BankIdState>(
+            options.StateDataFormat = new SecureDataFormat<BankIdUiState>(
                 new BankIdStateSerializer(),
                 dataProtector
             );

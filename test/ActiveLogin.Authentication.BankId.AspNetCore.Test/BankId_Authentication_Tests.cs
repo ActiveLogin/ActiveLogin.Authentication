@@ -35,7 +35,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test;
 
 public class BankId_Authentication_Tests
 {
-    private const string DefaultStateCookieName = "__ActiveLogin.BankIdState";
+    private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
 
     private readonly Mock<IBankIdLoginOptionsProtector> _bankIdLoginOptionsProtector;
 

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Localization;
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Controllers;
 
 [NonController]
-public abstract class BankIdControllerBase : Controller
+public abstract class BankIdUiControllerBase : Controller
 {
     private readonly IAntiforgery _antiforgery;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
@@ -23,7 +23,7 @@ public abstract class BankIdControllerBase : Controller
     private readonly IStringLocalizer<BankIdHandler> _localizer;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
 
-    protected BankIdControllerBase(
+    protected BankIdUiControllerBase(
         IAntiforgery antiforgery,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdLoginOptionsProtector loginOptionsProtector,

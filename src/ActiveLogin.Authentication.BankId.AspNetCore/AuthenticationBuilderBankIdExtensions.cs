@@ -80,10 +80,10 @@ public static class AuthenticationBuilderBankIdExtensions
     {
         var services = builder.Services;
 
-        services.AddTransient<IBankIdOrderRefProtector, BankIdOrderRefProtector>();
+        services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
         services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
         services.AddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
-        services.AddTransient<IBankIdLoginResultProtector, BankIdLoginResultProtector>();
+        services.AddTransient<IBankIdUiAuthResultProtector, BankIdUiAuthResultProtector>();
 
         services.AddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
 

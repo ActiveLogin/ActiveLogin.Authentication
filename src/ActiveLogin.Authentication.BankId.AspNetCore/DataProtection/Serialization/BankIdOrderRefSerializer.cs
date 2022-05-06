@@ -1,14 +1,15 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdOrderRefSerializer : IDataSerializer<BankIdOrderRef>
+internal class BankIdOrderRefSerializer : IDataSerializer<BankIdUiOrderRef>
 {
     private const int FormatVersion = 1;
 
-    public byte[] Serialize(BankIdOrderRef model)
+    public byte[] Serialize(BankIdUiOrderRef model)
     {
         using var memory = new MemoryStream();
         using var writer = new BinaryWriter(memory);
@@ -20,16 +21,16 @@ internal class BankIdOrderRefSerializer : IDataSerializer<BankIdOrderRef>
         return memory.ToArray();
     }
 
-    public BankIdOrderRef Deserialize(byte[] data)
+    public BankIdUiOrderRef Deserialize(byte[] data)
     {
         using var memory = new MemoryStream(data);
         using var reader = new BinaryReader(memory);
 
         if (reader.ReadInt32() != FormatVersion)
         {
-            throw new IncompatibleSerializationVersion(nameof(BankIdOrderRef));
+            throw new IncompatibleSerializationVersion(nameof(BankIdUiOrderRef));
         }
 
-        return new BankIdOrderRef(reader.ReadString());
+        return new BankIdUiOrderRef(reader.ReadString());
     }
 }

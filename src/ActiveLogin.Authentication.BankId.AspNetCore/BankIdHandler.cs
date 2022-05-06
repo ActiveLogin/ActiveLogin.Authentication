@@ -22,8 +22,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore;
 public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 {
     private const string StateCookieNameParemeterName = "StateCookie.Name";
+
     private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
-    private readonly IBankIdLoginResultProtector _loginResultProtector;
+    private readonly IBankIdUiAuthResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers;
@@ -34,14 +35,14 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         UrlEncoder encoder,
         ISystemClock clock,
         IBankIdLoginOptionsProtector loginOptionsProtector,
-        IBankIdLoginResultProtector loginResultProtector,
+        IBankIdUiAuthResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
         : base(options, loggerFactory, encoder, clock)
     {
         _loginOptionsProtector = loginOptionsProtector;
-        _loginResultProtector = loginResultProtector;
+        _uiResultProtector = uiResultProtector;
         _bankIdEventTrigger = bankIdEventTrigger;
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         _bankIdClaimsTransformers = bankIdClaimsTransformers.ToList();
@@ -59,23 +60,23 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 
         DeleteStateCookie();
 
-        var protectedLoginResult = Request.Query[BankIdConstants.QueryStringParameters.LoginResult];
-        if (string.IsNullOrEmpty(protectedLoginResult))
+        var protectedUiResult = Request.Query[BankIdConstants.QueryStringParameters.UiResult];
+        if (string.IsNullOrEmpty(protectedUiResult))
         {
-            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidLoginResult, detectedDevice);
+            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
         }
 
-        var loginResult = _loginResultProtector.Unprotect(protectedLoginResult);
-        if (!loginResult.IsSuccessful)
+        var uiResult = _uiResultProtector.Unprotect(protectedUiResult);
+        if (!uiResult.IsSuccessful)
         {
-            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidLoginResult, detectedDevice);
+            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
         }
 
         var properties = state.AuthenticationProperties;
-        var ticket = await GetAuthenticationTicket(loginResult, properties);
+        var ticket = await GetAuthenticationTicket(uiResult, properties);
 
         await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
-            PersonalIdentityNumber.Parse(loginResult.PersonalIdentityNumber),
+            PersonalIdentityNumber.Parse(uiResult.PersonalIdentityNumber),
             detectedDevice
         ));
 
@@ -89,29 +90,29 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         return HandleRequestResult.Fail(reason);
     }
 
-    private async Task<AuthenticationTicket> GetAuthenticationTicket(BankIdLoginResult loginResult, AuthenticationProperties properties)
+    private async Task<AuthenticationTicket> GetAuthenticationTicket(BankIdUiAuthResult uiAuthResult, AuthenticationProperties properties)
     {
         if (Options.TokenExpiresIn.HasValue)
         {
             properties.ExpiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
         }
 
-        var claims = await GetClaims(loginResult);
+        var claims = await GetClaims(uiAuthResult);
         var identity = new ClaimsIdentity(claims, Scheme.Name, BankIdClaimTypes.Name, BankIdClaimTypes.Role);
         var principal = new ClaimsPrincipal(identity);
 
         return new AuthenticationTicket(principal, properties, Scheme.Name);
     }
 
-    private async Task<IEnumerable<Claim>> GetClaims(BankIdLoginResult loginResult)
+    private async Task<IEnumerable<Claim>> GetClaims(BankIdUiAuthResult uiAuthResult)
     {
         var context = new BankIdClaimsTransformationContext(
             Options,
-            loginResult.BankIdOrderRef,
-            loginResult.PersonalIdentityNumber,
-            loginResult.Name,
-            loginResult.GivenName,
-            loginResult.Surname
+            uiAuthResult.BankIdOrderRef,
+            uiAuthResult.PersonalIdentityNumber,
+            uiAuthResult.Name,
+            uiAuthResult.GivenName,
+            uiAuthResult.Surname
         );
 
         foreach (var transformer in _bankIdClaimsTransformers)
@@ -178,14 +179,14 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
         Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
 
-        var state = new BankIdState(properties);
+        var state = new BankIdUiState(properties);
         var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
         var cookieValue = Options.StateDataFormat.Protect(state);
 
         Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
     }
 
-    private BankIdState? GetStateFromCookie()
+    private BankIdUiState? GetStateFromCookie()
     {
         ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
         Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);

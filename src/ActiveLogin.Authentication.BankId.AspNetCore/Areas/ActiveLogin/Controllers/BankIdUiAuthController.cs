@@ -12,9 +12,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [Area(BankIdConstants.Routes.ActiveLoginAreaName)]
 [AllowAnonymous]
 [NonController]
-public class BankIdAuthController : BankIdControllerBase
+public class BankIdUiAuthController : BankIdUiControllerBase
 {
-    public BankIdAuthController(
+    public BankIdUiAuthController(
         IAntiforgery antiforgery,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdLoginOptionsProtector loginOptionsProtector,

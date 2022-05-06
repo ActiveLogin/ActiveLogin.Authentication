@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdLoginResultSerializer : IDataSerializer<BankIdLoginResult>
+internal class BankIdUiAuthResultSerializer : IDataSerializer<BankIdUiAuthResult>
 {
     private const int FormatVersion = 2;
 
-    public byte[] Serialize(BankIdLoginResult model)
+    public byte[] Serialize(BankIdUiAuthResult model)
     {
         using var memory = new MemoryStream();
         using var writer = new BinaryWriter(memory);
@@ -30,17 +30,17 @@ internal class BankIdLoginResultSerializer : IDataSerializer<BankIdLoginResult>
         return memory.ToArray();
     }
 
-    public BankIdLoginResult Deserialize(byte[] data)
+    public BankIdUiAuthResult Deserialize(byte[] data)
     {
         using var memory = new MemoryStream(data);
         using var reader = new BinaryReader(memory);
 
         if (reader.ReadInt32() != FormatVersion)
         {
-            throw new IncompatibleSerializationVersion(nameof(BankIdLoginResult));
+            throw new IncompatibleSerializationVersion(nameof(BankIdUiAuthResult));
         }
 
-        return new BankIdLoginResult(
+        return new BankIdUiAuthResult(
             reader.ReadBoolean(),
             reader.ReadString(),
             reader.ReadString(),

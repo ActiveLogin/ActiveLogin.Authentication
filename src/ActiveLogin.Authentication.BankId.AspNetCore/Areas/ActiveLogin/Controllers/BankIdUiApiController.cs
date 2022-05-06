@@ -20,28 +20,28 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [ApiController]
 [AllowAnonymous]
 [NonController]
-public class BankIdApiController : Controller
+public class BankIdUiApiController : Controller
 {
     private readonly IBankIdFlowService _bankIdFlowService;
 
     private readonly IBankIdUserMessage _bankIdUserMessage;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
 
-    private readonly IBankIdOrderRefProtector _orderRefProtector;
+    private readonly IBankIdUiOrderRefProtector _orderRefProtector;
     private readonly IBankIdQrStartStateProtector _qrStartStateProtector;
     private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
-    private readonly IBankIdLoginResultProtector _loginResultProtector;
+    private readonly IBankIdUiAuthResultProtector _uiAuthResultProtector;
 
-    public BankIdApiController(
+    public BankIdUiApiController(
         IBankIdFlowService bankIdFlowService,
 
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
 
-        IBankIdOrderRefProtector orderRefProtector,
+        IBankIdUiOrderRefProtector orderRefProtector,
         IBankIdQrStartStateProtector qrStartStateProtector,
         IBankIdLoginOptionsProtector loginOptionsProtector,
-        IBankIdLoginResultProtector loginResultProtector
+        IBankIdUiAuthResultProtector uiAuthResultProtector
 
     )
     {
@@ -53,12 +53,12 @@ public class BankIdApiController : Controller
         _orderRefProtector = orderRefProtector;
         _qrStartStateProtector = qrStartStateProtector;
         _loginOptionsProtector = loginOptionsProtector;
-        _loginResultProtector = loginResultProtector;
+        _uiAuthResultProtector = uiAuthResultProtector;
     }
 
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiInitializeActionName)]
-    public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
+    public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
         Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
@@ -79,24 +79,24 @@ public class BankIdApiController : Controller
         catch (BankIdApiException bankIdApiException)
         {
             var errorStatusMessage = GetBankIdApiExceptionStatusMessage(bankIdApiException);
-            return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
+            return BadRequestJsonResult(new BankIdUiApiErrorResponse(errorStatusMessage));
         }
 
-        var protectedOrderRef = _orderRefProtector.Protect(new BankIdOrderRef(bankIdFlowInitializeAuthResult.BankIdAuthResponse.OrderRef));
+        var protectedOrderRef = _orderRefProtector.Protect(new BankIdUiOrderRef(bankIdFlowInitializeAuthResult.BankIdAuthResponse.OrderRef));
         switch (bankIdFlowInitializeAuthResult.LaunchType)
         {
             case BankIdFlowInitializeAuthLaunchTypeOtherDevice otherDevice:
             {
                 var protectedQrStartState = _qrStartStateProtector.Protect(otherDevice.QrStartState);
-                return OkJsonResult(BankIdLoginApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDevice.QrCodeBase64Encoded));
+                return OkJsonResult(BankIdUiApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDevice.QrCodeBase64Encoded));
             }
             case BankIdFlowInitializeAuthLaunchTypeSameDevice sameDevice when sameDevice.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp:
             {
-                return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
             }
             case BankIdFlowInitializeAuthLaunchTypeSameDevice sameDevice:
             {
-                return OkJsonResult(BankIdLoginApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
             }
             default:
             {
@@ -107,7 +107,7 @@ public class BankIdApiController : Controller
 
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiStatusActionName)]
-    public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
+    public async Task<ActionResult> Status(BankIdUiApiStatusRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
@@ -129,27 +129,27 @@ public class BankIdApiController : Controller
         catch (BankIdApiException bankIdApiException)
         {
             var errorStatusMessage = GetBankIdApiExceptionStatusMessage(bankIdApiException);
-            return BadRequestJsonResult(new BankIdLoginApiErrorResponse(errorStatusMessage));
+            return BadRequestJsonResult(new BankIdUiApiErrorResponse(errorStatusMessage));
         }
 
         switch(result)
         {
             case BankIdFlowCollectResultPending pending:
             {
-                return OkJsonResult(BankIdLoginApiStatusResponse.Pending(pending.StatusMessage));
+                return OkJsonResult(BankIdUiApiStatusResponse.Pending(pending.StatusMessage));
             }
             case BankIdFlowCollectResultComplete complete:
             {
                 var returnUri = GetSuccessReturnUrl(orderRef.OrderRef, complete.CompletionData.User, request.ReturnUrl);
-                return OkJsonResult(BankIdLoginApiStatusResponse.Finished(returnUri));
+                return OkJsonResult(BankIdUiApiStatusResponse.Finished(returnUri));
             }
             case BankIdFlowCollectResultRetry retry:
             {
-                return OkJsonResult(BankIdLoginApiStatusResponse.Retry(retry.StatusMessage));
+                return OkJsonResult(BankIdUiApiStatusResponse.Retry(retry.StatusMessage));
             }
             case BankIdFlowCollectResultFailure failure:
             {
-                return BadRequestJsonResult(new BankIdLoginApiErrorResponse(failure.StatusMessage));
+                return BadRequestJsonResult(new BankIdUiApiErrorResponse(failure.StatusMessage));
             }
             default:
             {
@@ -160,19 +160,19 @@ public class BankIdApiController : Controller
 
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiQrCodeActionName)]
-    public ActionResult QrCode(BankIdLoginApiQrCodeRequest request)
+    public ActionResult QrCode(BankIdUiApiQrCodeRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.QrStartState, nameof(request.QrStartState));
 
         var qrStartState = _qrStartStateProtector.Unprotect(request.QrStartState);
         var qrCodeAsBase64 = _bankIdFlowService.GetQrCodeAsBase64(qrStartState);
 
-        return OkJsonResult(new BankIdLoginApiQrCodeResponse(qrCodeAsBase64));
+        return OkJsonResult(new BankIdUiApiQrCodeResponse(qrCodeAsBase64));
     }
 
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiCancelActionName)]
-    public async Task<ActionResult> Cancel(BankIdLoginApiCancelRequest request)
+    public async Task<ActionResult> Cancel(BankIdUiApiCancelRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
         Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
@@ -182,7 +182,7 @@ public class BankIdApiController : Controller
 
         await _bankIdFlowService.Cancel(orderRef.OrderRef, loginOptions);
 
-        return OkJsonResult(BankIdLoginApiCancelResponse.Cancelled());
+        return OkJsonResult(BankIdUiCancelResponse.Cancelled());
     }
 
     private string GetBankIdApiExceptionStatusMessage(BankIdApiException bankIdApiException)
@@ -195,12 +195,12 @@ public class BankIdApiController : Controller
 
     private string GetSuccessReturnUrl(string orderRef, User user, string returnUrl)
     {
-        var loginResult = BankIdLoginResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
-        var protectedLoginResult = _loginResultProtector.Protect(loginResult);
+        var uiResult = BankIdUiAuthResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
+        var protectedUiAuthResult = _uiAuthResultProtector.Protect(uiResult);
 
         return QueryHelpers.AddQueryString(returnUrl, new Dictionary<string, string?>
         {
-            { BankIdConstants.QueryStringParameters.LoginResult, protectedLoginResult }
+            { BankIdConstants.QueryStringParameters.UiResult, protectedUiAuthResult }
         });
     }
 

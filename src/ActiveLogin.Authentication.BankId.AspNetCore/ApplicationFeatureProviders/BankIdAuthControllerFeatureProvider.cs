@@ -11,9 +11,9 @@ internal class BankIdAuthControllerFeatureProvider : IApplicationFeatureProvider
 {
     public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
     {
-        if (!feature.Controllers.Contains(typeof(BankIdAuthController).GetTypeInfo()))
+        if (!feature.Controllers.Contains(typeof(BankIdUiAuthController).GetTypeInfo()))
         {
-            feature.Controllers.Add(typeof(BankIdAuthController).GetTypeInfo());
+            feature.Controllers.Add(typeof(BankIdUiAuthController).GetTypeInfo());
         }
     }
 }

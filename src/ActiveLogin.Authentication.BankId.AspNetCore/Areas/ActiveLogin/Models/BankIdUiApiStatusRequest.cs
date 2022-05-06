@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
-public class BankIdLoginApiStatusRequest
+public class BankIdUiApiStatusRequest
 {
-    public BankIdLoginApiStatusRequest()
+    public BankIdUiApiStatusRequest()
     {
 
     }

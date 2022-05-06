@@ -10,7 +10,7 @@ internal static class BankIdConstants
     public static readonly TimeSpan QrCodeRefreshInterval = TimeSpan.FromSeconds(1);
 
     public const string DefaultCancelUrl = "/";
-    public const string DefaultStateCookieName = "__ActiveLogin.BankIdState";
+    public const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
 
     public const string LocalizationResourcesPath = "Resources";
 
@@ -26,7 +26,7 @@ internal static class BankIdConstants
 
     public static class QueryStringParameters
     {
-        public const string LoginResult = "loginResult";
+        public const string UiResult = "uiResult";
         public const string LoginOptions = "loginOptions";
         public const string ReturnUrl = "returnUrl";
     }
@@ -36,7 +36,7 @@ internal static class BankIdConstants
         public const string InvalidReturnUrl = "Invalid returnUrl. Needs to be a local url.";
 
         public const string InvalidStateCookie = "Invalid state cookie";
-        public const string InvalidLoginResult = "Invalid login result";
+        public const string InvalidUiResult = "Invalid BankId UI result";
 
         public const string UnknownFlowCollectResultType = "Unknown collect result type";
         public const string UnknownFlowLaunchType = "Unknown launch type";
@@ -61,11 +61,11 @@ internal static class BankIdConstants
         public const string ActiveLoginAreaName = "ActiveLogin";
         public const string BankIdPathName = "BankId";
 
-        public const string BankIdAuthControllerName = "BankIdAuth";
+        public const string BankIdAuthControllerName = "BankIdUiAuth";
         public const string BankIdAuthControllerPath = "Auth";
         public const string BankIdAuthInitActionName = "Init";
 
-        public const string BankIdApiControllerName = "BankIdApi";
+        public const string BankIdApiControllerName = "BankIdUiApi";
         public const string BankIdApiControllerPath = "Api";
         public const string BankIdApiInitializeActionName = "Initialize";
         public const string BankIdApiStatusActionName = "Status";
