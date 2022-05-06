@@ -19,11 +19,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor\ActiveLogin.Authentication.BankId.AzureMonitor.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder\ActiveLogin.Authentication.BankId.QRCoder.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.UAParser.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AzureMonitor\ActiveLogin.Authentication.BankId.AzureMonitor.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.QRCoder\ActiveLogin.Authentication.BankId.QRCoder.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.UAParser\ActiveLogin.Authentication.BankId.UAParser.csproj" />
         <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AzureKeyVault.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AzureKeyVault\ActiveLogin.Authentication.BankId.AzureKeyVault.csproj" />
     </ItemGroup>
 
 </Project>
