@@ -26,8 +26,9 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
 
     private const string PropertyName_ErrorReason = "AL_Error_ErrorReason";
 
-    private const string PropertyName_LoginOptionsLaunchType = "AL_BankId_LoginOptions_LaunchType";
-    private const string PropertyName_LoginOptionsUseQrCode = "AL_BankId_LoginOptions_UseQrCode";
+    private const string PropertyName_BankIdOptionsLaunchType = "AL_BankId_Options_LaunchType";
+    private const string PropertyName_BankIdOptionsUseQrCode = "AL_BankId_Options_UseQrCode";
+
     private const string PropertyName_BankIdErrorCode = "AL_BankId_ErrorCode";
     private const string PropertyName_BankIdErrorDetails = "AL_BankId_ErrorDetails";
     private const string PropertyName_BankIdOrderRef = "AL_BankId_OrderRef";
@@ -66,7 +67,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
         return Track(
             e,
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -104,7 +105,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             },
             personalIdentityNumber: e.PersonalIdentityNumber,
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -115,7 +116,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             personalIdentityNumber: e.PersonalIdentityNumber,
             exception: e.BankIdApiException,
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -131,7 +132,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
                 { PropertyName_BankIdCollectHintCode, e.HintCode.ToString() }
             },
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -166,7 +167,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             properties,
             personalIdentityNumber: personalIdentityNumber,
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -180,7 +181,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
                 { PropertyName_BankIdCollectHintCode, e.HintCode.ToString() }
             },
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -194,7 +195,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             },
             exception: e.BankIdApiException,
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -209,7 +210,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
                 { PropertyName_BankIdOrderRef, e.OrderRef }
             },
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
@@ -223,13 +224,13 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             },
             exception: e.BankIdApiException,
             detectedDevice: e.DetectedUserDevice,
-            loginOptions: e.BankIdOptions
+            bankIdOptions: e.BankIdOptions
         );
     }
 
     // Helpers
 
-    private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, Dictionary<string, double>? metrics = null, PersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null, BankIdLoginOptions? loginOptions = null)
+    private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, Dictionary<string, double>? metrics = null, PersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null, BankIdFlowOptions? bankIdOptions = null)
     {
         var allProperties = properties == null ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
         var allMetrics = metrics == null ? new Dictionary<string, double>() : new Dictionary<string, double>(metrics);
@@ -243,9 +244,9 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
         allProperties.Add(PropertyName_EventTypeId, e.EventTypeId.ToString("D"));
         allProperties.Add(PropertyName_EventSeverity, e.EventSeverity.ToString());
 
-        if (loginOptions != null)
+        if (bankIdOptions != null)
         {
-            AddLoginOptionsProperties(allProperties, loginOptions);
+            AddBankIdOptionsProperties(allProperties, bankIdOptions);
         }
 
         if (personalIdentityNumber != null)
@@ -305,10 +306,10 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
         }
     }
 
-    private void AddLoginOptionsProperties(Dictionary<string, string> properties, BankIdLoginOptions loginOptions)
+    private void AddBankIdOptionsProperties(Dictionary<string, string> properties, BankIdFlowOptions bankIdOptions)
     {
-        properties.Add(PropertyName_LoginOptionsLaunchType, GetLaunchType(loginOptions.SameDevice));
-        properties.Add(PropertyName_LoginOptionsUseQrCode, GetBooleanProperty(!loginOptions.SameDevice));
+        properties.Add(PropertyName_BankIdOptionsLaunchType, GetLaunchType(bankIdOptions.SameDevice));
+        properties.Add(PropertyName_BankIdOptionsUseQrCode, GetBooleanProperty(!bankIdOptions.SameDevice));
     }
 
     private static string GetLaunchType(bool isSameDevice)

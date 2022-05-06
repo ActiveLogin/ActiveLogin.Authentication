@@ -10,7 +10,7 @@ public class BankIdUiApiCancelRequest
     }
 
     [Required]
-    public string? LoginOptions { get; set; }
+    public string? UiOptions { get; set; }
 
     [Required]
     public string? OrderRef { get; set; }

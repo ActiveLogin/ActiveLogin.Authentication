@@ -1,8 +1,10 @@
-namespace ActiveLogin.Authentication.BankId.Core.Models;
+using ActiveLogin.Authentication.BankId.Core.Models;
 
-public class BankIdLoginOptions
+namespace ActiveLogin.Authentication.BankId;
+
+public class BankIdUiOptions
 {
-    public BankIdLoginOptions(
+    public BankIdUiOptions(
         List<string> certificatePolicies,
         bool sameDevice,
         bool allowBiometric,
@@ -17,7 +19,7 @@ public class BankIdLoginOptions
     }
 
     public List<string> CertificatePolicies { get; }
-        
+
     public bool SameDevice { get; }
 
     public bool AllowBiometric { get; }
@@ -25,4 +27,14 @@ public class BankIdLoginOptions
     public string CancelReturnUrl { get; }
 
     public string StateCookieName { get; }
+}
+
+public static class BankUiOptionsExtensions
+{
+    public static BankIdFlowOptions ToBankIdFlowOptions(this BankIdUiOptions options) => new(
+        options.CertificatePolicies,
+        options.SameDevice,
+        options.AllowBiometric,
+        options.CancelReturnUrl,
+        options.StateCookieName);
 }

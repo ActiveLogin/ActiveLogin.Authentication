@@ -29,7 +29,7 @@ public class BankIdUiApiController : Controller
 
     private readonly IBankIdUiOrderRefProtector _orderRefProtector;
     private readonly IBankIdQrStartStateProtector _qrStartStateProtector;
-    private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
+    private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdUiAuthResultProtector _uiAuthResultProtector;
 
     public BankIdUiApiController(
@@ -40,7 +40,7 @@ public class BankIdUiApiController : Controller
 
         IBankIdUiOrderRefProtector orderRefProtector,
         IBankIdQrStartStateProtector qrStartStateProtector,
-        IBankIdLoginOptionsProtector loginOptionsProtector,
+        IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUiAuthResultProtector uiAuthResultProtector
 
     )
@@ -52,7 +52,7 @@ public class BankIdUiApiController : Controller
 
         _orderRefProtector = orderRefProtector;
         _qrStartStateProtector = qrStartStateProtector;
-        _loginOptionsProtector = loginOptionsProtector;
+        _uiOptionsProtector = uiOptionsProtector;
         _uiAuthResultProtector = uiAuthResultProtector;
     }
 
@@ -61,9 +61,9 @@ public class BankIdUiApiController : Controller
     public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
-        Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
+        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
-        var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
+        var uiOptions = _uiOptionsProtector.Unprotect(request.UiOptions);
 
         BankIdFlowInitializeAuthResult bankIdFlowInitializeAuthResult;
         try
@@ -71,10 +71,10 @@ public class BankIdUiApiController : Controller
             var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdAuthInitActionName, BankIdConstants.Routes.BankIdAuthControllerName, new
             {
                 returnUrl = request.ReturnUrl,
-                loginOptions = request.LoginOptions
+                uiOptions = request.UiOptions
             },  protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdAuthControllerName, BankIdConstants.Routes.BankIdAuthInitActionName));
 
-            bankIdFlowInitializeAuthResult = await _bankIdFlowService.InitializeAuth(loginOptions, returnRedirectUrl);
+            bankIdFlowInitializeAuthResult = await _bankIdFlowService.InitializeAuth(uiOptions.ToBankIdFlowOptions(), returnRedirectUrl);
         }
         catch (BankIdApiException bankIdApiException)
         {
@@ -111,7 +111,7 @@ public class BankIdUiApiController : Controller
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
-        Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
+        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
         if (!Url.IsLocalUrl(request.ReturnUrl))
         {
@@ -119,12 +119,12 @@ public class BankIdUiApiController : Controller
         }
 
         var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
-        var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
+        var uiOptions = _uiOptionsProtector.Unprotect(request.UiOptions);
 
         BankIdFlowCollectResult result;
         try
         {
-            result = await _bankIdFlowService.Collect(orderRef.OrderRef, request.AutoStartAttempts, loginOptions);
+            result = await _bankIdFlowService.Collect(orderRef.OrderRef, request.AutoStartAttempts, uiOptions.ToBankIdFlowOptions());
         }
         catch (BankIdApiException bankIdApiException)
         {
@@ -175,12 +175,12 @@ public class BankIdUiApiController : Controller
     public async Task<ActionResult> Cancel(BankIdUiApiCancelRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
-        Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
+        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
         var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
-        var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
+        var uiOptions = _uiOptionsProtector.Unprotect(request.UiOptions);
 
-        await _bankIdFlowService.Cancel(orderRef.OrderRef, loginOptions);
+        await _bankIdFlowService.Cancel(orderRef.OrderRef, uiOptions.ToBankIdFlowOptions());
 
         return OkJsonResult(BankIdUiCancelResponse.Cancelled());
     }

@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
@@ -8,7 +7,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
-using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 
@@ -23,7 +21,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 {
     private const string StateCookieNameParemeterName = "StateCookie.Name";
 
-    private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
+    private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdUiAuthResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
@@ -34,14 +32,14 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
         ISystemClock clock,
-        IBankIdLoginOptionsProtector loginOptionsProtector,
+        IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUiAuthResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
         : base(options, loggerFactory, encoder, clock)
     {
-        _loginOptionsProtector = loginOptionsProtector;
+        _uiOptionsProtector = uiOptionsProtector;
         _uiResultProtector = uiResultProtector;
         _bankIdEventTrigger = bankIdEventTrigger;
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
@@ -127,7 +125,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     {
         AppendStateCookie(properties);
 
-        var loginOptions = new BankIdLoginOptions(
+        var uiOptions = new BankIdUiOptions(
             Options.BankIdCertificatePolicies,
             Options.BankIdSameDevice,
             Options.BankIdAllowBiometric,
@@ -136,9 +134,9 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         );
 
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
-        await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, loginOptions));
+        await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
 
-        var loginUrl = GetLoginUrl(loginOptions);
+        var loginUrl = GetLoginUrl(uiOptions);
         Response.Redirect(loginUrl);
     }
 
@@ -158,17 +156,17 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         return cancelReturnUrl ?? BankIdConstants.DefaultCancelUrl;
     }
 
-    private string GetLoginUrl(BankIdLoginOptions loginOptions)
+    private string GetLoginUrl(BankIdUiOptions uiOptions)
     {
         var pathBase = Context.Request.PathBase;
         var loginUrl = pathBase.Add(Options.LoginPath);
         var returnUrl = pathBase.Add(Options.CallbackPath);
-        var protectedLoginOptions = _loginOptionsProtector.Protect(loginOptions);
+        var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
 
         var queryBuilder = new QueryBuilder(new Dictionary<string, string>
         {
             { BankIdConstants.QueryStringParameters.ReturnUrl, returnUrl },
-            { BankIdConstants.QueryStringParameters.LoginOptions, protectedLoginOptions }
+            { BankIdConstants.QueryStringParameters.UiOptions, protectedUiOptions }
         });
 
         return $"{loginUrl}{queryBuilder.ToQueryString()}";

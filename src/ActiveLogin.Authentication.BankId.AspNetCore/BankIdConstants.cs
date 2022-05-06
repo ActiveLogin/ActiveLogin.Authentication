@@ -27,7 +27,7 @@ internal static class BankIdConstants
     public static class QueryStringParameters
     {
         public const string UiResult = "uiResult";
-        public const string LoginOptions = "loginOptions";
+        public const string UiOptions = "uiOptions";
         public const string ReturnUrl = "returnUrl";
     }
 
