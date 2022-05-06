@@ -28,8 +28,6 @@ public static class ServiceCollectionBankIdExtensions
     ///     builder
     ///         .UseProductionEnvironment()
     ///         .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-    ///         .AddSameDevice()
-    ///         .AddOtherDevice()
     ///         .UseQrCoderQrCodeGenerator();
     /// });
     /// </code>

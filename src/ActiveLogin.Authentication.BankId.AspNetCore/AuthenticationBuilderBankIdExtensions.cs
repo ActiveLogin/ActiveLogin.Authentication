@@ -15,7 +15,6 @@ using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
@@ -27,6 +26,16 @@ public static class AuthenticationBuilderBankIdExtensions
     /// </summary>
     /// <param name="authenticationBuilder"></param>
     /// <param name="bankId">BankID configuration.</param>
+    /// <example>
+    /// <code>
+    /// .AddBankId(builder =>
+    /// {
+    ///     builder
+    ///         .AddSameDevice()
+    ///         .AddOtherDevice();
+    /// });
+    /// </code>
+    /// </example>
     /// <returns></returns>
     public static AuthenticationBuilder AddBankId(this AuthenticationBuilder authenticationBuilder, Action<IBankIdAuthBuilder> bankId)
     {
