@@ -4,11 +4,11 @@ namespace ActiveLogin.Authentication.BankId.Core.Flow;
 
 public interface IBankIdFlowService
 {
-    Task<BankIdFlowInitializeAuthResult> InitializeAuth(BankIdLoginOptions loginOptions, string returnRedirectUrl);
+    Task<BankIdFlowInitializeAuthResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl);
 
-    Task<BankIdFlowCollectResult> Collect(string orderRef, int autoStartAttempts, BankIdLoginOptions loginOptions);
+    Task<BankIdFlowCollectResult> Collect(string orderRef, int autoStartAttempts, BankIdFlowOptions flowOptions);
 
-    Task Cancel(string orderRef, BankIdLoginOptions loginOptions);
+    Task Cancel(string orderRef, BankIdFlowOptions flowOptions);
 
     string GetQrCodeAsBase64(BankIdQrStartState qrStartState);
 }

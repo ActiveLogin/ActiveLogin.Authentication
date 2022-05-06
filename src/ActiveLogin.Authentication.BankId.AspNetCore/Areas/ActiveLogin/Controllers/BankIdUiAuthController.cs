@@ -17,19 +17,19 @@ public class BankIdUiAuthController : BankIdUiControllerBase
     public BankIdUiAuthController(
         IAntiforgery antiforgery,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdLoginOptionsProtector loginOptionsProtector,
+        IBankIdUiOptionsProtector uiOptionsProtector,
         IStringLocalizer<BankIdHandler> localizer,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler
     )
-        : base(antiforgery, bankIdUserMessageLocalizer, loginOptionsProtector, localizer, bankIdInvalidStateHandler)
+        : base(antiforgery, bankIdUserMessageLocalizer, uiOptionsProtector, localizer, bankIdInvalidStateHandler)
     {
 
     }
 
     [HttpGet]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}")]
-    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.LoginOptions)] string protectedLoginOptions)
+    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
     {
-        return Initialize(returnUrl, protectedLoginOptions, "Init");
+        return Initialize(returnUrl, protectedUiOptions, "Init");
     }
 }

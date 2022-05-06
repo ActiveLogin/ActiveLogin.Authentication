@@ -4,7 +4,6 @@ using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
-using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
@@ -19,66 +18,66 @@ public abstract class BankIdUiControllerBase : Controller
 {
     private readonly IAntiforgery _antiforgery;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
-    private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
+    private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IStringLocalizer<BankIdHandler> _localizer;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
 
     protected BankIdUiControllerBase(
         IAntiforgery antiforgery,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdLoginOptionsProtector loginOptionsProtector,
+        IBankIdUiOptionsProtector uiOptionsProtector,
         IStringLocalizer<BankIdHandler> localizer,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler)
     {
         _antiforgery = antiforgery;
         _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
-        _loginOptionsProtector = loginOptionsProtector;
+        _uiOptionsProtector = uiOptionsProtector;
         _localizer = localizer;
         _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
     }
 
-    protected async Task<ActionResult> Initialize(string returnUrl, string protectedLoginOptions, string viewName)
+    protected async Task<ActionResult> Initialize(string returnUrl, string protectedUiOptions, string viewName)
     {
         Validators.ThrowIfNullOrWhitespace(returnUrl);
-        Validators.ThrowIfNullOrWhitespace(protectedLoginOptions, BankIdConstants.QueryStringParameters.LoginOptions);
+        Validators.ThrowIfNullOrWhitespace(protectedUiOptions, BankIdConstants.QueryStringParameters.UiOptions);
 
         if (!Url.IsLocalUrl(returnUrl))
         {
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
-        var loginOptions = _loginOptionsProtector.Unprotect(protectedLoginOptions);
-        if (!HasStateCookie(loginOptions))
+        var uiOptions = _uiOptionsProtector.Unprotect(protectedUiOptions);
+        if (!HasStateCookie(uiOptions))
         {
-            var invalidStateContext = new BankIdInvalidStateContext(loginOptions.CancelReturnUrl);
+            var invalidStateContext = new BankIdInvalidStateContext(uiOptions.CancelReturnUrl);
             await _bankIdInvalidStateHandler.HandleAsync(invalidStateContext);
 
             return new EmptyResult();
         }
 
-        protectedLoginOptions = _loginOptionsProtector.Protect(loginOptions);
+        protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
         var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
-        var viewModel = GetLoginViewModel(returnUrl, protectedLoginOptions, loginOptions, antiforgeryTokens);
+        var viewModel = GetUiViewModel(returnUrl, protectedUiOptions, uiOptions, antiforgeryTokens);
 
         return View(viewName, viewModel);
     }
 
-    private bool HasStateCookie(BankIdLoginOptions loginOptions)
+    private bool HasStateCookie(BankIdUiOptions uiOptions)
     {
-        if (string.IsNullOrEmpty(loginOptions.StateCookieName)
-            || !HttpContext.Request.Cookies.ContainsKey(loginOptions.StateCookieName))
+        if (string.IsNullOrEmpty(uiOptions.StateCookieName)
+            || !HttpContext.Request.Cookies.ContainsKey(uiOptions.StateCookieName))
         {
             return false;
         }
 
-        return !string.IsNullOrEmpty(HttpContext.Request.Cookies[loginOptions.StateCookieName]);
+        return !string.IsNullOrEmpty(HttpContext.Request.Cookies[uiOptions.StateCookieName]);
     }
 
-    private BankIdUiViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
+    private BankIdUiViewModel GetUiViewModel(string returnUrl, string uiOptions, BankIdUiOptions unprotectedUiOptions, AntiforgeryTokenSet antiforgeryTokens)
     {
         Validators.ThrowIfNullOrWhitespace(antiforgeryTokens.RequestToken, nameof(antiforgeryTokens.RequestToken));
 
-        var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
+        var initialStatusMessage = GetInitialStatusMessage(unprotectedUiOptions);
         var loginScriptOptions = new BankIdUiScriptOptions(
             GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
             GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiStatusActionName),
@@ -97,9 +96,9 @@ public abstract class BankIdUiControllerBase : Controller
 
         return new BankIdUiViewModel(
             returnUrl,
-            Url.Content(unprotectedLoginOptions.CancelReturnUrl),
-            loginOptions,
-            unprotectedLoginOptions,
+            Url.Content(unprotectedUiOptions.CancelReturnUrl),
+            uiOptions,
+            unprotectedUiOptions,
             loginScriptOptions,
             SerializeToJson(loginScriptOptions),
             antiforgeryTokens.RequestToken
@@ -112,9 +111,9 @@ public abstract class BankIdUiControllerBase : Controller
                ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdApiControllerName, action));
     }
 
-    private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)
+    private static MessageShortName GetInitialStatusMessage(BankIdUiOptions uiOptions)
     {
-        return loginOptions.SameDevice
+        return uiOptions.SameDevice
             ? MessageShortName.RFA13
             : MessageShortName.RFA1QR;
     }

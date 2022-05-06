@@ -51,19 +51,19 @@
         function showOrderRefStatus(orderRef) {
             var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
             var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
-            var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
+            var uiOptionsElement = formElement.querySelector('[name="UiOptions"]');
 
             showStatus(options.initialStatusMessage, 'white', true);
-            checkStatus(requestVerificationTokenElement.value, returnUrlElement.value, loginOptionsElement.value, orderRef);
+            checkStatus(requestVerificationTokenElement.value, returnUrlElement.value, uiOptionsElement.value, orderRef);
         }
 
         function login() {
             var requestVerificationTokenElement = formElement.querySelector('[name="RequestVerificationToken"]');
             var returnUrlElement = formElement.querySelector('[name="ReturnUrl"]');
             var cancelReturnUrlElement = formElement.querySelector('[name="CancelReturnUrl"]');
-            var loginOptionsElement = formElement.querySelector('[name="LoginOptions"]');
+            var uiOptionsElement = formElement.querySelector('[name="UiOptions"]');
 
-            initialize(requestVerificationTokenElement.value, returnUrlElement.value, cancelReturnUrlElement.value, loginOptionsElement.value);
+            initialize(requestVerificationTokenElement.value, returnUrlElement.value, cancelReturnUrlElement.value, uiOptionsElement.value);
         }
 
         function resetUi() {
@@ -74,12 +74,12 @@
 
         var autoStartAttempts = 0;
         var loginIsCancelledByUser = false;
-        function initialize(requestVerificationToken, returnUrl, cancelUrl, loginOptions) {
+        function initialize(requestVerificationToken, returnUrl, cancelUrl, uiOptions) {
             loginIsCancelledByUser = false;
 
             function enableCancelButton(orderRef) {
                 var onCancelButtonClick = function(event) {
-                    cancel(requestVerificationToken, cancelUrl, orderRef, loginOptions);
+                    cancel(requestVerificationToken, cancelUrl, orderRef, uiOptions);
                     event.target.removeEventListener('click', onCancelButtonClick);
                 };
                 cancelButtonElement.addEventListener('click', onCancelButtonClick);
@@ -87,7 +87,7 @@
 
             postJson(options.bankIdInitializeApiUrl, requestVerificationToken, {
                 'returnUrl': returnUrl,
-                'loginOptions': loginOptions
+                'uiOptions': uiOptions
             })
                 .then(function (data) {
                     if (data.isAutoLaunch) {
@@ -121,7 +121,7 @@
                     showStatus(options.initialStatusMessage, 'white', true);
 
                     if (data.checkStatus) {
-                        checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
+                        checkStatus(requestVerificationToken, returnUrl, uiOptions, data.orderRef);
                     }
                 }).catch(function (error) {
                     showStatus(error.message, 'danger', false);
@@ -131,7 +131,7 @@
                 });
         }
 
-        function checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef) {
+        function checkStatus(requestVerificationToken, returnUrl, uiOptions, orderRef) {
             if (loginIsCancelledByUser) {
                 return;
             }
@@ -139,7 +139,7 @@
             postJson(options.bankIdStatusApiUrl, requestVerificationToken, {
                     'orderRef': orderRef,
                     'returnUrl': returnUrl,
-                    'loginOptions': loginOptions,
+                    'uiOptions': uiOptions,
                     'autoStartAttempts': autoStartAttempts
                 })
                 .then(function (data) {
@@ -152,7 +152,7 @@
                         autoStartAttempts = 0;
                         showStatus(data.statusMessage, 'white', true);
                         setTimeout(function () {
-                            checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
+                            checkStatus(requestVerificationToken, returnUrl, uiOptions, orderRef);
                         }, options.statusRefreshIntervalMs);
                     }
                 }).catch(function (error) {
@@ -210,7 +210,7 @@
             show(qrCodeElement);
         }
 
-        function cancel(requestVerificationToken, cancelReturnUrl, orderRef, loginOptions) {
+        function cancel(requestVerificationToken, cancelReturnUrl, orderRef, uiOptions) {
             loginIsCancelledByUser = true;
 
             if (!orderRef) {
@@ -222,7 +222,7 @@
                 requestVerificationToken,
                 {
                     'orderRef': orderRef,
-                    'loginOptions': loginOptions
+                    'uiOptions': uiOptions
                 }).finally(function() {
                     window.location.href = cancelReturnUrl;
                 });

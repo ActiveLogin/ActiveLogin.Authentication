@@ -82,7 +82,7 @@ public static class AuthenticationBuilderBankIdExtensions
 
         services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
         services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-        services.AddTransient<IBankIdLoginOptionsProtector, BankIdLoginOptionsProtector>();
+        services.AddTransient<IBankIdUiOptionsProtector, BankIdUiOptionsProtector>();
         services.AddTransient<IBankIdUiAuthResultProtector, BankIdUiAuthResultProtector>();
 
         services.AddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();

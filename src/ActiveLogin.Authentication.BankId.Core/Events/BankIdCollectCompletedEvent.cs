@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// </summary>
 public class BankIdCollectCompletedEvent : BankIdEvent
 {
-    internal BankIdCollectCompletedEvent(string orderRef, CompletionData completionData, BankIdSupportedDevice detectedUserDevice, BankIdLoginOptions idOptions)
+    internal BankIdCollectCompletedEvent(string orderRef, CompletionData completionData, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
         : base(BankIdEventTypes.CollectCompletedId, BankIdEventTypes.CollectCompletedName, BankIdEventSeverity.Success)
     {
         OrderRef = orderRef;
@@ -25,5 +25,5 @@ public class BankIdCollectCompletedEvent : BankIdEvent
 
     public BankIdSupportedDevice DetectedUserDevice { get; }
 
-    public BankIdLoginOptions BankIdOptions { get; }
+    public BankIdFlowOptions BankIdOptions { get; }
 }

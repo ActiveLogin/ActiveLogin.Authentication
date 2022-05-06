@@ -6,12 +6,11 @@ public class BankIdUiApiInitializeRequest
 {
     public BankIdUiApiInitializeRequest()
     {
-
     }
 
     [Required]
     public string? ReturnUrl { get; set; }
 
     [Required]
-    public string? LoginOptions { get; set; }
+    public string? UiOptions { get; set; }
 }

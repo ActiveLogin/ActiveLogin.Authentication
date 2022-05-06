@@ -1,15 +1,13 @@
-using ActiveLogin.Authentication.BankId.Core.Models;
-
 using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdLoginOptionsSerializer : IDataSerializer<BankIdLoginOptions>
+internal class BankIdUiOptionsSerializer : IDataSerializer<BankIdUiOptions>
 {
     private const int FormatVersion = 5;
     private const char CertificatePoliciesSeparator = ';';
 
-    public byte[] Serialize(BankIdLoginOptions model)
+    public byte[] Serialize(BankIdUiOptions model)
     {
         using var memory = new MemoryStream();
         using var writer = new BinaryWriter(memory);
@@ -26,14 +24,14 @@ internal class BankIdLoginOptionsSerializer : IDataSerializer<BankIdLoginOptions
         return memory.ToArray();
     }
 
-    public BankIdLoginOptions Deserialize(byte[] data)
+    public BankIdUiOptions Deserialize(byte[] data)
     {
         using var memory = new MemoryStream(data);
         using var reader = new BinaryReader(memory);
 
         if (reader.ReadInt32() != FormatVersion)
         {
-            throw new IncompatibleSerializationVersion(nameof(BankIdLoginOptions));
+            throw new IncompatibleSerializationVersion(nameof(BankIdUiOptions));
         }
 
         var certificatePolicies = reader.ReadString().Split(new[] { CertificatePoliciesSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -42,7 +40,7 @@ internal class BankIdLoginOptionsSerializer : IDataSerializer<BankIdLoginOptions
         var cancelReturnUrl = reader.ReadString();
         var stateCookieName = reader.ReadString();
 
-        return new BankIdLoginOptions(
+        return new BankIdUiOptions(
             certificatePolicies,
             autoLaunch,
             allowBiometric,

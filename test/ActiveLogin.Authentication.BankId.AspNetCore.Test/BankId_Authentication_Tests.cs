@@ -12,7 +12,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
-using ActiveLogin.Authentication.BankId.Core.Models;
 
 using AngleSharp.Html.Dom;
 
@@ -37,16 +36,16 @@ public class BankId_Authentication_Tests
 {
     private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
 
-    private readonly Mock<IBankIdLoginOptionsProtector> _bankIdLoginOptionsProtector;
+    private readonly Mock<IBankIdUiOptionsProtector> _bankIdUiOptionsProtector;
 
     public BankId_Authentication_Tests()
     {
-        _bankIdLoginOptionsProtector = new Mock<IBankIdLoginOptionsProtector>();
-        _bankIdLoginOptionsProtector
+        _bankIdUiOptionsProtector = new Mock<IBankIdUiOptionsProtector>();
+        _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(new BankIdLoginOptions(new List<string>(), false, false, "/", DefaultStateCookieName));
-        _bankIdLoginOptionsProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Returns(new BankIdUiOptions(new List<string>(), false, false, "/", DefaultStateCookieName));
+        _bankIdUiOptionsProtector
+            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
     }
 
@@ -191,11 +190,11 @@ public class BankId_Authentication_Tests
                     config.Filters.Add(new AuthorizeFilter(policy));
                 });
 
-                services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
             });
 
         // Act
-        var request = CreateRequestWithStateCookie( server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = CreateRequestWithStateCookie( server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
 
@@ -207,8 +206,8 @@ public class BankId_Authentication_Tests
     public async Task BankIdAuthentication_Login_Returns_Form_With_Resolved_Cancel_Url()
     {
         // Arrange
-        var options = new BankIdLoginOptions(new List<string>(), true, false, "~/cru", DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+        var options = new BankIdUiOptions(new List<string>(), true, false, "~/cru", DefaultStateCookieName);
+        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(options);
@@ -230,7 +229,7 @@ public class BankId_Authentication_Tests
             });
 
         // Act
-        var request = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
         // Assert
@@ -259,11 +258,11 @@ public class BankId_Authentication_Tests
             }),
             services =>
             {
-                services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
             });
 
         // Act
-        var request = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
         // Assert
@@ -276,7 +275,7 @@ public class BankId_Authentication_Tests
         Assert.NotNull(document.GetElement<IHtmlImageElement>("img.activelogin-bankid-ui--qr-code-image"));
         Assert.Equal("/", document.GetInputValue("input[name='ReturnUrl']"));
         Assert.Equal("/", document.GetInputValue("input[name='CancelReturnUrl']"));
-        Assert.Equal("Ignored", document.GetInputValue("input[name='LoginOptions']"));
+        Assert.Equal("Ignored", document.GetInputValue("input[name='UiOptions']"));
     }
 
     [Fact]
@@ -297,11 +296,11 @@ public class BankId_Authentication_Tests
             }),
             services =>
             {
-                services.AddTransient(s => _bankIdLoginOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
             });
 
         // Act
-        var request = server.CreateRequest("/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = server.CreateRequest("/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         request.AddHeader("Cookie", "");
         var transaction = await request.GetAsync();
 
@@ -314,13 +313,13 @@ public class BankId_Authentication_Tests
     public async Task AutoLaunch_Sets_Correct_RedirectUri()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), true, false, string.Empty, DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+        var autoLaunchOptions = new BankIdUiOptions(new List<string>(), true, false, string.Empty, DefaultStateCookieName);
+        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
         mockProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
 
         using var server = CreateServer(
@@ -345,7 +344,7 @@ public class BankId_Authentication_Tests
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
         var testOptions = "TestOptions";
-        var initializeRequestBody = new { returnUrl = testReturnUrl, loginOptions = testOptions };
+        var initializeRequestBody = new { returnUrl = testReturnUrl, uiOptions = testOptions };
 
         // Act
         var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
@@ -358,7 +357,7 @@ public class BankId_Authentication_Tests
         Assert.True(responseObject.IsAutoLaunch);
 
         var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
-        var expectedUrl = $"http://localhost/ActiveLogin/BankId/Auth?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
+        var expectedUrl = $"http://localhost/ActiveLogin/BankId/Auth?returnUrl={encodedReturnParam}&uiOptions={testOptions}";
         Assert.Equal(expectedUrl, responseObject.RedirectUri);
     }
 
@@ -366,13 +365,13 @@ public class BankId_Authentication_Tests
     public async Task Api_Always_Returns_CamelCase_Json_For_Http200Ok()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+        var autoLaunchOptions = new BankIdUiOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
+        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
         mockProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
 
         using var server = CreateServer(
@@ -402,7 +401,7 @@ public class BankId_Authentication_Tests
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
         var testOptions = "TestOptions";
-        var initializeRequestBody = new { returnUrl = testReturnUrl, loginOptions = testOptions };
+        var initializeRequestBody = new { returnUrl = testReturnUrl, uiOptions = testOptions };
 
         //Act
         var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
@@ -420,13 +419,13 @@ public class BankId_Authentication_Tests
     public async Task Api_Always_Returns_CamelCase_Json_For_Http400BadRequest()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+        var autoLaunchOptions = new BankIdUiOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
+        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
         mockProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
 
         using var server = CreateServer(
@@ -472,13 +471,13 @@ public class BankId_Authentication_Tests
     public async Task Cancel_Calls_CancelApi()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdLoginOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdLoginOptionsProtector>();
+        var autoLaunchOptions = new BankIdUiOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
+        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
         mockProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
         var testBankIdApi = new TestBankIdApi(new BankIdSimulatedApiClient());
 
@@ -503,7 +502,7 @@ public class BankId_Authentication_Tests
             });
 
         // Arrange csrf info
-        var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
@@ -512,7 +511,7 @@ public class BankId_Authentication_Tests
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
         var testOptions = "TestOptions";
-        var initializeRequest = new JsonContent(new { returnUrl = testReturnUrl, loginOptions = testOptions });
+        var initializeRequest = new JsonContent(new { returnUrl = testReturnUrl, uiOptions = testOptions });
         initializeRequest.Headers.Add("Cookie", loginCookies);
         initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
@@ -525,7 +524,7 @@ public class BankId_Authentication_Tests
         var cancelRequest = new JsonContent(new
         {
             orderRef = initializeObject.OrderRef,
-            loginOptions = "TestOptions",
+            uiOptions = "TestOptions",
             cancelReturnUrl = "/"
         });
         cancelRequest.Headers.Add("Cookie", loginCookies);
@@ -542,7 +541,7 @@ public class BankId_Authentication_Tests
     private async Task<HttpResponseMessage> GetInitializeResponse(TestServer server, object initializeRequestBody)
     {
         // Arrange csrf info
-        var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);

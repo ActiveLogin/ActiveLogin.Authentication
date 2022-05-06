@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// </summary>
 public class BankIdCollectFailureEvent : BankIdEvent
 {
-    internal BankIdCollectFailureEvent(string orderRef, CollectHintCode hintCode, BankIdSupportedDevice detectedUserDevice, BankIdLoginOptions idOptions)
+    internal BankIdCollectFailureEvent(string orderRef, CollectHintCode hintCode, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
         : base(BankIdEventTypes.CollectFailureId, BankIdEventTypes.CollectFailureName, BankIdEventSeverity.Failure)
     {
         OrderRef = orderRef;
@@ -25,5 +25,5 @@ public class BankIdCollectFailureEvent : BankIdEvent
 
     public BankIdSupportedDevice DetectedUserDevice { get; }
 
-    public BankIdLoginOptions BankIdOptions { get; }
+    public BankIdFlowOptions BankIdOptions { get; }
 }

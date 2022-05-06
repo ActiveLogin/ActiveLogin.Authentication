@@ -1,5 +1,3 @@
-using ActiveLogin.Authentication.BankId.Core.Models;
-
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
 public class BankIdUiViewModel
@@ -7,16 +5,16 @@ public class BankIdUiViewModel
     internal BankIdUiViewModel(
         string returnUrl,
         string cancelReturnUrl,
-        string loginOptions,
-        BankIdLoginOptions unprotectedLoginOptions,
+        string uiOptions,
+        BankIdUiOptions unprotectedUiOptions,
         BankIdUiScriptOptions uiScriptOptions,
         string loginScriptOptionsJson,
         string antiXsrfRequestToken)
     {
         ReturnUrl = returnUrl;
         CancelReturnUrl = cancelReturnUrl;
-        LoginOptions = loginOptions;
-        UnprotectedLoginOptions = unprotectedLoginOptions;
+        UiOptions = uiOptions;
+        UnprotectedUiOptions = unprotectedUiOptions;
         UiScriptOptions = uiScriptOptions;
         LoginScriptOptionsJson = loginScriptOptionsJson;
         AntiXsrfRequestToken = antiXsrfRequestToken;
@@ -25,8 +23,8 @@ public class BankIdUiViewModel
     public string ReturnUrl { get; }
     public string CancelReturnUrl { get; }
 
-    public string LoginOptions { get; }
-    public BankIdLoginOptions UnprotectedLoginOptions { get; }
+    public string UiOptions { get; }
+    public BankIdUiOptions UnprotectedUiOptions { get; }
 
     public BankIdUiScriptOptions UiScriptOptions { get; }
     public string LoginScriptOptionsJson { get; }

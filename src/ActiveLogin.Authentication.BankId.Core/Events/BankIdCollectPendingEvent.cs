@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// </summary>
 public class BankIdCollectPendingEvent : BankIdEvent
 {
-    internal BankIdCollectPendingEvent(string orderRef, CollectHintCode hintCode, BankIdSupportedDevice detectedUserDevice, BankIdLoginOptions idOptions)
+    internal BankIdCollectPendingEvent(string orderRef, CollectHintCode hintCode, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
         : base(BankIdEventTypes.CollectPendingId, BankIdEventTypes.CollectPendingName, BankIdEventSeverity.Information)
     {
         OrderRef = orderRef;
@@ -25,5 +25,5 @@ public class BankIdCollectPendingEvent : BankIdEvent
 
     public BankIdSupportedDevice DetectedUserDevice { get; }
 
-    public BankIdLoginOptions BankIdOptions { get; }
+    public BankIdFlowOptions BankIdOptions { get; }
 }
