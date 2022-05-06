@@ -1,4 +1,18 @@
-function activeloginInit(options : any) {
+interface IBankIdUiScriptOptions {
+    initialStatusMessage: string;
+    unknownErrorMessage: string;
+    unsupportedBrowserErrorMessage: string;
+
+    bankIdInitializeApiUrl: string;
+    bankIdStatusApiUrl: string;
+    bankIdQrCodeApiUrl: string;
+    bankIdCancelApiUrl: string;
+
+    statusRefreshIntervalMs: number;
+    qrCodeRefreshIntervalMs: number;
+}
+
+function activeloginInit(options: IBankIdUiScriptOptions) {
     // Pre check
 
     const requiredFeatures = [window.fetch, window.sessionStorage];
@@ -49,13 +63,13 @@ function activeloginInit(options : any) {
     function showOrderRefStatus(orderRef : string) {
         const requestVerificationTokenElement = <HTMLInputElement>formElement.querySelector('[name="RequestVerificationToken"]');
         const returnUrlElement = <HTMLInputElement>formElement.querySelector('[name="ReturnUrl"]');
-        const loginOptionsElement = <HTMLInputElement>formElement.querySelector('[name="LoginOptions"]');
+        const uiOptionsElement = <HTMLInputElement>formElement.querySelector('[name="UiOptions"]');
 
         showStatus(options.initialStatusMessage, "white", true);
         checkStatus(
             requestVerificationTokenElement.value,
             returnUrlElement.value,
-            loginOptionsElement.value,
+            uiOptionsElement.value,
             orderRef
         );
     }
@@ -64,13 +78,13 @@ function activeloginInit(options : any) {
         const requestVerificationTokenElement = <HTMLInputElement>formElement.querySelector('[name="RequestVerificationToken"]');
         const returnUrlElement = <HTMLInputElement>formElement.querySelector('[name="ReturnUrl"]');
         const cancelReturnUrlElement = <HTMLInputElement>formElement.querySelector('[name="CancelReturnUrl"]');
-        const loginOptionsElement = <HTMLInputElement>formElement.querySelector('[name="LoginOptions"]');
+        const uiOptionsElement = <HTMLInputElement>formElement.querySelector('[name="UiOptions"]');
 
         initialize(
             requestVerificationTokenElement.value,
             returnUrlElement.value,
             cancelReturnUrlElement.value,
-            loginOptionsElement.value
+            uiOptionsElement.value
         );
     }
 
@@ -83,12 +97,12 @@ function activeloginInit(options : any) {
     var autoStartAttempts = 0;
     var loginIsCancelledByUser = false;
 
-    function initialize(requestVerificationToken: string, returnUrl: string, cancelUrl: string, loginOptions: string) {
+    function initialize(requestVerificationToken: string, returnUrl: string, cancelUrl: string, uiOptions: string) {
         loginIsCancelledByUser = false;
 
         function enableCancelButton(orderRef : string = null) {
             var onCancelButtonClick = (event : Event) => {
-                cancel(requestVerificationToken, cancelUrl, loginOptions, orderRef);
+                cancel(requestVerificationToken, cancelUrl, uiOptions, orderRef);
                 event.target.removeEventListener("click", onCancelButtonClick);
             };
             cancelButtonElement.addEventListener("click", onCancelButtonClick);
@@ -98,7 +112,7 @@ function activeloginInit(options : any) {
             requestVerificationToken,
             {
                 "returnUrl": returnUrl,
-                "loginOptions": loginOptions
+                "uiOptions": uiOptions
             })
             .then(data => {
                 if (data.isAutoLaunch) {
@@ -132,7 +146,7 @@ function activeloginInit(options : any) {
                 showStatus(options.initialStatusMessage, "white", true);
 
                 if (data.checkStatus) {
-                    checkStatus(requestVerificationToken, returnUrl, loginOptions, data.orderRef);
+                    checkStatus(requestVerificationToken, returnUrl, uiOptions, data.orderRef);
                 }
             })
             .catch(error => {
@@ -143,7 +157,7 @@ function activeloginInit(options : any) {
             });
     }
 
-    function checkStatus(requestVerificationToken: string, returnUrl: string, loginOptions: string, orderRef: string) {
+    function checkStatus(requestVerificationToken: string, returnUrl: string, uiOptions: string, orderRef: string) {
         if (loginIsCancelledByUser) {
             return;
         }
@@ -153,7 +167,7 @@ function activeloginInit(options : any) {
             {
                 "orderRef": orderRef,
                 "returnUrl": returnUrl,
-                "loginOptions": loginOptions,
+                "uiOptions": uiOptions,
                 "autoStartAttempts": autoStartAttempts
             })
             .then(data => {
@@ -166,7 +180,7 @@ function activeloginInit(options : any) {
                     autoStartAttempts = 0;
                     showStatus(data.statusMessage, "white", true);
                     setTimeout(() => {
-                        checkStatus(requestVerificationToken, returnUrl, loginOptions, orderRef);
+                        checkStatus(requestVerificationToken, returnUrl, uiOptions, orderRef);
                     }, options.statusRefreshIntervalMs);
                 }
             })
@@ -225,7 +239,7 @@ function activeloginInit(options : any) {
         show(qrCodeElement);
     }
 
-    function cancel(requestVerificationToken: string, cancelReturnUrl: string, loginOptions: string, orderRef: string = null) {
+    function cancel(requestVerificationToken: string, cancelReturnUrl: string, uiOptions: string, orderRef: string = null) {
         loginIsCancelledByUser = true;
 
         if (!orderRef) {
@@ -237,7 +251,7 @@ function activeloginInit(options : any) {
             requestVerificationToken,
             {
                 "orderRef": orderRef,
-                "loginOptions": loginOptions
+                "uiOptions": uiOptions
             })
             .finally(() => {
                 window.location.href = cancelReturnUrl;
@@ -246,7 +260,7 @@ function activeloginInit(options : any) {
 
     // Helpers
 
-    function postJson(url: string, requestVerificationToken: string, data: any) {
+    function postJson<TResult>(url: string, requestVerificationToken: string, data: any) {
         return fetch(url,
             {
                 method: "POST",
