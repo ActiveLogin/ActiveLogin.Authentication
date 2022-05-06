@@ -3,6 +3,7 @@ using System.Text.Json;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
@@ -43,9 +44,12 @@ public class BankIdController : Controller
     [HttpGet]
     public async Task<ActionResult> Login(string returnUrl, string loginOptions)
     {
+        Validators.ThrowIfNullOrWhitespace(returnUrl);
+        Validators.ThrowIfNullOrWhitespace(loginOptions);
+
         if (!Url.IsLocalUrl(returnUrl))
         {
-            throw new Exception(BankIdConstants.ErrorMessages.InvalidReturnUrl);
+            throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
         var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
@@ -75,6 +79,8 @@ public class BankIdController : Controller
 
     private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
     {
+        Validators.ThrowIfNullOrWhitespace(antiforgeryTokens.RequestToken, nameof(antiforgeryTokens.RequestToken));
+
         var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
         var loginScriptOptions = new BankIdLoginScriptOptions(
             GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
@@ -99,13 +105,14 @@ public class BankIdController : Controller
             unprotectedLoginOptions,
             loginScriptOptions,
             SerializeToJson(loginScriptOptions),
-            antiforgeryTokens.RequestToken ?? throw new ArgumentNullException(nameof(antiforgeryTokens.RequestToken))
+            antiforgeryTokens.RequestToken
         );
     }
 
     private string GetBankIdApiActionUrl(string action)
     {
-        return Url.Action(action, BankIdConstants.Routes.BankIdApiControllerName) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdApiControllerName, action));
+        return Url.Action(action, BankIdConstants.Routes.BankIdApiControllerName)
+               ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdApiControllerName, action));
     }
 
     private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)

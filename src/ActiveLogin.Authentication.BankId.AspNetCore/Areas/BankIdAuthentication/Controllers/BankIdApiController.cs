@@ -3,6 +3,7 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 using Microsoft.AspNetCore.Authorization;
@@ -60,8 +61,8 @@ public class BankIdApiController : Controller
     [HttpPost(BankIdConstants.Routes.BankIdApiInitializeActionName)]
     public async Task<ActionResult<BankIdLoginApiInitializeResponse>> Initialize(BankIdLoginApiInitializeRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request.ReturnUrl, nameof(request.ReturnUrl));
-        ArgumentNullException.ThrowIfNull(request.LoginOptions, nameof(request.LoginOptions));
+        Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
+        Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
 
         var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);
 
@@ -109,9 +110,9 @@ public class BankIdApiController : Controller
     [HttpPost(BankIdConstants.Routes.BankIdApiStatusActionName)]
     public async Task<ActionResult> Status(BankIdLoginApiStatusRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request.OrderRef, nameof(request.OrderRef));
-        ArgumentNullException.ThrowIfNull(request.ReturnUrl, nameof(request.ReturnUrl));
-        ArgumentNullException.ThrowIfNull(request.LoginOptions, nameof(request.LoginOptions));
+        Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
+        Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
+        Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
 
         if (!Url.IsLocalUrl(request.ReturnUrl))
         {
@@ -162,7 +163,7 @@ public class BankIdApiController : Controller
     [HttpPost(BankIdConstants.Routes.BankIdApiQrCodeActionName)]
     public ActionResult QrCode(BankIdLoginApiQrCodeRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request.QrStartState, nameof(request.QrStartState));
+        Validators.ThrowIfNullOrWhitespace(request.QrStartState, nameof(request.QrStartState));
 
         var qrStartState = _qrStartStateProtector.Unprotect(request.QrStartState);
         var qrCodeAsBase64 = _bankIdFlowService.GetQrCodeAsBase64(qrStartState);
@@ -174,8 +175,8 @@ public class BankIdApiController : Controller
     [HttpPost(BankIdConstants.Routes.BankIdApiCancelActionName)]
     public async Task<ActionResult> Cancel(BankIdLoginApiCancelRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request.OrderRef, nameof(request.OrderRef));
-        ArgumentNullException.ThrowIfNull(request.LoginOptions, nameof(request.LoginOptions));
+        Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
+        Validators.ThrowIfNullOrWhitespace(request.LoginOptions, nameof(request.LoginOptions));
 
         var orderRef = _orderRefProtector.Unprotect(request.OrderRef);
         var loginOptions = _loginOptionsProtector.Unprotect(request.LoginOptions);

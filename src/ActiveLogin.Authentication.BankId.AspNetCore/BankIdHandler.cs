@@ -4,6 +4,7 @@ using System.Text.Encodings.Web;
 
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
@@ -20,6 +21,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
 public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 {
+    private const string StateCookieNameParemeterName = "StateCookie.Name";
     private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
     private readonly IBankIdLoginResultProtector _loginResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
@@ -173,8 +175,8 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 
     private void AppendStateCookie(AuthenticationProperties properties)
     {
-        ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
         ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
 
         var state = new BankIdState(properties);
         var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
@@ -185,8 +187,8 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 
     private BankIdState? GetStateFromCookie()
     {
-        ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
         ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
 
         var protectedState = Request.Cookies[Options.StateCookie.Name];
         if (string.IsNullOrEmpty(protectedState))
@@ -200,7 +202,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 
     private void DeleteStateCookie()
     {
-        ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
 
         var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
         Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
