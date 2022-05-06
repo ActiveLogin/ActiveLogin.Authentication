@@ -1,18 +1,22 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
+
+public class BankIdLoginApiStatusRequest
 {
-    public class BankIdLoginApiStatusRequest
+    public BankIdLoginApiStatusRequest()
     {
-        public BankIdLoginApiStatusRequest()
-        {
 
-        }
-
-        [Required]
-        public string? OrderRef { get; set; }
-        public string? ReturnUrl { get; set; }
-        public string? LoginOptions { get; set; }
-        public int AutoStartAttempts { get; set; }
     }
+
+    [Required]
+    public string? OrderRef { get; set; }
+
+    [Required]
+    public string? ReturnUrl { get; set; }
+
+    [Required]
+    public string? LoginOptions { get; set; }
+
+    public int AutoStartAttempts { get; set; }
 }

@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8E4C
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "AzureProvisioningSample", "samples\AzureProvisioningSample\AzureProvisioningSample.deployproj", "{ABC52082-8A5D-426E-B25A-D92934A51A4D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.Azure", "src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj", "{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AzureKeyVault", "src\ActiveLogin.Authentication.BankId.AzureKeyVault\ActiveLogin.Authentication.BankId.AzureKeyVault.csproj", "{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4764448D-A014-403F-A956-3F4CFFA00AF2}"
 	ProjectSection(SolutionItems) = preProject
@@ -62,9 +62,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer.ClientSample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.GrandId.AspNetCore.Test", "test\ActiveLogin.Authentication.GrandId.AspNetCore.Test\ActiveLogin.Authentication.GrandId.AspNetCore.Test.csproj", "{8AA5BD02-FCBB-4A1B-9BCA-7E6463D2DBA9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test", "test\ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test\ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test.csproj", "{436397D0-EF12-45AC-BAD9-D4906C911763}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AzureKeyVault.Test", "test\ActiveLogin.Authentication.BankId.AzureKeyVault.Test\ActiveLogin.Authentication.BankId.AzureKeyVault.Test.csproj", "{436397D0-EF12-45AC-BAD9-D4906C911763}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.QRCoder", "src\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.csproj", "{AC23B5F8-3B80-43F4-8FD1-2FA4436AF227}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.QRCoder", "src\ActiveLogin.Authentication.BankId.QRCoder\ActiveLogin.Authentication.BankId.QRCoder.csproj", "{AC23B5F8-3B80-43F4-8FD1-2FA4436AF227}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{84E9CCEE-4BF2-4D8D-B70B-3FB317328F29}"
 	ProjectSection(SolutionItems) = preProject
@@ -78,11 +78,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEM
 		.github\ISSUE_TEMPLATE\feature_request.md = .github\ISSUE_TEMPLATE\feature_request.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor", "src\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.csproj", "{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AzureMonitor", "src\ActiveLogin.Authentication.BankId.AzureMonitor\ActiveLogin.Authentication.BankId.AzureMonitor.csproj", "{4CCA4973-BDCC-40B3-A09B-F8256DB2A77A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AspNetCore.UAParser", "src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj", "{BB808E5D-A5E6-4195-A815-37209CFD8ABD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.UAParser", "src\ActiveLogin.Authentication.BankId.UAParser\ActiveLogin.Authentication.BankId.UAParser.csproj", "{BB808E5D-A5E6-4195-A815-37209CFD8ABD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test", "test\ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test\ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test.csproj", "{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.UAParser.Test", "test\ActiveLogin.Authentication.BankId.UAParser.Test\ActiveLogin.Authentication.BankId.UAParser.Test.csproj", "{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{56AC5092-82E5-47D4-8520-1DE424845E58}"
 	ProjectSection(SolutionItems) = preProject
@@ -99,6 +99,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "articles", "articles", "{A6
 		docs\articles\monitor.md = docs\articles\monitor.md
 		docs\articles\toc.yml = docs\articles\toc.yml
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.Core", "src\ActiveLogin.Authentication.BankId.Core\ActiveLogin.Authentication.BankId.Core.csproj", "{61360399-F211-4B18-88EE-2A6F4D2C1FE6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.Core.Test", "test\ActiveLogin.Authentication.BankId.Core.Test\ActiveLogin.Authentication.BankId.Core.Test.csproj", "{D3673E53-A774-46F0-9E44-97DF8F52D6D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console.FlowSample", "samples\Console.FlowSample\Console.FlowSample.csproj", "{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -178,6 +184,18 @@ Global
 		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61360399-F211-4B18-88EE-2A6F4D2C1FE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61360399-F211-4B18-88EE-2A6F4D2C1FE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61360399-F211-4B18-88EE-2A6F4D2C1FE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61360399-F211-4B18-88EE-2A6F4D2C1FE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -206,6 +224,9 @@ Global
 		{7FFD35A9-1182-4430-BFEE-AA5C71915DB3} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
 		{56AC5092-82E5-47D4-8520-1DE424845E58} = {84E9CCEE-4BF2-4D8D-B70B-3FB317328F29}
 		{A66B2FFF-0CB6-4F48-83DA-6C1F7DC98EBF} = {4764448D-A014-403F-A956-3F4CFFA00AF2}
+		{61360399-F211-4B18-88EE-2A6F4D2C1FE6} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
+		{D3673E53-A774-46F0-9E44-97DF8F52D6D8} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
+		{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}

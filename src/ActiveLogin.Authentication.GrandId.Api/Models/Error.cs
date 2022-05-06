@@ -1,20 +1,19 @@
 ﻿using System.Runtime.Serialization;
 
-namespace ActiveLogin.Authentication.GrandId.Api.Models
+namespace ActiveLogin.Authentication.GrandId.Api.Models;
+
+[DataContract]
+internal class Error
 {
-    [DataContract]
-    internal class Error
+    public Error(string code, string message)
     {
-        public Error(string code, string message)
-        {
-            Code = code;
-            Message = message;
-        }
-
-        [DataMember(Name = "code")]
-        public string Code { get; private set; }
-
-        [DataMember(Name = "message")]
-        public string Message { get; private set; }
+        Code = code;
+        Message = message;
     }
+
+    [DataMember(Name = "code")]
+    public string Code { get; private set; }
+
+    [DataMember(Name = "message")]
+    public string Message { get; private set; }
 }

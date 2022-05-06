@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Authentication;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Models
-{
-    public class BankIdState
-    {
-        public BankIdState(AuthenticationProperties authenticationProperties)
-        {
-            AuthenticationProperties = authenticationProperties;
-        }
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
-        public AuthenticationProperties AuthenticationProperties { get; }
+public class BankIdState
+{
+    public BankIdState(AuthenticationProperties authenticationProperties)
+    {
+        AuthenticationProperties = authenticationProperties;
     }
+
+    public AuthenticationProperties AuthenticationProperties { get; }
 }

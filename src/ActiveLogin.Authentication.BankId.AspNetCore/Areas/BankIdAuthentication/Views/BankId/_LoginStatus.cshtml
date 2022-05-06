@@ -2,7 +2,7 @@
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
 @inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdHandler> Localizer
 
-<div id="bankIdLoginStatus" style="display: @(Model.AutoLogin ? "block" : "none");">
+<div id="bankIdLoginStatus" style="display: block">
 
     <img src="" alt="@Localizer["Qr_Code_Image"]" class="qr-code-image img-thumbnail img-fluid mb-2" style="display: none;" />
 
@@ -16,9 +16,7 @@
         </div>
     </div>
     
-    <button id="bankIdLoginStartApp" type="button" class="btn btn-primary btn-block mt-2" style="display: none;">
-        @Localizer["BankIdUserMessage_ShortName_RFA18"]
-    </button>
+    <button id="bankIdLoginStartApp" type="button" class="btn btn-primary btn-block mt-2" style="display: none;"></button>
 
     <button type="button" class="btn btn-link btn-block btn-cancel mt-2">
         @Localizer["Cancel_Button"]

@@ -1,6 +1,11 @@
 using System.Globalization;
 
 using ActiveLogin.Authentication.BankId.AspNetCore;
+using ActiveLogin.Authentication.BankId.AzureKeyVault;
+using ActiveLogin.Authentication.BankId.AzureMonitor;
+using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.QrCoder;
+using ActiveLogin.Authentication.BankId.UaParser;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -37,9 +42,8 @@ services.Configure<CookiePolicyOptions>(options =>
     options.Secure = CookieSecurePolicy.Always;
 });
 
-// Add authentication and Active Login
-services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie()
+// Add Active Login - BankID
+services
     .AddBankId(builder =>
     {
         builder.AddDebugEventListener();
@@ -57,9 +61,6 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         builder.UseQrCoderQrCodeGenerator();
         builder.UseUaParserDeviceDetection();
 
-        builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { })
-               .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
-
         if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
         {
             builder.UseSimulatedEnvironment();
@@ -76,6 +77,15 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                 .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
+    });
+
+// Add authentication
+services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie()
+    .AddBankId(builder =>
+    {
+        builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
+        builder.AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
     });
 
 // Add Authorization

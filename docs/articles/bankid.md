@@ -152,11 +152,11 @@ services
     });
 ```
 
-___Note:___ `.AddApplicationInsightsEventListener()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) package.
+___Note:___ `.AddApplicationInsightsEventListener()` requires the [ActiveLogin.Authentication.BankId.AzureMonitor](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureMonitor/) package.
 
-___Note:___ `.UseQrCoderQrCodeGenerator()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.QRCoder](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) package.
+___Note:___ `.UseQrCoderQrCodeGenerator()` requires the [ActiveLogin.Authentication.BankId.QRCoder](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.QRCoder/) package.
 
-___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentication.BankId.AspNetCore.UAParser](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) package.
+___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentication.BankId.UAParser](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.UAParser/) package.
 
 
 ### 6. Monitoring
@@ -347,26 +347,6 @@ services
     });
 ```
 
-
-### Custom schema
-
-If you want to roll your own, complete custom config, that can be done using `.AddCustom()`. This is not recomended and in most scenarios not needed.
-
-```csharp
-services
-    .AddAuthentication()
-    .AddBankId(builder =>
-    {
-        builder
-            ...
-            .AddCustom(options => {
-                options.BankIdAutoLaunch = true;
-                options.BankIdAllowChangingPersonalIdentityNumber = false;
-            });
-    });
-```
-
-
 ### Customizing BankID options
 
 BankId options allows you to set and override some options such as these.
@@ -379,9 +359,6 @@ BankId options allows you to set and override some options such as these.
 
     // Limit possible login methods to, for example, only allow BankID on smartcard.
     options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(...);
-
-    // Turn off qr code and use personal identity number instead
-    options.BankIdUseQrCode = false;
 });
 ```
 
@@ -795,7 +772,7 @@ services
 
 Call `builder.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
 
-___Note:___ This event listener is available is available through a separate package called `ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor`.
+___Note:___ This event listener is available is available through a separate package called `ActiveLogin.Authentication.BankId.AzureMonitor`.
 
 ```csharp
 services
@@ -915,19 +892,10 @@ services.RemoveAll(typeof(IBankIdResultStore));
 
 In some scenarios, like running behind a proxy, you might want to resolve the end user IP yourself and override the default implementaion.
 
-Either register a class implementing `IEndUserIpResolver`:
+Either register a class implementing `IBankIdEndUserIpResolver`:
 
 ```csharp
-builder.UseEndUserIpResolver<EndUserIpResolver>();
-```
-
-Or use the shorthand version:
-
-```csharp
-builder.UseEndUserIpResolver(httpContext =>
-{
-    return httpContext.Connection.RemoteIpAddress.ToString();
-});
+services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
 ### Resolve user data on Auth request
@@ -988,7 +956,7 @@ services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestDynam
 
 ### Custom QR code generation
 
-By default the `ActiveLogin.Authentication.BankId.AspNetCore.Qr` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
+By default the `ActiveLogin.Authentication.BankId.QRCoder` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
 
 If you wish to provide your own implementation of QR code generation simply implement the `IBankIdQrCodeGenerator` interface and add your implementation as a service.
 
@@ -1017,7 +985,7 @@ services.AddTransient<IBankIdSupportedDeviceDetector, CustomBankIdSupportedDevic
 
 In Active Login device and browser detection is required for example to determine which URL to use to launch the BankID app, according to the BankID Relaying party Guidelines. This logic is primarily encapsulated into `IBankIdSupportedDeviceDetector`.
 
-The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supports the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.AspNetCore.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
+The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supports the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
 
 
 ### Use api wrapper only
@@ -1064,7 +1032,7 @@ return new X509Certificate2(rootCertBytes, string.Empty, X509KeyStorageFlags.Mac
 
 ### QRCode generation on Linux
 
-The `ActiveLogin.Authentication.BankId.AspNetCore.QRCoder` package has a dependency on package [libgdiplus](https://github.com/mono/libgdiplus) on Linux.
+The `ActiveLogin.Authentication.BankId.QRCoder` package has a dependency on package [libgdiplus](https://github.com/mono/libgdiplus) on Linux.
 
 If you are using Active Login with BankID QR-Codes on either WSL (Windows Subsystem for Linux) or in a Linux Docker Container your OS must have this package installed.
 

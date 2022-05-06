@@ -1,7 +1,5 @@
-using System;
-
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
+using ActiveLogin.Authentication.BankId.Core.Models;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
@@ -10,13 +8,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 
 internal class BankIdQrStartStateProtector : IBankIdQrStartStateProtector
 {
+    private const string ProtectorVersion = "v1";
+
     private readonly ISecureDataFormat<BankIdQrStartState> _secureDataFormat;
 
     public BankIdQrStartStateProtector(IDataProtectionProvider dataProtectionProvider)
     {
         var dataProtector = dataProtectionProvider.CreateProtector(
             typeof(BankIdQrStartStateProtector).FullName ?? nameof(BankIdQrStartStateProtector),
-            "v1"
+            ProtectorVersion
         );
 
         _secureDataFormat = new SecureDataFormat<BankIdQrStartState>(
@@ -36,7 +36,7 @@ internal class BankIdQrStartStateProtector : IBankIdQrStartStateProtector
 
         if (unprotected == null)
         {
-            throw new Exception("Could not unprotect BankIdQrStartState");
+            throw new Exception(BankIdConstants.ErrorMessages.CouldNotUnprotect(nameof(BankIdQrStartState)));
         }
 
         return unprotected;

@@ -1,10 +1,9 @@
-﻿using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core.Models;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
+namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+
+public interface IBankIdLoginOptionsProtector
 {
-    public interface IBankIdLoginOptionsProtector
-    {
-        string Protect(BankIdLoginOptions loginOptions);
-        BankIdLoginOptions Unprotect(string protectedLoginOptions);
-    }
+    string Protect(BankIdLoginOptions loginOptions);
+    BankIdLoginOptions Unprotect(string protectedLoginOptions);
 }

@@ -1,18 +1,25 @@
-using System.Threading.Tasks;
+using ActiveLogin.Authentication.BankId.Core.StateHandling;
+
 using Microsoft.AspNetCore.Http;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.StateHandling
-{
-    /// <summary>
-    /// Redirect to the cancel return url if the state is invalid.
-    /// </summary>
-    public class BankIdCancelUrlInvalidStateHandler : IBankIdInvalidStateHandler
-    {
-        public Task HandleAsync(HttpContext httpContext, BankIdInvalidStateContext invalidStateContext)
-        {
-            httpContext.Response.Redirect(invalidStateContext.CancelReturnUrl);
+namespace ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 
-            return Task.CompletedTask;
-        }
+/// <summary>
+/// Redirect to the cancel return url if the state is invalid.
+/// </summary>
+public class BankIdCancelUrlInvalidStateHandler : IBankIdInvalidStateHandler
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public BankIdCancelUrlInvalidStateHandler(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public Task HandleAsync(BankIdInvalidStateContext invalidStateContext)
+    {
+        _httpContextAccessor.HttpContext?.Response.Redirect(invalidStateContext.CancelReturnUrl);
+
+        return Task.CompletedTask;
     }
 }

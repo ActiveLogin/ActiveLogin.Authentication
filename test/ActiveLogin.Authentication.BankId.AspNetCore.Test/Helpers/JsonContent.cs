@@ -2,12 +2,11 @@ using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+
+internal class JsonContent : StringContent
 {
-    internal class JsonContent : StringContent
-    {
-        public JsonContent(object obj) :
-            base(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
-        { }
-    }
+    public JsonContent(object obj) :
+        base(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
+    { }
 }

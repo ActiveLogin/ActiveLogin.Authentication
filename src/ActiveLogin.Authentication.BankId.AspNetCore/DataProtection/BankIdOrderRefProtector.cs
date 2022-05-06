@@ -1,44 +1,44 @@
-using System;
-
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection
+namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+
+internal class BankIdOrderRefProtector : IBankIdOrderRefProtector
 {
-    internal class BankIdOrderRefProtector : IBankIdOrderRefProtector
+    private const string ProtectorVersion = "v1";
+
+    private readonly ISecureDataFormat<BankIdOrderRef> _secureDataFormat;
+
+    public BankIdOrderRefProtector(IDataProtectionProvider dataProtectionProvider)
     {
-        private readonly ISecureDataFormat<BankIdOrderRef> _secureDataFormat;
+        var dataProtector = dataProtectionProvider.CreateProtector(
+            typeof(BankIdLoginResultProtector).FullName ?? nameof(BankIdLoginResultProtector),
+            ProtectorVersion
+        );
 
-        public BankIdOrderRefProtector(IDataProtectionProvider dataProtectionProvider)
+        _secureDataFormat = new SecureDataFormat<BankIdOrderRef>(
+            new BankIdOrderRefSerializer(),
+            dataProtector
+        );
+    }
+
+    public string Protect(BankIdOrderRef orderRef)
+    {
+        return _secureDataFormat.Protect(orderRef);
+    }
+
+    public BankIdOrderRef Unprotect(string protectedOrderRef)
+    {
+        var unprotected = _secureDataFormat.Unprotect(protectedOrderRef);
+
+        if (unprotected == null)
         {
-            var dataProtector = dataProtectionProvider.CreateProtector(
-                typeof(BankIdLoginResultProtector).FullName ?? nameof(BankIdLoginResultProtector),
-                "v1"
-            );
-
-            _secureDataFormat = new SecureDataFormat<BankIdOrderRef>(
-                new BankIdOrderRefSerializer(),
-                dataProtector
-            );
+            throw new Exception(BankIdConstants.ErrorMessages.CouldNotUnprotect(nameof(BankIdOrderRef)));
         }
 
-        public string Protect(BankIdOrderRef orderRef)
-        {
-            return _secureDataFormat.Protect(orderRef);
-        }
-
-        public BankIdOrderRef Unprotect(string protectedOrderRef)
-        {
-            var unprotected = _secureDataFormat.Unprotect(protectedOrderRef);
-
-            if (unprotected == null)
-            {
-                throw new Exception("Could not unprotect BankIdOrderRef");
-            }
-
-            return unprotected;
-        }
+        return unprotected;
     }
 }

@@ -11,154 +11,153 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace ActiveLogin.Authentication.GrandId.AspNetCore;
+
+public abstract class GrandIdHandler<TOptions, TGetSessionResponse> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdOptions, new()
 {
-    public abstract class GrandIdHandler<TOptions, TGetSessionResponse> : RemoteAuthenticationHandler<TOptions> where TOptions : GrandIdOptions, new()
+    protected GrandIdHandler(
+        IOptionsMonitor<TOptions> options,
+        ILoggerFactory loggerFactory,
+        UrlEncoder encoder,
+        ISystemClock clock
+    )
+        : base(options, loggerFactory, encoder, clock)
     {
-        protected GrandIdHandler(
-            IOptionsMonitor<TOptions> options,
-            ILoggerFactory loggerFactory,
-            UrlEncoder encoder,
-            ISystemClock clock
-        )
-            : base(options, loggerFactory, encoder, clock)
+    }
+
+    protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
+    {
+        var state = GetStateFromCookie();
+        if (state == null)
         {
+            return HandleRequestResult.Fail("Invalid state cookie.");
         }
 
-        protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
+        DeleteStateCookie();
+
+        var sessionId = Request.Query["grandidsession"];
+        if (string.IsNullOrEmpty(sessionId))
         {
-            var state = GetStateFromCookie();
-            if (state == null)
-            {
-                return HandleRequestResult.Fail("Invalid state cookie.");
-            }
-
-            DeleteStateCookie();
-
-            var sessionId = Request.Query["grandidsession"];
-            if (string.IsNullOrEmpty(sessionId))
-            {
-                return HandleRequestResult.Fail("Missing grandidsession from GrandID.");
-            }
-
-            try
-            {
-                var sessionResult = await GetSessionResponseAsync(sessionId);
-
-                var properties = state.AuthenticationProperties;
-                var ticket = GetAuthenticationTicket(sessionResult, properties);
-
-                return HandleRequestResult.Success(ticket);
-            }
-            catch
-            {
-                return HandleRequestResult.Fail("Failed to get session from GrandID.");
-            }
+            return HandleRequestResult.Fail("Missing grandidsession from GrandID.");
         }
 
-        protected abstract Task<TGetSessionResponse> GetSessionResponseAsync(string sessionId);
-
-        private AuthenticationTicket GetAuthenticationTicket(TGetSessionResponse loginResult, AuthenticationProperties properties)
+        try
         {
-            DateTimeOffset? expiresUtc = null;
-            if (Options.TokenExpiresIn.HasValue)
-            {
-                expiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
-                properties.ExpiresUtc = expiresUtc;
-            }
+            var sessionResult = await GetSessionResponseAsync(sessionId);
 
-            var claims = GetAllClaims(loginResult, expiresUtc);
-            var identity = new ClaimsIdentity(claims, Scheme.Name, GrandIdClaimTypes.Name, GrandIdClaimTypes.Role);
-            var principal = new ClaimsPrincipal(identity);
+            var properties = state.AuthenticationProperties;
+            var ticket = GetAuthenticationTicket(sessionResult, properties);
 
-            return new AuthenticationTicket(principal, properties, Scheme.Name);
+            return HandleRequestResult.Success(ticket);
+        }
+        catch
+        {
+            return HandleRequestResult.Fail("Failed to get session from GrandID.");
+        }
+    }
+
+    protected abstract Task<TGetSessionResponse> GetSessionResponseAsync(string sessionId);
+
+    private AuthenticationTicket GetAuthenticationTicket(TGetSessionResponse loginResult, AuthenticationProperties properties)
+    {
+        DateTimeOffset? expiresUtc = null;
+        if (Options.TokenExpiresIn.HasValue)
+        {
+            expiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
+            properties.ExpiresUtc = expiresUtc;
         }
 
-        private IEnumerable<Claim> GetAllClaims(TGetSessionResponse loginResult, DateTimeOffset? expiresUtc)
+        var claims = GetAllClaims(loginResult, expiresUtc);
+        var identity = new ClaimsIdentity(claims, Scheme.Name, GrandIdClaimTypes.Name, GrandIdClaimTypes.Role);
+        var principal = new ClaimsPrincipal(identity);
+
+        return new AuthenticationTicket(principal, properties, Scheme.Name);
+    }
+
+    private IEnumerable<Claim> GetAllClaims(TGetSessionResponse loginResult, DateTimeOffset? expiresUtc)
+    {
+        var claims = new List<Claim>();
+
+        claims.AddRange(GetBaseClaims(expiresUtc));
+        claims.AddRange(GetClaims(loginResult));
+
+        return claims;
+    }
+
+    private IEnumerable<Claim> GetBaseClaims(DateTimeOffset? expiresUtc)
+    {
+        var claims = new List<Claim>();
+
+        if (expiresUtc.HasValue)
         {
-            var claims = new List<Claim>();
-
-            claims.AddRange(GetBaseClaims(expiresUtc));
-            claims.AddRange(GetClaims(loginResult));
-
-            return claims;
+            claims.Add(new Claim(GrandIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
         }
 
-        private IEnumerable<Claim> GetBaseClaims(DateTimeOffset? expiresUtc)
+        if (Options.IssueAuthenticationMethodClaim)
         {
-            var claims = new List<Claim>();
-
-            if (expiresUtc.HasValue)
-            {
-                claims.Add(new Claim(GrandIdClaimTypes.Expires, JwtSerializer.GetExpires(expiresUtc.Value)));
-            }
-
-            if (Options.IssueAuthenticationMethodClaim)
-            {
-                claims.Add(new Claim(GrandIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
-            }
-
-            if (Options.IssueIdentityProviderClaim)
-            {
-                claims.Add(new Claim(GrandIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
-            }
-
-            return claims;
+            claims.Add(new Claim(GrandIdClaimTypes.AuthenticationMethod, Options.AuthenticationMethodName));
         }
 
-        protected abstract IEnumerable<Claim> GetClaims(TGetSessionResponse loginResult);
-
-        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
+        if (Options.IssueIdentityProviderClaim)
         {
-            AppendStateCookie(properties);
-
-            var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
-            var redirectUrl = await GetRedirectUrlAsync(properties, absoluteReturnUrl);
-
-            Response.Redirect(redirectUrl);
+            claims.Add(new Claim(GrandIdClaimTypes.IdentityProvider, Options.IdentityProviderName));
         }
 
-        protected abstract Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl);
+        return claims;
+    }
 
-        private string GetAbsoluteUrl(string returnUrl)
+    protected abstract IEnumerable<Claim> GetClaims(TGetSessionResponse loginResult);
+
+    protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
+    {
+        AppendStateCookie(properties);
+
+        var absoluteReturnUrl = GetAbsoluteUrl(Options.CallbackPath);
+        var redirectUrl = await GetRedirectUrlAsync(properties, absoluteReturnUrl);
+
+        Response.Redirect(redirectUrl);
+    }
+
+    protected abstract Task<string> GetRedirectUrlAsync(AuthenticationProperties properties, string absoluteReturnUrl);
+
+    private string GetAbsoluteUrl(string returnUrl)
+    {
+        var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
+        return absoluteUri + returnUrl;
+    }
+
+    private void AppendStateCookie(AuthenticationProperties properties)
+    {
+        ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+        ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
+
+        var state = new GrandIdState(properties);
+        var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+        var cookieValue = Options.StateDataFormat.Protect(state);
+
+        Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
+    }
+
+    private GrandIdState? GetStateFromCookie()
+    {
+        ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
+        ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
+
+        var protectedState = Request.Cookies[Options.StateCookie.Name];
+        if (string.IsNullOrEmpty(protectedState))
         {
-            var absoluteUri = $"{Request.Scheme}://{Request.Host.ToUriComponent()}{Request.PathBase.ToUriComponent()}";
-            return absoluteUri + returnUrl;
+            return null;
         }
 
-        private void AppendStateCookie(AuthenticationProperties properties)
-        {
-            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
-            ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
+        var state = Options.StateDataFormat.Unprotect(protectedState);
+        return state;
+    }
 
-            var state = new GrandIdState(properties);
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            var cookieValue = Options.StateDataFormat.Protect(state);
+    private void DeleteStateCookie()
+    {
+        ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
 
-            Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
-        }
-
-        private GrandIdState? GetStateFromCookie()
-        {
-            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
-            ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
-
-            var protectedState = Request.Cookies[Options.StateCookie.Name];
-            if (string.IsNullOrEmpty(protectedState))
-            {
-                return null;
-            }
-
-            var state = Options.StateDataFormat.Unprotect(protectedState);
-            return state;
-        }
-
-        private void DeleteStateCookie()
-        {
-            ArgumentNullException.ThrowIfNull(Options.StateCookie.Name);
-
-            var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-            Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
-        }
+        var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+        Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
     }
 }

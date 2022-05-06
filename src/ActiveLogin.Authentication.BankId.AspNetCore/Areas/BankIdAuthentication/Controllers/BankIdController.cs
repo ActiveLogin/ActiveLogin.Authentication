@@ -1,122 +1,127 @@
-using System;
-using System.Threading.Tasks;
+using System.Text.Json;
+
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
-using ActiveLogin.Authentication.BankId.AspNetCore.Serialization;
+using ActiveLogin.Authentication.BankId.Core.Models;
+using ActiveLogin.Authentication.BankId.Core.StateHandling;
+using ActiveLogin.Authentication.BankId.Core.UserMessage;
+
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers;
+
+[Area(BankIdConstants.Routes.BankIdAreaName)]
+[Route("/[area]/[action]")]
+[AllowAnonymous]
+[NonController]
+public class BankIdController : Controller
 {
-    [Area(BankIdConstants.AreaName)]
-    [Route("/[area]/[action]")]
-    [AllowAnonymous]
-    public class BankIdController : Controller
+    private readonly IAntiforgery _antiforgery;
+    private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
+    private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
+    private readonly IStringLocalizer<BankIdHandler> _localizer;
+    private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
+
+    public BankIdController(
+        IAntiforgery antiforgery,
+        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+        IBankIdLoginOptionsProtector loginOptionsProtector,
+        IStringLocalizer<BankIdHandler> localizer,
+        IBankIdInvalidStateHandler bankIdInvalidStateHandler)
     {
-        private readonly IAntiforgery _antiforgery;
-        private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
-        private readonly IBankIdLoginOptionsProtector _loginOptionsProtector;
-        private readonly IStringLocalizer<BankIdHandler> _localizer;
-        private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
+        _antiforgery = antiforgery;
+        _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
+        _loginOptionsProtector = loginOptionsProtector;
+        _localizer = localizer;
+        _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
+    }
 
-        public BankIdController(
-            IAntiforgery antiforgery,
-            IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-            IBankIdLoginOptionsProtector loginOptionsProtector,
-            IStringLocalizer<BankIdHandler> localizer,
-            IBankIdInvalidStateHandler bankIdInvalidStateHandler)
+    [HttpGet]
+    public async Task<ActionResult> Login(string returnUrl, string loginOptions)
+    {
+        if (!Url.IsLocalUrl(returnUrl))
         {
-            _antiforgery = antiforgery;
-            _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
-            _loginOptionsProtector = loginOptionsProtector;
-            _localizer = localizer;
-            _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
+            throw new Exception(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Login(string returnUrl, string loginOptions)
+        var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
+        if (!HasStateCookie(unprotectedLoginOptions))
         {
-            if (!Url.IsLocalUrl(returnUrl))
-            {
-                throw new Exception(BankIdConstants.InvalidReturnUrlErrorMessage);
-            }
+            var invalidStateContext = new BankIdInvalidStateContext(unprotectedLoginOptions.CancelReturnUrl);
+            await _bankIdInvalidStateHandler.HandleAsync(invalidStateContext);
 
-            var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
-            if (!HasStateCookie(unprotectedLoginOptions))
-            {
-                var invalidStateContext = new BankIdInvalidStateContext(unprotectedLoginOptions.CancelReturnUrl);
-                await _bankIdInvalidStateHandler.HandleAsync(HttpContext, invalidStateContext);
-
-                return new EmptyResult();
-            }
-
-            var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
-            var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
-            return View(viewModel);
+            return new EmptyResult();
         }
 
-        private bool HasStateCookie(BankIdLoginOptions loginOptions)
-        {
-            if (string.IsNullOrEmpty(loginOptions.StateCookieName)
-               || !HttpContext.Request.Cookies.ContainsKey(loginOptions.StateCookieName))
-            {
-                return false;
-            }
+        var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
+        var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
+        return View(viewModel);
+    }
 
-            return !string.IsNullOrEmpty(HttpContext.Request.Cookies[loginOptions.StateCookieName]);
+    private bool HasStateCookie(BankIdLoginOptions loginOptions)
+    {
+        if (string.IsNullOrEmpty(loginOptions.StateCookieName)
+            || !HttpContext.Request.Cookies.ContainsKey(loginOptions.StateCookieName))
+        {
+            return false;
         }
 
-        private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
+        return !string.IsNullOrEmpty(HttpContext.Request.Cookies[loginOptions.StateCookieName]);
+    }
+
+    private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
+    {
+        var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
+        var loginScriptOptions = new BankIdLoginScriptOptions(
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiStatusActionName),
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiQrCodeActionName),
+            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiCancelActionName)
+        )
         {
-            var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
-            var loginScriptOptions = new BankIdLoginScriptOptions(
-                Url.Action("Initialize", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Initialize"),
-                Url.Action("Status", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Status"),
-                Url.Action("QrCode", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.QrCode"),
-                Url.Action("Cancel", "BankIdApi") ?? throw new Exception("Could not get URL for BankIdApi.Cancel")
-                )
-            {
-                StatusRefreshIntervalMs = BankIdDefaults.StatusRefreshIntervalMs,
-                QrCodeRefreshIntervalMs = BankIdDefaults.QrCodeRefreshIntervalMs,
+            StatusRefreshIntervalMs = (int)BankIdConstants.StatusRefreshInterval.TotalMilliseconds,
+            QrCodeRefreshIntervalMs = (int)BankIdConstants.QrCodeRefreshInterval.TotalMilliseconds,
 
-                InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(initialStatusMessage),
-                UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
+            InitialStatusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(initialStatusMessage),
+            UnknownErrorMessage = _bankIdUserMessageLocalizer.GetLocalizedString(MessageShortName.RFA22),
 
-                UnsupportedBrowserErrorMessage = _localizer["UnsupportedBrowser_ErrorMessage"]
-            };
+            UnsupportedBrowserErrorMessage = _localizer[BankIdConstants.LocalizationKeys.UnsupportedBrowserErrorMessage]
+        };
 
-            return new BankIdLoginViewModel(
-                returnUrl,
-                Url.Content(unprotectedLoginOptions.CancelReturnUrl),
-                unprotectedLoginOptions.IsAutoLogin(),
-                unprotectedLoginOptions.PersonalIdentityNumber?.To12DigitString() ?? string.Empty,
-                loginOptions,
-                unprotectedLoginOptions,
-                loginScriptOptions,
-                SystemTextJsonSerializer.Serialize(loginScriptOptions),
-                antiforgeryTokens.RequestToken ?? throw new ArgumentNullException(nameof(antiforgeryTokens.RequestToken))
-            );
-        }
+        return new BankIdLoginViewModel(
+            returnUrl,
+            Url.Content(unprotectedLoginOptions.CancelReturnUrl),
+            loginOptions,
+            unprotectedLoginOptions,
+            loginScriptOptions,
+            SerializeToJson(loginScriptOptions),
+            antiforgeryTokens.RequestToken ?? throw new ArgumentNullException(nameof(antiforgeryTokens.RequestToken))
+        );
+    }
 
-        private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)
+    private string GetBankIdApiActionUrl(string action)
+    {
+        return Url.Action(action, BankIdConstants.Routes.BankIdApiControllerName) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdApiControllerName, action));
+    }
+
+    private static MessageShortName GetInitialStatusMessage(BankIdLoginOptions loginOptions)
+    {
+        return loginOptions.SameDevice
+            ? MessageShortName.RFA13
+            : MessageShortName.RFA1QR;
+    }
+
+    private static string SerializeToJson<T>(T value)
+    {
+        if (value == null)
         {
-            if (loginOptions.SameDevice)
-            {
-                return MessageShortName.RFA13;
-            }
-
-            if (loginOptions.UseQrCode)
-            {
-                return MessageShortName.RFA1QR;
-            }
-
-            return MessageShortName.RFA1;
+            return string.Empty;
         }
+        
+        return JsonSerializer.Serialize(value, value.GetType(), BankIdConstants.JsonSerializerOptions);
     }
 }

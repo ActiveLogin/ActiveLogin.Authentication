@@ -1,8 +1,7 @@
-﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore
+﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore;
+
+public interface IGrandIdEnvironmentConfiguration
 {
-    public interface IGrandIdEnvironmentConfiguration
-    {
-        string? ApiKey { get; set; }
-        string? BankIdServiceKey { get; set; }
-    }
+    string? ApiKey { get; set; }
+    string? BankIdServiceKey { get; set; }
 }

@@ -1,25 +1,26 @@
-using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace ActiveLogin.Authentication.BankId.Api.Serialization
+namespace ActiveLogin.Authentication.BankId.Api.Serialization;
+
+internal static class SystemTextJsonSerializer
 {
-    internal static class SystemTextJsonSerializer
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
-        public static ValueTask<T?> DeserializeAsync<T>(Stream json)
-        {
-            return JsonSerializer.DeserializeAsync<T>(json);
-        }
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
-        public static string Serialize<T>(T value)
-        {
-            if (value == null)
-            {
-                return string.Empty;
-            }
+    public static ValueTask<T?> DeserializeAsync<T>(Stream json)
+    {
+        return JsonSerializer.DeserializeAsync<T>(json);
+    }
 
-            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            return JsonSerializer.Serialize(value, value.GetType(), options);
+    public static string Serialize<T>(T value)
+    {
+        if (value == null)
+        {
+            return string.Empty;
         }
+        
+        return JsonSerializer.Serialize(value, value.GetType(), JsonSerializerOptions);
     }
 }
