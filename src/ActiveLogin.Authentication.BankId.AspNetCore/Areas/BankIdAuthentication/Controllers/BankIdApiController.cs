@@ -16,7 +16,7 @@ using ActiveLogin.Authentication.BankId.Core.UserMessage;
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers;
 
 [Area(BankIdConstants.Routes.BankIdAreaName)]
-[Route("/[area]/Api/[action]")]
+[Route("/[area]/Api/")]
 [ApiController]
 [AllowAnonymous]
 [NonController]

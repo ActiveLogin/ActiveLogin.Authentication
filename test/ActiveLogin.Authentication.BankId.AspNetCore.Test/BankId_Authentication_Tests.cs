@@ -45,6 +45,9 @@ public class BankId_Authentication_Tests
         _bankIdLoginOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(new BankIdLoginOptions(new List<string>(), false, false, "/", DefaultStateCookieName));
+        _bankIdLoginOptionsProtector
+            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Returns("Ignored");
     }
 
     [Fact]
@@ -316,6 +319,9 @@ public class BankId_Authentication_Tests
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
+        mockProtector
+            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Returns("Ignored");
 
         using var server = CreateServer(
             o =>
@@ -365,6 +371,9 @@ public class BankId_Authentication_Tests
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
+        mockProtector
+            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Returns("Ignored");
 
         using var server = CreateServer(
             o =>
@@ -416,6 +425,9 @@ public class BankId_Authentication_Tests
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
+        mockProtector
+            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Returns("Ignored");
 
         using var server = CreateServer(
             o =>
@@ -465,6 +477,9 @@ public class BankId_Authentication_Tests
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
+        mockProtector
+            .Setup(protector => protector.Protect(It.IsAny<BankIdLoginOptions>()))
+            .Returns("Ignored");
         var testBankIdApi = new TestBankIdApi(new BankIdSimulatedApiClient());
 
         using var server = CreateServer(

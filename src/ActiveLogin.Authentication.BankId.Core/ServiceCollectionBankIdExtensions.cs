@@ -11,8 +11,6 @@ using ActiveLogin.Authentication.BankId.Core.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionBankIdExtensions
@@ -51,8 +49,6 @@ public static class ServiceCollectionBankIdExtensions
         UseUserAgent(bankIdBuilder, new ProductInfoHeaderValue(activeLoginName, activeLoginVersion));
 
         bankId(bankIdBuilder);
-
-        bankIdBuilder.AfterConfiguration();
 
         return services;
     }

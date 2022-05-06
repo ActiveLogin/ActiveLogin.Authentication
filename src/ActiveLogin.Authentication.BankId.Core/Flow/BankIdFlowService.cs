@@ -53,8 +53,6 @@ public class BankIdFlowService : IBankIdFlowService
         _bankIdLauncher = bankIdLauncher;
     }
 
-
-
     public async Task<BankIdFlowInitializeAuthResult> InitializeAuth(BankIdLoginOptions loginOptions, string returnRedirectUrl)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();

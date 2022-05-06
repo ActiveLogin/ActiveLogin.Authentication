@@ -155,6 +155,11 @@ public static class IBankIdBuilderExtensions
 
         builder.Services.AddTransient<IBankIdLauncher, BankIdLauncher>();
 
+        if(builder is BankIdBuilder bankIdBuilder)
+        {
+            bankIdBuilder.AfterConfiguration();
+        }
+
         return builder;
     }
 
