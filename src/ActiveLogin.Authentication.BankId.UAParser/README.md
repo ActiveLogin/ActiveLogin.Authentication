@@ -1,4 +1,4 @@
-# ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor
+# ActiveLogin.Authentication.BankId.UAParser
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET.
 Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms.
@@ -7,7 +7,9 @@ Free to use, [commercial support and training](https://activelogin.net/#support)
 
 ## Sample usage
 
-Call `builder.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
+Sample usage of the extension method to use [ua_parser C# Library](https://github.com/ua-parser/uap-csharp) for device detection for BankID.
+
+Adds the `UseUaParserDeviceDetection()` extension method.
 
 ```csharp
 services
@@ -15,8 +17,7 @@ services
     .AddBankId(builder =>
     {
         builder
-            //...
-            .AddApplicationInsightsEventListener();
+            .UseUaParserDeviceDetection();
     });
 ```
 

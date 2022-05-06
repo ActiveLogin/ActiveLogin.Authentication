@@ -4,7 +4,7 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure;
+namespace ActiveLogin.Authentication.BankId.AzureKeyVault;
 
 internal class AzureKeyVaultCertificateClient
 {

@@ -15,11 +15,11 @@ using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection;
-
 public static class AuthenticationBuilderBankIdExtensions
 {
     /// <summary>

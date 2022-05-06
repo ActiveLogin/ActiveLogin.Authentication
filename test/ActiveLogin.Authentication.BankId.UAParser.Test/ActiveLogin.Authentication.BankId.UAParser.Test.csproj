@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.AspNetCore.UAParser.csproj" />
+    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.UAParser\ActiveLogin.Authentication.BankId.UAParser.csproj" />
   </ItemGroup>
 
 </Project>

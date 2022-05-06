@@ -1,5 +1,5 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.UAParser;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.UaParser;
 
 using Xunit;
 

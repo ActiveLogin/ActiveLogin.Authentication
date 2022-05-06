@@ -5,9 +5,10 @@ using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Identity.Swedish.Extensions;
+
 using Microsoft.ApplicationInsights;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor;
+namespace ActiveLogin.Authentication.BankId.AzureMonitor;
 
 /// <summary>
 /// Listen for all events and write them to Application Insights

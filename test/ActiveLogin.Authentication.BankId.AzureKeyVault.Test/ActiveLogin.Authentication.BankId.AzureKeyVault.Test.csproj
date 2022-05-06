@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AspNetCore.Azure.csproj" />
+        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AzureKeyVault\ActiveLogin.Authentication.BankId.AzureKeyVault.csproj" />
     </ItemGroup>
 
     <ItemGroup>

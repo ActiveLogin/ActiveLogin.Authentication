@@ -8,10 +8,7 @@ using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Persistence;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace Microsoft.Extensions.DependencyInjection;
-
 public static class IBankIdBuilderExtensions
 {
     /// <summary>

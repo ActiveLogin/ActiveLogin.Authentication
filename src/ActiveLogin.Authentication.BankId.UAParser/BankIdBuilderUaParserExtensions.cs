@@ -1,11 +1,10 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.UAParser;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.UaParser;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection;
-
 public static class BankIdBuilderUaParserExtensions
 {
     /// <summary>

@@ -1,11 +1,9 @@
-using ActiveLogin.Authentication.BankId.AspNetCore;
-using ActiveLogin.Authentication.BankId.AspNetCore.Azure;
+using ActiveLogin.Authentication.BankId.AzureKeyVault;
 using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
-
 public static class BankIdBuilderAzureKeyVaultExtensions
 {
     /// <summary>

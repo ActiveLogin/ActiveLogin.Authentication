@@ -2,7 +2,7 @@ using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
 using UAParser;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.UAParser;
+namespace ActiveLogin.Authentication.BankId.UaParser;
 
 /// <summary>
 /// This class is used for device and browser detection to support requirements in the

@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor;
+namespace ActiveLogin.Authentication.BankId.AzureMonitor;
 
 public class ApplicationInsightsBankIdEventListenerOptions
 {

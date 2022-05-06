@@ -2,7 +2,6 @@ using System.Net.Http.Headers;
 using System.Reflection;
 
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
-using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.Persistence;
@@ -11,7 +10,9 @@ using ActiveLogin.Authentication.BankId.Core.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
-namespace Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ActiveLogin.Authentication.BankId.Core;
 
 public static class ServiceCollectionBankIdExtensions
 {

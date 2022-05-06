@@ -9,8 +9,8 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <Product>Active Login</Product>
-        <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor</AssemblyName>
-        <PackageId>ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor</PackageId>
+        <AssemblyName>ActiveLogin.Authentication.BankId.AzureMonitor</AssemblyName>
+        <PackageId>ActiveLogin.Authentication.BankId.AzureMonitor</PackageId>
 
         <VersionPrefix>6.0.0</VersionPrefix>
         <VersionSuffix>alpha-1</VersionSuffix>

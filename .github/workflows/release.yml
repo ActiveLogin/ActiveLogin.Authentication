@@ -15,7 +15,16 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     strategy:
       matrix:
-        package: [ActiveLogin.Authentication.BankId.Api,ActiveLogin.Authentication.BankId.AspNetCore,ActiveLogin.Authentication.BankId.AspNetCore.Azure,ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor,ActiveLogin.Authentication.BankId.AspNetCore.QRCoder,ActiveLogin.Authentication.BankId.AspNetCore.UAParser,ActiveLogin.Authentication.GrandId.AspNetCore,ActiveLogin.Authentication.GrandId.AspNetCore]
+        package:
+        - ActiveLogin.Authentication.BankId.Api
+        - ActiveLogin.Authentication.BankId.Core
+        - ActiveLogin.Authentication.BankId.AspNetCore
+        - ActiveLogin.Authentication.BankId.AzureKeyVault
+        - ActiveLogin.Authentication.BankId.AzureMonitor
+        - ActiveLogin.Authentication.BankId.QRCoder
+        - ActiveLogin.Authentication.BankId.UAParser
+        - ActiveLogin.Authentication.GrandId.AspNetCore
+        - ActiveLogin.Authentication.GrandId.AspNetCore
     steps:
       - name: 'Download artifact'
         uses: actions/github-script@v5
