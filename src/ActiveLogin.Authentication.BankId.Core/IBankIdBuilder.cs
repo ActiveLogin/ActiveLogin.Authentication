@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.Core;
