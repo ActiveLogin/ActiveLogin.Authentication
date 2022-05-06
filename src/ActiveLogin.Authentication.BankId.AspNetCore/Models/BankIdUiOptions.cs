@@ -1,6 +1,4 @@
-using ActiveLogin.Authentication.BankId.Core.Models;
-
-namespace ActiveLogin.Authentication.BankId;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiOptions
 {
@@ -27,14 +25,4 @@ public class BankIdUiOptions
     public string CancelReturnUrl { get; }
 
     public string StateCookieName { get; }
-}
-
-public static class BankUiOptionsExtensions
-{
-    public static BankIdFlowOptions ToBankIdFlowOptions(this BankIdUiOptions options) => new(
-        options.CertificatePolicies,
-        options.SameDevice,
-        options.AllowBiometric,
-        options.CancelReturnUrl,
-        options.StateCookieName);
 }

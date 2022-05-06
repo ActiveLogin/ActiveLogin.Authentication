@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+
 using ActiveLogin.Authentication.BankId.Api;
-using ActiveLogin.Authentication.BankId.AzureKeyVault;
 using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
+
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test;
+namespace ActiveLogin.Authentication.BankId.AzureKeyVault.Test;
 
 public class BankIdBuilderAzureExtension
 {

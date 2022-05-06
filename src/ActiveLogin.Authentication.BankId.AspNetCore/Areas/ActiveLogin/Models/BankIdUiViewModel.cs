@@ -1,3 +1,5 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
 public class BankIdUiViewModel

@@ -3,7 +3,7 @@ using ActiveLogin.Authentication.BankId.UaParser;
 
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.BankId.AspNetCore.UAParser.Test;
+namespace ActiveLogin.Authentication.BankId.UAParser.Test;
 
 public class UAParserDeviceDetector_Tests
 {
