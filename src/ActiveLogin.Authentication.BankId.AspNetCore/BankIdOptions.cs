@@ -31,7 +31,7 @@ public class BankIdOptions : RemoteAuthenticationOptions
     public bool BankIdAllowBiometric { get; set; } = true;
 
 
-    public PathString LoginPath { get; set; } = new($"/{BankIdConstants.Routes.BankIdAreaName}/{BankIdConstants.Routes.BankIdLoginActionName}");
+    public PathString LoginPath { get; set; } = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
     public TimeSpan? TokenExpiresIn { get; set; } = BankIdDefaults.MaximumSessionLifespan;
 
     public bool IssueAuthenticationMethodClaim { get; set; } = true;

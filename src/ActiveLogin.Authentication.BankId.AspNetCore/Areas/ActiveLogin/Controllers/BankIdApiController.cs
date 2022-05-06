@@ -1,23 +1,22 @@
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
-using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core.Flow;
+using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 
-using ActiveLogin.Authentication.BankId.Core.Flow;
-using ActiveLogin.Authentication.BankId.Core.UserMessage;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Controllers;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers;
-
-[Area(BankIdConstants.Routes.BankIdAreaName)]
-[Route("/[area]/Api/")]
+[Area(BankIdConstants.Routes.ActiveLoginAreaName)]
+[Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdApiControllerPath}/")]
 [ApiController]
 [AllowAnonymous]
 [NonController]
@@ -69,11 +68,11 @@ public class BankIdApiController : Controller
         BankIdFlowInitializeAuthResult bankIdFlowInitializeAuthResult;
         try
         {
-            var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdLoginActionName, BankIdConstants.Routes.BankIdControllerName, new
+            var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdAuthInitActionName, BankIdConstants.Routes.BankIdAuthControllerName, new
             {
                 returnUrl = request.ReturnUrl,
                 loginOptions = request.LoginOptions
-            },  protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdControllerName, BankIdConstants.Routes.BankIdLoginActionName));
+            },  protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdAuthControllerName, BankIdConstants.Routes.BankIdAuthInitActionName));
 
             bankIdFlowInitializeAuthResult = await _bankIdFlowService.InitializeAuth(loginOptions, returnRedirectUrl);
         }

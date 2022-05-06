@@ -58,12 +58,15 @@ internal static class BankIdConstants
 
     public static class Routes
     {
-        public const string BankIdAreaName = "BankIdAuthentication";
+        public const string ActiveLoginAreaName = "ActiveLogin";
+        public const string BankIdPathName = "BankId";
 
-        public const string BankIdControllerName = "BankId";
-        public const string BankIdLoginActionName = "Login";
+        public const string BankIdAuthControllerName = "BankIdAuth";
+        public const string BankIdAuthControllerPath = "Auth";
+        public const string BankIdAuthInitActionName = "Init";
 
         public const string BankIdApiControllerName = "BankIdApi";
+        public const string BankIdApiControllerPath = "Api";
         public const string BankIdApiInitializeActionName = "Initialize";
         public const string BankIdApiStatusActionName = "Status";
         public const string BankIdApiQrCodeActionName = "QrCode";

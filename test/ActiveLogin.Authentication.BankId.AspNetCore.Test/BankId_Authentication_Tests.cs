@@ -65,7 +65,7 @@ public class BankId_Authentication_Tests
         using var client = new TestServer(webHostBuilder).CreateClient();
 
         // Act
-        var transaction = await client.GetAsync("/BankIdAuthentication/Login");
+        var transaction = await client.GetAsync("/ActiveLogin/BankId/Auth");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, transaction.StatusCode);
@@ -86,7 +86,7 @@ public class BankId_Authentication_Tests
         using var client = new TestServer(webHostBuilder).CreateClient();
 
         // Act
-        var transaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", null);
+        var transaction = await client.PostAsync("/ActiveLogin/BankId/Api/Initialize", null);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, transaction.StatusCode);
@@ -114,7 +114,7 @@ public class BankId_Authentication_Tests
 
         // Assert
         Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
-        Assert.StartsWith("/BankIdAuthentication/Login", transaction.Headers.Location.OriginalString);
+        Assert.StartsWith("/ActiveLogin/BankId/Auth", transaction.Headers.Location.OriginalString);
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class BankId_Authentication_Tests
         Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
 
         var redirectUrl = transaction.Headers.Location.OriginalString;
-        Assert.StartsWith("/PathBase/BankIdAuthentication/Login", redirectUrl);
+        Assert.StartsWith("/PathBase/ActiveLogin/BankId/Auth", redirectUrl);
 
         var callbackUrl = UrlEncoder.Default.Encode("/PathBase/signin-bankid-samedevice");
         var callbackParameter = $"returnUrl={callbackUrl}";
@@ -195,7 +195,7 @@ public class BankId_Authentication_Tests
             });
 
         // Act
-        var request = CreateRequestWithStateCookie( server, "/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = CreateRequestWithStateCookie( server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
 
@@ -230,7 +230,7 @@ public class BankId_Authentication_Tests
             });
 
         // Act
-        var request = CreateRequestWithStateCookie(server, "/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
         // Assert
@@ -263,7 +263,7 @@ public class BankId_Authentication_Tests
             });
 
         // Act
-        var request = CreateRequestWithStateCookie(server, "/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
         // Assert
@@ -271,12 +271,12 @@ public class BankId_Authentication_Tests
 
         var document = await HtmlDocumentHelper.FromContent(transaction.Content);
 
-        Assert.NotNull(document.GetElement<IHtmlFormElement>("form[id='bankIdLoginForm']"));
-        Assert.NotNull(document.GetElement<IHtmlDivElement>("div[id='bankIdLoginStatus']"));
-        Assert.NotNull(document.GetElement<IHtmlImageElement>("img.qr-code-image"));
+        Assert.NotNull(document.GetElement<IHtmlFormElement>("form.activelogin-bankid-ui--form"));
+        Assert.NotNull(document.GetElement<IHtmlDivElement>("div.activelogin-bankid-ui--status-wrapper"));
+        Assert.NotNull(document.GetElement<IHtmlImageElement>("img.activelogin-bankid-ui--qr-code-image"));
         Assert.Equal("/", document.GetInputValue("input[name='ReturnUrl']"));
         Assert.Equal("/", document.GetInputValue("input[name='CancelReturnUrl']"));
-        Assert.Equal("X", document.GetInputValue("input[name='LoginOptions']"));
+        Assert.Equal("Ignored", document.GetInputValue("input[name='LoginOptions']"));
     }
 
     [Fact]
@@ -301,7 +301,7 @@ public class BankId_Authentication_Tests
             });
 
         // Act
-        var request = server.CreateRequest("/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var request = server.CreateRequest("/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
         request.AddHeader("Cookie", "");
         var transaction = await request.GetAsync();
 
@@ -358,7 +358,7 @@ public class BankId_Authentication_Tests
         Assert.True(responseObject.IsAutoLaunch);
 
         var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
-        var expectedUrl = $"http://localhost/BankIdAuthentication/Login?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
+        var expectedUrl = $"http://localhost/ActiveLogin/BankId/Auth?returnUrl={encodedReturnParam}&loginOptions={testOptions}";
         Assert.Equal(expectedUrl, responseObject.RedirectUri);
     }
 
@@ -503,7 +503,7 @@ public class BankId_Authentication_Tests
             });
 
         // Arrange csrf info
-        var loginRequest = CreateRequestWithStateCookie(server, "/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
@@ -518,7 +518,7 @@ public class BankId_Authentication_Tests
 
         // Act
         var client = server.CreateClient();
-        var initializeTransaction = await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
+        var initializeTransaction = await client.PostAsync("/ActiveLogin/BankId/Api/Initialize", initializeRequest);
         var initializeResponseContent = await initializeTransaction.Content.ReadAsStringAsync();
         var initializeObject = JsonConvert.DeserializeAnonymousType(initializeResponseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
 
@@ -532,7 +532,7 @@ public class BankId_Authentication_Tests
         cancelRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
         // Act
-        var cancelTransaction = await client.PostAsync("/BankIdAuthentication/Api/Cancel", cancelRequest);
+        var cancelTransaction = await client.PostAsync("/ActiveLogin/BankId/Api/Cancel", cancelRequest);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, cancelTransaction.StatusCode);
@@ -542,7 +542,7 @@ public class BankId_Authentication_Tests
     private async Task<HttpResponseMessage> GetInitializeResponse(TestServer server, object initializeRequestBody)
     {
         // Arrange csrf info
-        var loginRequest = CreateRequestWithStateCookie(server, "/BankIdAuthentication/Login?returnUrl=%2F&loginOptions=X&orderRef=Y");
+        var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&loginOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
@@ -554,7 +554,7 @@ public class BankId_Authentication_Tests
         initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
         var client = server.CreateClient();
-        return await client.PostAsync("/BankIdAuthentication/Api/Initialize", initializeRequest);
+        return await client.PostAsync("/ActiveLogin/BankId/Api/Initialize", initializeRequest);
     }
 
     private TestServer CreateServer(

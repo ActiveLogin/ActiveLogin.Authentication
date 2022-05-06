@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
 
-internal class BankIdApiControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
+internal class BankIdAuthControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
 {
     public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
     {
-        if (!feature.Controllers.Contains(typeof(BankIdApiController).GetTypeInfo()))
+        if (!feature.Controllers.Contains(typeof(BankIdAuthController).GetTypeInfo()))
         {
-            feature.Controllers.Add(typeof(BankIdApiController).GetTypeInfo());
+            feature.Controllers.Add(typeof(BankIdAuthController).GetTypeInfo());
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
 public class BankIdLoginApiInitializeRequest
 {

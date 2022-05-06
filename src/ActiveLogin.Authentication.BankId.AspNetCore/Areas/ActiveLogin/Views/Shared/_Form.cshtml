@@ -1,6 +1,6 @@
-@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models.BankIdUiViewModel
 
-<form id="bankIdLoginForm">
+<form class="activelogin-bankid-ui--form">
     <input name="RequestVerificationToken" type="hidden" value="@Model.AntiXsrfRequestToken">
     <input name="ReturnUrl" type="hidden" value="@Model.ReturnUrl" />
     <input name="CancelReturnUrl" type="hidden" value="@Model.CancelReturnUrl" />

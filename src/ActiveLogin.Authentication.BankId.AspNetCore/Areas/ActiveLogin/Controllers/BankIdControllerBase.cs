@@ -1,7 +1,7 @@
 using System.Text.Json;
 
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
-using ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.Core.Models;
@@ -9,17 +9,13 @@ using ActiveLogin.Authentication.BankId.Core.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Controllers;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Controllers;
 
-[Area(BankIdConstants.Routes.BankIdAreaName)]
-[Route("/[area]/[action]")]
-[AllowAnonymous]
 [NonController]
-public class BankIdController : Controller
+public abstract class BankIdControllerBase : Controller
 {
     private readonly IAntiforgery _antiforgery;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
@@ -27,7 +23,7 @@ public class BankIdController : Controller
     private readonly IStringLocalizer<BankIdHandler> _localizer;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
 
-    public BankIdController(
+    protected BankIdControllerBase(
         IAntiforgery antiforgery,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdLoginOptionsProtector loginOptionsProtector,
@@ -41,29 +37,30 @@ public class BankIdController : Controller
         _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
     }
 
-    [HttpGet]
-    public async Task<ActionResult> Login(string returnUrl, string loginOptions)
+    protected async Task<ActionResult> Initialize(string returnUrl, string protectedLoginOptions, string viewName)
     {
         Validators.ThrowIfNullOrWhitespace(returnUrl);
-        Validators.ThrowIfNullOrWhitespace(loginOptions);
+        Validators.ThrowIfNullOrWhitespace(protectedLoginOptions, BankIdConstants.QueryStringParameters.LoginOptions);
 
         if (!Url.IsLocalUrl(returnUrl))
         {
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
-        var unprotectedLoginOptions = _loginOptionsProtector.Unprotect(loginOptions);
-        if (!HasStateCookie(unprotectedLoginOptions))
+        var loginOptions = _loginOptionsProtector.Unprotect(protectedLoginOptions);
+        if (!HasStateCookie(loginOptions))
         {
-            var invalidStateContext = new BankIdInvalidStateContext(unprotectedLoginOptions.CancelReturnUrl);
+            var invalidStateContext = new BankIdInvalidStateContext(loginOptions.CancelReturnUrl);
             await _bankIdInvalidStateHandler.HandleAsync(invalidStateContext);
 
             return new EmptyResult();
         }
 
+        protectedLoginOptions = _loginOptionsProtector.Protect(loginOptions);
         var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
-        var viewModel = GetLoginViewModel(returnUrl, loginOptions, unprotectedLoginOptions, antiforgeryTokens);
-        return View(viewModel);
+        var viewModel = GetLoginViewModel(returnUrl, protectedLoginOptions, loginOptions, antiforgeryTokens);
+
+        return View(viewName, viewModel);
     }
 
     private bool HasStateCookie(BankIdLoginOptions loginOptions)
@@ -77,12 +74,12 @@ public class BankIdController : Controller
         return !string.IsNullOrEmpty(HttpContext.Request.Cookies[loginOptions.StateCookieName]);
     }
 
-    private BankIdLoginViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
+    private BankIdUiViewModel GetLoginViewModel(string returnUrl, string loginOptions, BankIdLoginOptions unprotectedLoginOptions, AntiforgeryTokenSet antiforgeryTokens)
     {
         Validators.ThrowIfNullOrWhitespace(antiforgeryTokens.RequestToken, nameof(antiforgeryTokens.RequestToken));
 
         var initialStatusMessage = GetInitialStatusMessage(unprotectedLoginOptions);
-        var loginScriptOptions = new BankIdLoginScriptOptions(
+        var loginScriptOptions = new BankIdUiScriptOptions(
             GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
             GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiStatusActionName),
             GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiQrCodeActionName),
@@ -98,7 +95,7 @@ public class BankIdController : Controller
             UnsupportedBrowserErrorMessage = _localizer[BankIdConstants.LocalizationKeys.UnsupportedBrowserErrorMessage]
         };
 
-        return new BankIdLoginViewModel(
+        return new BankIdUiViewModel(
             returnUrl,
             Url.Content(unprotectedLoginOptions.CancelReturnUrl),
             loginOptions,

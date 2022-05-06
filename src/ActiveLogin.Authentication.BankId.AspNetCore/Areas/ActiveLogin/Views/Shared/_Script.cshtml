@@ -1,4 +1,4 @@
-@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models.BankIdUiViewModel
 
 <script>
     (function (options) {
@@ -6,7 +6,7 @@
         var requiredFeatures = [window.fetch, window.sessionStorage];
         var isMissingSomeFeature = requiredFeatures.some(function(x) { return !x; });
         if (isMissingSomeFeature) {
-            showStatus(options.unsupportedBrowserErrorMessage, 'danger', false, true);
+            showStatus(options.unsupportedBrowserErrorMessage, 'danger', false);
             return;
         }
 
@@ -23,16 +23,17 @@
 
         // Elements
 
-        var formElement = document.querySelector('#bankIdLoginForm');
+        var uiWrapperElement = document.querySelector('.activelogin-bankid-ui--wrapper');
+        var formElement = uiWrapperElement.querySelector('.activelogin-bankid-ui--form');
 
-        var statusElement = document.querySelector('#bankIdLoginStatus');
-        var statusWrapperElement = statusElement.querySelector('.status-wrapper');
-        var statusSpinnerElement = statusElement.querySelector('.status-spinner');
-        var statusMessageElement = statusElement.querySelector('.status-message');
-        var cancelButtonElement = statusElement.querySelector('.btn-cancel');
-        var qrCodeElement = statusElement.querySelector('.qr-code-image');
+        var statusWrapperElement = uiWrapperElement.querySelector('.activelogin-bankid-ui--status-wrapper');
+        var statusInfoElement = uiWrapperElement.querySelector('.activelogin-bankid-ui--status-info');
+        var statusSpinnerElement = uiWrapperElement.querySelector('.activelogin-bankid-ui--status-spinner');
+        var statusMessageElement = uiWrapperElement.querySelector('.activelogin-bankid-ui--status-message');
+        var cancelButtonElement = uiWrapperElement.querySelector('.activelogin-bankid-ui--cancel-button');
+        var qrCodeElement = uiWrapperElement.querySelector('.activelogin-bankid-ui--qr-code-image');
 
-        var startBankIdAppButtonElement = document.querySelector('#bankIdLoginStartApp');
+        var startBankIdAppButtonElement = uiWrapperElement.querySelector('.activelogin-bankid-ui-startapp-button');
         
         // Events
 
@@ -257,20 +258,16 @@
                 });
         }
 
-        function showStatus(status, type, spinner, html) {
+        function showStatus(status, type, spinner) {
             var textClass = 'text-white';
             if (type === 'white') {
                 textClass = '';
             }
 
-            statusWrapperElement.className = 'card status-wrapper bg-' + type + ' ' + textClass;
-            if (!!html) {
-                statusMessageElement.innerHTML = status;
-            } else {
-                statusMessageElement.innerText = status;
-            }
+            statusInfoElement.className = 'card activelogin-bankid-ui--status-info bg-' + type + ' ' + textClass;
+            statusMessageElement.innerText = status;
             setVisibility(statusSpinnerElement, spinner, 'inline-block');
-            show(statusElement);
+            show(statusWrapperElement);
         }
 
         function setVisibility(element, visible, display) {

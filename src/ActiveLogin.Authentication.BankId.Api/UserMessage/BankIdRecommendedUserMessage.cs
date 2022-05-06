@@ -6,37 +6,37 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
 {
     private static readonly List<CollectResponseMapping> CollectResponseMappings = new List<CollectResponseMapping>()
     {
-        new CollectResponseMapping(MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: true),
-        new CollectResponseMapping(MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: false),
-        new CollectResponseMapping(MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.NoClient, authPersonalIdentityNumberProvided: false),
+        new (MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: true),
+        new (MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: false),
+        new (MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.NoClient, authPersonalIdentityNumberProvided: false),
 
-        new CollectResponseMapping(MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: true),
-        new CollectResponseMapping(MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: false),
-        new CollectResponseMapping(MessageShortName.RFA13, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: false),
+        new (MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: true),
+        new (MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: true, usingQrCode: false),
+        new (MessageShortName.RFA13, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, authPersonalIdentityNumberProvided: false),
 
-        new CollectResponseMapping(MessageShortName.RFA9, CollectStatus.Pending, CollectHintCode.UserSign),
-        new CollectResponseMapping(MessageShortName.RFA14A, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: true, accessedFromMobileDevice: false),
-        new CollectResponseMapping(MessageShortName.RFA14B, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: true, accessedFromMobileDevice: true),
-        new CollectResponseMapping(MessageShortName.RFA15A, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: false, accessedFromMobileDevice: false),
-        new CollectResponseMapping(MessageShortName.RFA15B, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: false, accessedFromMobileDevice: true),
+        new (MessageShortName.RFA9, CollectStatus.Pending, CollectHintCode.UserSign),
+        new (MessageShortName.RFA14A, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: true, accessedFromMobileDevice: false),
+        new (MessageShortName.RFA14B, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: true, accessedFromMobileDevice: true),
+        new (MessageShortName.RFA15A, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: false, accessedFromMobileDevice: false),
+        new (MessageShortName.RFA15B, CollectStatus.Pending, CollectHintCode.Started, authPersonalIdentityNumberProvided: false, accessedFromMobileDevice: true),
 
 
-        new CollectResponseMapping(MessageShortName.RFA3, CollectHintCode.Cancelled),
-        new CollectResponseMapping(MessageShortName.RFA6, CollectHintCode.UserCancel),
-        new CollectResponseMapping(MessageShortName.RFA8, CollectHintCode.ExpiredTransaction),
-        new CollectResponseMapping(MessageShortName.RFA16, CollectHintCode.CertificateErr),
-        new CollectResponseMapping(MessageShortName.RFA17A, CollectHintCode.StartFailed, usingQrCode: false),
-        new CollectResponseMapping(MessageShortName.RFA17B, CollectHintCode.StartFailed, usingQrCode: true),
+        new (MessageShortName.RFA3, CollectHintCode.Cancelled),
+        new (MessageShortName.RFA6, CollectHintCode.UserCancel),
+        new (MessageShortName.RFA8, CollectHintCode.ExpiredTransaction),
+        new (MessageShortName.RFA16, CollectHintCode.CertificateErr),
+        new (MessageShortName.RFA17A, CollectHintCode.StartFailed, usingQrCode: false),
+        new (MessageShortName.RFA17B, CollectHintCode.StartFailed, usingQrCode: true),
 
-        new CollectResponseMapping(MessageShortName.RFA21, CollectStatus.Pending, CollectHintCode.Unknown),
-        new CollectResponseMapping(MessageShortName.RFA22, CollectStatus.Failed, CollectHintCode.Unknown)
+        new (MessageShortName.RFA21, CollectStatus.Pending, CollectHintCode.Unknown),
+        new (MessageShortName.RFA22, CollectStatus.Failed, CollectHintCode.Unknown)
     };
 
     private static readonly List<ErrorResponseMapping> ErrorResponseMappings = new List<ErrorResponseMapping>()
     {
-        new ErrorResponseMapping(MessageShortName.RFA3, ErrorCode.Canceled),
-        new ErrorResponseMapping(MessageShortName.RFA4, ErrorCode.AlreadyInProgress),
-        new ErrorResponseMapping(MessageShortName.RFA5, ErrorCode.RequestTimeout, ErrorCode.Maintenance, ErrorCode.InternalError)
+        new (MessageShortName.RFA3, ErrorCode.Canceled),
+        new (MessageShortName.RFA4, ErrorCode.AlreadyInProgress),
+        new (MessageShortName.RFA5, ErrorCode.RequestTimeout, ErrorCode.Maintenance, ErrorCode.InternalError)
     };
 
     public MessageShortName GetMessageShortNameForCollectResponse(

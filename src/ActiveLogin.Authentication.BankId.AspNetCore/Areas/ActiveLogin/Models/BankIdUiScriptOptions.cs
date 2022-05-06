@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
-public class BankIdLoginScriptOptions
+public class BankIdUiScriptOptions
 {
-    internal BankIdLoginScriptOptions(string bankIdInitializeApiUrl, string bankIdStatusApiUrl, string bankIdQrCodeApiUrl, string bankIdCancelApiUrl)
+    internal BankIdUiScriptOptions(string bankIdInitializeApiUrl, string bankIdStatusApiUrl, string bankIdQrCodeApiUrl, string bankIdCancelApiUrl)
     {
         BankIdInitializeApiUrl = bankIdInitializeApiUrl;
         BankIdStatusApiUrl = bankIdStatusApiUrl;

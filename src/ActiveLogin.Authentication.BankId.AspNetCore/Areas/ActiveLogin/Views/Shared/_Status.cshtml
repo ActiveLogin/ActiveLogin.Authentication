@@ -1,0 +1,25 @@
+@using Microsoft.Extensions.Localization
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models.BankIdUiViewModel
+@inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdHandler> Localizer
+
+<div class="activelogin-bankid-ui--status-wrapper" style="display: block">
+
+    <img src="" alt="@Localizer["Qr_Code_Image"]" class="activelogin-bankid-ui--qr-code-image img-thumbnail img-fluid mb-2" style="display: none;" />
+
+    <div class="card activelogin-bankid-ui--status-info">
+        <div class="card-body">
+            <div class="activelogin-bankid-ui--status-spinner">
+                <partial name="_Spinner"/>
+            </div>
+
+            <div class="activelogin-bankid-ui--status-message">@Model.UiScriptOptions.InitialStatusMessage</div>
+        </div>
+    </div>
+    
+    <button class="activelogin-bankid-ui--startapp-button" type="button" class="btn btn-primary btn-block mt-2" style="display: none;"></button>
+
+    <button type="button" class="activelogin-bankid-ui--cancel-button btn btn-link btn-block btn-cancel mt-2">
+        @Localizer["Cancel_Button"]
+    </button>
+
+</div>
