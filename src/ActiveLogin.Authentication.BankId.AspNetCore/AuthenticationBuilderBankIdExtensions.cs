@@ -64,8 +64,8 @@ public static class AuthenticationBuilderBankIdExtensions
         services.AddControllersWithViews()
                 .ConfigureApplicationPartManager(apm =>
                 {
-                    apm.FeatureProviders.Add(new BankIdAuthControllerFeatureProvider());
-                    apm.FeatureProviders.Add(new BankIdApiControllerFeatureProvider());
+                    apm.FeatureProviders.Add(new BankIdUiAuthControllerFeatureProvider());
+                    apm.FeatureProviders.Add(new BankIdUiApiControllerFeatureProvider());
                 });
         services.AddHttpContextAccessor();
 
