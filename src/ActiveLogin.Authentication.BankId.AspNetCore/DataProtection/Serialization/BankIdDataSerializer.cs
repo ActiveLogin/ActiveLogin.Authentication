@@ -4,32 +4,35 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdOrderRefSerializer : IDataSerializer<BankIdUiOrderRef>
+internal abstract class BankIdDataSerializer<TModel> : IDataSerializer<TModel>
 {
-    private const int FormatVersion = 6;
+    private const int FormatVersion = 10;
 
-    public byte[] Serialize(BankIdUiOrderRef model)
+    public byte[] Serialize(TModel model)
     {
         using var memory = new MemoryStream();
         using var writer = new BinaryWriter(memory);
 
         writer.Write(FormatVersion);
-        writer.Write(model.OrderRef);
+        Write(writer, model);
         writer.Flush();
 
         return memory.ToArray();
     }
 
-    public BankIdUiOrderRef Deserialize(byte[] data)
+    protected abstract void Write(BinaryWriter writer, TModel model);
+    protected abstract TModel Read(BinaryReader reader);
+
+    public TModel Deserialize(byte[] data)
     {
         using var memory = new MemoryStream(data);
         using var reader = new BinaryReader(memory);
 
         if (reader.ReadInt32() != FormatVersion)
         {
-            throw new IncompatibleSerializationVersion(nameof(BankIdUiOrderRef));
+            throw new Exception(BankIdConstants.ErrorMessages.CouldNotDeserialize(nameof(BankIdUiOrderRef)));
         }
 
-        return new BankIdUiOrderRef(reader.ReadString());
+        return Read(reader);
     }
 }

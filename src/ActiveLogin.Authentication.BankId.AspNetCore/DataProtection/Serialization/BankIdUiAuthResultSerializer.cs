@@ -1,20 +1,11 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
-using Microsoft.AspNetCore.Authentication;
-
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdUiAuthResultSerializer : IDataSerializer<BankIdUiAuthResult>
+internal class BankIdUiAuthResultSerializer : BankIdDataSerializer<BankIdUiAuthResult>
 {
-    private const int FormatVersion = 6;
-
-    public byte[] Serialize(BankIdUiAuthResult model)
+    protected override void Write(BinaryWriter writer, BankIdUiAuthResult model)
     {
-        using var memory = new MemoryStream();
-        using var writer = new BinaryWriter(memory);
-
-        writer.Write(FormatVersion);
-
         writer.Write(model.IsSuccessful);
 
         writer.Write(model.BankIdOrderRef);
@@ -24,22 +15,10 @@ internal class BankIdUiAuthResultSerializer : IDataSerializer<BankIdUiAuthResult
         writer.Write(model.Name);
         writer.Write(model.GivenName);
         writer.Write(model.Surname);
-
-        writer.Flush();
-
-        return memory.ToArray();
     }
 
-    public BankIdUiAuthResult Deserialize(byte[] data)
+    protected override BankIdUiAuthResult Read(BinaryReader reader)
     {
-        using var memory = new MemoryStream(data);
-        using var reader = new BinaryReader(memory);
-
-        if (reader.ReadInt32() != FormatVersion)
-        {
-            throw new IncompatibleSerializationVersion(nameof(BankIdUiAuthResult));
-        }
-
         return new BankIdUiAuthResult(
             reader.ReadBoolean(),
             reader.ReadString(),
