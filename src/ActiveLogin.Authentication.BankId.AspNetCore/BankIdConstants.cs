@@ -65,6 +65,10 @@ internal static class BankIdConstants
         public const string BankIdAuthControllerPath = "Auth";
         public const string BankIdAuthInitActionName = "Init";
 
+        public const string BankIdSignControllerName = "BankIdUiSign";
+        public const string BankIdSignControllerPath = "Sign";
+        public const string BankIdSignInitActionName = "Init";
+
         public const string BankIdApiControllerName = "BankIdUiApi";
         public const string BankIdApiControllerPath = "Api";
         public const string BankIdApiInitializeActionName = "Initialize";

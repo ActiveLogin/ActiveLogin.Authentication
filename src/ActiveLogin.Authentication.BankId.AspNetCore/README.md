@@ -13,12 +13,17 @@ Sample usage of the ASP.NET authentication module.
 
 ```csharp
 services
-    .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
-            .AddDebugEventListener();
-            .UseSimulatedEnvironment()
+        bankId
+            .AddSameDevice();
+    });
+
+services
+    .AddAuthentication()
+    .AddBankId(bankId =>
+    {
+        bankId
             .AddSameDevice();
     });
 ```
@@ -27,10 +32,9 @@ services
 
 ```csharp
 services
-    .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .AddApplicationInsightsEventListener(options =>
             {
                 options.LogUserPersonalIdentityNumberHints = true;
@@ -39,9 +43,16 @@ services
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             .UseRootCaCertificate(Path.Combine(_environment.ContentRootPath, Configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            .AddSameDevice()
-            .AddOtherDevice()
             .UseQrCoderQrCodeGenerator();
+    });
+
+services
+    .AddAuthentication()
+    .AddBankId(bankId =>
+    {
+        bankId
+            .AddSameDevice()
+            .AddOtherDevice();
     });
 ```
 

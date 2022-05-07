@@ -1,12 +1,13 @@
 using System.Globalization;
 
-using ActiveLogin.Authentication.BankId.AspNetCore;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
+using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Localization;
-
+using Microsoft.Extensions.Azure;
 
 
 //
@@ -40,10 +41,10 @@ services.Configure<CookiePolicyOptions>(options =>
 
 // Add Active Login - BankID
 services
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder.AddDebugEventListener();
-        builder.AddApplicationInsightsEventListener(options =>
+        bankId.AddDebugEventListener();
+        bankId.AddApplicationInsightsEventListener(options =>
         {
             options.LogUserPersonalIdentityNumber = false;
             options.LogUserPersonalIdentityNumberHints = true;
@@ -54,22 +55,22 @@ services
             options.LogCertificateDates = true;
         });
 
-        builder.UseQrCoderQrCodeGenerator();
-        builder.UseUaParserDeviceDetection();
+        bankId.UseQrCoderQrCodeGenerator();
+        bankId.UseUaParserDeviceDetection();
 
         if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
         {
-            builder.UseSimulatedEnvironment();
+            bankId.UseSimulatedEnvironment();
         }
         else if (configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
         {
-            builder.UseTestEnvironment()
+            bankId.UseTestEnvironment()
                 .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                 .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
         else
         {
-            builder.UseProductionEnvironment()
+            bankId.UseProductionEnvironment()
                 .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                 .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
@@ -78,11 +79,18 @@ services
 // Add authentication
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
-        builder.AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
+        bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
     });
+
+// Add sign
+services.AddBankIdSign(bankId =>
+{
+    bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
+    bankId.AddOtherDevice(BankIdSignDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
+});
 
 // Add Authorization
 builder.Services.AddAuthorization(options =>

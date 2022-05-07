@@ -11,15 +11,17 @@ using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
-public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
+public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 {
     private const string StateCookieNameParemeterName = "StateCookie.Name";
+    private readonly PathString AuthPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
 
     private readonly IBankIdUiStateProtector _uiStateProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
@@ -28,8 +30,8 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers;
 
-    public BankIdHandler(
-        IOptionsMonitor<BankIdOptions> options,
+    public BankIdAuthHandler(
+        IOptionsMonitor<BankIdAuthOptions> options,
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
         ISystemClock clock,
@@ -162,7 +164,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
     private string GetLoginUrl(BankIdUiOptions uiOptions)
     {
         var pathBase = Context.Request.PathBase;
-        var loginUrl = pathBase.Add(Options.LoginPath);
+        var loginUrl = pathBase.Add(AuthPath);
         var returnUrl = pathBase.Add(Options.CallbackPath);
         var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
 

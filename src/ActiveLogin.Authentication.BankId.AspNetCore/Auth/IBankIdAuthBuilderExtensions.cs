@@ -1,4 +1,4 @@
-using ActiveLogin.Authentication.BankId.AspNetCore;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -24,7 +24,7 @@ public static class IBankIdAuthBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="configureOptions"></param>
     /// <returns></returns>
-    public static IBankIdAuthBuilder Configure(this IBankIdAuthBuilder builder, Action<BankIdOptions> configureOptions)
+    public static IBankIdAuthBuilder Configure(this IBankIdAuthBuilder builder, Action<BankIdAuthOptions> configureOptions)
     {
         builder.Services.ConfigureAll(configureOptions);
         return builder;
@@ -36,7 +36,7 @@ public static class IBankIdAuthBuilderExtensions
     /// <param name="builder"></param>
     /// <returns></returns>
     public static IBankIdAuthBuilder AddSameDevice(this IBankIdAuthBuilder builder)
-        => AddSameDevice(builder, BankIdDefaults.SameDeviceAuthenticationScheme, BankIdDefaults.SameDeviceDisplayName, options => { });
+        => AddSameDevice(builder, BankIdAuthDefaults.SameDeviceAuthenticationScheme, BankIdAuthDefaults.SameDeviceDisplayName, options => { });
 
     /// <summary>
     /// Add scheme for BankID on Same Device.
@@ -44,8 +44,8 @@ public static class IBankIdAuthBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="configureOptions">BankId Options</param>
     /// <returns></returns>
-    public static IBankIdAuthBuilder AddSameDevice(this IBankIdAuthBuilder builder, Action<BankIdOptions> configureOptions)
-        => AddSameDevice(builder, BankIdDefaults.SameDeviceAuthenticationScheme, BankIdDefaults.SameDeviceDisplayName, configureOptions);
+    public static IBankIdAuthBuilder AddSameDevice(this IBankIdAuthBuilder builder, Action<BankIdAuthOptions> configureOptions)
+        => AddSameDevice(builder, BankIdAuthDefaults.SameDeviceAuthenticationScheme, BankIdAuthDefaults.SameDeviceDisplayName, configureOptions);
 
     /// <summary>
     /// Add scheme for BankID on Same Device.
@@ -54,8 +54,8 @@ public static class IBankIdAuthBuilderExtensions
     /// <param name="authenticationScheme">Scheme name</param>
     /// <param name="configureOptions">BankId Options</param>
     /// <returns></returns>
-    public static IBankIdAuthBuilder AddSameDevice(this IBankIdAuthBuilder builder, string authenticationScheme, Action<BankIdOptions> configureOptions)
-        => AddSameDevice(builder, authenticationScheme, BankIdDefaults.SameDeviceDisplayName, configureOptions);
+    public static IBankIdAuthBuilder AddSameDevice(this IBankIdAuthBuilder builder, string authenticationScheme, Action<BankIdAuthOptions> configureOptions)
+        => AddSameDevice(builder, authenticationScheme, BankIdAuthDefaults.SameDeviceDisplayName, configureOptions);
 
     /// <summary>
     /// Add scheme for BankID on Same Device.
@@ -65,10 +65,10 @@ public static class IBankIdAuthBuilderExtensions
     /// <param name="displayName">Scheme display name</param>
     /// <param name="configureOptions">BankId Options</param>
     /// <returns></returns>
-    public static IBankIdAuthBuilder AddSameDevice(this IBankIdAuthBuilder builder, string authenticationScheme, string displayName, Action<BankIdOptions> configureOptions)
+    public static IBankIdAuthBuilder AddSameDevice(this IBankIdAuthBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthOptions> configureOptions)
         => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
         {
-            options.CallbackPath = BankIdDefaults.SameDeviceCallbackPath;
+            options.CallbackPath = BankIdAuthDefaults.SameDeviceCallbackPath;
             options.BankIdSameDevice = true;
         });
 
@@ -78,15 +78,15 @@ public static class IBankIdAuthBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     public static IBankIdAuthBuilder AddOtherDevice(this IBankIdAuthBuilder builder)
-        => AddOtherDevice(builder, BankIdDefaults.OtherDeviceAuthenticationScheme, BankIdDefaults.OtherDeviceDisplayName, options => { });
+        => AddOtherDevice(builder, BankIdAuthDefaults.OtherDeviceAuthenticationScheme, BankIdAuthDefaults.OtherDeviceDisplayName, options => { });
 
     /// <summary>
     /// Add scheme for BankID on Other Device.
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="configureOptions">BankId Options</param>
-    public static IBankIdAuthBuilder AddOtherDevice(this IBankIdAuthBuilder builder, Action<BankIdOptions> configureOptions)
-        => AddOtherDevice(builder, BankIdDefaults.OtherDeviceAuthenticationScheme, BankIdDefaults.OtherDeviceDisplayName, configureOptions);
+    public static IBankIdAuthBuilder AddOtherDevice(this IBankIdAuthBuilder builder, Action<BankIdAuthOptions> configureOptions)
+        => AddOtherDevice(builder, BankIdAuthDefaults.OtherDeviceAuthenticationScheme, BankIdAuthDefaults.OtherDeviceDisplayName, configureOptions);
 
     /// <summary>
     /// Add scheme for BankID on Other Device.
@@ -94,8 +94,8 @@ public static class IBankIdAuthBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="authenticationScheme">Scheme name</param>
     /// <param name="configureOptions">BankId Options</param>
-    public static IBankIdAuthBuilder AddOtherDevice(this IBankIdAuthBuilder builder, string authenticationScheme, Action<BankIdOptions> configureOptions)
-        => AddOtherDevice(builder, authenticationScheme, BankIdDefaults.OtherDeviceDisplayName, configureOptions);
+    public static IBankIdAuthBuilder AddOtherDevice(this IBankIdAuthBuilder builder, string authenticationScheme, Action<BankIdAuthOptions> configureOptions)
+        => AddOtherDevice(builder, authenticationScheme, BankIdAuthDefaults.OtherDeviceDisplayName, configureOptions);
 
     /// <summary>
     /// Add scheme for BankID on Other Device.
@@ -104,19 +104,19 @@ public static class IBankIdAuthBuilderExtensions
     /// <param name="authenticationScheme">Scheme name</param>
     /// <param name="displayName">Scheme display name</param>
     /// <param name="configureOptions">BankId Options</param>
-    public static IBankIdAuthBuilder AddOtherDevice(this IBankIdAuthBuilder builder, string authenticationScheme, string displayName, Action<BankIdOptions> configureOptions)
+    public static IBankIdAuthBuilder AddOtherDevice(this IBankIdAuthBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthOptions> configureOptions)
         => AddScheme(builder, authenticationScheme, displayName, configureOptions, options =>
         {
-            options.CallbackPath = BankIdDefaults.OtherDeviceCallbackPath;
+            options.CallbackPath = BankIdAuthDefaults.OtherDeviceCallbackPath;
             options.BankIdSameDevice = false;
         });
 
 
-    internal static IBankIdAuthBuilder AddScheme(this IBankIdAuthBuilder builder, string authenticationScheme, string displayName, Action<BankIdOptions> configureOptions, Action<BankIdOptions> defaultConfigureOptions)
+    internal static IBankIdAuthBuilder AddScheme(this IBankIdAuthBuilder builder, string authenticationScheme, string displayName, Action<BankIdAuthOptions> configureOptions, Action<BankIdAuthOptions> defaultConfigureOptions)
     {
         builder.Services.Configure(authenticationScheme, defaultConfigureOptions);
 
-        builder.AuthenticationBuilder.AddScheme<BankIdOptions, BankIdHandler>(
+        builder.AuthenticationBuilder.AddScheme<BankIdAuthOptions, BankIdAuthHandler>(
             authenticationScheme,
             displayName,
             configureOptions

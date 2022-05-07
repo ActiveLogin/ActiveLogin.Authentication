@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
 public interface IBankIdAuthBuilder
 {

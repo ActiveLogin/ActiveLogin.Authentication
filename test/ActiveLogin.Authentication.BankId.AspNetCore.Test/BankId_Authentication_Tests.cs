@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
@@ -107,7 +108,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             })).CreateClient();
 
         // Act
@@ -142,7 +143,7 @@ public class BankId_Authentication_Tests
                     appBuilder.Use(async (context, next) =>
                     {
                         await context.ChallengeAsync(
-                            BankIdDefaults.SameDeviceAuthenticationScheme);
+                            BankIdAuthDefaults.SameDeviceAuthenticationScheme);
                         await next();
                     });
                     appBuilder.Run(context => context.Response.WriteAsync(""));
@@ -151,7 +152,7 @@ public class BankId_Authentication_Tests
             ,
             services =>
             {
-                services.AddTransient<RemoteAuthenticationOptions, BankIdOptions>();
+                services.AddTransient<RemoteAuthenticationOptions, BankIdAuthOptions>();
 
             }).CreateClient();
 
@@ -223,7 +224,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             }),
             services =>
             {
@@ -256,7 +257,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             }),
             services =>
             {
@@ -296,7 +297,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             }),
             services =>
             {
@@ -338,7 +339,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             }),
             services =>
             {
@@ -390,7 +391,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             }),
             services =>
             {
@@ -444,7 +445,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             }),
             services =>
             {
@@ -497,7 +498,7 @@ public class BankId_Authentication_Tests
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdDefaults.SameDeviceAuthenticationScheme);
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
             }),
             services =>
             {

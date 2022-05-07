@@ -22,9 +22,9 @@ public static class ServiceCollectionBankIdExtensions
     /// <param name="bankId">BankID configuration.</param>
     /// <example>
     /// <code>
-    /// .AddBankId(builder =>
+    /// .AddBankId(bankId =>
     /// {
-    ///     builder
+    ///     bankId
     ///         .UseProductionEnvironment()
     ///         .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
     ///         .UseQrCoderQrCodeGenerator();

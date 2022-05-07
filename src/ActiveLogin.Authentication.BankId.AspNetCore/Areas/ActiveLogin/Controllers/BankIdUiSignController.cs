@@ -13,9 +13,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [Area(BankIdConstants.Routes.ActiveLoginAreaName)]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiAuthController : BankIdUiControllerBase
+public class BankIdUiSignController : BankIdUiControllerBase
 {
-    public BankIdUiAuthController(
+    public BankIdUiSignController(
         IAntiforgery antiforgery,
         IStringLocalizer<BankIdAuthHandler> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
@@ -28,7 +28,7 @@ public class BankIdUiAuthController : BankIdUiControllerBase
     }
 
     [HttpGet]
-    [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}")]
+    [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}")]
     public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
     {
         return Initialize(returnUrl, protectedUiOptions, "Init");

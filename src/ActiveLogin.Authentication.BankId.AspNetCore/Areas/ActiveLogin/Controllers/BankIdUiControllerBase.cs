@@ -1,7 +1,6 @@
-using System.Text.Json;
-
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -18,14 +17,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 public abstract class BankIdUiControllerBase : Controller
 {
     private readonly IAntiforgery _antiforgery;
-    private readonly IStringLocalizer<BankIdHandler> _localizer;
+    private readonly IStringLocalizer<BankIdAuthHandler> _localizer;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
 
     protected BankIdUiControllerBase(
         IAntiforgery antiforgery,
-        IStringLocalizer<BankIdHandler> localizer,
+        IStringLocalizer<BankIdAuthHandler> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler)

@@ -1,22 +1,14 @@
-using System.Reflection;
-
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
-using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
-using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
-using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserContext;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using ActiveLogin.Authentication.BankId.Core;
-using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
-using ActiveLogin.Authentication.BankId.Core.UserContext;
-using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Authentication;
 
 namespace Microsoft.Extensions.DependencyInjection;
-public static class AuthenticationBuilderBankIdExtensions
+
+public static class AuthenticationBuilderBankIdAuthExtensions
 {
     /// <summary>
     /// Add BankID authentication provider from Active Login.
@@ -25,9 +17,9 @@ public static class AuthenticationBuilderBankIdExtensions
     /// <param name="bankId">BankID configuration.</param>
     /// <example>
     /// <code>
-    /// .AddBankId(builder =>
+    /// .AddBankId(bankId =>
     /// {
-    ///     builder
+    ///     bankId
     ///         .AddSameDevice()
     ///         .AddOtherDevice();
     /// });
@@ -38,7 +30,7 @@ public static class AuthenticationBuilderBankIdExtensions
     {
         var services = authenticationBuilder.Services;
 
-        var (activeLoginName, activeLoginVersion) = GetActiveLoginInfo();
+        var (activeLoginName, activeLoginVersion) = BankIdDefaultIocConfiguration.GetActiveLoginInfo();
         services.Configure<BankIdActiveLoginContext>(context =>
         {
             context.ActiveLoginProductName = activeLoginName;
@@ -75,29 +67,8 @@ public static class AuthenticationBuilderBankIdExtensions
     {
         var services = builder.Services;
 
-        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
-        services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
-        services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-        services.AddTransient<IBankIdUiOptionsProtector, BankIdUiOptionsProtector>();
-        services.AddTransient<IBankIdUiAuthResultProtector, BankIdUiAuthResultProtector>();
-
-        services.AddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
-
-        services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
-
-        services.AddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
-        services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+        BankIdDefaultIocConfiguration.AddDefaultServices(services);
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
-    }
-
-    private static (string name, string version) GetActiveLoginInfo()
-    {
-        var productName = BankIdConstants.ProductName;
-        var productAssembly = typeof(ServiceCollectionBankIdExtensions).Assembly;
-        var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
-        var productVersion = assemblyFileVersion?.Version ?? "Unknown";
-
-        return (productName, productVersion);
     }
 }

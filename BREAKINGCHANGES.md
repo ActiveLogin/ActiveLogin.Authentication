@@ -29,19 +29,19 @@ This means that you need to register the common configuration first and then the
 
 ```csharp
 services
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder.UseQrCoderQrCodeGenerator();
-        builder.UseUaParserDeviceDetection();
+        bankId.UseQrCoderQrCodeGenerator();
+        bankId.UseUaParserDeviceDetection();
         ...
     });
 
 services.AddAuthentication()
     .AddCookie()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder.AddSameDevice();
-        builder.AddOtherDevice();
+        bankId.AddSameDevice();
+        bankId.AddOtherDevice();
     });
 ```
 

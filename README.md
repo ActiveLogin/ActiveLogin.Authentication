@@ -89,9 +89,9 @@ Active Login is designed to make it easy to get started with BankID in .NET. The
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseSimulatedEnvironment()
             .AddSameDevice();
     });

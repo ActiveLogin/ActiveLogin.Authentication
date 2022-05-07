@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Http;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
 /// <summary>
-/// Default values used for configuration.
+/// Default values used for auth configuration.
 /// </summary>
-public static class BankIdDefaults
+public static class BankIdAuthDefaults
 {
     public const string IdentityProviderName = "BankID";
     public const string AuthenticationMethodName = "bankid";

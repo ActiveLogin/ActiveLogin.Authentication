@@ -115,9 +115,9 @@ BankID requires you to sign an agreement and receive a certificate used to ident
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .AddDebugEventListener();
             .UseSimulatedEnvironment()
             .AddSameDevice();
@@ -134,9 +134,9 @@ Samples on how to use them in production are:
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .AddApplicationInsightsEventListener(options =>
             {
                 options.LogUserPersonalIdentityNumberHints = true;
@@ -184,9 +184,9 @@ For trying out quickly (without the need of certificates) you can use an in-memo
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseSimulatedEnvironment()
             .AddSameDevice()
             ...
@@ -201,9 +201,9 @@ The faked name and personal identity number can also be customized like this.
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseSimulatedEnvironment("Alice", "Smith", "199908072391")
             .AddSameDevice()
             ...
@@ -217,9 +217,9 @@ This will use the real REST API for BankID, connecting to the Test environment. 
 
 ```csharp
 services.AddAuthentication()
-        .AddBankId(builder =>
+        .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseTestEnvironment()
             .AddSameDevice()
             ...
@@ -233,9 +233,9 @@ This will use the real REST API for BankID, connecting to the Production environ
 
 ```csharp
 services.AddAuthentication()
-        .AddBankId(builder =>
+        .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseProductionEnvironment()
             .AddSameDevice()
             ...
@@ -249,9 +249,9 @@ Finally, a full sample on how to use BankID in production with client certificat
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
@@ -271,9 +271,9 @@ services
 
 ```csharp
 services.AddAuthentication()
-        .AddBankId(builder =>
+        .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
             ...
@@ -285,9 +285,9 @@ services.AddAuthentication()
 
 ```csharp
 services.AddAuthentication()
-        .AddBankId(builder =>
+        .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseProductionEnvironment()
             .UseClientCertificate(() => new X509Certificate2( ... ))
             ...
@@ -301,9 +301,9 @@ BankID uses a self signed root ca certificate that you need to trust. This is no
 
 ```csharp
 services.AddAuthentication()
-        .AddBankId(builder =>
+        .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseProductionEnvironment()
             .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             ...
@@ -319,9 +319,9 @@ services.AddAuthentication()
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseProductionEnvironment()
             ...
             .AddSameDevice()
@@ -337,9 +337,9 @@ By default, `Add*Device` will use predefined schemas and display names, but they
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             .UseProductionEnvironment()
             ...
             .AddSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
@@ -464,7 +464,7 @@ You are also able to create your own transformer by inheriting it from the inter
 Once implemented, register your implementation using:
 
 ```csharp
-builder.AddClaimsTransformer<BankIdYourCustomClaimsTransformer>();
+bankId.AddClaimsTransformer<BankIdYourCustomClaimsTransformer>();
 ```
 
 The claims beeing issued by default have the names/keys specified in the public class `BankIdClaimTypes` so you can refer to them by these constants.
@@ -659,9 +659,9 @@ public class Startup
     {
         // ...
         services.AddAuthentication()
-            .AddBankId(builder =>
+            .AddBankId(bankId =>
             {
-                builder
+                bankId
                     .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate1"))
                     .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate2"))
                     .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate3"))
@@ -740,9 +740,9 @@ public class BankIdSampleEventListener : IBankIdEventListener
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             ...
             .AddEventListener<BankIdSampleEventListener>();
     });
@@ -753,14 +753,14 @@ services
 ##### BankIdDebugEventListener
 
 `BankIdDebugEventListener` will listen for all events and write them as serialized JSON to the debug log using `ILogger.LogDebug(...)`.
-Call `builder.AddDebugEventListener()` to enable it. Good to have for local development to see all details about what is happening.
+Call `bankId.AddDebugEventListener()` to enable it. Good to have for local development to see all details about what is happening.
 
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             ...
             .AddDebugEventListener();
     });
@@ -770,16 +770,16 @@ services
 
 `BankIdApplicationInsightsEventListener` will listen for all events and write them to Application Insights.
 
-Call `builder.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
+Call `bankId.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
 
 ___Note:___ This event listener is available is available through a separate package called `ActiveLogin.Authentication.BankId.AzureMonitor`.
 
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             ...
             .AddApplicationInsightsEventListener();
     });
@@ -790,9 +790,9 @@ By default it will use whatever InstrumentationKey is registered with the applic
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             ...
             .AddApplicationInsightsEventListener("CUSTOM_KEY");
     });
@@ -804,9 +804,9 @@ You can also customize what kind of data should be logged together with the Appl
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             ...
             .AddApplicationInsightsEventListener(options =>
             {
@@ -873,9 +873,9 @@ public class BankIdResultSampleLoggerStore : IBankIdResultStore
 
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
+        bankId
             //...
             .AddResultStore<BankIdResultSampleLoggerStore>();
     });
@@ -913,7 +913,7 @@ These can either be set as static data during startup in `Program.cs` or dynamic
 Sample of static text without formatting:
 
 ```csharp
-builder.UseAuthRequestUserData(authUserData =>
+bankId.UseAuthRequestUserData(authUserData =>
 {
     authUserData.UserVisibleData = "Login to your account at Active Login";
 });
@@ -922,7 +922,7 @@ builder.UseAuthRequestUserData(authUserData =>
 Sample of static text with formatting:
 
 ```csharp
-builder.UseAuthRequestUserData(authUserData =>
+bankId.UseAuthRequestUserData(authUserData =>
 {
     var message = new StringBuilder();
     message.AppendLine("# Active Login");

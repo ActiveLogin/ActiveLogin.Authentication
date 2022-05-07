@@ -14,10 +14,9 @@ Adds the `UseUaParserDeviceDetection()` extension method.
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
-            .UseUaParserDeviceDetection();
+        bankId.UseUaParserDeviceDetection();
     });
 ```
 

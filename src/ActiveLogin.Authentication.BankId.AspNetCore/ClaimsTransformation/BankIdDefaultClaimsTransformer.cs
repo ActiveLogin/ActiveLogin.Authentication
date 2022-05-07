@@ -38,20 +38,20 @@ public class BankIdDefaultClaimsTransformer : IBankIdClaimsTransformer
 
     private Task AddOptionalClaims(BankIdClaimsTransformationContext context)
     {
-        if (context.BankIdOptions.TokenExpiresIn.HasValue)
+        if (context.BankIdAuthOptions.TokenExpiresIn.HasValue)
         {
-            var expiresUtc = Clock.UtcNow.Add(context.BankIdOptions.TokenExpiresIn.Value);
+            var expiresUtc = Clock.UtcNow.Add(context.BankIdAuthOptions.TokenExpiresIn.Value);
             context.AddClaim(BankIdClaimTypes.Expires, GetJwtExpires(expiresUtc));
         }
 
-        if (context.BankIdOptions.IssueAuthenticationMethodClaim)
+        if (context.BankIdAuthOptions.IssueAuthenticationMethodClaim)
         {
-            context.AddClaim(BankIdClaimTypes.AuthenticationMethod, context.BankIdOptions.AuthenticationMethodName);
+            context.AddClaim(BankIdClaimTypes.AuthenticationMethod, context.BankIdAuthOptions.AuthenticationMethodName);
         }
 
-        if (context.BankIdOptions.IssueIdentityProviderClaim)
+        if (context.BankIdAuthOptions.IssueIdentityProviderClaim)
         {
-            context.AddClaim(BankIdClaimTypes.IdentityProvider, context.BankIdOptions.IdentityProviderName);
+            context.AddClaim(BankIdClaimTypes.IdentityProvider, context.BankIdAuthOptions.IdentityProviderName);
         }
 
         return Task.CompletedTask;

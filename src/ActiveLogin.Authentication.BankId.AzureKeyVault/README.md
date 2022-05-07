@@ -13,11 +13,9 @@ Adds the `UseClientCertificateFromAzureKeyVault(...)` extension method.
 
 ```csharp
 services
-    .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
-            .UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+        bankId.UseClientCertificateFromAzureKeyVault(Configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
     });
 ```
 
