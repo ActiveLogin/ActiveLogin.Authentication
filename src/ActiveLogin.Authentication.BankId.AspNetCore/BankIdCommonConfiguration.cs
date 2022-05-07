@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
-internal static class BankIdDefaultIocConfiguration
+internal static class BankIdCommonConfiguration
 {
     public static void AddDefaultServices(IServiceCollection services)
     {

@@ -27,7 +27,7 @@ public static class ServiceCollectionBankIdSignExtensions
     /// <returns></returns>
     public static IServiceCollection AddBankIdSign(this IServiceCollection services, Action<IBankIdSignBuilder> bankId)
     {
-        var (activeLoginName, activeLoginVersion) = BankIdDefaultIocConfiguration.GetActiveLoginInfo();
+        var (activeLoginName, activeLoginVersion) = BankIdCommonConfiguration.GetActiveLoginInfo();
         services.Configure<BankIdActiveLoginContext>(context =>
         {
             context.ActiveLoginProductName = activeLoginName;
@@ -64,6 +64,6 @@ public static class ServiceCollectionBankIdSignExtensions
     {
         var services = builder.Services;
 
-        BankIdDefaultIocConfiguration.AddDefaultServices(services);
+        BankIdCommonConfiguration.AddDefaultServices(services);
     }
 }

@@ -30,7 +30,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
     {
         var services = authenticationBuilder.Services;
 
-        var (activeLoginName, activeLoginVersion) = BankIdDefaultIocConfiguration.GetActiveLoginInfo();
+        var (activeLoginName, activeLoginVersion) = BankIdCommonConfiguration.GetActiveLoginInfo();
         services.Configure<BankIdActiveLoginContext>(context =>
         {
             context.ActiveLoginProductName = activeLoginName;
@@ -67,7 +67,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
     {
         var services = builder.Services;
 
-        BankIdDefaultIocConfiguration.AddDefaultServices(services);
+        BankIdCommonConfiguration.AddDefaultServices(services);
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
     }
