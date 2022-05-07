@@ -10,14 +10,15 @@
 
 <partial name="_Style" />
 
-<div class="bankid-login">
-    @if (!string.IsNullOrEmpty(header))
+<div class="activelogin-bankid-ui--wrapper">
+    @if (!string.IsNullOrEmpty(Localizer["SignIn_Header"]))
     {
-        <div class="h3 mb-3 font-weight-normal">@header</div>
+        <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>
     }
     <div class="h4 mb-3 font-weight-normal">@subHeader</div>
 
     <partial name="_Status" model="Model" />
     <partial name="_Form" model="Model" />
-    <partial name="_Script" model="Model" />
 </div>
+
+<partial name="_Script" model="Model" />
