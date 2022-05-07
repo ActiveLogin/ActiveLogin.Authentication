@@ -14,8 +14,6 @@ using ActiveLogin.Authentication.BankId.Core.UserContext;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class AuthenticationBuilderBankIdExtensions
@@ -77,6 +75,7 @@ public static class AuthenticationBuilderBankIdExtensions
     {
         var services = builder.Services;
 
+        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
         services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
         services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
         services.AddTransient<IBankIdUiOptionsProtector, BankIdUiOptionsProtector>();
