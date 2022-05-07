@@ -18,22 +18,22 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 public abstract class BankIdUiControllerBase : Controller
 {
     private readonly IAntiforgery _antiforgery;
+    private readonly IStringLocalizer<BankIdHandler> _localizer;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
-    private readonly IStringLocalizer<BankIdHandler> _localizer;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
 
     protected BankIdUiControllerBase(
         IAntiforgery antiforgery,
+        IStringLocalizer<BankIdHandler> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
-        IStringLocalizer<BankIdHandler> localizer,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler)
     {
         _antiforgery = antiforgery;
+        _localizer = localizer;
         _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
         _uiOptionsProtector = uiOptionsProtector;
-        _localizer = localizer;
         _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
     }
 
@@ -74,18 +74,19 @@ public abstract class BankIdUiControllerBase : Controller
         return !string.IsNullOrEmpty(HttpContext.Request.Cookies[uiOptions.StateCookieName]);
     }
 
-    private BankIdUiViewModel GetUiViewModel(string returnUrl, string uiOptions, BankIdUiOptions unprotectedUiOptions, AntiforgeryTokenSet antiforgeryTokens)
+    private BankIdUiViewModel GetUiViewModel(string returnUrl, string protectedUiOptions, BankIdUiOptions unprotectedUiOptions, AntiforgeryTokenSet antiforgeryTokens)
     {
         Validators.ThrowIfNullOrWhitespace(antiforgeryTokens.RequestToken, nameof(antiforgeryTokens.RequestToken));
 
         var initialStatusMessage = GetInitialStatusMessage(unprotectedUiOptions);
-        var loginScriptOptions = new BankIdUiScriptOptions(
-            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
-            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiStatusActionName),
-            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiQrCodeActionName),
-            GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiCancelActionName)
-        )
+
+        var uiScriptConfiguration = new BankIdUiScriptConfiguration()
         {
+            BankIdInitializeApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
+            BankIdStatusApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiStatusActionName),
+            BankIdQrCodeApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiQrCodeActionName),
+            BankIdCancelApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiCancelActionName),
+
             StatusRefreshIntervalMs = (int)BankIdConstants.StatusRefreshInterval.TotalMilliseconds,
             QrCodeRefreshIntervalMs = (int)BankIdConstants.QrCodeRefreshInterval.TotalMilliseconds,
 
@@ -95,15 +96,17 @@ public abstract class BankIdUiControllerBase : Controller
             UnsupportedBrowserErrorMessage = _localizer[BankIdConstants.LocalizationKeys.UnsupportedBrowserErrorMessage]
         };
 
-        return new BankIdUiViewModel(
-            returnUrl,
-            Url.Content(unprotectedUiOptions.CancelReturnUrl),
-            uiOptions,
-            unprotectedUiOptions,
-            loginScriptOptions,
-            SerializeToJson(loginScriptOptions),
-            antiforgeryTokens.RequestToken
-        );
+        var uiScriptInitState = new BankIdUiScriptInitState()
+        {
+            AntiXsrfRequestToken = antiforgeryTokens.RequestToken,
+
+            ReturnUrl = returnUrl,
+            CancelReturnUrl = Url.Content(unprotectedUiOptions.CancelReturnUrl),
+
+            ProtectedUiOptions = protectedUiOptions
+        };
+
+        return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState);
     }
 
     private string GetBankIdApiActionUrl(string action)
@@ -119,13 +122,5 @@ public abstract class BankIdUiControllerBase : Controller
             : MessageShortName.RFA1QR;
     }
 
-    private static string SerializeToJson<T>(T value)
-    {
-        if (value == null)
-        {
-            return string.Empty;
-        }
-        
-        return JsonSerializer.Serialize(value, value.GetType(), BankIdConstants.JsonSerializerOptions);
-    }
+
 }

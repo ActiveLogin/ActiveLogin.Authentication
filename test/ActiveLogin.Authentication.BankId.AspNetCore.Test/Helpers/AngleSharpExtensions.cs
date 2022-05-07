@@ -14,9 +14,4 @@ public static class AngleSharpExtensions
     {
         return document.QuerySelector(selector) is IHtmlInputElement input ? input.Value : "";
     }
-
-    public static string GetRequestVerificationToken(this IDocument document)
-    {
-        return document.GetInputValue("input[name='RequestVerificationToken']");
-    }
 }

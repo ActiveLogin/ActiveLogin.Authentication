@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Api;
@@ -204,7 +205,7 @@ public class BankId_Authentication_Tests
     }
 
     [Fact]
-    public async Task BankIdAuthentication_Login_Returns_Form_With_Resolved_Cancel_Url()
+    public async Task BankIdAuthentication_Login_Returns_Ui_With_Resolved_Cancel_Url()
     {
         // Arrange
         var options = new BankIdUiOptions(new List<string>(), true, false, "~/cru", DefaultStateCookieName);
@@ -236,13 +237,13 @@ public class BankId_Authentication_Tests
         // Assert
         Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-        var document = await HtmlDocumentHelper.FromContent(transaction.Content);
-        Assert.Equal("/cru", document.GetInputValue("input[name='CancelReturnUrl']"));
+        var transactionContent = await transaction.Content.ReadAsStringAsync();
+        Assert.Equal("/cru", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
     }
 
 
     [Fact]
-    public async Task BankIdAuthentication_Login_Returns_Form_And_Status()
+    public async Task BankIdAuthentication_Login_Returns_Ui_With_Script()
     {
         // Arrange
         using var server = CreateServer(o =>
@@ -269,14 +270,16 @@ public class BankId_Authentication_Tests
         // Assert
         Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-        var document = await HtmlDocumentHelper.FromContent(transaction.Content);
+        var transactionContent = await transaction.Content.ReadAsStringAsync();
+        var document = await HtmlDocumentHelper.FromContent(transactionContent);
 
-        Assert.NotNull(document.GetElement<IHtmlFormElement>("form.activelogin-bankid-ui--form"));
+        Assert.NotNull(document.GetElement<IHtmlDivElement>("div.activelogin-bankid-ui--wrapper"));
         Assert.NotNull(document.GetElement<IHtmlDivElement>("div.activelogin-bankid-ui--status-wrapper"));
         Assert.NotNull(document.GetElement<IHtmlImageElement>("img.activelogin-bankid-ui--qr-code-image"));
-        Assert.Equal("/", document.GetInputValue("input[name='ReturnUrl']"));
-        Assert.Equal("/", document.GetInputValue("input[name='CancelReturnUrl']"));
-        Assert.Equal("Ignored", document.GetInputValue("input[name='UiOptions']"));
+
+        Assert.Equal("/", GetInlineJsonValue(transactionContent, "returnUrl"));
+        Assert.Equal("/", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
+        Assert.Equal("Ignored", GetInlineJsonValue(transactionContent, "protectedUiOptions"));
     }
 
     [Fact]
@@ -506,8 +509,8 @@ public class BankId_Authentication_Tests
         var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
-        var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
-        var csrfToken = document.GetRequestVerificationToken();
+        var loginContent = await loginResponse.Content.ReadAsStringAsync();
+        var csrfToken = GetRequestVerificationToken(loginContent);
 
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
@@ -545,8 +548,8 @@ public class BankId_Authentication_Tests
         var loginRequest = CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
-        var document = await HtmlDocumentHelper.FromContent(loginResponse.Content);
-        var csrfToken = document.GetRequestVerificationToken();
+        var loginContent = await loginResponse.Content.ReadAsStringAsync();
+        var csrfToken = GetRequestVerificationToken(loginContent);
 
         // Arrange acting request
         var initializeRequest = new JsonContent(initializeRequestBody);
@@ -642,5 +645,21 @@ public class BankId_Authentication_Tests
             CancelAsyncIsCalled = true;
             return _bankIdApiClient.CancelAsync(request);
         }
+    }
+
+    private static string GetRequestVerificationToken(string html)
+    {
+        return GetInlineJsonValue(html, "antiXsrfRequestToken");
+    }
+
+    private static string GetInlineJsonValue(string html, string key)
+    {
+        var match = Regex.Match(html, @"""" + key + @"""[:]\s""(.*)""");
+        if (match.Success)
+        {
+            return match.Groups[1].Value;
+        }
+
+        return string.Empty;
     }
 }

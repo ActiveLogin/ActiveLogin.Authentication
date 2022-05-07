@@ -16,12 +16,12 @@ public class BankIdUiAuthController : BankIdUiControllerBase
 {
     public BankIdUiAuthController(
         IAntiforgery antiforgery,
+        IStringLocalizer<BankIdHandler> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
-        IStringLocalizer<BankIdHandler> localizer,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler
     )
-        : base(antiforgery, bankIdUserMessageLocalizer, uiOptionsProtector, localizer, bankIdInvalidStateHandler)
+        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler)
     {
 
     }

@@ -1,8 +1,12 @@
-@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models.BankIdUiViewModel
+@using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models
+@model BankIdUiViewModel
 
 <script src="~/_content/ActiveLogin.Authentication.BankId.AspNetCore/activelogin-main.js" asp-append-version="true"></script>
 <script>
-    (function (options) {
-        window.activeloginInit(options);
-    }(@Html.Raw(Model.LoginScriptOptionsJson)));
+    (function (configuration, initState) {
+        window.activeloginInit(configuration, initState);
+    }(
+        @Html.Raw(Model.BankUiScriptConfigurationJson()),
+        @Html.Raw(Model.BankIdUiScriptInitStateJson()))
+    );
 </script>
