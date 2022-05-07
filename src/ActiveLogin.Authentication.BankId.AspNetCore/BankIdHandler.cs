@@ -21,6 +21,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 {
     private const string StateCookieNameParemeterName = "StateCookie.Name";
 
+    private readonly IBankIdUiStateProtector _uiStateProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdUiAuthResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
@@ -32,6 +33,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
         ISystemClock clock,
+        IBankIdUiStateProtector uiStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUiAuthResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
@@ -39,6 +41,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
         : base(options, loggerFactory, encoder, clock)
     {
+        _uiStateProtector = uiStateProtector;
         _uiOptionsProtector = uiOptionsProtector;
         _uiResultProtector = uiResultProtector;
         _bankIdEventTrigger = bankIdEventTrigger;
@@ -174,19 +177,17 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
 
     private void AppendStateCookie(AuthenticationProperties properties)
     {
-        ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
         Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
 
         var state = new BankIdUiState(properties);
         var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-        var cookieValue = Options.StateDataFormat.Protect(state);
+        var cookieValue = _uiStateProtector.Protect(state);
 
         Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
     }
 
     private BankIdUiState? GetStateFromCookie()
     {
-        ArgumentNullException.ThrowIfNull(Options.StateDataFormat);
         Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
 
         var protectedState = Request.Cookies[Options.StateCookie.Name];
@@ -195,7 +196,7 @@ public class BankIdHandler : RemoteAuthenticationHandler<BankIdOptions>
             return null;
         }
 
-        var state = Options.StateDataFormat.Unprotect(protectedState);
+        var state = _uiStateProtector.Unprotect(protectedState);
         return state;
     }
 

@@ -47,8 +47,6 @@ public static class AuthenticationBuilderBankIdExtensions
             context.ActiveLoginProductVersion = activeLoginVersion;
         });
 
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<BankIdOptions>, BankIdPostConfigureOptions>());
-
         var bankIdBuilder = new BankIdAuthBuilder(services, authenticationBuilder);
 
         AddBankIdAuthAspNetServices(bankIdBuilder.Services);

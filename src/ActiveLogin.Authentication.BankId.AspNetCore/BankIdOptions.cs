@@ -40,8 +40,6 @@ public class BankIdOptions : RemoteAuthenticationOptions
     public bool IssueIdentityProviderClaim { get; set; } = true;
     public string IdentityProviderName { get; set; } = BankIdDefaults.IdentityProviderName;
 
-    public ISecureDataFormat<BankIdUiState>? StateDataFormat { get; set; }
-
     public CookieBuilder StateCookie
     {
         get => _stateCookieBuilder;

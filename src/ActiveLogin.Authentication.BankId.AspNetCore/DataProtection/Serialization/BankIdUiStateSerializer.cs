@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdStateSerializer : BankIdDataSerializer<BankIdUiState>
+internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
 {
     protected override void Write(BinaryWriter writer, BankIdUiState model)
     {
