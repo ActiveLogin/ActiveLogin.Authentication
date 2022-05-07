@@ -1,6 +1,6 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
 
-namespace ActiveLogin.Authentication.BankId.Core.Persistence;
+namespace ActiveLogin.Authentication.BankId.Core.ResultSTore;
 
 /// <summary>
 /// To comply with BankID Technical requirement RFT5 you need to store the data in <see cref="CompletionData"/>.

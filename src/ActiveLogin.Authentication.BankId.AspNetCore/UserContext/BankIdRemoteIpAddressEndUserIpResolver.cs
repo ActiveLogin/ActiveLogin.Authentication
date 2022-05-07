@@ -1,8 +1,8 @@
-using ActiveLogin.Authentication.BankId.Core.EndUserContext;
+using ActiveLogin.Authentication.BankId.Core.UserContext;
 
 using Microsoft.AspNetCore.Http;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.EndUserContext;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.UserContext;
 
 /// <summary>
 /// Resolves the end user ip of the user from RemoteIpAddress of the connection.

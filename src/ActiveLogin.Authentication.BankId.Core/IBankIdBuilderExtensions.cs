@@ -5,7 +5,7 @@ using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Cryptography;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
-using ActiveLogin.Authentication.BankId.Core.Persistence;
+using ActiveLogin.Authentication.BankId.Core.ResultSTore;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
 namespace Microsoft.Extensions.DependencyInjection;

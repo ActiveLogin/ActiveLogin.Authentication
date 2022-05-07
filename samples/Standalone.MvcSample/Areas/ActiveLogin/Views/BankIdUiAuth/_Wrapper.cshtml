@@ -8,7 +8,7 @@
     string subHeader = "With custom subheader";
 }
 
-<partial name="_LoginStyle" />
+<partial name="_Style" />
 
 <div class="bankid-login">
     @if (!string.IsNullOrEmpty(header))
@@ -17,7 +17,7 @@
     }
     <div class="h4 mb-3 font-weight-normal">@subHeader</div>
 
-    <partial name="_LoginStatus" model="Model" />
-    <partial name="_LoginForm" model="Model" />
-    <partial name="_LoginScript" model="Model" />
+    <partial name="_Status" model="Model" />
+    <partial name="_Form" model="Model" />
+    <partial name="_Script" model="Model" />
 </div>

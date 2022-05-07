@@ -1,13 +1,13 @@
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
-using ActiveLogin.Authentication.BankId.Core.EndUserContext;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.Qr;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.Core.UserContext;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 

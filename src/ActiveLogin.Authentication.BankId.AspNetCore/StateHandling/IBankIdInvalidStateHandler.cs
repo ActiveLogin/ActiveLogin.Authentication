@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.Core.StateHandling;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 
 /// <summary>
 /// Interface for handling invalid BankID state. This can happen when the user goes

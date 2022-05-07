@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.Core.EndUserContext;
+namespace ActiveLogin.Authentication.BankId.Core.UserContext;
 
 /// <summary>
 /// Resolves end user ip for the user.

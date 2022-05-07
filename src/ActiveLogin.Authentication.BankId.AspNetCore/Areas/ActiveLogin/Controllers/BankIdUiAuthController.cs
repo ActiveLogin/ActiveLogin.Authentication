@@ -1,5 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
-using ActiveLogin.Authentication.BankId.Core.StateHandling;
+using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Antiforgery;

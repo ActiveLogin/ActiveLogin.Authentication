@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serializat
 
 internal class BankIdUiAuthResultSerializer : IDataSerializer<BankIdUiAuthResult>
 {
-    private const int FormatVersion = 2;
+    private const int FormatVersion = 6;
 
     public byte[] Serialize(BankIdUiAuthResult model)
     {

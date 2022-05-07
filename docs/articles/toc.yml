@@ -11,6 +11,8 @@
       href: CODE_OF_CONDUCT.md
     - name: Security Policy
       href: SECURITY.md
+    - name: Breaking changes
+      href: BREAKINGCHANGES.md
 - name: BankID
   href: bankid.md
   items:

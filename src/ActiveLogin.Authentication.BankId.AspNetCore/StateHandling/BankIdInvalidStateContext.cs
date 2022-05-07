@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.Core.StateHandling;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 
 public class BankIdInvalidStateContext
 {
