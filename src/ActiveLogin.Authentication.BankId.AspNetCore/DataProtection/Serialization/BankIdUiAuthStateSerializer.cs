@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 using Microsoft.AspNetCore.Authentication;

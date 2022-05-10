@@ -40,6 +40,7 @@ public class BankIdUiSignApiController : BankIdUiApiControllerBase
 
         var uiOptions = UiOptionsProtector.Unprotect(request.UiOptions);
 
+        //TODO: Implement InitializeSign and use that
         BankIdFlowInitializeAuthResult bankIdFlowInitializeAuthResult;
         try
         {

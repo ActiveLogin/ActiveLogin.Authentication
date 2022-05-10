@@ -72,5 +72,7 @@ public static class ServiceCollectionBankIdSignExtensions
 
         services.AddTransient<IBankIdUiSignStateProtector, BankIdUiSignStateProtector>();
         //services.AddTransient<IBankIdUiSignResultProtector, BankIdUiSignResultProtector>();
+
+        services.AddTransient<IBankIdSignService, BankIdSignService>();
     }
 }

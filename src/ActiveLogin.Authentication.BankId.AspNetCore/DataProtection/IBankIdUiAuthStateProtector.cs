@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;

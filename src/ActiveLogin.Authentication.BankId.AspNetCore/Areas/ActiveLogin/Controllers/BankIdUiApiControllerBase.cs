@@ -83,7 +83,7 @@ public abstract class BankIdUiApiControllerBase : Controller
             }
             case BankIdFlowCollectResultComplete complete:
             {
-                var returnUri = GetSuccessReturnUrl(orderRef.OrderRef, complete.CompletionData.User, request.ReturnUrl);
+                var returnUri = GetSuccessReturnUrl(orderRef.OrderRef, complete.CompletionData, request.ReturnUrl);
                 return OkJsonResult(BankIdUiApiStatusResponse.Finished(returnUri));
             }
             case BankIdFlowCollectResultRetry retry:
@@ -136,8 +136,9 @@ public abstract class BankIdUiApiControllerBase : Controller
         return statusMessage;
     }
 
-    protected string GetSuccessReturnUrl(string orderRef, User user, string returnUrl)
+    protected string GetSuccessReturnUrl(string orderRef, CompletionData completionData, string returnUrl)
     {
+        var user = completionData.User;
         var uiResult = BankIdUiAuthResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
         var protectedUiAuthResult = _uiAuthResultProtector.Protect(uiResult);
 

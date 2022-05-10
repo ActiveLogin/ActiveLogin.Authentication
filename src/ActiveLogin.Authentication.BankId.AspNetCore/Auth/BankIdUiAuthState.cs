@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
 public class BankIdUiAuthState
 {

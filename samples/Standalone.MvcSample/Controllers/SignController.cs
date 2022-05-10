@@ -12,10 +12,12 @@ namespace Standalone.MvcSample.Controllers;
 public class SignController : Controller
 {
     private readonly IBankIdSignConfigurationProvider _bankIdSignConfigurationProvider;
+    private readonly IBankIdSignService _bankIdSignService;
 
-    public SignController(IBankIdSignConfigurationProvider bankIdSignConfigurationProvider)
+    public SignController(IBankIdSignConfigurationProvider bankIdSignConfigurationProvider, IBankIdSignService bankIdSignService)
     {
         _bankIdSignConfigurationProvider = bankIdSignConfigurationProvider;
+        _bankIdSignService = bankIdSignService;
     }
 
     public async Task<IActionResult> Index()
@@ -32,36 +34,27 @@ public class SignController : Controller
     [AllowAnonymous]
     public IActionResult Sign(string provider)
     {
-        var props = new AuthenticationProperties
+        var props = new BankIdSignProperties("Sign this...")
         {
-            RedirectUri = Url.Action(nameof(ExternalLoginCallback)),
             Items =
             {
                 {"returnUrl", "~/"},
                 {"scheme", provider}
             }
         };
-
-        return Challenge(props, provider);
+        var returnPath = new PathString(Url.Action(nameof(Callback)));
+        return _bankIdSignService.InitiateSign(props, returnPath, provider);
     }
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> ExternalLoginCallback()
+    public async Task<IActionResult> Callback()
     {
-        var result = await HttpContext.AuthenticateAsync();
+        var result = await _bankIdSignService.GetSignResultAsync();
         if (result?.Succeeded != true)
         {
-            throw new Exception("External authentication error");
+            throw new Exception("Sign error");
         }
-
-        return Redirect("~/");
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync();
 
         return Redirect("~/");
     }

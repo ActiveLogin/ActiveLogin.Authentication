@@ -48,7 +48,7 @@ public class BankIdSignService : IBankIdSignService
             options.StateCookie.Name ?? string.Empty
         );
 
-        //TODO
+        //TODO: Events
         //var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         //await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
 
@@ -59,6 +59,8 @@ public class BankIdSignService : IBankIdSignService
     public Task<BankIdSignResult?> GetSignResultAsync()
     {
         throw new NotImplementedException();
+
+        //TODO: Pick up the result, state etc. and return final result to consumer
 
         //var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
         //var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
