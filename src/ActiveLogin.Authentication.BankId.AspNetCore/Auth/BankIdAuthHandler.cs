@@ -20,10 +20,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
 public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 {
-    private const string StateCookieNameParemeterName = "StateCookie.Name";
-    private readonly PathString AuthPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
+    private const string StateCookieNameParameterName = "StateCookie.Name";
+    private readonly PathString _authPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
 
-    private readonly IBankIdUiStateProtector _uiStateProtector;
+    private readonly IBankIdUiAuthStateProtector _uiAuthStateProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdUiAuthResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
@@ -35,7 +35,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
         ISystemClock clock,
-        IBankIdUiStateProtector uiStateProtector,
+        IBankIdUiAuthStateProtector uiAuthStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUiAuthResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
@@ -43,7 +43,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
         : base(options, loggerFactory, encoder, clock)
     {
-        _uiStateProtector = uiStateProtector;
+        _uiAuthStateProtector = uiAuthStateProtector;
         _uiOptionsProtector = uiOptionsProtector;
         _uiResultProtector = uiResultProtector;
         _bankIdEventTrigger = bankIdEventTrigger;
@@ -134,37 +134,21 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             Options.BankIdCertificatePolicies,
             Options.BankIdSameDevice,
             Options.BankIdAllowBiometric,
-            GetCancelReturnUrl(properties),
+            BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
             Options.StateCookie.Name ?? string.Empty
         );
 
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
 
-        var loginUrl = GetLoginUrl(uiOptions);
+        var loginUrl = GetInitUiUrl(uiOptions);
         Response.Redirect(loginUrl);
     }
 
-    private string GetCancelReturnUrl(AuthenticationProperties properties)
-    {
-        // Default to root if no return url is set
-        var cancelReturnUrl = properties.Items.ContainsKey(BankIdConstants.QueryStringParameters.ReturnUrl)
-                                        ? properties.Items[BankIdConstants.QueryStringParameters.ReturnUrl]
-                                        : BankIdConstants.DefaultCancelUrl;
-
-        // If cancel url is set, it overrides the regular return url
-        if (properties.Items.TryGetValue(BankIdConstants.AuthenticationPropertiesKeys.CancelReturnUrl, out var cancelUrl))
-        {
-            cancelReturnUrl = cancelUrl;
-        }
-
-        return cancelReturnUrl ?? BankIdConstants.DefaultCancelUrl;
-    }
-
-    private string GetLoginUrl(BankIdUiOptions uiOptions)
+    private string GetInitUiUrl(BankIdUiOptions uiOptions)
     {
         var pathBase = Context.Request.PathBase;
-        var loginUrl = pathBase.Add(AuthPath);
+        var authUrl = pathBase.Add(_authPath);
         var returnUrl = pathBase.Add(Options.CallbackPath);
         var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
 
@@ -174,23 +158,23 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             { BankIdConstants.QueryStringParameters.UiOptions, protectedUiOptions }
         });
 
-        return $"{loginUrl}{queryBuilder.ToQueryString()}";
+        return $"{authUrl}{queryBuilder.ToQueryString()}";
     }
 
     private void AppendStateCookie(AuthenticationProperties properties)
     {
-        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
 
-        var state = new BankIdUiState(properties);
+        var state = new BankIdUiAuthState(properties);
         var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-        var cookieValue = _uiStateProtector.Protect(state);
+        var cookieValue = _uiAuthStateProtector.Protect(state);
 
         Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
     }
 
-    private BankIdUiState? GetStateFromCookie()
+    private BankIdUiAuthState? GetStateFromCookie()
     {
-        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
 
         var protectedState = Request.Cookies[Options.StateCookie.Name];
         if (string.IsNullOrEmpty(protectedState))
@@ -198,13 +182,13 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             return null;
         }
 
-        var state = _uiStateProtector.Unprotect(protectedState);
+        var state = _uiAuthStateProtector.Unprotect(protectedState);
         return state;
     }
 
     private void DeleteStateCookie()
     {
-        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParemeterName);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
 
         var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
         Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);

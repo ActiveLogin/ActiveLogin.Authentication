@@ -88,7 +88,7 @@ public class BankId_Authentication_Tests
         using var client = new TestServer(webHostBuilder).CreateClient();
 
         // Act
-        var transaction = await client.PostAsync("/ActiveLogin/BankId/Api/Initialize", null);
+        var transaction = await client.PostAsync("/ActiveLogin/BankId/Auth/Api/Initialize", null);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, transaction.StatusCode);
@@ -522,7 +522,7 @@ public class BankId_Authentication_Tests
 
         // Act
         var client = server.CreateClient();
-        var initializeTransaction = await client.PostAsync("/ActiveLogin/BankId/Api/Initialize", initializeRequest);
+        var initializeTransaction = await client.PostAsync("/ActiveLogin/BankId/Auth/Api/Initialize", initializeRequest);
         var initializeResponseContent = await initializeTransaction.Content.ReadAsStringAsync();
         var initializeObject = JsonConvert.DeserializeAnonymousType(initializeResponseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
 
@@ -536,7 +536,7 @@ public class BankId_Authentication_Tests
         cancelRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
         // Act
-        var cancelTransaction = await client.PostAsync("/ActiveLogin/BankId/Api/Cancel", cancelRequest);
+        var cancelTransaction = await client.PostAsync("/ActiveLogin/BankId/Auth/Api/Cancel", cancelRequest);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, cancelTransaction.StatusCode);
@@ -558,7 +558,7 @@ public class BankId_Authentication_Tests
         initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
         var client = server.CreateClient();
-        return await client.PostAsync("/ActiveLogin/BankId/Api/Initialize", initializeRequest);
+        return await client.PostAsync("/ActiveLogin/BankId/Auth/Api/Initialize", initializeRequest);
     }
 
     private TestServer CreateServer(

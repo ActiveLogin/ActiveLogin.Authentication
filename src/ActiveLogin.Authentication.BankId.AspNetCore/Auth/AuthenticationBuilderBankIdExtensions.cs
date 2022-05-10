@@ -2,6 +2,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.AspNetCore.Authentication;
@@ -53,7 +54,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
                 .ConfigureApplicationPartManager(apm =>
                 {
                     apm.FeatureProviders.Add(new BankIdUiAuthControllerFeatureProvider());
-                    apm.FeatureProviders.Add(new BankIdUiApiControllerFeatureProvider());
+                    apm.FeatureProviders.Add(new BankIdUiAuthApiControllerFeatureProvider());
                 });
         services.AddHttpContextAccessor();
 
@@ -68,6 +69,9 @@ public static class AuthenticationBuilderBankIdAuthExtensions
         var services = builder.Services;
 
         BankIdCommonConfiguration.AddDefaultServices(services);
+
+        services.AddTransient<IBankIdUiAuthStateProtector, BankIdUiAuthStateProtector>();
+        services.AddTransient<IBankIdUiAuthResultProtector, BankIdUiAuthResultProtector>();
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
     }

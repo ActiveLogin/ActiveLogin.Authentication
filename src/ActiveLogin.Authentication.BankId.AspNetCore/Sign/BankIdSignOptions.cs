@@ -19,8 +19,6 @@ public class BankIdSignOptions
     /// </summary>
     internal bool BankIdSameDevice { get; set; } = false;
 
-    public PathString? CallbackPath { get; set; }
-
 
     private CookieBuilder _stateCookieBuilder = new()
     {

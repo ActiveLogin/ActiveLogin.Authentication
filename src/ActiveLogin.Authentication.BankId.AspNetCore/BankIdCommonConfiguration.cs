@@ -18,11 +18,9 @@ internal static class BankIdCommonConfiguration
 {
     public static void AddDefaultServices(IServiceCollection services)
     {
-        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
         services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
         services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
         services.AddTransient<IBankIdUiOptionsProtector, BankIdUiOptionsProtector>();
-        services.AddTransient<IBankIdUiAuthResultProtector, BankIdUiAuthResultProtector>();
 
         services.AddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
 

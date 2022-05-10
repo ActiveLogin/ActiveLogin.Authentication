@@ -36,7 +36,7 @@ public abstract class BankIdUiControllerBase : Controller
         _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
     }
 
-    protected async Task<ActionResult> Initialize(string returnUrl, string protectedUiOptions, string viewName)
+    protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string protectedUiOptions, string viewName)
     {
         Validators.ThrowIfNullOrWhitespace(returnUrl);
         Validators.ThrowIfNullOrWhitespace(protectedUiOptions, BankIdConstants.QueryStringParameters.UiOptions);
@@ -57,7 +57,7 @@ public abstract class BankIdUiControllerBase : Controller
 
         protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
         var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
-        var viewModel = GetUiViewModel(returnUrl, protectedUiOptions, uiOptions, antiforgeryTokens);
+        var viewModel = GetUiViewModel(returnUrl, apiControllerName, protectedUiOptions, uiOptions, antiforgeryTokens);
 
         return View(viewName, viewModel);
     }
@@ -73,7 +73,7 @@ public abstract class BankIdUiControllerBase : Controller
         return !string.IsNullOrEmpty(HttpContext.Request.Cookies[uiOptions.StateCookieName]);
     }
 
-    private BankIdUiViewModel GetUiViewModel(string returnUrl, string protectedUiOptions, BankIdUiOptions unprotectedUiOptions, AntiforgeryTokenSet antiforgeryTokens)
+    private BankIdUiViewModel GetUiViewModel(string returnUrl, string apiControllerName, string protectedUiOptions, BankIdUiOptions unprotectedUiOptions, AntiforgeryTokenSet antiforgeryTokens)
     {
         Validators.ThrowIfNullOrWhitespace(antiforgeryTokens.RequestToken, nameof(antiforgeryTokens.RequestToken));
 
@@ -81,10 +81,10 @@ public abstract class BankIdUiControllerBase : Controller
 
         var uiScriptConfiguration = new BankIdUiScriptConfiguration()
         {
-            BankIdInitializeApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiInitializeActionName),
-            BankIdStatusApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiStatusActionName),
-            BankIdQrCodeApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiQrCodeActionName),
-            BankIdCancelApiUrl = GetBankIdApiActionUrl(BankIdConstants.Routes.BankIdApiCancelActionName),
+            BankIdInitializeApiUrl = GetBankIdApiActionUrl(apiControllerName, BankIdConstants.Routes.BankIdApiInitializeActionName),
+            BankIdStatusApiUrl = GetBankIdApiActionUrl(apiControllerName, BankIdConstants.Routes.BankIdApiStatusActionName),
+            BankIdQrCodeApiUrl = GetBankIdApiActionUrl(apiControllerName, BankIdConstants.Routes.BankIdApiQrCodeActionName),
+            BankIdCancelApiUrl = GetBankIdApiActionUrl(apiControllerName, BankIdConstants.Routes.BankIdApiCancelActionName),
 
             StatusRefreshIntervalMs = (int)BankIdConstants.StatusRefreshInterval.TotalMilliseconds,
             QrCodeRefreshIntervalMs = (int)BankIdConstants.QrCodeRefreshInterval.TotalMilliseconds,
@@ -108,10 +108,10 @@ public abstract class BankIdUiControllerBase : Controller
         return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState);
     }
 
-    private string GetBankIdApiActionUrl(string action)
+    private string GetBankIdApiActionUrl(string apiControllerName, string action)
     {
-        return Url.Action(action, BankIdConstants.Routes.BankIdApiControllerName)
-               ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdApiControllerName, action));
+        return Url.Action(action, apiControllerName)
+               ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(apiControllerName, action));
     }
 
     private static MessageShortName GetInitialStatusMessage(BankIdUiOptions uiOptions)
@@ -120,6 +120,4 @@ public abstract class BankIdUiControllerBase : Controller
             ? MessageShortName.RFA13
             : MessageShortName.RFA1QR;
     }
-
-
 }

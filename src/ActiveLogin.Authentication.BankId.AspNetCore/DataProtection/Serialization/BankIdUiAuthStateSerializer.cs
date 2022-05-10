@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
+internal class BankIdUiAuthStateSerializer : BankIdDataSerializer<BankIdUiAuthState>
 {
-    protected override void Write(BinaryWriter writer, BankIdUiState model)
+    protected override void Write(BinaryWriter writer, BankIdUiAuthState model)
     {
         PropertiesSerializer.Default.Write(writer, model.AuthenticationProperties);
     }
 
-    protected override BankIdUiState Read(BinaryReader reader)
+    protected override BankIdUiAuthState Read(BinaryReader reader)
     {
         var authenticationProperties = PropertiesSerializer.Default.Read(reader);
 
@@ -20,6 +20,6 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             throw new Exception(BankIdConstants.ErrorMessages.CouldNotDeserialize(nameof(AuthenticationProperties)));
         }
 
-        return new BankIdUiState(authenticationProperties);
+        return new BankIdUiAuthState(authenticationProperties);
     }
 }

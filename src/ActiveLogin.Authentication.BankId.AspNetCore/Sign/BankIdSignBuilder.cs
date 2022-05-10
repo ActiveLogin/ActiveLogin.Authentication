@@ -1,18 +1,27 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
 internal class BankIdSignBuilder : IBankIdSignBuilder
 {
+    private readonly IBankIdSignConfigurationProvider _bankIdSignConfigurationProvider;
+
     public IServiceCollection Services { get; }
 
-    public BankIdSignBuilder(IServiceCollection services)
+    public BankIdSignBuilder(IServiceCollection services, IBankIdSignConfigurationProvider bankIdSignConfigurationProvider)
     {
+        _bankIdSignConfigurationProvider = bankIdSignConfigurationProvider;
         Services = services;
     }
 
-    public IBankIdSignBuilder AddConfig(string configKey, string displayName, Action<BankIdSignOptions> configureOptions)
+    public void AddConfig(string configKey, string? displayName = null, Action<BankIdSignOptions>? configureOptions = null)
     {
-        throw new NotImplementedException();
+        if (configureOptions != null)
+        {
+            Services.Configure(configKey, configureOptions);
+        }
+
+        _bankIdSignConfigurationProvider.AddConfiguration(configKey, displayName);
     }
 }

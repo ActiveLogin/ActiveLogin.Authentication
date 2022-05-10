@@ -2,6 +2,7 @@ using System.Reflection;
 
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
+using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.Core;
 
@@ -34,7 +35,10 @@ public static class ServiceCollectionBankIdSignExtensions
             context.ActiveLoginProductVersion = activeLoginVersion;
         });
 
-        var bankIdBuilder = new BankIdSignBuilder(services);
+        var bankIdSignConfigurationProvider = new BankIdSignConfigurationProvider();
+        services.AddTransient<IBankIdSignConfigurationProvider>(s => bankIdSignConfigurationProvider);
+
+        var bankIdBuilder = new BankIdSignBuilder(services, bankIdSignConfigurationProvider);
 
         AddBankIdAuthAspNetServices(services);
         AddBankIdAuthDefaultServices(bankIdBuilder);
@@ -50,7 +54,7 @@ public static class ServiceCollectionBankIdSignExtensions
                 .ConfigureApplicationPartManager(apm =>
                 {
                     apm.FeatureProviders.Add(new BankIdUiSignControllerFeatureProvider());
-                    apm.FeatureProviders.Add(new BankIdUiApiControllerFeatureProvider());
+                    apm.FeatureProviders.Add(new BankIdUiSignApiControllerFeatureProvider());
                 });
         services.AddHttpContextAccessor();
 
@@ -65,5 +69,8 @@ public static class ServiceCollectionBankIdSignExtensions
         var services = builder.Services;
 
         BankIdCommonConfiguration.AddDefaultServices(services);
+
+        services.AddTransient<IBankIdUiSignStateProtector, BankIdUiSignStateProtector>();
+        //services.AddTransient<IBankIdUiSignResultProtector, BankIdUiSignResultProtector>();
     }
 }

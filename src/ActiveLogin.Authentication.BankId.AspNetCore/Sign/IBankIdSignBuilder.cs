@@ -5,6 +5,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 public interface IBankIdSignBuilder
 {
     IServiceCollection Services { get; }
-
-    IBankIdSignBuilder AddConfig(string configKey, string displayName, Action<BankIdSignOptions> configureOptions);
+    void AddConfig(string configKey, string? displayName = null, Action<BankIdSignOptions>? configureOptions = null);
 }

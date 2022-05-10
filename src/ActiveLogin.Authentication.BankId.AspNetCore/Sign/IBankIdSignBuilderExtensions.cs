@@ -54,7 +54,6 @@ public static class IBankIdSignBuilderExtensions
     public static IBankIdSignBuilder AddSameDevice(this IBankIdSignBuilder builder, string configKey, string displayName, Action<BankIdSignOptions> configureOptions)
         => AddConfig(builder, configKey, displayName, configureOptions, options =>
         {
-            options.CallbackPath = BankIdSignDefaults.SameDeviceCallbackPath;
             options.BankIdSameDevice = true;
         });
 
@@ -93,7 +92,6 @@ public static class IBankIdSignBuilderExtensions
     public static IBankIdSignBuilder AddOtherDevice(this IBankIdSignBuilder builder, string configKey, string displayName, Action<BankIdSignOptions> configureOptions)
         => AddConfig(builder, configKey, displayName, configureOptions, options =>
         {
-            options.CallbackPath = BankIdSignDefaults.OtherDeviceCallbackPath;
             options.BankIdSameDevice = false;
         });
 
