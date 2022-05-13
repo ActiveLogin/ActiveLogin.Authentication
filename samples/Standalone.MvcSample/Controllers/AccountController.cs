@@ -23,7 +23,7 @@ public class AccountController : Controller
         var providers = schemes
             .Where(x => x.DisplayName != null)
             .Select(x => new ExternalProvider(x.DisplayName ?? x.Name, x.Name));
-        var viewModel = new AccountLoginViewModel(providers, "~/");
+        var viewModel = new BankIdViewModel(providers, "~/");
 
         return View(viewModel);
     }

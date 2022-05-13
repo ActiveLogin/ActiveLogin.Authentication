@@ -70,7 +70,7 @@ public static class ServiceCollectionBankIdSignExtensions
 
         BankIdCommonConfiguration.AddDefaultServices(services);
 
-        services.AddTransient<IBankIdUiSignStateProtector, BankIdUiSignStateProtector>();
+        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
         //services.AddTransient<IBankIdUiSignResultProtector, BankIdUiSignResultProtector>();
 
         services.AddTransient<IBankIdSignService, BankIdSignService>();

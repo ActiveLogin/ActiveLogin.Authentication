@@ -40,6 +40,7 @@ public class BankId_Authentication_Tests
     private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
 
     private readonly Mock<IBankIdUiOptionsProtector> _bankIdUiOptionsProtector;
+    private readonly Mock<IBankIdUiStateProtector> _bankIdUiStateProtector;
 
     public BankId_Authentication_Tests()
     {
@@ -49,6 +50,15 @@ public class BankId_Authentication_Tests
             .Returns(new BankIdUiOptions(new List<string>(), false, false, "/", DefaultStateCookieName));
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
+            .Returns("Ignored");
+
+        var authState = new BankIdUiAuthState(new AuthenticationProperties());
+        _bankIdUiStateProtector = new Mock<IBankIdUiStateProtector>();
+        _bankIdUiStateProtector
+            .Setup(protector => protector.Unprotect(It.IsAny<string>()))
+            .Returns(authState);
+        _bankIdUiStateProtector
+            .Setup(protector => protector.Protect(It.IsAny<BankIdUiAuthState>()))
             .Returns("Ignored");
     }
 
@@ -194,6 +204,7 @@ public class BankId_Authentication_Tests
                 });
 
                 services.AddTransient(s => _bankIdUiOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
             });
 
         // Act
@@ -210,10 +221,10 @@ public class BankId_Authentication_Tests
     {
         // Arrange
         var options = new BankIdUiOptions(new List<string>(), true, false, "~/cru", DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
-        mockProtector
+        _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(options);
+
         using var server = CreateServer(o =>
             {
                 o.UseSimulatedEnvironment();
@@ -228,7 +239,8 @@ public class BankId_Authentication_Tests
             }),
             services =>
             {
-                services.AddTransient(s => mockProtector.Object);
+                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
             });
 
         // Act
@@ -241,7 +253,6 @@ public class BankId_Authentication_Tests
         var transactionContent = await transaction.Content.ReadAsStringAsync();
         Assert.Equal("/cru", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
     }
-
 
     [Fact]
     public async Task BankIdAuthentication_Login_Returns_Ui_With_Script()
@@ -262,6 +273,7 @@ public class BankId_Authentication_Tests
             services =>
             {
                 services.AddTransient(s => _bankIdUiOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
             });
 
         // Act
@@ -344,6 +356,7 @@ public class BankId_Authentication_Tests
             services =>
             {
                 services.AddTransient(s => mockProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
             });
 
         // Arrange acting request
@@ -396,6 +409,7 @@ public class BankId_Authentication_Tests
             services =>
             {
                 services.AddTransient(s => mockProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
                 services.AddMvc().AddJsonOptions(configure =>
                 {
                     configure.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -425,13 +439,9 @@ public class BankId_Authentication_Tests
     {
         // Arrange mocks
         var autoLaunchOptions = new BankIdUiOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
-        mockProtector
+        _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
-        mockProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
-            .Returns("Ignored");
 
         using var server = CreateServer(
             o =>
@@ -449,7 +459,8 @@ public class BankId_Authentication_Tests
             }),
             services =>
             {
-                services.AddTransient(s => mockProtector.Object);
+                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
                 services.AddMvc().AddJsonOptions(configure =>
                 {
                     configure.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -477,13 +488,9 @@ public class BankId_Authentication_Tests
     {
         // Arrange mocks
         var autoLaunchOptions = new BankIdUiOptions(new List<string>(), false, false, string.Empty, DefaultStateCookieName);
-        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
-        mockProtector
+        _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
-        mockProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
-            .Returns("Ignored");
         var testBankIdApi = new TestBankIdApi(new BankIdSimulatedApiClient());
 
         using var server = CreateServer(
@@ -502,7 +509,8 @@ public class BankId_Authentication_Tests
             }),
             services =>
             {
-                services.AddTransient(s => mockProtector.Object);
+                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
                 services.AddSingleton<IBankIdApiClient>(s => testBankIdApi);
             });
 
@@ -626,12 +634,12 @@ public class BankId_Authentication_Tests
             _bankIdApiClient = bankIdApiClient;
         }
 
-        public Task<AuthResponse> AuthAsync(AuthRequest request)
+        public Task<Response> AuthAsync(AuthRequest request)
         {
             return _bankIdApiClient.AuthAsync(request);
         }
 
-        public Task<SignResponse> SignAsync(SignRequest request)
+        public Task<Response> SignAsync(SignRequest request)
         {
             return _bankIdApiClient.SignAsync(request);
         }

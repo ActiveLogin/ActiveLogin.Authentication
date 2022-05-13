@@ -23,7 +23,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     private const string StateCookieNameParameterName = "StateCookie.Name";
     private readonly PathString _authPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
 
-    private readonly IBankIdUiAuthStateProtector _uiAuthStateProtector;
+    private readonly IBankIdUiStateProtector _uiStateProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdUiAuthResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
@@ -35,7 +35,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
         ISystemClock clock,
-        IBankIdUiAuthStateProtector uiAuthStateProtector,
+        IBankIdUiStateProtector uiStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUiAuthResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
@@ -43,7 +43,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
         : base(options, loggerFactory, encoder, clock)
     {
-        _uiAuthStateProtector = uiAuthStateProtector;
+        _uiStateProtector = uiStateProtector;
         _uiOptionsProtector = uiOptionsProtector;
         _uiResultProtector = uiResultProtector;
         _bankIdEventTrigger = bankIdEventTrigger;
@@ -167,7 +167,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 
         var state = new BankIdUiAuthState(properties);
         var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
-        var cookieValue = _uiAuthStateProtector.Protect(state);
+        var cookieValue = _uiStateProtector.Protect(state);
 
         Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
     }
@@ -182,7 +182,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             return null;
         }
 
-        var state = _uiAuthStateProtector.Unprotect(protectedState);
+        var state = _uiStateProtector.Unprotect(protectedState) as BankIdUiAuthState;
         return state;
     }
 

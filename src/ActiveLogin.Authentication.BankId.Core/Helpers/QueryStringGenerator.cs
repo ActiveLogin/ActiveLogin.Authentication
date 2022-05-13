@@ -3,7 +3,7 @@ using System.Text.Encodings.Web;
 
 namespace ActiveLogin.Authentication.BankId.Core.Helpers;
 
-internal static class QueryStringGenerator
+public static class QueryStringGenerator
 {
     public static string ToQueryString(IEnumerable<KeyValuePair<string, string>> parameters)
     {

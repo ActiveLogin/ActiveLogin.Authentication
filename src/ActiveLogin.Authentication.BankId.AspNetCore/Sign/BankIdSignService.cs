@@ -1,13 +1,10 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
-using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Flow;
-using ActiveLogin.Identity.Swedish;
+using ActiveLogin.Authentication.BankId.Core.Helpers;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -16,20 +13,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 public class BankIdSignService : IBankIdSignService
 {
     private const string StateCookieNameParameterName = "StateCookie.Name";
-    private readonly PathString _signInitPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerName}");
+    private readonly PathString _signInitPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}");
 
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IOptionsSnapshot<BankIdSignOptions> _optionsSnapshot;
     private readonly IBankIdFlowSystemClock _systemClock;
-    private readonly IBankIdUiSignStateProtector _bankIdUiSignStateProtector;
+    private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
 
-    public BankIdSignService(IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<BankIdSignOptions> optionsSnapshot, IBankIdFlowSystemClock systemClock, IBankIdUiSignStateProtector bankIdUiSignStateProtector, IBankIdUiOptionsProtector uiOptionsProtector)
+    public BankIdSignService(IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<BankIdSignOptions> optionsSnapshot, IBankIdFlowSystemClock systemClock, IBankIdUiStateProtector bankIdUiStateProtector, IBankIdUiOptionsProtector uiOptionsProtector)
     {
         _httpContextAccessor = httpContextAccessor;
         _optionsSnapshot = optionsSnapshot;
         _systemClock = systemClock;
-        _bankIdUiSignStateProtector = bankIdUiSignStateProtector;
+        _bankIdUiStateProtector = bankIdUiStateProtector;
         _uiOptionsProtector = uiOptionsProtector;
     }
 
@@ -102,7 +99,7 @@ public class BankIdSignService : IBankIdSignService
 
         var state = new BankIdUiSignState(configKey, properties);
         var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
-        var cookieValue = _bankIdUiSignStateProtector.Protect(state);
+        var cookieValue = _bankIdUiStateProtector.Protect(state);
 
         httpContext.Response.Cookies.Append(options.StateCookie.Name, cookieValue, cookieOptions);
     }
@@ -114,13 +111,13 @@ public class BankIdSignService : IBankIdSignService
         var returnUrl = pathBase.Add(callbackPath);
         var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
 
-        var queryBuilder = new QueryBuilder(new Dictionary<string, string>
+        var queryBuilder = QueryStringGenerator.ToQueryString(new Dictionary<string, string>
         {
             { BankIdConstants.QueryStringParameters.ReturnUrl, returnUrl },
             { BankIdConstants.QueryStringParameters.UiOptions, protectedUiOptions }
         });
 
-        return $"{signUrl}{queryBuilder.ToQueryString()}";
+        return $"{signUrl}{queryBuilder}";
     }
 
     private BankIdUiSignState? GetStateFromCookie(HttpContext httpContext, string stateCookieName)
@@ -133,7 +130,7 @@ public class BankIdSignService : IBankIdSignService
             return null;
         }
 
-        return _bankIdUiSignStateProtector.Unprotect(protectedState);
+        return _bankIdUiStateProtector.Unprotect(protectedState) as BankIdUiSignState;
     }
 
     private void DeleteStateCookie(HttpContext httpContext, CookieBuilder cookieBuilder, string stateCookieName, DateTimeOffset utcNow)

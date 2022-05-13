@@ -20,14 +20,16 @@ public class BankIdUiSignController : BankIdUiControllerBase
         IStringLocalizer<BankIdAuthHandler> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdInvalidStateHandler bankIdInvalidStateHandler
+        IBankIdInvalidStateHandler bankIdInvalidStateHandler,
+        IBankIdUiStateProtector bankIdUiStateProtector
     )
-        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler)
+        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, bankIdUiStateProtector)
     {
 
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}")]
     public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
     {

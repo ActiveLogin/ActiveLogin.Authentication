@@ -4,7 +4,9 @@ namespace ActiveLogin.Authentication.BankId.Core.Flow;
 
 public interface IBankIdFlowService
 {
-    Task<BankIdFlowInitializeAuthResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl);
+    Task<BankIdFlowInitializeResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl);
+
+    Task<BankIdFlowInitializeResult> InitializeSign(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string resturnRedirectUrl);
 
     Task<BankIdFlowCollectResult> Collect(string orderRef, int autoStartAttempts, BankIdFlowOptions flowOptions);
 

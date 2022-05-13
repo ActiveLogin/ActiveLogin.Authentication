@@ -3,10 +3,11 @@
 
 <script src="~/_content/ActiveLogin.Authentication.BankId.AspNetCore/activelogin-main.js" asp-append-version="true"></script>
 <script>
-    (function (configuration, initState) {
-        window.activeloginInit(configuration, initState);
+    (function (configuration, initState, signData) {
+        window.activeloginInit(configuration, initState, signData);
     }(
         @Html.Raw(Model.BankUiScriptConfigurationJson()),
-        @Html.Raw(Model.BankIdUiScriptInitStateJson()))
+        @Html.Raw(Model.BankIdUiScriptInitStateJson()),
+        @Html.Raw(Model.BankIdUiSignDataAsJson()))
     );
 </script>

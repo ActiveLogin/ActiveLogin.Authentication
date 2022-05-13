@@ -70,7 +70,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
 
         BankIdCommonConfiguration.AddDefaultServices(services);
 
-        services.AddTransient<IBankIdUiAuthStateProtector, BankIdUiAuthStateProtector>();
+        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
         services.AddTransient<IBankIdUiAuthResultProtector, BankIdUiAuthResultProtector>();
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();

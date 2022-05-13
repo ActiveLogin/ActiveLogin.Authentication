@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
@@ -6,22 +7,22 @@ using ActiveLogin.Identity.Swedish;
 namespace ActiveLogin.Authentication.BankId.Core.Events;
 
 /// <summary>
-/// Event for successful initiation of authentication order. 
+/// Event for failed initiation of auth and sign orders. 
 /// </summary>
-public class BankIdAuthSuccessEvent : BankIdEvent
+public class BankIdErrorEvent : BankIdEvent
 {
-    internal BankIdAuthSuccessEvent(PersonalIdentityNumber? personalIdentityNumber, string orderRef, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
-        : base(BankIdEventTypes.AuthSuccessId, BankIdEventTypes.AuthSuccessName, BankIdEventSeverity.Success)
+    internal BankIdErrorEvent(PersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
+        : base(BankIdEventTypes.AuthErrorEventId, BankIdEventTypes.AuthErrorEventName, BankIdEventSeverity.Error)
     {
         PersonalIdentityNumber = personalIdentityNumber;
-        OrderRef = orderRef;
+        BankIdApiException = bankIdApiException;
         DetectedUserDevice = detectedUserDevice;
         BankIdOptions = idOptions;
     }
 
     public PersonalIdentityNumber? PersonalIdentityNumber { get; }
 
-    public string OrderRef { get; }
+    public BankIdApiException BankIdApiException { get; }
 
     public BankIdSupportedDevice DetectedUserDevice { get; }
 

@@ -2,11 +2,11 @@ using ActiveLogin.Authentication.BankId.Core.Launcher;
 
 namespace ActiveLogin.Authentication.BankId.Core.Flow;
 
-public class BankIdFlowInitializeAuthLaunchTypeSameDevice : BankIdFlowInitializeAuthLaunchType
+public class BankIdFlowInitializeLaunchTypeSameDevice : BankIdFlowInitializeLaunchType
 {
     public BankIdLaunchInfo BankIdLaunchInfo { get; init; }
 
-    public BankIdFlowInitializeAuthLaunchTypeSameDevice(BankIdLaunchInfo bankIdLaunchInfo)
+    public BankIdFlowInitializeLaunchTypeSameDevice(BankIdLaunchInfo bankIdLaunchInfo)
     {
         BankIdLaunchInfo = bankIdLaunchInfo;
     }

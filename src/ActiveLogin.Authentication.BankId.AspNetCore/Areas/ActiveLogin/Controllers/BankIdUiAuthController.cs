@@ -20,9 +20,10 @@ public class BankIdUiAuthController : BankIdUiControllerBase
         IStringLocalizer<BankIdAuthHandler> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdInvalidStateHandler bankIdInvalidStateHandler
+        IBankIdInvalidStateHandler bankIdInvalidStateHandler,
+        IBankIdUiStateProtector bankIdUiStateProtector
     )
-        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler)
+        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, bankIdUiStateProtector)
     {
 
     }

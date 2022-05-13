@@ -77,7 +77,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         set => _delay = value < TimeSpan.Zero ? TimeSpan.Zero : value;
     }
 
-    public async Task<AuthResponse> AuthAsync(AuthRequest request)
+    public async Task<Response> AuthAsync(AuthRequest request)
     {
         if (request == null)
         {
@@ -85,10 +85,10 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         }
 
         var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
-        return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartSecret, response.QrStartSecret);
+        return new Response(response.OrderRef, response.AutoStartToken, response.QrStartSecret, response.QrStartSecret);
     }
 
-    public async Task<SignResponse> SignAsync(SignRequest request)
+    public async Task<Response> SignAsync(SignRequest request)
     {
         if (request == null)
         {
@@ -96,7 +96,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         }
 
         var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
-        return new SignResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
+        return new Response(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
     private async Task<OrderResponse> GetOrderResponseAsync(string? personalIdentityNumber, string endUserIp)

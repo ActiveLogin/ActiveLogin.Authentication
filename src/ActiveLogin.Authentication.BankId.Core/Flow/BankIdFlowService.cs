@@ -53,32 +53,75 @@ public class BankIdFlowService : IBankIdFlowService
         _bankIdLauncher = bankIdLauncher;
     }
 
-    public async Task<BankIdFlowInitializeAuthResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl)
+    public async Task<BankIdFlowInitializeResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
-        var authResponse = await GetAuthResponse(flowOptions, detectedUserDevice);
+        var response = await GetAuthResponse(flowOptions, detectedUserDevice);
 
-        await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber: null, authResponse.OrderRef, detectedUserDevice, flowOptions));
+        await _bankIdEventTrigger.TriggerAsync(new BankIdSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
 
         if (flowOptions.SameDevice)
         {
-            var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, authResponse);
-            return new BankIdFlowInitializeAuthResult(authResponse, detectedUserDevice, new BankIdFlowInitializeAuthLaunchTypeSameDevice(launchInfo));
+            var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeSameDevice(launchInfo));
         }
         else
         {
             var qrStartState = new BankIdQrStartState(
                 _bankIdFlowSystemClock.UtcNow,
-                authResponse.QrStartToken,
-                authResponse.QrStartSecret
+                response.QrStartToken,
+                response.QrStartSecret
             );
 
             var qrCodeAsBase64 = GetQrCodeAsBase64(qrStartState);
-            return new BankIdFlowInitializeAuthResult(authResponse, detectedUserDevice, new BankIdFlowInitializeAuthLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
+        }
+    }
+    public async Task<BankIdFlowInitializeResult> InitializeSign(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string returnRedirectUrl)
+    {
+        var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
+        try
+        {
+            var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
+            var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
+            var requestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.AllowBiometric);
+
+            var request = new SignRequest(
+                endUserIp,
+                bankIdSignData.UserVisibleData,
+                userNonVisibleData: bankIdSignData.UserNonVisibleData,
+                userVisibleDataFormat: bankIdSignData.UserVisibleDataFormat,
+                requirement: requestRequirement);
+
+            var response = await _bankIdApiClient.SignAsync(request);
+
+            await _bankIdEventTrigger.TriggerAsync(new BankIdSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
+
+            if (flowOptions.SameDevice)
+            {
+                var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
+                return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeSameDevice(launchInfo));
+            }
+            else
+            {
+                var qrStartState = new BankIdQrStartState(
+                    _bankIdFlowSystemClock.UtcNow,
+                    response.QrStartToken,
+                    response.QrStartSecret
+                );
+
+                var qrCodeAsBase64 = GetQrCodeAsBase64(qrStartState);
+                return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
+            }
+        }
+        catch (BankIdApiException bankIdApiException)
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
+            throw;
         }
     }
 
-    private async Task<AuthResponse> GetAuthResponse(BankIdFlowOptions flowOptions, BankIdSupportedDevice detectedUserDevice)
+    private async Task<Response> GetAuthResponse(BankIdFlowOptions flowOptions, BankIdSupportedDevice detectedUserDevice)
     {
         try
         {
@@ -87,7 +130,7 @@ public class BankIdFlowService : IBankIdFlowService
         }
         catch (BankIdApiException bankIdApiException)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
             throw;
         }
     }
@@ -105,9 +148,9 @@ public class BankIdFlowService : IBankIdFlowService
         return new AuthRequest(endUserIp, null, authRequestRequirement, userData.UserVisibleData, userData.UserNonVisibleData, userData.UserVisibleDataFormat);
     }
 
-    private BankIdLaunchInfo GetBankIdLaunchInfo(string redirectUrl, AuthResponse authResponse)
+    private BankIdLaunchInfo GetBankIdLaunchInfo(string redirectUrl, string autoStartToken)
     {
-        var launchUrlRequest = new LaunchUrlRequest(redirectUrl, authResponse.AutoStartToken);
+        var launchUrlRequest = new LaunchUrlRequest(redirectUrl, autoStartToken);
 
         return _bankIdLauncher.GetLaunchInfo(launchUrlRequest);
     }

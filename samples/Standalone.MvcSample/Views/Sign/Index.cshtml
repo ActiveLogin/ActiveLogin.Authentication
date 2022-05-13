@@ -1,20 +1,20 @@
 @model Standalone.MvcSample.Models.BankIdViewModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Demo";
+    ViewData["Title"] = "Demo (sign)";
 }
 
 @if (Model.ExternalProviders.Any())
 {
     <div class="choose-auth-provider">
-        <h1 class=" mb-5 mt-2 font-weight-normal">Active Login</h1>
+        <h1 class=" mb-5 mt-2 font-weight-normal">Active Sign</h1>
 
         <ul class="list-inline">
             @foreach (var provider in Model.ExternalProviders)
             {
                 <li class="mb-2">
                     <a class="btn btn-primary btn-block btn-lg"
-                       asp-action="ExternalLogin"
+                       asp-action="Sign"
                        asp-route-provider="@provider.BankIdScheme"
                        asp-route-returnUrl="@Model.ReturnUrl">
                         @provider.DisplayName
@@ -28,7 +28,7 @@
 @if (!Model.ExternalProviders.Any())
 {
     <div class="alert alert-warning">
-        <strong>Invalid login request</strong>
-        There are no login schemes configured for this client.
+        <strong>Invalid sign request</strong>
+        There are no sign schemes configured for this client.
     </div>
 }

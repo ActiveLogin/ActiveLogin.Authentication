@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api;
 
@@ -22,18 +22,18 @@ public class BankIdApiClient : IBankIdApiClient
     /// Initiates an authentication order. Use the collect method to query the status of the order.
     /// </summary>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public Task<AuthResponse> AuthAsync(AuthRequest request)
+    public Task<Response> AuthAsync(AuthRequest request)
     {
-        return _httpClient.PostAsync<AuthRequest, AuthResponse>("auth", request);
+        return _httpClient.PostAsync<AuthRequest, Response>("auth", request);
     }
 
     /// <summary>
     /// Initiates an signing order. Use the collect method to query the status of the order.
     /// </summary>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public Task<SignResponse> SignAsync(SignRequest request)
+    public Task<Response> SignAsync(SignRequest request)
     {
-        return _httpClient.PostAsync<SignRequest, SignResponse>("sign", request);
+        return _httpClient.PostAsync<SignRequest, Response>("sign", request);
     }
 
     /// <summary>

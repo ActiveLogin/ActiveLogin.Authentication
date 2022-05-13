@@ -3,11 +3,11 @@ using System.Text.Json.Serialization;
 namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 /// <summary>
-/// Sign response result.
+/// Auth response result.
 /// </summary>
-public class SignResponse
+public class Response
 {
-    public SignResponse(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret)
+    public Response(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret)
     {
         OrderRef = orderRef;
         AutoStartToken = autoStartToken;

@@ -25,12 +25,12 @@ internal abstract class BankIdDataStateProtector<TModel>
         );
     }
 
-    public string Protect(TModel model)
+    public virtual string Protect(TModel model)
     {
         return _secureDataFormat.Protect(model);
     }
 
-    public TModel Unprotect(string protectedModel)
+    public virtual TModel Unprotect(string protectedModel)
     {
         var unprotected = _secureDataFormat.Unprotect(protectedModel);
 

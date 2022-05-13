@@ -16,7 +16,7 @@ public class BankIdApiClientExtensions_Tests
         // Arrange
         var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
         bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
-            .ReturnsAsync(It.IsAny<AuthResponse>());
+            .ReturnsAsync(It.IsAny<Response>());
 
         // Act
         await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1");
@@ -33,7 +33,7 @@ public class BankIdApiClientExtensions_Tests
         // Arrange
         var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
         bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
-            .ReturnsAsync(It.IsAny<AuthResponse>());
+            .ReturnsAsync(It.IsAny<Response>());
 
         // Act
         await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "201801012392");
@@ -50,10 +50,10 @@ public class BankIdApiClientExtensions_Tests
         // Arrange
         var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
         bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
-            .ReturnsAsync(It.IsAny<AuthResponse>());
+            .ReturnsAsync(It.IsAny<Response>());
 
         // Act
-        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", "userVisibleDataFormat");
+        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", userVisibleData: "userVisibleData", userVisibleDataFormat: "userVisibleDataFormat");
 
         // Assert
         var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
@@ -68,7 +68,7 @@ public class BankIdApiClientExtensions_Tests
         // Arrange
         var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
         bankIdApiClientMock.Setup(client => client.SignAsync(It.IsAny<SignRequest>()))
-            .ReturnsAsync(It.IsAny<SignResponse>());
+            .ReturnsAsync(It.IsAny<Response>());
 
         // Act
         await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData");
@@ -85,7 +85,7 @@ public class BankIdApiClientExtensions_Tests
         // Arrange
         var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
         bankIdApiClientMock.Setup(client => client.SignAsync(It.IsAny<SignRequest>()))
-            .ReturnsAsync(It.IsAny<SignResponse>());
+            .ReturnsAsync(It.IsAny<Response>());
 
         // Act
         await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", null, "201801012392");

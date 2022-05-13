@@ -26,7 +26,7 @@ public class SignController : Controller
         var providers = configurations
             .Where(x => x.DisplayName != null)
             .Select(x => new ExternalProvider(x.DisplayName ?? x.Key, x.Key));
-        var viewModel = new AccountLoginViewModel(providers, "~/");
+        var viewModel = new BankIdViewModel(providers, "~/");
 
         return View(viewModel);
     }

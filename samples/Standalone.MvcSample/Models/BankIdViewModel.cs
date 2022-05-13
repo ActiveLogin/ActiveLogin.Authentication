@@ -1,8 +1,8 @@
 namespace Standalone.MvcSample.Models;
 
-public class AccountLoginViewModel
+public class BankIdViewModel
 {
-    public AccountLoginViewModel(IEnumerable<ExternalProvider> externalProviders, string returnUrl)
+    public BankIdViewModel(IEnumerable<ExternalProvider> externalProviders, string returnUrl)
     {
         ExternalProviders = externalProviders;
         ReturnUrl = returnUrl;
