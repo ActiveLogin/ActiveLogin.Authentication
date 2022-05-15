@@ -1,8 +1,13 @@
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core.Events;
+using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.Helpers;
+using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +24,29 @@ public class BankIdSignService : IBankIdSignService
     private readonly IOptionsSnapshot<BankIdSignOptions> _optionsSnapshot;
     private readonly IBankIdFlowSystemClock _systemClock;
     private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
+    private readonly IBankIdUiResultProtector _uiResultProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
+    private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
+    private readonly IBankIdEventTrigger _bankIdEventTrigger;
 
-    public BankIdSignService(IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<BankIdSignOptions> optionsSnapshot, IBankIdFlowSystemClock systemClock, IBankIdUiStateProtector bankIdUiStateProtector, IBankIdUiOptionsProtector uiOptionsProtector)
+    public BankIdSignService(
+        IHttpContextAccessor httpContextAccessor,
+        IOptionsSnapshot<BankIdSignOptions> optionsSnapshot,
+        IBankIdFlowSystemClock systemClock,
+        IBankIdUiStateProtector bankIdUiStateProtector,
+        IBankIdUiOptionsProtector uiOptionsProtector,
+        IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
+        IBankIdEventTrigger bankIdEventTrigger,
+        IBankIdUiResultProtector uiResultProtector)
     {
         _httpContextAccessor = httpContextAccessor;
         _optionsSnapshot = optionsSnapshot;
         _systemClock = systemClock;
         _bankIdUiStateProtector = bankIdUiStateProtector;
         _uiOptionsProtector = uiOptionsProtector;
+        _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+        _bankIdEventTrigger = bankIdEventTrigger;
+        _uiResultProtector = uiResultProtector;
     }
 
     public IActionResult InitiateSign(BankIdSignProperties properties, PathString callbackPath, string configKey)
@@ -45,52 +64,67 @@ public class BankIdSignService : IBankIdSignService
             options.StateCookie.Name ?? string.Empty
         );
 
-        //TODO: Events
-        //var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
-        //await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
-
         var signUrl = GetUiInitUrl(httpContext, callbackPath, uiOptions);
         return new RedirectResult(signUrl);
     }
 
-    public Task<BankIdSignResult?> GetSignResultAsync()
+    public async Task<BankIdSignResult?> GetSignResultAsync(string provider)
     {
-        throw new NotImplementedException();
+        Validators.ThrowIfNullOrWhitespace(provider, nameof(provider));
 
-        //TODO: Pick up the result, state etc. and return final result to consumer
+        var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
+        var options = _optionsSnapshot.Get(provider);
+        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
 
-        //var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
-        //var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
+        var state = GetStateCookie(httpContext, options);
+        if(state == null || state is not BankIdUiSignState signState)
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice));
+            throw new ArgumentException($"Missing or invalid state cookie {options.StateCookie.Name}");
+        }
 
-        //var state = GetStateFromCookie(httpContext, _);
-        //if (state == null)
-        //{
-        //    return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice);
-        //}
+        DeleteStateCookie(httpContext, options);
 
-        //DeleteStateCookie();
+        var protectedUiResult = httpContext.Request.Query[BankIdConstants.QueryStringParameters.UiResult];
+        if (string.IsNullOrEmpty(protectedUiResult))
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
+            return new BankIdSignResult(false, signState.BankIdSignProperties);
+        }
 
-        //var protectedUiResult = Request.Query[BankIdConstants.QueryStringParameters.UiResult];
-        //if (string.IsNullOrEmpty(protectedUiResult))
-        //{
-        //    return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
-        //}
+        var uiResult = _uiResultProtector.Unprotect(protectedUiResult);
+        if (!uiResult.IsSuccessful)
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
+            return new BankIdSignResult(false, signState.BankIdSignProperties);
+        }
 
-        //var uiResult = _uiResultProtector.Unprotect(protectedUiResult);
-        //if (!uiResult.IsSuccessful)
-        //{
-        //    return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
-        //}
+        await _bankIdEventTrigger.TriggerAsync(new BankIdSignSuccessEvent(
+            PersonalIdentityNumber.Parse(uiResult.PersonalIdentityNumber),
+            detectedDevice
+        ));
 
-        //var properties = state.AuthenticationProperties;
-        //var ticket = await GetAuthenticationTicket(uiResult, properties);
+        return BankIdSignResult.Success(
+            signState.BankIdSignProperties,
+            new CompletionData(
+                ParseUser(uiResult),
+                ParseDevice(uiResult),
+                ParseCert(uiResult),
+                uiResult.Signature,
+                uiResult.OCSPResponse)
+            );
+    }
 
-        ////await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
-        ////    PersonalIdentityNumber.Parse(uiResult.PersonalIdentityNumber),
-        ////    detectedDevice
-        ////));
+    private BankIdUiState GetStateCookie(HttpContext httpContext, BankIdSignOptions options)
+    {
+        Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
 
-        //return HandleRequestResult.Success(ticket);
+        var protectedState = httpContext.Request.Cookies[options.StateCookie.Name];
+        if (string.IsNullOrEmpty(protectedState))
+        {
+            throw new InvalidOperationException($"Missing state cookie {options.StateCookie.Name}");
+        }
+        return _bankIdUiStateProtector.Unprotect(protectedState);
     }
 
     private void AppendStateCookie(HttpContext httpContext, BankIdSignProperties properties, BankIdSignOptions options, string configKey)
@@ -120,24 +154,16 @@ public class BankIdSignService : IBankIdSignService
         return $"{signUrl}{queryBuilder}";
     }
 
-    private BankIdUiSignState? GetStateFromCookie(HttpContext httpContext, string stateCookieName)
+    private void DeleteStateCookie(HttpContext httpContext, BankIdSignOptions options)
     {
-        Validators.ThrowIfNullOrWhitespace(stateCookieName, StateCookieNameParameterName);
+        Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
 
-        var protectedState = httpContext.Request.Cookies[stateCookieName];
-        if (string.IsNullOrEmpty(protectedState))
-        {
-            return null;
-        }
-
-        return _bankIdUiStateProtector.Unprotect(protectedState) as BankIdUiSignState;
+        var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
+        httpContext.Response.Cookies.Delete(options.StateCookie.Name, cookieOptions);
     }
 
-    private void DeleteStateCookie(HttpContext httpContext, CookieBuilder cookieBuilder, string stateCookieName, DateTimeOffset utcNow)
-    {
-        Validators.ThrowIfNullOrWhitespace(stateCookieName, StateCookieNameParameterName);
+    private static User ParseUser(BankIdUiResult uiResult) => new(uiResult.PersonalIdentityNumber, uiResult.Name, uiResult.GivenName, uiResult.Surname);
+    private static Device ParseDevice(BankIdUiResult uiResult) => new(uiResult.DetectedIpAddress);
+    private static Cert ParseCert(BankIdUiResult uiResult) => new Cert(uiResult.CertNotBefore, uiResult.CertNotAfter);
 
-        var cookieOptions = cookieBuilder.Build(httpContext, utcNow);
-        httpContext.Response.Cookies.Delete(stateCookieName, cookieOptions);
-    }
 }

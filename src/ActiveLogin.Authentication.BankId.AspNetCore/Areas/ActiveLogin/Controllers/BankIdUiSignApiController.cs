@@ -30,7 +30,7 @@ public class BankIdUiSignApiController : BankIdUiApiControllerBase
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiAuthResultProtector uiAuthResultProtector,
+        IBankIdUiResultProtector uiAuthResultProtector,
         IBankIdUiStateProtector bankIdUiStateProtector)
         : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
     {

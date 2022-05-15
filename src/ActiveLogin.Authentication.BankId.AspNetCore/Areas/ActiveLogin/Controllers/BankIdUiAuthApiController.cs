@@ -26,7 +26,7 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiAuthResultProtector uiAuthResultProtector)
+        IBankIdUiResultProtector uiAuthResultProtector)
         : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
     {
     }

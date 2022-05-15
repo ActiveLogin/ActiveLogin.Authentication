@@ -95,7 +95,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
 
     // BankID API - Auth
 
-    public override Task HandleSuccessEvent(BankIdSuccessEvent e)
+    public override Task HandleSuccessEvent(BankIdInitializeSuccessEvent e)
     {
         return Track(
             e,
@@ -109,7 +109,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
         );
     }
 
-    public override Task HandleFailureEvent(BankIdErrorEvent e)
+    public override Task HandleFailureEvent(BankIdInitializeErrorEvent e)
     {
         return Track(
             e,

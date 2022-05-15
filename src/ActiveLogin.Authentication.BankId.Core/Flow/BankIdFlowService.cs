@@ -58,7 +58,7 @@ public class BankIdFlowService : IBankIdFlowService
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
         var response = await GetAuthResponse(flowOptions, detectedUserDevice);
 
-        await _bankIdEventTrigger.TriggerAsync(new BankIdSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
+        await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
 
         if (flowOptions.SameDevice)
         {
@@ -95,7 +95,7 @@ public class BankIdFlowService : IBankIdFlowService
 
             var response = await _bankIdApiClient.SignAsync(request);
 
-            await _bankIdEventTrigger.TriggerAsync(new BankIdSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
 
             if (flowOptions.SameDevice)
             {
@@ -116,7 +116,7 @@ public class BankIdFlowService : IBankIdFlowService
         }
         catch (BankIdApiException bankIdApiException)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
             throw;
         }
     }
@@ -130,7 +130,7 @@ public class BankIdFlowService : IBankIdFlowService
         }
         catch (BankIdApiException bankIdApiException)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
             throw;
         }
     }

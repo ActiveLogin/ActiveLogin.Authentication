@@ -19,7 +19,7 @@ public class BankIdSignResult
 
     public CompletionData? BankIdCompletionData { get; init; }
 
-    public BankIdSignResult Success(BankIdSignProperties properties, CompletionData bankidCompletionData)
+    public static BankIdSignResult Success(BankIdSignProperties properties, CompletionData bankidCompletionData)
     {
         return new BankIdSignResult(true, properties)
         {

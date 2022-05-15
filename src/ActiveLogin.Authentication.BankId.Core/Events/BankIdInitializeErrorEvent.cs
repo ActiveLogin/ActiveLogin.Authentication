@@ -9,9 +9,9 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// <summary>
 /// Event for failed initiation of auth and sign orders. 
 /// </summary>
-public class BankIdErrorEvent : BankIdEvent
+public class BankIdInitializeErrorEvent : BankIdEvent
 {
-    internal BankIdErrorEvent(PersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
+    internal BankIdInitializeErrorEvent(PersonalIdentityNumber? personalIdentityNumber, BankIdApiException bankIdApiException, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
         : base(BankIdEventTypes.AuthErrorEventId, BankIdEventTypes.AuthErrorEventName, BankIdEventSeverity.Error)
     {
         PersonalIdentityNumber = personalIdentityNumber;

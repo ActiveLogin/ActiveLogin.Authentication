@@ -8,9 +8,9 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// <summary>
 /// Event for successful initiation of authentication order. 
 /// </summary>
-public class BankIdSuccessEvent : BankIdEvent
+public class BankIdInitializeSuccessEvent : BankIdEvent
 {
-    internal BankIdSuccessEvent(PersonalIdentityNumber? personalIdentityNumber, string orderRef, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
+    internal BankIdInitializeSuccessEvent(PersonalIdentityNumber? personalIdentityNumber, string orderRef, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
         : base(BankIdEventTypes.AuthSuccessId, BankIdEventTypes.AuthSuccessName, BankIdEventSeverity.Success)
     {
         PersonalIdentityNumber = personalIdentityNumber;

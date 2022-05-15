@@ -24,7 +24,7 @@ public abstract class BankIdUiApiControllerBase : Controller
 
     private readonly IBankIdUserMessage _bankIdUserMessage;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
-    private readonly IBankIdUiAuthResultProtector _uiAuthResultProtector;
+    private readonly IBankIdUiResultProtector _uiAuthResultProtector;
 
     protected BankIdUiApiControllerBase(
         IBankIdFlowService bankIdFlowService,
@@ -34,7 +34,7 @@ public abstract class BankIdUiApiControllerBase : Controller
 
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiAuthResultProtector uiAuthResultProtector
+        IBankIdUiResultProtector uiAuthResultProtector
 
     )
     {
@@ -139,12 +139,12 @@ public abstract class BankIdUiApiControllerBase : Controller
     protected string GetSuccessReturnUrl(string orderRef, CompletionData completionData, string returnUrl)
     {
         var user = completionData.User;
-        var uiResult = BankIdUiAuthResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname);
-        var protectedUiAuthResult = _uiAuthResultProtector.Protect(uiResult);
+        var uiResult = BankIdUiResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname, completionData.Signature, completionData.OcspResponse, completionData.Cert.NotBefore, completionData.Cert.NotAfter, completionData.Device.IpAddress);
+        var protectedUiResult = _uiAuthResultProtector.Protect(uiResult);
 
         return QueryHelpers.AddQueryString(returnUrl, new Dictionary<string, string?>
         {
-            { BankIdConstants.QueryStringParameters.UiResult, protectedUiAuthResult }
+            { BankIdConstants.QueryStringParameters.UiResult, protectedUiResult }
         });
     }
 

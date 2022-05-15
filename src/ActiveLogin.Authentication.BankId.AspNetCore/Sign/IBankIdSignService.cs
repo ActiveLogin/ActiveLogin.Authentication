@@ -6,5 +6,5 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 public interface IBankIdSignService
 {
     IActionResult InitiateSign(BankIdSignProperties properties, PathString callbackPath, string configKey);
-    Task<BankIdSignResult?> GetSignResultAsync();
+    Task<BankIdSignResult?> GetSignResultAsync(string provider);
 }

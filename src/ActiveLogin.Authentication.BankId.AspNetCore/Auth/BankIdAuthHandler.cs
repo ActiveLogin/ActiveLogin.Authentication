@@ -25,7 +25,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 
     private readonly IBankIdUiStateProtector _uiStateProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
-    private readonly IBankIdUiAuthResultProtector _uiResultProtector;
+    private readonly IBankIdUiResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers;
@@ -37,7 +37,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         ISystemClock clock,
         IBankIdUiStateProtector uiStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdUiAuthResultProtector uiResultProtector,
+        IBankIdUiResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
@@ -93,7 +93,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         return HandleRequestResult.Fail(reason);
     }
 
-    private async Task<AuthenticationTicket> GetAuthenticationTicket(BankIdUiAuthResult uiAuthResult, AuthenticationProperties properties)
+    private async Task<AuthenticationTicket> GetAuthenticationTicket(BankIdUiResult uiAuthResult, AuthenticationProperties properties)
     {
         if (Options.TokenExpiresIn.HasValue)
         {
@@ -107,7 +107,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         return new AuthenticationTicket(principal, properties, Scheme.Name);
     }
 
-    private async Task<IEnumerable<Claim>> GetClaims(BankIdUiAuthResult uiAuthResult)
+    private async Task<IEnumerable<Claim>> GetClaims(BankIdUiResult uiAuthResult)
     {
         var context = new BankIdClaimsTransformationContext(
             Options,
