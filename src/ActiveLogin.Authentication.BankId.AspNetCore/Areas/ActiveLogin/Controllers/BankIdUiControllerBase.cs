@@ -124,7 +124,8 @@ public abstract class BankIdUiControllerBase : Controller
         {
             var uiSignData = new BankIdUiSignData
             {
-                UserVisibleData = signState.BankIdSignProperties.UserVisibleData
+                UserVisibleData = signState.BankIdSignProperties.UserVisibleData,
+                UserVisibleDataFormat = signState.BankIdSignProperties.UserVisibleDataFormat
             };
             return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, uiSignData);
         }

@@ -49,7 +49,7 @@ public class BankIdSignService : IBankIdSignService
         _uiResultProtector = uiResultProtector;
     }
 
-    public IActionResult InitiateSign(BankIdSignProperties properties, PathString callbackPath, string configKey)
+    public IActionResult InitiateSign(BankIdSignProperties properties, string callbackPath, string configKey)
     {
         var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
         var options = _optionsSnapshot.Get(configKey);
@@ -85,7 +85,13 @@ public class BankIdSignService : IBankIdSignService
 
         DeleteStateCookie(httpContext, options);
 
-        var protectedUiResult = httpContext.Request.Query[BankIdConstants.QueryStringParameters.UiResult];
+        if (!httpContext.Request.HasFormContentType)
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
+            throw new ArgumentException($"Missing or invalid ui result");
+        }
+
+        var protectedUiResult = httpContext.Request.Form[BankIdConstants.QueryStringParameters.UiResult];
         if (string.IsNullOrEmpty(protectedUiResult))
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
@@ -138,18 +144,19 @@ public class BankIdSignService : IBankIdSignService
         httpContext.Response.Cookies.Append(options.StateCookie.Name, cookieValue, cookieOptions);
     }
 
-    private string GetUiInitUrl(HttpContext httpContext, PathString callbackPath, BankIdUiOptions uiOptions)
+    private string GetUiInitUrl(HttpContext httpContext, string callbackPath, BankIdUiOptions uiOptions)
     {
         var pathBase = httpContext.Request.PathBase;
         var signUrl = pathBase.Add(_signInitPath);
-        var returnUrl = pathBase.Add(callbackPath);
+
         var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
 
-        var queryBuilder = QueryStringGenerator.ToQueryString(new Dictionary<string, string>
-        {
-            { BankIdConstants.QueryStringParameters.ReturnUrl, returnUrl },
-            { BankIdConstants.QueryStringParameters.UiOptions, protectedUiOptions }
-        });
+        var queryBuilder = QueryStringGenerator.ToQueryString(
+            new Dictionary<string, string>
+            {
+                { BankIdConstants.QueryStringParameters.ReturnUrl, callbackPath },
+                { BankIdConstants.QueryStringParameters.UiOptions, protectedUiOptions }
+            });
 
         return $"{signUrl}{queryBuilder}";
     }

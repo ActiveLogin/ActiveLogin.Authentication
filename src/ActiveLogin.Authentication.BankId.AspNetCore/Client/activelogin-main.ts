@@ -31,7 +31,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     const requiredFeatures = [window.fetch, window.sessionStorage];
     const isMissingSomeFeature = requiredFeatures.some(x => !x);
     if (isMissingSomeFeature) {
-        showStatus(configuration.unsupportedBrowserErrorMessage, signData.userVisibleData, "danger", false);
+        showStatus(configuration.unsupportedBrowserErrorMessage, "danger", false);
         return;
     }
 
@@ -55,9 +55,11 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     const statusInfoElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--status-info");
     const statusSpinnerElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--status-spinner");
     const statusMessageElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--status-message");
-    const signMessageElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--sign-message");
     const cancelButtonElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--cancel-button");
     const qrCodeElement = <HTMLImageElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--qr-code-image");
+
+    const uiResultForm = <HTMLFormElement>document.querySelector("form[name=activelogin-bankid-ui--result-form]");
+    const uiResultInput = <HTMLInputElement>uiResultForm.querySelector("input[name=uiResult]");
 
     const startBankIdAppButtonElement = <HTMLButtonElement>uiWrapperElement.querySelector(".activelogin-bankid-ui-startapp-button");
 
@@ -75,7 +77,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     // Boot
 
     function showOrderRefStatus(orderRef : string) {
-        showStatus(configuration.initialStatusMessage, signData.userVisibleData, "white", true);
+        showStatus(configuration.initialStatusMessage, "white", true);
         checkStatus(
             initState.antiXsrfRequestToken,
             initState.returnUrl,
@@ -148,14 +150,14 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 enableCancelButton(data.orderRef);
 
                 hide(formElement);
-                showStatus(configuration.initialStatusMessage, signData.userVisibleData, "white", true);
+                showStatus(configuration.initialStatusMessage, "white", true);
 
                 if (data.checkStatus) {
                     checkStatus(requestVerificationToken, returnUrl, protectedUiOptions, data.orderRef);
                 }
             })
             .catch(error => {
-                showStatus(error.message, signData.userVisibleData, "danger", false);
+                showStatus(error.message, "danger", false);
                 hide(qrCodeElement);
                 hide(startBankIdAppButtonElement);
                 enableCancelButton();
@@ -180,10 +182,12 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     autoStartAttempts++;
                     login();
                 } else if (data.isFinished) {
-                    window.location.href = data.redirectUri;
+                    uiResultForm.setAttribute("action", data.redirectUri);
+                    uiResultInput.value = data.result;
+                    uiResultForm.submit();
                 } else if (!loginIsCancelledByUser) {
                     autoStartAttempts = 0;
-                    showStatus(data.statusMessage, signData.userVisibleData, "white", true);
+                    showStatus(data.statusMessage, "white", true);
                     setTimeout(() => {
                         checkStatus(requestVerificationToken, returnUrl, protectedUiOptions, orderRef);
                     }, configuration.statusRefreshIntervalMs);
@@ -191,7 +195,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             })
             .catch(error => {
                 if (!loginIsCancelledByUser) {
-                    showStatus(error.message, signData.userVisibleData, "danger", false);
+                    showStatus(error.message, "danger", false);
                     hide(startBankIdAppButtonElement);
                 }
                 hide(qrCodeElement);
@@ -229,7 +233,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             })
             .catch(error => {
                 if (!loginIsCancelledByUser) {
-                    showStatus(error.message, signData.userVisibleData, "danger", false);
+                    showStatus(error.message, "danger", false);
                     hide(startBankIdAppButtonElement);
                 }
                 hide(qrCodeElement);
@@ -293,7 +297,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             });
     }
 
-    function showStatus(status: string, userVisibleData: string, type: string, spinner : boolean) {
+    function showStatus(status: string, type: string, spinner : boolean) {
         let textClass = "text-white";
         if (type === "white") {
             textClass = "";
@@ -301,26 +305,8 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
         statusInfoElement.className = `card activelogin-bankid-ui--status-info bg-${type} ${textClass}`;
         statusMessageElement.innerText = status;
-        if (!userVisibleData) {
-            setVisibility(signMessageElement, false);
-        } else {
-            // TODO: handle possible markdown content in message
-            signMessageElement.innerText = userVisibleData;
-            setVisibility(signMessageElement, true);
-        }
         setVisibility(statusSpinnerElement, spinner, "inline-block");
         show(statusWrapperElement);
-    }
-
-    function showSignMessage(message: string, type: string) {
-        let textClass = "text-white";
-        if (type === "white") {
-            textClass = "";
-        }
-
-        signMessageElement.className = `card activelogin-bankid-ui--sign-message bg-${type} ${textClass}`;
-        signMessageElement.innerText = message;
-        show(signMessageElement)
     }
 
     function setVisibility(element : HTMLElement, visible : boolean, display : string = null) {

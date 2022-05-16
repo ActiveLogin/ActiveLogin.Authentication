@@ -15,15 +15,24 @@ public class BankIdUiApiStatusResponse
         RedirectUri = redirectUri;
     }
 
+    internal BankIdUiApiStatusResponse(bool isFinished, string? statusMessage, string? redirectUri, string? uiResult)
+    {
+        IsFinished = isFinished;
+        StatusMessage = statusMessage;
+        RedirectUri = redirectUri;
+        Result = uiResult;
+    }
+
     public bool IsFinished { get; }
     public string? StatusMessage { get; }
     public string? RedirectUri { get; }
     public bool RetryLogin { get; }
+    public string? Result { get; set; }
 
 
-    public static BankIdUiApiStatusResponse Finished(string redirectUri)
+    public static BankIdUiApiStatusResponse Finished(string redirectUri, string uiResult)
     {
-        return new BankIdUiApiStatusResponse(true, null, redirectUri);
+        return new BankIdUiApiStatusResponse(true, null, redirectUri, uiResult);
     }
 
     public static BankIdUiApiStatusResponse Pending(string statusMessage)

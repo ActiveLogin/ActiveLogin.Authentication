@@ -42,12 +42,12 @@ public class SignController : Controller
                 {"scheme", provider}
             }
         };
-        var returnPath = new PathString(Url.Action(nameof(Callback), new { provider }));
+        var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
         return _bankIdSignService.InitiateSign(props, returnPath, provider);
     }
 
     [AllowAnonymous]
-    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> Callback(string provider)
     {
         var result = await _bankIdSignService.GetSignResultAsync(provider);

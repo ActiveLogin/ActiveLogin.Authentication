@@ -83,8 +83,8 @@ public abstract class BankIdUiApiControllerBase : Controller
             }
             case BankIdFlowCollectResultComplete complete:
             {
-                var returnUri = GetSuccessReturnUrl(orderRef.OrderRef, complete.CompletionData, request.ReturnUrl);
-                return OkJsonResult(BankIdUiApiStatusResponse.Finished(returnUri));
+                var uiResult = ConstructProtectedUiResult(orderRef.OrderRef, complete.CompletionData);
+                return OkJsonResult(BankIdUiApiStatusResponse.Finished(request.ReturnUrl, uiResult));
             }
             case BankIdFlowCollectResultRetry retry:
             {
@@ -136,16 +136,21 @@ public abstract class BankIdUiApiControllerBase : Controller
         return statusMessage;
     }
 
-    protected string GetSuccessReturnUrl(string orderRef, CompletionData completionData, string returnUrl)
+    protected string ConstructProtectedUiResult(string orderRef, CompletionData completionData)
     {
         var user = completionData.User;
-        var uiResult = BankIdUiResult.Success(orderRef, user.PersonalIdentityNumber, user.Name, user.GivenName, user.Surname, completionData.Signature, completionData.OcspResponse, completionData.Cert.NotBefore, completionData.Cert.NotAfter, completionData.Device.IpAddress);
-        var protectedUiResult = _uiAuthResultProtector.Protect(uiResult);
-
-        return QueryHelpers.AddQueryString(returnUrl, new Dictionary<string, string?>
-        {
-            { BankIdConstants.QueryStringParameters.UiResult, protectedUiResult }
-        });
+        var uiResult = BankIdUiResult.Success(
+            orderRef,
+            user.PersonalIdentityNumber,
+            user.Name,
+            user.GivenName,
+            user.Surname,
+            completionData.Signature,
+            completionData.OcspResponse,
+            completionData.Cert.NotBefore,
+            completionData.Cert.NotAfter,
+            completionData.Device.IpAddress);
+        return _uiAuthResultProtector.Protect(uiResult);
     }
 
     protected static ActionResult OkJsonResult(object model)

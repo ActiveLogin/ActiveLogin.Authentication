@@ -10,4 +10,7 @@ public class BankIdUiSignData
 
     [JsonPropertyName("userVisibleData")]
     public string UserVisibleData { get; init; } = string.Empty;
+
+    [JsonPropertyName("userVisibleDataFormat")]
+    public string? UserVisibleDataFormat { get; init; } = string.Empty;
 }
