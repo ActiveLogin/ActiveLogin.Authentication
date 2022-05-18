@@ -199,6 +199,28 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
         );
     }
 
+    // BankID - Sign
+    public override Task HandleSignFailureEvent(BankIdSignFailureEvent e)
+    {
+        return Track(
+            e,
+            new Dictionary<string, string>
+            {
+                { PropertyName_ErrorReason, e.ErrorReason }
+            },
+            detectedDevice: e.DetectedUserDevice
+        );
+    }
+
+    public override Task HandleSignSuccessEvent(BankIdSignSuccessEvent e)
+    {
+        return Track(
+            e,
+            personalIdentityNumber: e.PersonalIdentityNumber,
+            detectedDevice: e.DetectedUserDevice
+        );
+    }
+
     // BankID - Cancel
 
     public override Task HandleCancelSuccessEvent(BankIdCancelSuccessEvent e)

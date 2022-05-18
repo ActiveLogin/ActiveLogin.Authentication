@@ -23,6 +23,9 @@ public abstract class BankIdTypedEventListener : IBankIdEventListener
         BankIdCollectFailureEvent e => HandleCollectFailureEvent(e),
         BankIdCollectErrorEvent e => HandleCollectErrorEvent(e),
 
+        BankIdSignFailureEvent e => HandleSignFailureEvent(e),
+        BankIdSignSuccessEvent e => HandleSignSuccessEvent(e),
+
         _ => Task.CompletedTask
     };
 
@@ -41,4 +44,8 @@ public abstract class BankIdTypedEventListener : IBankIdEventListener
     public virtual Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e) => Task.CompletedTask;
     public virtual Task HandleCollectFailureEvent(BankIdCollectFailureEvent e) => Task.CompletedTask;
     public virtual Task HandleCollectErrorEvent(BankIdCollectErrorEvent e) => Task.CompletedTask;
+
+    public virtual Task HandleSignFailureEvent(BankIdSignFailureEvent e) => Task.CompletedTask;
+    public virtual Task HandleSignSuccessEvent(BankIdSignSuccessEvent e) => Task.CompletedTask;
+
 }
