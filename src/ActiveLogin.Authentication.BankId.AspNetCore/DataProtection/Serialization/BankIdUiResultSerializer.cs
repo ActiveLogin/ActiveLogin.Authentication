@@ -2,7 +2,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
-internal class BankIdUiOrderResultSerializer : BankIdDataSerializer<BankIdUiResult>
+internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
 {
     protected override void Write(BinaryWriter writer, BankIdUiResult model)
     {

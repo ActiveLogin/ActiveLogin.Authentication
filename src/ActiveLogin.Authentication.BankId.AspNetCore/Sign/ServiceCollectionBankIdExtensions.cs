@@ -50,18 +50,19 @@ public static class ServiceCollectionBankIdSignExtensions
 
     private static void AddBankIdAuthAspNetServices(IServiceCollection services)
     {
-        services.AddControllersWithViews()
-                .ConfigureApplicationPartManager(apm =>
-                {
-                    apm.FeatureProviders.Add(new BankIdUiSignControllerFeatureProvider());
-                    apm.FeatureProviders.Add(new BankIdUiSignApiControllerFeatureProvider());
-                });
-        services.AddHttpContextAccessor();
+        //services.AddLocalization(options =>
+        //{
+        //    options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
+        //});
 
-        services.AddLocalization(options =>
-        {
-            options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
-        });
+        //services.AddControllersWithViews()
+        //        .ConfigureApplicationPartManager(apm =>
+        //        {
+        //            apm.FeatureProviders.Add(new BankIdUiSignControllerFeatureProvider());
+        //            apm.FeatureProviders.Add(new BankIdUiSignApiControllerFeatureProvider());
+        //        });
+
+        //services.AddHttpContextAccessor();
     }
 
     private static void AddBankIdAuthDefaultServices(IBankIdSignBuilder builder)
@@ -71,7 +72,7 @@ public static class ServiceCollectionBankIdSignExtensions
         BankIdCommonConfiguration.AddDefaultServices(services);
 
         services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
-        //services.AddTransient<IBankIdUiSignResultProtector, BankIdUiSignResultProtector>();
+        services.AddTransient<IBankIdUiResultProtector, BankIdUiResultProtector>();
 
         services.AddTransient<IBankIdSignService, BankIdSignService>();
     }
