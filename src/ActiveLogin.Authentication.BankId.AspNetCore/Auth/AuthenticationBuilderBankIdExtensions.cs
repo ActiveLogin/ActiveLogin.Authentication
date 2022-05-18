@@ -50,18 +50,19 @@ public static class AuthenticationBuilderBankIdAuthExtensions
 
     private static void AddBankIdAuthAspNetServices(IServiceCollection services)
     {
+        services.AddLocalization(options =>
+        {
+            options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
+        });
+
         services.AddControllersWithViews()
                 .ConfigureApplicationPartManager(apm =>
                 {
                     apm.FeatureProviders.Add(new BankIdUiAuthControllerFeatureProvider());
                     apm.FeatureProviders.Add(new BankIdUiAuthApiControllerFeatureProvider());
                 });
-        services.AddHttpContextAccessor();
 
-        services.AddLocalization(options =>
-        {
-            options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
-        });
+        services.AddHttpContextAccessor();
     }
 
     private static void AddBankIdAuthDefaultServices(IBankIdAuthBuilder builder)
@@ -71,7 +72,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
         BankIdCommonConfiguration.AddDefaultServices(services);
 
         services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
-        services.AddTransient<IBankIdUiResultProtector, BankIdUiAuthResultProtector>();
+        services.AddTransient<IBankIdUiResultProtector, BankIdUiResultProtector>();
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
     }

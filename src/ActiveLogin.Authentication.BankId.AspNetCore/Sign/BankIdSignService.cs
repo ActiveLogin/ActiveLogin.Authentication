@@ -9,6 +9,7 @@ using ActiveLogin.Authentication.BankId.Core.Helpers;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -21,6 +22,8 @@ public class BankIdSignService : IBankIdSignService
     private readonly PathString _signInitPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}");
 
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAntiforgery _antiforgery;
+
     private readonly IOptionsSnapshot<BankIdSignOptions> _optionsSnapshot;
     private readonly IBankIdFlowSystemClock _systemClock;
     private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
@@ -31,6 +34,7 @@ public class BankIdSignService : IBankIdSignService
 
     public BankIdSignService(
         IHttpContextAccessor httpContextAccessor,
+        IAntiforgery antiforgery,
         IOptionsSnapshot<BankIdSignOptions> optionsSnapshot,
         IBankIdFlowSystemClock systemClock,
         IBankIdUiStateProtector bankIdUiStateProtector,
@@ -40,6 +44,7 @@ public class BankIdSignService : IBankIdSignService
         IBankIdUiResultProtector uiResultProtector)
     {
         _httpContextAccessor = httpContextAccessor;
+        _antiforgery = antiforgery;
         _optionsSnapshot = optionsSnapshot;
         _systemClock = systemClock;
         _bankIdUiStateProtector = bankIdUiStateProtector;
@@ -77,7 +82,7 @@ public class BankIdSignService : IBankIdSignService
         var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
 
         var state = GetStateCookie(httpContext, options);
-        if(state == null || state is not BankIdUiSignState signState)
+        if(state is not BankIdUiSignState signState)
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice));
             throw new ArgumentException($"Missing or invalid state cookie {options.StateCookie.Name}");
@@ -90,6 +95,8 @@ public class BankIdSignService : IBankIdSignService
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
             throw new ArgumentException($"Missing or invalid ui result");
         }
+
+        await _antiforgery.ValidateRequestAsync(httpContext);
 
         var protectedUiResult = httpContext.Request.Form[BankIdConstants.QueryStringParameters.UiResult];
         if (string.IsNullOrEmpty(protectedUiResult))

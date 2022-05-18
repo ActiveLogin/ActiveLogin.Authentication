@@ -56,6 +56,6 @@ public class SignController : Controller
             throw new Exception("Sign error");
         }
 
-        return Redirect("~/");
+        return Redirect(result.Properties?.Items["returnUrl"] ?? "~/");
     }
 }

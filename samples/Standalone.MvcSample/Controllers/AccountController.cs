@@ -54,7 +54,7 @@ public class AccountController : Controller
             throw new Exception("External authentication error");
         }
 
-        return Redirect("~/");
+        return Redirect(result.Properties?.Items["returnUrl"] ?? "~/");
     }
 
     [HttpPost]

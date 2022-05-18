@@ -10,6 +10,7 @@ using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -23,6 +24,8 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     private const string StateCookieNameParameterName = "StateCookie.Name";
     private readonly PathString _authPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
 
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAntiforgery _antiforgery;
     private readonly IBankIdUiStateProtector _uiStateProtector;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdUiResultProtector _uiResultProtector;
@@ -31,6 +34,8 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers;
 
     public BankIdAuthHandler(
+        IHttpContextAccessor httpContextAccessor,
+        IAntiforgery antiforgery,
         IOptionsMonitor<BankIdAuthOptions> options,
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
@@ -43,6 +48,8 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
         : base(options, loggerFactory, encoder, clock)
     {
+        _httpContextAccessor = httpContextAccessor;
+        _antiforgery = antiforgery;
         _uiStateProtector = uiStateProtector;
         _uiOptionsProtector = uiOptionsProtector;
         _uiResultProtector = uiResultProtector;
@@ -63,7 +70,16 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 
         DeleteStateCookie();
 
-        var protectedUiResult = Request.Query[BankIdConstants.QueryStringParameters.UiResult];
+        if (!Request.HasFormContentType)
+        {
+            await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
+            throw new ArgumentException($"Missing or invalid ui result");
+        }
+
+        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
+        await _antiforgery.ValidateRequestAsync(httpContext);
+
+        var protectedUiResult = Request.Form[BankIdConstants.QueryStringParameters.UiResult];
         if (string.IsNullOrEmpty(protectedUiResult))
         {
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);

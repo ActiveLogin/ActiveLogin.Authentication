@@ -1,6 +1,9 @@
 @using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models
 @model BankIdUiViewModel
 
+<form name="activelogin-bankid-ui--result-form" action="" method="post" hidden="hidden">
+    <input name="uiResult" type="hidden" value="" />
+</form>
 <script src="~/_content/ActiveLogin.Authentication.BankId.AspNetCore/activelogin-main.js" asp-append-version="true"></script>
 <script>
     (function (configuration, initState, signData) {
