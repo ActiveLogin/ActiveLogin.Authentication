@@ -5,16 +5,16 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    string header = Localizer["SignIn_Header"];
+    string header = Localizer["Auth_Header"];
     string subHeader = "With custom subheader";
 }
 
 <partial name="_Style" />
 
 <div class="activelogin-bankid-ui--wrapper">
-    @if (!string.IsNullOrEmpty(Localizer["SignIn_Header"]))
+    @if (!string.IsNullOrEmpty(Localizer["Auth_Header"]))
     {
-        <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>
+        <div class="h3 mb-3 font-weight-normal">@Localizer["Auth_Header"]</div>
     }
     <div class="h4 mb-3 font-weight-normal">@subHeader</div>
 

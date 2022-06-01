@@ -180,10 +180,10 @@
   <data name="BankIdUserMessage_ShortName_RFA9" xml:space="preserve">
     <value>Skriv in din säkerhetskod i BankID-appen och välj Legitimera eller Skriv under.</value>
   </data>
-  <data name="SignIn_Header" xml:space="preserve">
+  <data name="Auth_Header" xml:space="preserve">
     <value>BankID</value>
   </data>
-  <data name="SignIn_Title" xml:space="preserve">
+  <data name="Auth_Title" xml:space="preserve">
     <value>Logga in med BankID</value>
   </data>
   <data name="Qr_Code_Image" xml:space="preserve">
@@ -197,5 +197,11 @@
   </data>
   <data name="BankIdUserMessage_ShortName_RFA1QR" xml:space="preserve">
     <value>Starta BankID-appen och scanna QR-koden.</value>
+  </data>
+  <data name="Sign_Header" xml:space="preserve">
+    <value>BankID</value>
+  </data>
+  <data name="Sign_Title" xml:space="preserve">
+    <value>Signera med BankID</value>
   </data>
 </root>

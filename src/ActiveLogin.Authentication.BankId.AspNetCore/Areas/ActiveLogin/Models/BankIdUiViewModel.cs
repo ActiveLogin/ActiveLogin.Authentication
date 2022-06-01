@@ -1,6 +1,6 @@
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
-public class BankIdUiViewModel
+public abstract class BankIdUiViewModel
 {
     internal BankIdUiViewModel(BankIdUiScriptConfiguration bankUiScriptConfiguration, BankIdUiScriptInitState bankIdUiScriptInitState, BankIdUiSignData? signData = null)
     {
@@ -8,6 +8,8 @@ public class BankIdUiViewModel
         BankIdUiScriptInitState = bankIdUiScriptInitState;
         BankIdUiSignData = signData;
     }
+
+    public abstract string Type { get; }
 
     public BankIdUiScriptConfiguration BankUiScriptConfiguration { get; }
 

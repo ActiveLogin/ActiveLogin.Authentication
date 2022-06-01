@@ -126,10 +126,10 @@ public abstract class BankIdUiControllerBase : Controller
                 UserVisibleData = signState.BankIdSignProperties.UserVisibleData,
                 UserVisibleDataFormat = signState.BankIdSignProperties.UserVisibleDataFormat
             };
-            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, uiSignData);
+            return new BankIdUiSignViewModel(uiScriptConfiguration, uiScriptInitState, uiSignData);
         }
 
-        return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState);
+        return new BankIdUiAuthViewModel(uiScriptConfiguration, uiScriptInitState);
     }
 
     private string GetBankIdApiActionUrl(string apiControllerName, string action)

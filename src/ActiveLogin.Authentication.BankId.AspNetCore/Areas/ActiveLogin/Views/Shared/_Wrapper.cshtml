@@ -6,9 +6,9 @@
 <partial name="_Style" />
 
 <div class="activelogin-bankid-ui--wrapper">
-    @if (!string.IsNullOrEmpty(Localizer["SignIn_Header"]))
+    @if (!string.IsNullOrEmpty(Localizer[$"{Model.Type}_Header"]))
     {
-        <div class="h3 mb-3 font-weight-normal">@Localizer["SignIn_Header"]</div>
+        <div class="h3 mb-3 font-weight-normal">@Localizer[$"{Model.Type}_Header"]</div>
     }
 
     <partial name="_Status" model="Model" />
