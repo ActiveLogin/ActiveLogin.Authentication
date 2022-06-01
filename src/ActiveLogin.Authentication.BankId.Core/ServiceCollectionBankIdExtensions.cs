@@ -59,7 +59,8 @@ public static class ServiceCollectionBankIdExtensions
         services.AddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
         services.AddTransient<IBankIdFlowService, BankIdFlowService>();
 
-        services.AddTransient<IBankIdEventTrigger, BankIdEventTrigger>(x => new BankIdEventTrigger(x.GetRequiredService<IEnumerable<IBankIdEventListener>>(), x.GetRequiredService<IOptions<BankIdActiveLoginContext>>().Value));
+        services.AddTransient(x => x.GetRequiredService<IOptions<BankIdActiveLoginContext>>().Value);
+        services.AddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
         services.AddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
         services.AddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
         services.AddTransient<IBankIdSupportedDeviceDetectorByUserAgent, BankIdSupportedDeviceDetectorByUserAgent>();
