@@ -277,15 +277,6 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in.
-        /// </summary>
-        internal static string SignIn_Button {
-            get {
-                return ResourceManager.GetString("SignIn_Button", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to BankID.
         /// </summary>
         internal static string SignIn_Header {

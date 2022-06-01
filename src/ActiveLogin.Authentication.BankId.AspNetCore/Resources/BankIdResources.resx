@@ -180,9 +180,6 @@
   <data name="BankIdUserMessage_ShortName_RFA9" xml:space="preserve">
     <value>Enter your security code in the BankID app and select Identify or Sign.</value>
   </data>
-  <data name="SignIn_Button" xml:space="preserve">
-    <value>Sign in</value>
-  </data>
   <data name="SignIn_Header" xml:space="preserve">
     <value>BankID</value>
   </data>
