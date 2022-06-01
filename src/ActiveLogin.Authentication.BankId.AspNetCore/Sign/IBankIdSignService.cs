@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;

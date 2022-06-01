@@ -79,7 +79,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
         await _antiforgery.ValidateRequestAsync(httpContext);
 
-        var protectedUiResult = Request.Form[BankIdConstants.QueryStringParameters.UiResult];
+        var protectedUiResult = Request.Form[BankIdConstants.FormParameters.UiResult];
         if (string.IsNullOrEmpty(protectedUiResult))
         {
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);

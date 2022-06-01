@@ -7,6 +7,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 
 public class BankIdUserMessageStringLocalizer : IBankIdUserMessageLocalizer
 {
+    private const string ResourcePrefix = "BankIdUserMessage_ShortName_";
+
     private readonly IStringLocalizer<ActiveLoginResources> _localizer;
 
     public BankIdUserMessageStringLocalizer(IStringLocalizer<ActiveLoginResources> localizer)
@@ -16,6 +18,6 @@ public class BankIdUserMessageStringLocalizer : IBankIdUserMessageLocalizer
 
     public string GetLocalizedString(MessageShortName messageShortName)
     {
-        return _localizer[$"BankIdUserMessage_ShortName_{messageShortName}"];
+        return _localizer[$"{ResourcePrefix}{messageShortName}"];
     }
 }

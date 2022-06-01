@@ -24,9 +24,13 @@ internal static class BankIdConstants
         public const string CancelReturnUrl = "cancelReturnUrl";
     }
 
-    public static class QueryStringParameters
+    public static class FormParameters
     {
         public const string UiResult = "uiResult";
+    }
+
+    public static class QueryStringParameters
+    {
         public const string UiOptions = "uiOptions";
         public const string ReturnUrl = "returnUrl";
     }
@@ -70,7 +74,6 @@ internal static class BankIdConstants
         public const string BankIdSignControllerName = "BankIdUiSign";
         public const string BankIdSignControllerPath = "Sign";
         public const string BankIdSignInitActionName = "Init";
-        public const string BankIdSignCallbackActionName = "Callback";
 
         public const string BankIdAuthApiControllerName = "BankIdUiAuthApi";
         public const string BankIdSignApiControllerName = "BankIdUiSignApi";

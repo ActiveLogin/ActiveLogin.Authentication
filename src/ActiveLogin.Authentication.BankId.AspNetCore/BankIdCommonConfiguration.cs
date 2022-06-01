@@ -16,6 +16,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
 internal static class BankIdCommonConfiguration
 {
+    private const string UnknownProductVersion = "Unknown";
+
     public static void AddDefaultServices(IServiceCollection services)
     {
         services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
@@ -35,7 +37,7 @@ internal static class BankIdCommonConfiguration
         var productName = BankIdConstants.ProductName;
         var productAssembly = typeof(ServiceCollectionBankIdExtensions).Assembly;
         var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
-        var productVersion = assemblyFileVersion?.Version ?? "Unknown";
+        var productVersion = assemblyFileVersion?.Version ?? UnknownProductVersion;
 
         return (productName, productVersion);
     }

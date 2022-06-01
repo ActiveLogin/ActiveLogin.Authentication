@@ -56,7 +56,7 @@ public class BankIdSignService : IBankIdSignService
 
     public IActionResult InitiateSign(BankIdSignProperties properties, string callbackPath, string configKey)
     {
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
+        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
         var options = _optionsSnapshot.Get(configKey);
 
         AppendStateCookie(httpContext, properties, options, configKey);
@@ -79,13 +79,13 @@ public class BankIdSignService : IBankIdSignService
 
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         var options = _optionsSnapshot.Get(provider);
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
+        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
 
         var state = GetStateCookie(httpContext, options);
-        if(state is not BankIdUiSignState signState)
+        if (state == null)
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice));
-            throw new ArgumentException($"Missing or invalid state cookie {options.StateCookie.Name}");
+            throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidStateCookie);
         }
 
         DeleteStateCookie(httpContext, options);
@@ -93,23 +93,23 @@ public class BankIdSignService : IBankIdSignService
         if (!httpContext.Request.HasFormContentType)
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
-            throw new ArgumentException($"Missing or invalid ui result");
+            throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidUiResult);
         }
 
         await _antiforgery.ValidateRequestAsync(httpContext);
 
-        var protectedUiResult = httpContext.Request.Form[BankIdConstants.QueryStringParameters.UiResult];
+        var protectedUiResult = httpContext.Request.Form[BankIdConstants.FormParameters.UiResult];
         if (string.IsNullOrEmpty(protectedUiResult))
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
-            return new BankIdSignResult(false, signState.BankIdSignProperties);
+            return new BankIdSignResult(false, state.BankIdSignProperties);
         }
 
         var uiResult = _uiResultProtector.Unprotect(protectedUiResult);
         if (!uiResult.IsSuccessful)
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
-            return new BankIdSignResult(false, signState.BankIdSignProperties);
+            return new BankIdSignResult(false, state.BankIdSignProperties);
         }
 
         await _bankIdEventTrigger.TriggerAsync(new BankIdSignSuccessEvent(
@@ -118,7 +118,7 @@ public class BankIdSignService : IBankIdSignService
         ));
 
         return BankIdSignResult.Success(
-            signState.BankIdSignProperties,
+            state.BankIdSignProperties,
             new CompletionData(
                 ParseUser(uiResult),
                 ParseDevice(uiResult),
@@ -128,16 +128,16 @@ public class BankIdSignService : IBankIdSignService
             );
     }
 
-    private BankIdUiState GetStateCookie(HttpContext httpContext, BankIdSignOptions options)
+    private BankIdUiSignState? GetStateCookie(HttpContext httpContext, BankIdSignOptions options)
     {
         Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
 
         var protectedState = httpContext.Request.Cookies[options.StateCookie.Name];
         if (string.IsNullOrEmpty(protectedState))
         {
-            throw new InvalidOperationException($"Missing state cookie {options.StateCookie.Name}");
+            return null;
         }
-        return _bankIdUiStateProtector.Unprotect(protectedState);
+        return _bankIdUiStateProtector.Unprotect(protectedState) as BankIdUiSignState;
     }
 
     private void AppendStateCookie(HttpContext httpContext, BankIdSignProperties properties, BankIdSignOptions options, string configKey)
