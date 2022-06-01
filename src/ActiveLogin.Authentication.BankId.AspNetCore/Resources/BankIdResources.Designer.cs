@@ -61,6 +61,24 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BankID.
+        /// </summary>
+        internal static string Auth_Header {
+            get {
+                return ResourceManager.GetString("Auth_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in with BankID.
+        /// </summary>
+        internal static string Auth_Title {
+            get {
+                return ResourceManager.GetString("Auth_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start your BankID app..
         /// </summary>
         internal static string BankIdUserMessage_ShortName_RFA1 {
@@ -279,18 +297,18 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         /// <summary>
         ///   Looks up a localized string similar to BankID.
         /// </summary>
-        internal static string SignIn_Header {
+        internal static string Sign_Header {
             get {
-                return ResourceManager.GetString("SignIn_Header", resourceCulture);
+                return ResourceManager.GetString("Sign_Header", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in with BankID.
+        ///   Looks up a localized string similar to Sign with BankID.
         /// </summary>
-        internal static string SignIn_Title {
+        internal static string Sign_Title {
             get {
-                return ResourceManager.GetString("SignIn_Title", resourceCulture);
+                return ResourceManager.GetString("Sign_Title", resourceCulture);
             }
         }
         
