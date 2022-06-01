@@ -175,7 +175,7 @@ public class BankId_Authentication_Tests
         var redirectUrl = transaction.Headers.Location.OriginalString;
         Assert.StartsWith("/PathBase/ActiveLogin/BankId/Auth", redirectUrl);
 
-        var callbackUrl = UrlEncoder.Default.Encode("/PathBase/signin-bankid-samedevice");
+        var callbackUrl = UrlEncoder.Default.Encode("/PathBase/al-bankid-auth-samedevice-callback");
         var callbackParameter = $"returnUrl={callbackUrl}";
         Assert.Contains(callbackParameter, redirectUrl);
     }
