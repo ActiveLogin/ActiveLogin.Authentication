@@ -50,19 +50,19 @@ public static class ServiceCollectionBankIdSignExtensions
 
     private static void AddBankIdAuthAspNetServices(IServiceCollection services)
     {
-        //services.AddLocalization(options =>
-        //{
-        //    options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
-        //});
+        services.AddLocalization(options =>
+        {
+            options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
+        });
 
-        //services.AddControllersWithViews()
-        //        .ConfigureApplicationPartManager(apm =>
-        //        {
-        //            apm.FeatureProviders.Add(new BankIdUiSignControllerFeatureProvider());
-        //            apm.FeatureProviders.Add(new BankIdUiSignApiControllerFeatureProvider());
-        //        });
+        services.AddControllersWithViews()
+                .ConfigureApplicationPartManager(apm =>
+                {
+                    apm.FeatureProviders.Add(new BankIdUiSignControllerFeatureProvider());
+                    apm.FeatureProviders.Add(new BankIdUiSignApiControllerFeatureProvider());
+                });
 
-        //services.AddHttpContextAccessor();
+        services.AddHttpContextAccessor();
     }
 
     private static void AddBankIdAuthDefaultServices(IBankIdSignBuilder builder)

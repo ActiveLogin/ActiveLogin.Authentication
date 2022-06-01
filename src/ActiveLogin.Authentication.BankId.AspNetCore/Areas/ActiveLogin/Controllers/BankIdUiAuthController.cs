@@ -1,4 +1,3 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
@@ -17,7 +16,7 @@ public class BankIdUiAuthController : BankIdUiControllerBase
 {
     public BankIdUiAuthController(
         IAntiforgery antiforgery,
-        IStringLocalizer<BankIdAuthHandler> localizer,
+        IStringLocalizer<BankIdResources> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,
