@@ -1,6 +1,6 @@
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
-public abstract class BankIdUiViewModel
+public class BankIdUiViewModel
 {
     internal BankIdUiViewModel(BankIdUiScriptConfiguration bankUiScriptConfiguration, BankIdUiScriptInitState bankIdUiScriptInitState, BankIdUiSignData? signData = null)
     {
@@ -9,7 +9,8 @@ public abstract class BankIdUiViewModel
         BankIdUiSignData = signData;
     }
 
-    public abstract string Type { get; }
+    public string? LocalizedPageHeader { get; set; }
+    public string? LocalizedPageTitle { get; set;  }
 
     public BankIdUiScriptConfiguration BankUiScriptConfiguration { get; }
 

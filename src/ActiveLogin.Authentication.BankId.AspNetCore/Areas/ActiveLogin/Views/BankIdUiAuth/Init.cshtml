@@ -4,7 +4,7 @@
 @inject IStringLocalizer<ActiveLoginResources> Localizer
 
 @{
-    ViewData["Title"] = Localizer["Auth_Title"];
+    ViewData["Title"] = Model.LocalizedPageTitle;
 }
 
 <partial name="_Wrapper" model="Model" />
