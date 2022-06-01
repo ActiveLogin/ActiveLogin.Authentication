@@ -634,12 +634,12 @@ public class BankId_Authentication_Tests
             _bankIdApiClient = bankIdApiClient;
         }
 
-        public Task<Response> AuthAsync(AuthRequest request)
+        public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
             return _bankIdApiClient.AuthAsync(request);
         }
 
-        public Task<Response> SignAsync(SignRequest request)
+        public Task<SignResponse> SignAsync(SignRequest request)
         {
             return _bankIdApiClient.SignAsync(request);
         }

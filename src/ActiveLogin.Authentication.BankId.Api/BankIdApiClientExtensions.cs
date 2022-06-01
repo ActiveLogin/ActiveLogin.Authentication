@@ -32,7 +32,7 @@ public static class BankIdApiClientExtensions
     /// If present, and set to "simpleMarkdownV1", this parameter indicates that userVisibleData holds formatting characters which, if used correctly, will make the text displayed with the user nicer to look at.
     /// For further information of formatting options, please study the document Guidelines for Formatted Text.
     /// </param>
-    public static Task<Response> AuthAsync(
+    public static Task<AuthResponse> AuthAsync(
         this IBankIdApiClient apiClient,
         string endUserIp,
         string? personalIdentityNumber = null,
@@ -63,7 +63,7 @@ public static class BankIdApiClientExtensions
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<Response> AuthAsync(this IBankIdApiClient apiClient, string endUserIp)
+    public static Task<AuthResponse> AuthAsync(this IBankIdApiClient apiClient, string endUserIp)
     {
         return apiClient.AuthAsync(new AuthRequest(endUserIp));
     }
@@ -85,7 +85,7 @@ public static class BankIdApiClientExtensions
     /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<Response> AuthAsync(this IBankIdApiClient apiClient, string endUserIp, string personalIdentityNumber)
+    public static Task<AuthResponse> AuthAsync(this IBankIdApiClient apiClient, string endUserIp, string personalIdentityNumber)
     {
         return apiClient.AuthAsync(new AuthRequest(endUserIp, personalIdentityNumber));
     }
@@ -106,7 +106,7 @@ public static class BankIdApiClientExtensions
     /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<Response> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData)
+    public static Task<SignResponse> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData)
     {
         return apiClient.SignAsync(new SignRequest(endUserIp, userVisibleData));
     }
@@ -130,7 +130,7 @@ public static class BankIdApiClientExtensions
     /// Data not displayed to the user.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<Response> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData)
+    public static Task<SignResponse> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData)
     {
         return apiClient.SignAsync(new SignRequest(
             endUserIp,
@@ -161,7 +161,7 @@ public static class BankIdApiClientExtensions
     /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<Response> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData, string personalIdentityNumber)
+    public static Task<SignResponse> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData, string personalIdentityNumber)
     {
         return apiClient.SignAsync(new SignRequest(
             endUserIp,

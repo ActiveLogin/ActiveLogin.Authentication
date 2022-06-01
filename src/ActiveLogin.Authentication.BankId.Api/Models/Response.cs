@@ -5,9 +5,9 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 /// <summary>
 /// Auth response result.
 /// </summary>
-public class Response
+public abstract class Response
 {
-    public Response(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret)
+    protected Response(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret)
     {
         OrderRef = orderRef;
         AutoStartToken = autoStartToken;
@@ -19,23 +19,23 @@ public class Response
     /// Used to collect the status of the order.
     /// </summary>
     [JsonPropertyName("orderRef")]
-    public string OrderRef { get; private set; }
+    public string OrderRef { get; }
 
     /// <summary>
     /// Used as reference to this order when the client is started automatically.
     /// </summary>
     [JsonPropertyName("autoStartToken")]
-    public string AutoStartToken { get; private set; }
+    public string AutoStartToken { get; }
 
     /// <summary>
     /// Used to compute the animated QR code.
     /// </summary>
     [JsonPropertyName("qrStartToken")]
-    public string QrStartToken { get; private set; }
+    public string QrStartToken { get; }
 
     /// <summary>
     /// Used to compute the animated QR code.
     /// </summary>
     [JsonPropertyName("qrStartSecret")]
-    public string QrStartSecret { get; private set; }
+    public string QrStartSecret { get; }
 }
