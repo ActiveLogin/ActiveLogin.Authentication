@@ -103,8 +103,6 @@ builder.Services.AddAuthorization(options =>
 services.AddControllersWithViews();
 
 
-
-
 // Build app
 var app = builder.Build();
 
