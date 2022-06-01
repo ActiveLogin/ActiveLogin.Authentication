@@ -12,36 +12,25 @@ internal class X509CertificateChainValidator
         _certificateAuthority = certificateAuthority;
     }
 
-    public bool Validate(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslpolicyerrors)
+    // Inspired by: https://www.meziantou.net/custom-certificate-validation-in-dotnet.htm#dotnet-5-way-of-vali
+    public bool Validate(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
     {
         ArgumentNullException.ThrowIfNull(certificate);
 
-        return IsValidChain(_certificateAuthority, certificate);
-    }
-
-    private static bool IsValidChain(X509Certificate2 certificateAuthority, X509Certificate certificate)
-    {
-        using var chain = GetChain(certificateAuthority);
-
-        var isChainValid = chain.Build(new X509Certificate2(certificate));
-        var chainRoot = chain.ChainElements[^1].Certificate;
-        var isChainRootCertificateAuthority = chainRoot.RawData.SequenceEqual(certificateAuthority.RawData);
-
-        return isChainValid && isChainRootCertificateAuthority;
-    }
-
-    private static X509Chain GetChain(X509Certificate2 certificateAuthority)
-    {
-        var chain = new X509Chain
+        if ((sslPolicyErrors & ~SslPolicyErrors.RemoteCertificateChainErrors) != 0)
         {
-            ChainPolicy =
-            {
-                RevocationMode = X509RevocationMode.NoCheck,
-                VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority
-            }
-        };
-        chain.ChainPolicy.ExtraStore.Add(certificateAuthority);
+            return false;
+        }
 
-        return chain;
+        if (chain == null)
+        {
+            return false;
+        }
+
+        chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+        chain.ChainPolicy.CustomTrustStore.Clear();
+        chain.ChainPolicy.CustomTrustStore.Add(_certificateAuthority);
+
+        return chain.Build((X509Certificate2)certificate);
     }
 }
