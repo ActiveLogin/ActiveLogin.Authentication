@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;

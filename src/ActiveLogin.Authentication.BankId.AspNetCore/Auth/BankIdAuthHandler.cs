@@ -73,10 +73,10 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         if (!Request.HasFormContentType)
         {
             await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
-            throw new ArgumentException($"Missing or invalid ui result");
+            throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidUiResult);
         }
 
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Can't access HttpContext");
+        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
         await _antiforgery.ValidateRequestAsync(httpContext);
 
         var protectedUiResult = Request.Form[BankIdConstants.QueryStringParameters.UiResult];
@@ -198,8 +198,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             return null;
         }
 
-        var state = _uiStateProtector.Unprotect(protectedState) as BankIdUiAuthState;
-        return state;
+        return _uiStateProtector.Unprotect(protectedState) as BankIdUiAuthState;
     }
 
     private void DeleteStateCookie()

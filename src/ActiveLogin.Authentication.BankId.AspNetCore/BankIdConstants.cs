@@ -33,6 +33,8 @@ internal static class BankIdConstants
 
     public static class ErrorMessages
     {
+        public const string CouldNotAccessHttpContext = "Can't access HttpContext";
+
         public const string InvalidReturnUrl = "Invalid returnUrl. Needs to be a local url.";
 
         public const string InvalidStateCookie = "Invalid state cookie";

@@ -58,18 +58,18 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Update="Resources\BankIdResources.resx">
+        <EmbeddedResource Update="Resources\ActiveLoginResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>BankIdResources.Designer.cs</LastGenOutput>
+            <LastGenOutput>ActiveLoginResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-        <EmbeddedResource Update="Resources\BankIdResources.sv.resx">
+        <EmbeddedResource Update="Resources\ActiveLoginResources.sv.resx">
             <Generator>ResXFileCodeGenerator</Generator>
         </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Resources\BankIdResources.Designer.cs">
-            <DependentUpon>BankIdResources.resx</DependentUpon>
+        <Compile Update="Resources\ActiveLoginResources.Designer.cs">
+            <DependentUpon>ActiveLoginResources.resx</DependentUpon>
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
         </Compile>

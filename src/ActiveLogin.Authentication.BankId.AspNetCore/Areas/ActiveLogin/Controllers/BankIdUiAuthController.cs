@@ -16,7 +16,7 @@ public class BankIdUiAuthController : BankIdUiControllerBase
 {
     public BankIdUiAuthController(
         IAntiforgery antiforgery,
-        IStringLocalizer<BankIdResources> localizer,
+        IStringLocalizer<ActiveLoginResources> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,

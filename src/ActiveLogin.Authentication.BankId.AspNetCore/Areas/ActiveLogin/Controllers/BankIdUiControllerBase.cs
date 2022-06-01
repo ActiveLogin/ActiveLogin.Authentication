@@ -17,7 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 public abstract class BankIdUiControllerBase : Controller
 {
     private readonly IAntiforgery _antiforgery;
-    private readonly IStringLocalizer<BankIdResources> _localizer;
+    private readonly IStringLocalizer<ActiveLoginResources> _localizer;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
@@ -25,7 +25,7 @@ public abstract class BankIdUiControllerBase : Controller
 
     protected BankIdUiControllerBase(
         IAntiforgery antiforgery,
-        IStringLocalizer<BankIdResources> localizer,
+        IStringLocalizer<ActiveLoginResources> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,

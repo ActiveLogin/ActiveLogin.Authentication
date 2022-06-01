@@ -10,7 +10,6 @@ using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Controllers;
 

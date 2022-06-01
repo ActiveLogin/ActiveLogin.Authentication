@@ -16,7 +16,7 @@ public class BankIdUiSignController : BankIdUiControllerBase
 {
     public BankIdUiSignController(
         IAntiforgery antiforgery,
-        IStringLocalizer<BankIdResources> localizer,
+        IStringLocalizer<ActiveLoginResources> localizer,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,

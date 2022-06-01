@@ -7,9 +7,9 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 
 public class BankIdUserMessageStringLocalizer : IBankIdUserMessageLocalizer
 {
-    private readonly IStringLocalizer<BankIdResources> _localizer;
+    private readonly IStringLocalizer<ActiveLoginResources> _localizer;
 
-    public BankIdUserMessageStringLocalizer(IStringLocalizer<BankIdResources> localizer)
+    public BankIdUserMessageStringLocalizer(IStringLocalizer<ActiveLoginResources> localizer)
     {
         _localizer = localizer;
     }

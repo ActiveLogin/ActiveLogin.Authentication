@@ -46,15 +46,10 @@ public class BankIdUiSignApiController : BankIdUiApiControllerBase
 
         var uiOptions = UiOptionsProtector.Unprotect(request.UiOptions);
 
-        var protectedState = Request.Cookies[uiOptions.StateCookieName];
-        if (protectedState == null)
+        var state = GetStateFromCookie(uiOptions);
+        if(state == null)
         {
-            throw new ArgumentNullException(uiOptions.StateCookieName, "Missing requried state cookie for sign.");
-        }
-        var state = _bankIdUiStateProtector.Unprotect(protectedState);
-        if(state is not BankIdUiSignState signState)
-        {
-            throw new InvalidOperationException($"State cookie is not created for signing");
+            throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidStateCookie);
         }
 
         BankIdFlowInitializeResult bankIdFlowInitializeResult;
@@ -68,11 +63,11 @@ public class BankIdUiSignApiController : BankIdUiApiControllerBase
 
             bankIdFlowInitializeResult = await BankIdFlowService.InitializeSign(
                 uiOptions.ToBankIdFlowOptions(),
-                new BankIdSignData(signState.BankIdSignProperties.UserVisibleData)
+                new BankIdSignData(state.BankIdSignProperties.UserVisibleData)
                 {
-                    Items = signState.BankIdSignProperties.Items,
-                    UserNonVisibleData = signState.BankIdSignProperties.UserNonVisibleData,
-                    UserVisibleDataFormat = signState.BankIdSignProperties.UserVisibleDataFormat
+                    Items = state.BankIdSignProperties.Items,
+                    UserNonVisibleData = state.BankIdSignProperties.UserNonVisibleData,
+                    UserVisibleDataFormat = state.BankIdSignProperties.UserVisibleDataFormat
                 },
                 returnRedirectUrl);
         }
@@ -103,5 +98,16 @@ public class BankIdUiSignApiController : BankIdUiApiControllerBase
                 throw new InvalidOperationException(BankIdConstants.ErrorMessages.UnknownFlowLaunchType);
             }
         }
+    }
+
+    private BankIdUiSignState? GetStateFromCookie(BankIdUiOptions uiOptions)
+    {
+        var protectedState = Request.Cookies[uiOptions.StateCookieName];
+        if (protectedState == null)
+        {
+            throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidStateCookie);
+        }
+
+        return _bankIdUiStateProtector.Unprotect(protectedState) as BankIdUiSignState;
     }
 }

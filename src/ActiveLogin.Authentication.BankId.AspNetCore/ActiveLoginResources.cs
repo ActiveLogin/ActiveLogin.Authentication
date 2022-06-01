@@ -1,8 +1,8 @@
 namespace ActiveLogin.Authentication.BankId.AspNetCore;
 
-public class BankIdResources
+public class ActiveLoginResources
 {
-    public BankIdResources()
+    public ActiveLoginResources()
     {
     }
 }
