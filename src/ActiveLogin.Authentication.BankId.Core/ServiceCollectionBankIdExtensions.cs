@@ -10,6 +10,7 @@ using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 
@@ -58,7 +59,7 @@ public static class ServiceCollectionBankIdExtensions
         services.AddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
         services.AddTransient<IBankIdFlowService, BankIdFlowService>();
 
-        services.AddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
+        services.AddTransient<IBankIdEventTrigger, BankIdEventTrigger>(x => new BankIdEventTrigger(x.GetRequiredService<IEnumerable<IBankIdEventListener>>(), x.GetRequiredService<IOptions<BankIdActiveLoginContext>>().Value));
         services.AddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
         services.AddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
         services.AddTransient<IBankIdSupportedDeviceDetectorByUserAgent, BankIdSupportedDeviceDetectorByUserAgent>();
