@@ -126,10 +126,18 @@ public abstract class BankIdUiControllerBase : Controller
                 UserVisibleData = signState.BankIdSignProperties.UserVisibleData,
                 UserVisibleDataFormat = signState.BankIdSignProperties.UserVisibleDataFormat
             };
-            return new BankIdUiSignViewModel(uiScriptConfiguration, uiScriptInitState, uiSignData);
+            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, uiSignData)
+            {
+                LocalizedPageHeader = _localizer["Sign_Header"],
+                LocalizedPageTitle = _localizer["Sign_Title"],
+            };
         }
 
-        return new BankIdUiAuthViewModel(uiScriptConfiguration, uiScriptInitState);
+        return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState)
+        {
+            LocalizedPageHeader = _localizer["Auth_Header"],
+            LocalizedPageTitle = _localizer["Auth_Title"],
+        };
     }
 
     private string GetBankIdApiActionUrl(string apiControllerName, string action)
