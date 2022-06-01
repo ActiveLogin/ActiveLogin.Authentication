@@ -45,7 +45,7 @@ public static class ServiceCollectionBankIdExtensions
         var bankIdBuilder = new BankIdBuilder(services);
 
         AddBankIdDefaultServices(bankIdBuilder);
-        UseUserAgent(bankIdBuilder, new ProductInfoHeaderValue(activeLoginName, activeLoginVersion));
+        UseUserAgentFromContext(bankIdBuilder);
 
         bankId(bankIdBuilder);
 
@@ -73,10 +73,13 @@ public static class ServiceCollectionBankIdExtensions
         builder.AddResultStore<BankIdResultTraceLoggerStore>();
     }
 
-    private static void UseUserAgent(this IBankIdBuilder builder, ProductInfoHeaderValue productInfoHeaderValue)
+    private static void UseUserAgentFromContext(this IBankIdBuilder builder)
     {
-        builder.ConfigureHttpClient(httpClient =>
+        builder.ConfigureHttpClient((sp, httpClient) =>
         {
+            var context = sp.GetRequiredService<BankIdActiveLoginContext>();
+            var productInfoHeaderValue = new ProductInfoHeaderValue(context.ActiveLoginProductName, context.ActiveLoginProductVersion);
+
             httpClient.DefaultRequestHeaders.UserAgent.Clear();
             httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
         });

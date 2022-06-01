@@ -19,7 +19,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
     {
-        builder.ConfigureHttpClientHandler(httpClientHandler =>
+        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
         {
             var clientCertificate = configureClientCertificate();
             httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
@@ -38,7 +38,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
     {
-        builder.ConfigureHttpClientHandler(httpClientHandler =>
+        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
         {
             var rootCaCertificate = configureRootCaCertificate();
             var validator = new X509CertificateChainValidator(rootCaCertificate);
@@ -145,7 +145,7 @@ public static class IBankIdBuilderExtensions
     {
         SetActiveLoginContext(builder.Services, environment, BankIdUrls.BankIdApiVersion);
 
-        builder.ConfigureHttpClient(httpClient =>
+        builder.ConfigureHttpClient((sp, httpClient) =>
         {
             httpClient.BaseAddress = apiBaseUrl;
         });

@@ -10,37 +10,37 @@ internal class BankIdBuilder : IBankIdBuilder
 {
     public IServiceCollection Services { get; }
 
-    private readonly List<Action<HttpClient>> _httpClientConfigurators = new();
-    private readonly List<Action<SocketsHttpHandler>> _httpClientHandlerConfigurators = new();
+    private readonly List<Action<IServiceProvider, HttpClient>> _httpClientConfigurators = new();
+    private readonly List<Action<IServiceProvider, SocketsHttpHandler>> _httpClientHandlerConfigurators = new();
 
     public BankIdBuilder(IServiceCollection services)
     {
         Services = services;
 
-        ConfigureHttpClient(httpClient => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
-        ConfigureHttpClientHandler(httpClientHandler => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
+        ConfigureHttpClient((sp, httpClient) => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
+        ConfigureHttpClientHandler((sp, httpClientHandler) => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
     }
 
-    public void ConfigureHttpClient(Action<HttpClient> configureHttpClient)
+    public void ConfigureHttpClient(Action<IServiceProvider, HttpClient> configureHttpClient)
     {
         _httpClientConfigurators.Add(configureHttpClient);
     }
 
-    public void ConfigureHttpClientHandler(Action<SocketsHttpHandler> configureHttpClientHandler)
+    public void ConfigureHttpClientHandler(Action<IServiceProvider, SocketsHttpHandler> configureHttpClientHandler)
     {
         _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
     }
 
     public void AfterConfiguration()
     {
-        Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>(httpClient =>
+        Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>((sp, httpClient) =>
             {
-                _httpClientConfigurators.ForEach(configurator => configurator(httpClient));
+                _httpClientConfigurators.ForEach(configurator => configurator(sp, httpClient));
             })
-            .ConfigurePrimaryHttpMessageHandler(() =>
+            .ConfigurePrimaryHttpMessageHandler(sp =>
             {
                 var httpClientHandler = new SocketsHttpHandler();
-                _httpClientHandlerConfigurators.ForEach(configurator => configurator(httpClientHandler));
+                _httpClientHandlerConfigurators.ForEach(configurator => configurator(sp, httpClientHandler));
                 return httpClientHandler;
             });
     }
