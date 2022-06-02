@@ -15,16 +15,37 @@ Sign is not such a common concept the therefore the underlying infrastructure is
     - Runs the IBankIdSignBuilder pipeline
 - `BankIdSignBuilder`
   - `AddConfig`
-    - Similar to `AddScheme` with the difference that it takes the callback path directly
+    - Similar to `AddScheme` with the difference that it does not register a callback URL, this is instead specified on the call to `InitiateSign` on `BankIdSignService`
     - Will register the config in the `IBankIdSignConfigurationProvider`
 - `IBankIdSignConfigurationProvider`
   - Keeps a list of the registered `BankIdSignConfiguration`
-
-- 
-- `BankIdSignMiddleware`
-  - Plugs into the ASP.NET pipeline and detects if it should handle the request on sign callback
-  - Calls the `IBankIdSignCallbackHandler` with the configkey and options for that config
-- `BankIdSignCallbackHandler`
+- `BankIdSignService`
+  - Allows for inittiating the Sign flow and redirecting the user to the correct page
   - Handles the callback when sign is done
   - Get state from cookie, return to the url specified by consumer
-- 
+- `BankIdUiSignController`
+  - Handles the UI for sign using MVC
+- `BankIdUiSignApiController`
+  - Handles the backend calls from the UI for init/statusd/cancel etc.
+
+  ### Flow
+
+  This is the overall sign flow.
+
+  ```mermaid
+  graph TD
+    App-->A
+    A[SignController.Index] -->B
+
+    B[SignController.Sign] -->|IBankIdSignService.InitiateSignAsync|C
+    C[BankIdUiSignController.Init] --> D
+    D([BankIdUiSign/Init.cshtml])
+    E[BankIdUiSignApiController.Initialize]
+    F[BankIdUiSignApiController.QrCode]-->D
+    G[BankIdUiSignApiController.Status]-->D
+    D-->E
+    D-->F
+    D-->G
+    D-->H
+    H[SignController.Callback] -->|IBankIdSignService.GetSignResultAsync|App
+  ```
