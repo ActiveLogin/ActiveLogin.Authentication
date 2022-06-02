@@ -207,7 +207,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         // Act
         var request =
-            CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
+            CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
 
@@ -244,7 +244,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         // Act
         var request =
-            CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
+            CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
         // Assert
@@ -278,7 +278,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         // Act
         var request =
-            CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
+            CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var transaction = await request.GetAsync();
 
         // Assert
@@ -523,7 +523,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         // Arrange csrf info
         var loginRequest =
-            CreateRequestWithStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
+            CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var loginContent = await loginResponse.Content.ReadAsStringAsync();

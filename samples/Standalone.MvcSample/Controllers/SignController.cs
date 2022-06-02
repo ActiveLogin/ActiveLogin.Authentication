@@ -1,6 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,7 +42,7 @@ public class SignController : Controller
             }
         };
         var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
-        return _bankIdSignService.InitiateSign(props, returnPath, provider);
+        return this.BankIdInitiateSign(props, returnPath, provider);
     }
 
     [AllowAnonymous]

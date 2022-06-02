@@ -11,7 +11,6 @@ using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
@@ -54,7 +53,7 @@ public class BankIdSignService : IBankIdSignService
         _uiResultProtector = uiResultProtector;
     }
 
-    public IActionResult InitiateSign(BankIdSignProperties properties, string callbackPath, string configKey)
+    public Task InitiateSignAsync(BankIdSignProperties properties, string callbackPath, string configKey)
     {
         var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
         var options = _optionsSnapshot.Get(configKey);
@@ -70,7 +69,10 @@ public class BankIdSignService : IBankIdSignService
         );
 
         var signUrl = GetUiInitUrl(httpContext, callbackPath, uiOptions);
-        return new RedirectResult(signUrl);
+
+        httpContext.Response.Redirect(signUrl);
+
+        return Task.CompletedTask;
     }
 
     public async Task<BankIdSignResult?> GetSignResultAsync(string provider)

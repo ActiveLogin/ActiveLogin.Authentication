@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -47,25 +49,41 @@ public abstract class BankId_Ui_Tests_Base
         }
     }
 
-    protected async Task<HttpResponseMessage> GetInitializeResponse(string bankIdType, TestServer server, object initializeRequestBody)
+    protected async Task<HttpResponseMessage> MakeRequestWithRequiredContext(string bankIdType, string path, TestServer server, HttpContent content)
     {
+        var client = server.CreateClient();
+
+        // Arrange state cookie
+        var stateRequest = server.CreateRequest("/ANYURL");
+        var stateResponse = await stateRequest.GetAsync();
+        var stateCookies = stateResponse.Headers.GetValues("set-cookie");
+
         // Arrange csrf info
-        var loginRequest = CreateRequestWithStateCookie(server, $"/ActiveLogin/BankId/{bankIdType}?returnUrl=%2F&uiOptions=X&orderRef=Y");
+        var loginRequest = CreateRequestWithFakeStateCookie(server, $"/ActiveLogin/BankId/{bankIdType}?returnUrl=%2F&uiOptions=X&orderRef=Y");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var loginContent = await loginResponse.Content.ReadAsStringAsync();
         var csrfToken = GetRequestVerificationToken(loginContent);
 
         // Arrange acting request
-        var initializeRequest = new JsonContent(initializeRequestBody);
-        initializeRequest.Headers.Add("Cookie", loginCookies);
-        initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
+        var allCookies = new List<string>(stateCookies);
+        allCookies.AddRange(loginCookies);
+        allCookies = allCookies.Distinct().ToList();
 
-        var client = server.CreateClient();
-        return await client.PostAsync( $"/ActiveLogin/BankId/{bankIdType}/Api/Initialize", initializeRequest);
+        var request = content;
+        request.Headers.Add("Cookie", allCookies);
+        request.Headers.Add("RequestVerificationToken", csrfToken);
+
+        return await client.PostAsync(path, request);
     }
 
-    protected static RequestBuilder CreateRequestWithStateCookie(TestServer server, string path)
+    protected async Task<HttpResponseMessage> GetInitializeResponse(string bankIdType, TestServer server, object initializeRequestBody)
+    {
+        var initializeRequest = new JsonContent(initializeRequestBody);
+        return await MakeRequestWithRequiredContext(bankIdType, $"/ActiveLogin/BankId/{bankIdType}/Api/Initialize", server, initializeRequest);
+    }
+
+    protected static RequestBuilder CreateRequestWithFakeStateCookie(TestServer server, string path)
     {
         var request = server.CreateRequest(path);
         request.AddHeader("Cookie", $"{DefaultStateCookieName}=TEST");
