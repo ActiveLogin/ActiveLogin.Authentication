@@ -21,11 +21,7 @@ interface IBankIdUiScriptInitState {
     protectedUiOptions: string;
 }
 
-interface IBankIdUiSignData {
-    userVisibleData: string;
-}
-
-function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState: IBankIdUiScriptInitState, signData: IBankIdUiSignData) {
+function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState: IBankIdUiScriptInitState) {
     // Pre check
 
     const requiredFeatures = [window.fetch, window.sessionStorage];

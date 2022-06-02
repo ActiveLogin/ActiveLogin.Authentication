@@ -10,7 +10,6 @@
         window.activeloginInit(configuration, initState, signData);
     }(
         @Html.Raw(Model.BankUiScriptConfigurationJson()),
-        @Html.Raw(Model.BankIdUiScriptInitStateJson()),
-        @Html.Raw(Model.BankIdUiSignDataAsJson()))
-    );
+        @Html.Raw(Model.BankIdUiScriptInitStateJson())
+    ));
 </script>

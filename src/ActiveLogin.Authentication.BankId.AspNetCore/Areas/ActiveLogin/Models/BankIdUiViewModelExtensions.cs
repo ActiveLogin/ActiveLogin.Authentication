@@ -14,8 +14,6 @@ public static class BankIdUiViewModelExtensions
 
     public static string BankIdUiScriptInitStateJson(this BankIdUiViewModel model) => SerializeToJson(model.BankIdUiScriptInitState);
 
-    public static string BankIdUiSignDataAsJson(this BankIdUiViewModel model) => SerializeToJson(model.BankIdUiSignData);
-
     private static string SerializeToJson<T>(T value)
     {
         if (value == null)

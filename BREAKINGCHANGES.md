@@ -114,7 +114,7 @@ To reflect that we now support both auth and sign we have renamed alot of classe
 These properties have been renamed:
 
 - `AL_BankId_LoginOptions_LaunchType` is now `AL_BankId_Options_LaunchType`
-- `AL_BankId_Options_UseQrCode` is now `AL_BankId_Options_UseQrCode`
+- `AL_BankId_LoginOptions_UseQrCode` is now `AL_BankId_Options_UseQrCode`
 
 ### BankIdDynamicEndUserIpResolver removed
 
