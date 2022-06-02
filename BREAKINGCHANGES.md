@@ -12,7 +12,7 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 Breaking changes between version 5.0.0 and 6.0.0.
 
-___Note:___ Version is a major release with large set of refactorings, name changes and namespace changes. We have not covered it all, but tried to summarize the major ones below.
+___Note:___ Version is a major release with large set of refactorings, name changes and namespace changes. We have not covered it all, but tried to summarize the major ones below. In v6 we introduced Sign and wanted to refactor and rename things to make i consistent and easy to use both/either of them. This will cause some work when upgrading from a previous version.
 
 ### Renaming NuGet-packages
 
@@ -90,6 +90,12 @@ These views have been renamed:
 ___Note:___ As the area and controller have been renamed these files should now be placed in `/Areas/ActiveLogin/BankIdUiAuth/` or `/Areas/ActiveLogin/Shared/`.
 
 ___Note:___ Both the html, css and javascript have breaking changes. See history for respecitve file for exact changes.
+
+### Renaming BankIdDefaults
+
+`BankIdDefaults` have been renamed into `BankIdAuthDefaults` and can now be found in the namespace `ActiveLogin.Authentication.BankId.AspNetCore.Auth`.
+
+The default values for `SameDeviceAuthenticationScheme`, `OtherDeviceAuthenticationScheme`, `SameDeviceCallbackPath` and `OtherDeviceCallbackPath` have also changed.
 
 ### Removing dependency on HttpContext in ActiveLogin.Authentication.BankId.Core
 
