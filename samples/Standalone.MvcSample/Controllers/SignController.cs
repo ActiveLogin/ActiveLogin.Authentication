@@ -1,5 +1,7 @@
 using System.Text;
+using System.Xml.Linq;
 
+using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 using Standalone.MvcSample.Models;
 
 namespace Standalone.MvcSample.Controllers;
+
+//
+// DISCLAIMER
+//
+// These are samples on how to use Active Login in different situations
+// and might not represent optimal way of setting up
+// ASP.NET MVC or other components.
+//
+// Please see this as inspiration, not a complete template.
+//
 
 [AllowAnonymous]
 public class SignController : Controller
@@ -39,16 +51,18 @@ public class SignController : Controller
         ArgumentNullException.ThrowIfNull(model, nameof(model));
 
         var userVisibleContent = await GetUserVisibleData(model.FileToSign);
+        var userNonVisibleData = BitConverter.GetBytes(model.FileToSign.GetHashCode());
 
         var props = new BankIdSignProperties(userVisibleContent)
         {
             Items =
             {
-                {"returnUrl", Url.Action("Sign")},
-                {"scheme", provider}
+                {"scheme", provider},
+                {"fileName", model.FileToSign.FileName},
+                {"fileType", model.FileToSign.ContentType}
             },
-            UserVisibleDataFormat = "simpleMarkdownV1",
-            UserNonVisibleData = BitConverter.GetBytes(model.FileToSign.GetHashCode())
+            UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1,
+            UserNonVisibleData = userNonVisibleData
         };
         var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
         return this.BankIdInitiateSign(props, returnPath, provider);
@@ -63,15 +77,30 @@ public class SignController : Controller
         {
             throw new Exception("Sign error");
         }
-
+        
         return View("Result", new SignResultViewModel(
             BitConverter.ToInt32(result.Properties.UserNonVisibleData ?? Array.Empty<byte>(), 0),
+            result.Properties.Items["fileName"] ?? string.Empty,
+            result.Properties.Items["fileType"] ?? string.Empty,
             result.BankIdCompletionData.User.PersonalIdentityNumber,
             result.BankIdCompletionData.User.Name,
             result.BankIdCompletionData.Device.IpAddress,
-            Encoding.UTF8.GetString(Convert.FromBase64String(result.BankIdCompletionData.Signature))));
+            FormatXml(Encoding.UTF8.GetString(Convert.FromBase64String(result.BankIdCompletionData.Signature)))
+            )
+        );
+    }
 
-        //return Redirect(result.Properties?.Items["returnUrl"] ?? "~/");
+    private static string FormatXml(string xml)
+    {
+        try
+        {
+            var doc = XDocument.Parse(xml);
+            return doc.ToString();
+        }
+        catch (Exception)
+        {
+            return xml;
+        }
     }
 
     private static async Task<string> GetUserVisibleData(IFormFile file)
@@ -80,12 +109,7 @@ public class SignController : Controller
         var fileInfo = new FileInfo(tempFile);
         await file.CopyToAsync(fileInfo.OpenWrite());
 
-        var fileSize = fileInfo.Length switch
-        {
-            (>= 1024 and < 1024 * 1024) => $"{fileInfo.Length / 1024.0 : 0.##}kB",
-            (>= 1024 * 1024) => $"{file.Length / 1024 / 1024.0: 0.##}MB",
-            _ => $"{fileInfo.Length}bytes",
-        };
+        var fileSize = FormatFileSize(fileInfo);
 
         var userVisibleContent = new StringBuilder()
             .AppendLine("# Overview")
@@ -100,5 +124,15 @@ public class SignController : Controller
             .ToString();
 
         return userVisibleContent;
+    }
+
+    private static string FormatFileSize(FileInfo fileInfo)
+    {
+        return fileInfo.Length switch
+        {
+            (>= 1024 and < 1024 * 1024) => $"{fileInfo.Length / 1024.0 : 0.##}kB",
+            (>= 1024 * 1024) => $"{fileInfo.Length / 1024 / 1024.0: 0.##}MB",
+            _ => $"{fileInfo.Length}bytes",
+        };
     }
 }

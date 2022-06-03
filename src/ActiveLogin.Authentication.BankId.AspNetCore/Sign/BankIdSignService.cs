@@ -75,18 +75,23 @@ public class BankIdSignService : IBankIdSignService
         return Task.CompletedTask;
     }
 
-    public async Task<BankIdSignResult?> GetSignResultAsync(string provider)
+    public async Task<BankIdSignResult?> GetSignResultAsync(string configKey)
     {
-        Validators.ThrowIfNullOrWhitespace(provider, nameof(provider));
+        Validators.ThrowIfNullOrWhitespace(configKey, nameof(configKey));
 
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
-        var options = _optionsSnapshot.Get(provider);
+        var options = _optionsSnapshot.Get(configKey);
         var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
 
         var state = GetStateCookie(httpContext, options);
         if (state == null)
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice));
+            throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidStateCookie);
+        }
+
+        if (!state.ConfigKey.Equals(configKey))
+        {
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidStateCookie);
         }
 
