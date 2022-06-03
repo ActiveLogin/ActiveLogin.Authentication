@@ -1,6 +1,6 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
 public static class IBankIdSignBuilderExtensions
 {

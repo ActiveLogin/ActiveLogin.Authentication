@@ -2,7 +2,7 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 
 using Microsoft.Extensions.Logging;
 
-namespace ActiveLogin.Authentication.BankId.Core.ResultSTore;
+namespace ActiveLogin.Authentication.BankId.Core.ResultStore;
 
 /// <summary>
 /// Will store the completion data as a trace log

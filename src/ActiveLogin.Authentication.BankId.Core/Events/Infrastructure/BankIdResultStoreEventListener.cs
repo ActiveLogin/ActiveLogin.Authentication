@@ -1,4 +1,4 @@
-using ActiveLogin.Authentication.BankId.Core.ResultSTore;
+using ActiveLogin.Authentication.BankId.Core.ResultStore;
 
 namespace ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 

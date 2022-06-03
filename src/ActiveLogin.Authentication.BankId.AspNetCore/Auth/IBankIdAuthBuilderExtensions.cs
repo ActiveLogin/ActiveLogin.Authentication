@@ -1,7 +1,8 @@
-using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 
-namespace Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 public static class IBankIdAuthBuilderExtensions
 {
     /// <summary>

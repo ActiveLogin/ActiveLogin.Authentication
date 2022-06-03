@@ -1,8 +1,9 @@
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Qr;
-using ActiveLogin.Authentication.BankId.QrCoder;
 
-namespace Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ActiveLogin.Authentication.BankId.QrCoder;
 public static class BankIdBuilderQrCoderExtensions
 {
     /// <summary>

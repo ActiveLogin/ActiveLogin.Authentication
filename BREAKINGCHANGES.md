@@ -45,6 +45,22 @@ services.AddAuthentication()
     });
 ```
 
+### Moving extenbsion methods away from Microsoft.Extensions.DependencyInjection
+
+As per the [Microsoft guideline about namespaces](https://docs.microsoft.com/en-us/dotnet/core/extensions/options-library-authors#namespace-guidance) in libraries, we have moved our extension methods away from `Microsoft.Extensions.DependencyInjection` into their "natural" namespaces.
+
+This means that in your `Program.cs` you might needs to import these namespaces:
+
+```csharp
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
+using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
+using ActiveLogin.Authentication.BankId.AzureKeyVault;
+using ActiveLogin.Authentication.BankId.AzureMonitor;
+using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.QrCoder;
+using ActiveLogin.Authentication.BankId.UaParser;
+```
+
 ### Requires static files
 
 The stylesheet and the javascript for the client are now served as *.css and *.js files, so you need to enable static file support.

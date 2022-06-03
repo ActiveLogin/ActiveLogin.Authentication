@@ -3,7 +3,11 @@ using System.Text;
 
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
+using ActiveLogin.Authentication.BankId.AzureKeyVault;
+using ActiveLogin.Authentication.BankId.AzureMonitor;
 using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.QrCoder;
+using ActiveLogin.Authentication.BankId.UaParser;
 
 using IdentityServer.ServerSample;
 
