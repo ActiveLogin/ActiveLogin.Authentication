@@ -9,5 +9,6 @@ public class BankIdViewModel
     }
 
     public IEnumerable<ExternalProvider> ExternalProviders { get; }
-    public string ReturnUrl { get; }
+
+    public string ReturnUrl { get; set; }
 }

@@ -66,7 +66,8 @@ services.AddIdentityServer(options =>
 //services.AddBankIdAuth(bankId =>
 //    {
 //        bankId
-//            .UseSimulatedEnvironment();
+//            .UseSimulatedEnvironment()
+//            
 //    });
 
 // # Sample: Using BankID with production environment
@@ -97,17 +98,6 @@ services
         bankId.UseQrCoderQrCodeGenerator();
         bankId.UseUaParserDeviceDetection();
 
-        bankId.UseAuthRequestUserData(authUserData =>
-        {
-            var message = new StringBuilder();
-            message.AppendLine("# Active Login");
-            message.AppendLine();
-            message.AppendLine("Welcome to the *Active Login* demo.");
-
-            authUserData.UserVisibleData = message.ToString();
-            authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
-        });
-
         if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
         {
             bankId.UseSimulatedEnvironment();
@@ -127,6 +117,16 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     {
         bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
         bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+        bankId.UseAuthRequestUserData(authUserData =>
+        {
+            var message = new StringBuilder();
+            message.AppendLine("# Active Login");
+            message.AppendLine();
+            message.AppendLine("Welcome to the *Active Login* demo.");
+
+            authUserData.UserVisibleData = message.ToString();
+            authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
+        });
     });
 
 // Add MVC

@@ -1,3 +1,5 @@
+using System.Text;
+
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
 using Microsoft.AspNetCore.Authorization;
@@ -25,21 +27,28 @@ public class SignController : Controller
         var providers = configurations
             .Where(x => x.DisplayName != null)
             .Select(x => new ExternalProvider(x.DisplayName ?? x.Key, x.Key));
-        var viewModel = new BankIdViewModel(providers, "~/");
+        var viewModel = new BankIdViewModel(providers, $"{Url.Action(nameof(Index))}");
 
         return View(viewModel);
     }
 
     [AllowAnonymous]
-    public IActionResult Sign(string provider)
+    [HttpPost("Sign")]
+    public async Task<IActionResult> Sign([FromQuery]string provider, [FromForm] SignRequestModel model)
     {
-        var props = new BankIdSignProperties("Sign this...")
+        ArgumentNullException.ThrowIfNull(model, nameof(model));
+
+        var userVisibleContent = await GetUserVisibleData(model.FileToSign);
+
+        var props = new BankIdSignProperties(userVisibleContent)
         {
             Items =
             {
-                {"returnUrl", "~/"},
+                {"returnUrl", Url.Action("Sign")},
                 {"scheme", provider}
-            }
+            },
+            UserVisibleDataFormat = "simpleMarkdownV1",
+            UserNonVisibleData = BitConverter.GetBytes(model.FileToSign.GetHashCode())
         };
         var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
         return this.BankIdInitiateSign(props, returnPath, provider);
@@ -50,11 +59,46 @@ public class SignController : Controller
     public async Task<IActionResult> Callback(string provider)
     {
         var result = await _bankIdSignService.GetSignResultAsync(provider);
-        if (result?.Succeeded != true)
+        if (result?.Succeeded != true || result.BankIdCompletionData == null)
         {
             throw new Exception("Sign error");
         }
 
-        return Redirect(result.Properties?.Items["returnUrl"] ?? "~/");
+        return View("Result", new SignResultViewModel(
+            BitConverter.ToInt32(result.Properties.UserNonVisibleData ?? Array.Empty<byte>(), 0),
+            result.BankIdCompletionData.User.PersonalIdentityNumber,
+            result.BankIdCompletionData.User.Name,
+            result.BankIdCompletionData.Device.IpAddress,
+            Encoding.UTF8.GetString(Convert.FromBase64String(result.BankIdCompletionData.Signature))));
+
+        //return Redirect(result.Properties?.Items["returnUrl"] ?? "~/");
+    }
+
+    private static async Task<string> GetUserVisibleData(IFormFile file)
+    {
+        var tempFile = Path.Join(Path.GetTempPath(), file.FileName);
+        var fileInfo = new FileInfo(tempFile);
+        await file.CopyToAsync(fileInfo.OpenWrite());
+
+        var fileSize = fileInfo.Length switch
+        {
+            (>= 1024 and < 1024 * 1024) => $"{fileInfo.Length / 1024.0 : 0.##}kB",
+            (>= 1024 * 1024) => $"{file.Length / 1024 / 1024.0: 0.##}MB",
+            _ => $"{fileInfo.Length}bytes",
+        };
+
+        var userVisibleContent = new StringBuilder()
+            .AppendLine("# Overview")
+            .AppendLine("You are about to sign a file, please verify the information below that you are signing the correct file.")
+            .AppendLine("# File information")
+            .AppendLine("|||")
+            .AppendLine("|-|-|")
+            .AppendLine($"|*Name*| {file.FileName} |")
+            .AppendLine($"|*Size*| {fileSize} |")
+            .AppendLine($"|*Created*| {fileInfo.CreationTime.ToShortDateString()} {fileInfo.CreationTime.ToShortTimeString()} |")
+            .AppendLine($"|*Modified*| {fileInfo.LastWriteTime.ToShortDateString()} {fileInfo.LastWriteTime.ToShortTimeString()} |")
+            .ToString();
+
+        return userVisibleContent;
     }
 }
