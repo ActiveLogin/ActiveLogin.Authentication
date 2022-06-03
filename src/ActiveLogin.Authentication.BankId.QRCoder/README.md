@@ -13,11 +13,9 @@ Adds the `UseQrCoderQrCodeGenerator(UseQrCoderQrCodeGenerator)` extension method
 
 ```csharp
 services
-    .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
-            .UseQrCoderQrCodeGenerator();
+        bankId.UseQrCoderQrCodeGenerator();
     });
 ```
 

@@ -1,6 +1,6 @@
 namespace ActiveLogin.Authentication.BankId.Core.UserData;
 
-internal class BankIdAuthRequestStaticUserDataResolver : IBankIdAuthRequestUserDataResolver
+public class BankIdAuthRequestStaticUserDataResolver : IBankIdAuthRequestUserDataResolver
 {
     private readonly BankIdAuthUserData _authUserData;
 

@@ -1,11 +1,11 @@
-using ActiveLogin.Authentication.BankId.AzureMonitor;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace ActiveLogin.Authentication.BankId.AzureMonitor;
 public static class BankIdBuilderAzureMonitorExtensions
 {
     /// <summary>

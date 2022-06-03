@@ -1,0 +1,61 @@
+@model Standalone.MvcSample.Models.BankIdViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Demo (sign)";
+}
+
+<style>
+    fieldset:invalid {
+      border: 2px solid red;
+    }
+
+    fieldset:valid {
+      border: 0;
+    }
+</style>
+
+@if (Model.ExternalProviders.Any())
+{
+    <div class="choose-provider">
+        <h1 class="mb-5 mt-2 font-weight-normal">Active Sign</h1>
+
+        <form enctype="multipart/form-data" method="post">
+            <div class="d-grid gap-2">
+
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                <fieldset class="mb-2 btn btn-info btn-block btn-lg">
+                    <label for="FileToSign"> 
+                        <input name="FileToSign" id="FileToSign" style="display: none;" type="file" required>
+                        <span id="selectionInfo">Select file to sign</span>
+                    </label>
+                </fieldset>
+
+                @foreach (var provider in Model.ExternalProviders)
+                {
+                    <input type="submit" class="btn btn-primary btn-block btn-lg" asp-route-provider="@provider.BankIdScheme" value="@provider.DisplayName" />
+                }
+            </div>
+        </form>
+    </div>
+}
+
+<script type="text/javascript">
+    (() => {
+        const selectedFileText = document.getElementById('selectionInfo');
+        const inputElement = document.getElementById('FileToSign');
+        inputElement.addEventListener("change", filesSelected, false);
+
+        function filesSelected() {
+            selectedFileText.textContent = this.files[0].name;
+        }
+    })();
+</script>
+
+@if (!Model.ExternalProviders.Any())
+{
+    <div class="alert alert-warning">
+        <strong>Invalid sign request</strong>
+        There are no sign schemes configured for this client.
+    </div>
+}

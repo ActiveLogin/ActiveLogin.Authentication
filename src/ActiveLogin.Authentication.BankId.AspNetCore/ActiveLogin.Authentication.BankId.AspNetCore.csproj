@@ -15,7 +15,7 @@
         <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
 
         <VersionPrefix>6.0.0</VersionPrefix>
-        <VersionSuffix>alpha-1</VersionSuffix>
+        <VersionSuffix>beta-1</VersionSuffix>
         <AssemblyVersion>6.0.0.0</AssemblyVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
@@ -58,18 +58,18 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Update="Resources\BankIdHandler.resx">
+        <EmbeddedResource Update="Resources\ActiveLoginResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>BankIdHandler.Designer.cs</LastGenOutput>
+            <LastGenOutput>ActiveLoginResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-        <EmbeddedResource Update="Resources\BankIdHandler.sv.resx">
+        <EmbeddedResource Update="Resources\ActiveLoginResources.sv.resx">
             <Generator>ResXFileCodeGenerator</Generator>
         </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Resources\BankIdHandler.Designer.cs">
-            <DependentUpon>BankIdHandler.resx</DependentUpon>
+        <Compile Update="Resources\ActiveLoginResources.Designer.cs">
+            <DependentUpon>ActiveLoginResources.resx</DependentUpon>
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
         </Compile>
@@ -86,4 +86,18 @@
             <_Parameter1>ActiveLogin.Authentication.BankId.AspNetCore.Test</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.7.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
+            CompileTypeScript;
+            $(ResolveCurrentProjectStaticWebAssetsInputs)
+        </ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
+    </PropertyGroup>
 </Project>

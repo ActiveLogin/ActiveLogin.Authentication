@@ -10,7 +10,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Events;
 /// </summary>
 public class BankIdCancelErrorEvent : BankIdEvent
 {
-    internal BankIdCancelErrorEvent(string orderRef, BankIdApiException bankIdApiException, BankIdSupportedDevice detectedUserDevice, BankIdLoginOptions idOptions)
+    internal BankIdCancelErrorEvent(string orderRef, BankIdApiException bankIdApiException, BankIdSupportedDevice detectedUserDevice, BankIdFlowOptions idOptions)
         : base(BankIdEventTypes.CancelFailureId, BankIdEventTypes.CancelFailureName, BankIdEventSeverity.Error)
     {
         OrderRef = orderRef;
@@ -25,5 +25,5 @@ public class BankIdCancelErrorEvent : BankIdEvent
 
     public BankIdSupportedDevice DetectedUserDevice { get; }
 
-    public BankIdLoginOptions BankIdOptions { get; }
+    public BankIdFlowOptions BankIdOptions { get; }
 }

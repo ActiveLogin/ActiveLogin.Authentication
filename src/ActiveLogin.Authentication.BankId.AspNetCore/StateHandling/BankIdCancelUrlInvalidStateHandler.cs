@@ -1,5 +1,3 @@
-using ActiveLogin.Authentication.BankId.Core.StateHandling;
-
 using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;

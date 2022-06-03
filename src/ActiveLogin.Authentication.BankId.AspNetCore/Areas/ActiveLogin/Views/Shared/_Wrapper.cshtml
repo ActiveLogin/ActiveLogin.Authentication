@@ -1,0 +1,14 @@
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models.BankIdUiViewModel
+
+<partial name="_Style" />
+
+<div class="activelogin-bankid-ui--wrapper">
+    @if (!string.IsNullOrEmpty(Model.LocalizedPageHeader))
+    {
+        <h3 class="activelogin-bankid-ui--header">@Model.LocalizedPageHeader</h3>
+    }
+
+    <partial name="_Status" model="Model" />
+</div>
+
+<partial name="_Script" model="Model" />

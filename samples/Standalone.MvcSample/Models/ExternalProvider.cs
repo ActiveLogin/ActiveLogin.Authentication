@@ -2,12 +2,12 @@ namespace Standalone.MvcSample.Models;
 
 public class ExternalProvider
 {
-    public ExternalProvider(string displayName, string authenticationScheme)
+    public ExternalProvider(string displayName, string bankIdScheme)
     {
         DisplayName = displayName;
-        AuthenticationScheme = authenticationScheme;
+        BankIdScheme = bankIdScheme;
     }
 
     public string DisplayName { get; }
-    public string AuthenticationScheme { get; }
+    public string BankIdScheme { get; }
 }

@@ -8,6 +8,7 @@ variables:
 
 trigger:
 - main
+- v*
 
 stages:
 - stage: BuildNuget

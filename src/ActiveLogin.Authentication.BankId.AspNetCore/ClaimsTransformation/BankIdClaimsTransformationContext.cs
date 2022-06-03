@@ -1,12 +1,14 @@
 using System.Security.Claims;
 
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 
 public class BankIdClaimsTransformationContext
 {
-    internal BankIdClaimsTransformationContext(BankIdOptions bankIdOptions, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname)
+    internal BankIdClaimsTransformationContext(BankIdAuthOptions bankIdAuthOptions, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname)
     {
-        BankIdOptions = bankIdOptions;
+        BankIdAuthOptions = bankIdAuthOptions;
 
         BankIdOrderRef = bankIdOrderRef;
 
@@ -19,7 +21,7 @@ public class BankIdClaimsTransformationContext
 
     public List<Claim> Claims { get; set; } = new();
 
-    public BankIdOptions BankIdOptions { get; }
+    public BankIdAuthOptions BankIdAuthOptions { get; }
 
     public string BankIdOrderRef { get; }
 

@@ -41,7 +41,7 @@ public class BankIdLoggerEventListener : BankIdTypedEventListener
 
     // BankID API - Auth
 
-    public override Task HandleAuthSuccessEvent(BankIdAuthSuccessEvent e)
+    public override Task HandleSuccessEvent(BankIdInitializeSuccessEvent e)
     {
         var eventId = GetEventId(e);
         _logger.LogInformation(eventId, "BankID auth succeeded with the OrderRef '{OrderRef}'", e.OrderRef);
@@ -49,7 +49,7 @@ public class BankIdLoggerEventListener : BankIdTypedEventListener
         return Task.CompletedTask;
     }
 
-    public override Task HandleAuthFailureEvent(BankIdAuthErrorEvent e)
+    public override Task HandleFailureEvent(BankIdInitializeErrorEvent e)
     {
         var eventId = GetEventId(e);
         _logger.LogError(eventId, e.BankIdApiException, "BankID auth failed with the error '{ErrorCode}' and the details '{ErrorDetails}'", e.BankIdApiException.ErrorCode, e.BankIdApiException.ErrorDetails);

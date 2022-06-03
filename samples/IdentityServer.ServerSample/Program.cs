@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Text;
 
 using ActiveLogin.Authentication.BankId.Api;
-using ActiveLogin.Authentication.BankId.AspNetCore;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AzureKeyVault;
 using ActiveLogin.Authentication.BankId.AzureMonitor;
 using ActiveLogin.Authentication.BankId.Core;
@@ -54,7 +54,7 @@ services.Configure<CookiePolicyOptions>(options =>
 // Add IdentityServer
 services.AddIdentityServer(options =>
 {
-    options.Authentication.CookieLifetime = BankIdDefaults.MaximumSessionLifespan;
+    options.Authentication.CookieLifetime = BankIdAuthDefaults.MaximumSessionLifespan;
 })
     .AddDeveloperSigningCredential()
     .AddInMemoryIdentityResources(IdentityServerConfig.GetIdentityResources())
@@ -63,16 +63,17 @@ services.AddIdentityServer(options =>
 // Add Active Login - BankID
 
 // # Sample: Using BankID with in memory dev environment
-//services.AddBankId(builder =>
+//services.AddBankIdAuth(bankId =>
 //    {
-//        builder
-//            .UseSimulatedEnvironment();
+//        bankId
+//            .UseSimulatedEnvironment()
+//            
 //    });
 
 // # Sample: Using BankID with production environment
-//services.AddBankId(builder =>
+//services.AddBankIdAuth(bankId =>
 //        {
-//            builder
+//            bankId
 //                .UseProductionEnvironment()
 //                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
 //                .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
@@ -80,10 +81,10 @@ services.AddIdentityServer(options =>
 
 // # Sample: BankID with production environment, custom display name and multiple environment support
 services
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder.AddDebugEventListener();
-        builder.AddApplicationInsightsEventListener(options =>
+        bankId.AddDebugEventListener();
+        bankId.AddApplicationInsightsEventListener(options =>
         {
             options.LogUserPersonalIdentityNumber = false;
             options.LogUserPersonalIdentityNumberHints = true;
@@ -94,10 +95,29 @@ services
             options.LogCertificateDates = true;
         });
 
-        builder.UseQrCoderQrCodeGenerator();
-        builder.UseUaParserDeviceDetection();
+        bankId.UseQrCoderQrCodeGenerator();
+        bankId.UseUaParserDeviceDetection();
 
-        builder.UseAuthRequestUserData(authUserData =>
+        if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
+        {
+            bankId.UseSimulatedEnvironment();
+        }
+        else
+        {
+            bankId.UseProductionEnvironment();
+            bankId.UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
+            bankId.UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+        }
+    });
+
+// Add authentication
+services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddBankIdAuth(bankId =>
+    {
+        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
+        bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+        bankId.UseAuthRequestUserData(authUserData =>
         {
             var message = new StringBuilder();
             message.AppendLine("# Active Login");
@@ -107,26 +127,6 @@ services
             authUserData.UserVisibleData = message.ToString();
             authUserData.UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1;
         });
-
-        if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
-        {
-            builder.UseSimulatedEnvironment();
-        }
-        else
-        {
-            builder.UseProductionEnvironment();
-            builder.UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
-            builder.UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
-        }
-    });
-
-// Add authentication
-services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddBankId(builder =>
-    {
-        builder.AddSameDevice(BankIdDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
-        builder.AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
     });
 
 // Add MVC

@@ -47,4 +47,13 @@ internal static class BankIdEventTypes
 
     public static readonly int CancelFailureId = EventIdBase + 2_3_2;
     public static readonly string CancelFailureName = EventNamePrefix + "CancelFailure";
+
+
+    // BankId API - Sign
+
+    public static readonly int SignSuccessId = EventIdBase + 2_4_1;
+    public static readonly string SignSuccessName = EventNamePrefix + "SignSuccess";
+
+    public static readonly int SignErrorEventId = EventIdBase + 2_4_2;
+    public static readonly string SignErrorEventName = EventNamePrefix + "SignError";
 }

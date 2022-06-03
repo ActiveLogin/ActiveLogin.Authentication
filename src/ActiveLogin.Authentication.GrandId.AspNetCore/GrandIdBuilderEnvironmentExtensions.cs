@@ -1,9 +1,10 @@
-﻿using System;
+using System;
+
 using ActiveLogin.Authentication.GrandId.Api;
-using ActiveLogin.Authentication.GrandId.AspNetCore;
+
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace ActiveLogin.Authentication.GrandId.AspNetCore;
 
 public static class GrandIdBuilderEnvironmentExtensions
 {

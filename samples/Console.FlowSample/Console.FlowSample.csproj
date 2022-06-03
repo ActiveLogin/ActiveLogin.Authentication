@@ -1,29 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
-        <Product>Active Login</Product>
-        <Description>ASP.NET sample for Active Login.</Description>
-        <Authors>Active Solution</Authors>
-        <Company>Active Solution</Company>
-        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
+    <Product>Active Login</Product>
+    <Description>ASP.NET sample for Active Login.</Description>
+    <Authors>Active Solution</Authors>
+    <Company>Active Solution</Company>
+    <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
 
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 
-        <OutputType>Exe</OutputType>
-    </PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor\ActiveLogin.Authentication.BankId.AzureMonitor.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.QRCoder\ActiveLogin.Authentication.BankId.QRCoder.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.UAParser\ActiveLogin.Authentication.BankId.UAParser.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore\ActiveLogin.Authentication.BankId.AspNetCore.csproj" />
-        <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AspNetCore.Azure\ActiveLogin.Authentication.BankId.AzureKeyVault.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.Core\ActiveLogin.Authentication.BankId.Core.csproj" />
+    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AzureKeyVault\ActiveLogin.Authentication.BankId.AzureKeyVault.csproj" />
+    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.AzureMonitor\ActiveLogin.Authentication.BankId.AzureMonitor.csproj" />
+    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.QRCoder\ActiveLogin.Authentication.BankId.QRCoder.csproj" />
+    <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.UAParser\ActiveLogin.Authentication.BankId.UAParser.csproj" />
+    
+  </ItemGroup>
 
 </Project>

@@ -1,7 +1,5 @@
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
-using Moq;
-
 using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Core.Test.SupportedDevice;

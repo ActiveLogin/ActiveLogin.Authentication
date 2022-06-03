@@ -1,9 +1,0 @@
-﻿@using Microsoft.Extensions.Localization
-@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.BankIdAuthentication.Models.BankIdLoginViewModel
-@inject IStringLocalizer<ActiveLogin.Authentication.BankId.AspNetCore.BankIdHandler> Localizer
-
-@{
-    ViewData["Title"] = Localizer["SignIn_Title"];
-}
-
-<partial name="_Login" model="Model" />

@@ -1,13 +1,13 @@
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
-using ActiveLogin.Authentication.BankId.Core.EndUserContext;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.Qr;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
+using ActiveLogin.Authentication.BankId.Core.UserContext;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
@@ -53,80 +53,139 @@ public class BankIdFlowService : IBankIdFlowService
         _bankIdLauncher = bankIdLauncher;
     }
 
-    public async Task<BankIdFlowInitializeAuthResult> InitializeAuth(BankIdLoginOptions loginOptions, string returnRedirectUrl)
+    public async Task<BankIdFlowInitializeResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
-        var authResponse = await GetAuthResponse(loginOptions, detectedUserDevice);
+        var response = await GetAuthResponse(flowOptions, detectedUserDevice);
 
-        await _bankIdEventTrigger.TriggerAsync(new BankIdAuthSuccessEvent(personalIdentityNumber: null, authResponse.OrderRef, detectedUserDevice, loginOptions));
+        await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
 
-        if (loginOptions.SameDevice)
+        if (flowOptions.SameDevice)
         {
-            var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, authResponse);
-            return new BankIdFlowInitializeAuthResult(authResponse, detectedUserDevice, new BankIdFlowInitializeAuthLaunchTypeSameDevice(launchInfo));
+            var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeSameDevice(launchInfo));
         }
         else
         {
             var qrStartState = new BankIdQrStartState(
                 _bankIdFlowSystemClock.UtcNow,
-                authResponse.QrStartToken,
-                authResponse.QrStartSecret
+                response.QrStartToken,
+                response.QrStartSecret
             );
 
             var qrCodeAsBase64 = GetQrCodeAsBase64(qrStartState);
-            return new BankIdFlowInitializeAuthResult(authResponse, detectedUserDevice, new BankIdFlowInitializeAuthLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
         }
     }
 
-    private async Task<AuthResponse> GetAuthResponse(BankIdLoginOptions loginOptions, BankIdSupportedDevice detectedUserDevice)
+    private async Task<AuthResponse> GetAuthResponse(BankIdFlowOptions flowOptions, BankIdSupportedDevice detectedUserDevice)
     {
         try
         {
-            var authRequest = await GetAuthRequest(loginOptions);
-            return await _bankIdApiClient.AuthAsync(authRequest);
+            var request = await GetAuthRequest(flowOptions);
+            return await _bankIdApiClient.AuthAsync(request);
         }
         catch (BankIdApiException bankIdApiException)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdAuthErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, loginOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
             throw;
         }
     }
 
-    private async Task<AuthRequest> GetAuthRequest(BankIdLoginOptions loginOptions)
+    private async Task<AuthRequest> GetAuthRequest(BankIdFlowOptions flowOptions)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-        var certificatePolicies = loginOptions.CertificatePolicies.Any() ? loginOptions.CertificatePolicies : null;
+        var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
 
-        var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, loginOptions.AllowBiometric);
+        var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.AllowBiometric);
 
         var authRequestContext = new BankIdAuthRequestContext(endUserIp, authRequestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
 
-        return new AuthRequest(endUserIp, null, authRequestRequirement, userData.UserVisibleData, userData.UserNonVisibleData, userData.UserVisibleDataFormat);
+        return new AuthRequest(
+            endUserIp,
+            null,
+            authRequestRequirement,
+            userData.UserVisibleData,
+            userData.UserNonVisibleData,
+            userData.UserVisibleDataFormat
+        );
     }
 
-    private BankIdLaunchInfo GetBankIdLaunchInfo(string redirectUrl, AuthResponse authResponse)
+    public async Task<BankIdFlowInitializeResult> InitializeSign(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string returnRedirectUrl)
     {
-        var launchUrlRequest = new LaunchUrlRequest(redirectUrl, authResponse.AutoStartToken);
+        var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
+        var response = await GetSignResponse(flowOptions, bankIdSignData, detectedUserDevice);
+
+        await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
+
+        if (flowOptions.SameDevice)
+        {
+            var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeSameDevice(launchInfo));
+        }
+        else
+        {
+            var qrStartState = new BankIdQrStartState(
+                _bankIdFlowSystemClock.UtcNow,
+                response.QrStartToken,
+                response.QrStartSecret
+            );
+
+            var qrCodeAsBase64 = GetQrCodeAsBase64(qrStartState);
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
+        }
+    }
+
+    private async Task<SignResponse> GetSignResponse(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, BankIdSupportedDevice detectedUserDevice)
+    {
+        try
+        {
+            var request = GetSignRequest(flowOptions, bankIdSignData);
+            return await _bankIdApiClient.SignAsync(request);
+        }
+        catch (BankIdApiException bankIdApiException)
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
+            throw;
+        }
+    }
+
+    private SignRequest GetSignRequest(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData)
+    {
+        var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
+        var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
+        var requestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.AllowBiometric);
+
+        return new SignRequest(
+            endUserIp,
+            bankIdSignData.UserVisibleData,
+            userNonVisibleData: bankIdSignData.UserNonVisibleData,
+            userVisibleDataFormat: bankIdSignData.UserVisibleDataFormat,
+            requirement: requestRequirement
+        );
+    }
+
+    private BankIdLaunchInfo GetBankIdLaunchInfo(string redirectUrl, string autoStartToken)
+    {
+        var launchUrlRequest = new LaunchUrlRequest(redirectUrl, autoStartToken);
 
         return _bankIdLauncher.GetLaunchInfo(launchUrlRequest);
     }
 
-
-
-    public async Task<BankIdFlowCollectResult> Collect(string orderRef, int autoStartAttempts, BankIdLoginOptions loginOptions)
+    public async Task<BankIdFlowCollectResult> Collect(string orderRef, int autoStartAttempts, BankIdFlowOptions flowOptions)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
 
-        var collectResponse = await GetCollectResponse(orderRef, loginOptions, detectedUserDevice);
-        var statusMessage = GetStatusMessage(collectResponse, loginOptions, detectedUserDevice);
+        var collectResponse = await GetCollectResponse(orderRef, flowOptions, detectedUserDevice);
+        var statusMessage = GetStatusMessage(collectResponse, flowOptions, detectedUserDevice);
 
         var collectStatus = collectResponse.GetCollectStatus();
         switch (collectStatus)
         {
             case CollectStatus.Pending:
             {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, loginOptions));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectPendingEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, flowOptions));
                 return new BankIdFlowCollectResultPending(statusMessage);
             }
             case CollectStatus.Complete:
@@ -136,7 +195,7 @@ public class BankIdFlowService : IBankIdFlowService
                     throw new InvalidOperationException("Missing CompletionData from BankID API");
                 }
 
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedUserDevice, loginOptions));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedUserDevice, flowOptions));
                 return new BankIdFlowCollectResultComplete(collectResponse.CompletionData);
             }
             case CollectStatus.Failed:
@@ -147,18 +206,18 @@ public class BankIdFlowService : IBankIdFlowService
                     return new BankIdFlowCollectResultRetry(statusMessage);
                 }
 
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, loginOptions));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, flowOptions));
                 return new BankIdFlowCollectResultFailure(statusMessage);
             }
             default:
             {
-                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, loginOptions));
+                await _bankIdEventTrigger.TriggerAsync(new BankIdCollectFailureEvent(collectResponse.OrderRef, collectResponse.GetCollectHintCode(), detectedUserDevice, flowOptions));
                 return new BankIdFlowCollectResultFailure(statusMessage);
             }
         }
     }
 
-    private async Task<CollectResponse> GetCollectResponse(string orderRef, BankIdLoginOptions loginOptions, BankIdSupportedDevice detectedUserDevice)
+    private async Task<CollectResponse> GetCollectResponse(string orderRef, BankIdFlowOptions flowOptions, BankIdSupportedDevice detectedUserDevice)
     {
         try
         {
@@ -166,17 +225,15 @@ public class BankIdFlowService : IBankIdFlowService
         }
         catch (BankIdApiException bankIdApiException)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef, bankIdApiException, detectedUserDevice, loginOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdCollectErrorEvent(orderRef, bankIdApiException, detectedUserDevice, flowOptions));
             throw;
         }
     }
 
-
-
-    private string GetStatusMessage(CollectResponse collectResponse, BankIdLoginOptions unprotectedLoginOptions, BankIdSupportedDevice detectedDevice)
+    private string GetStatusMessage(CollectResponse collectResponse, BankIdFlowOptions unprotectedFlowOptions, BankIdSupportedDevice detectedDevice)
     {
         var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
-        var usingQrCode = !unprotectedLoginOptions.SameDevice;
+        var usingQrCode = !unprotectedFlowOptions.SameDevice;
 
         var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
             collectResponse.GetCollectStatus(),
@@ -200,14 +257,14 @@ public class BankIdFlowService : IBankIdFlowService
         return qrCode;
     }
 
-    public async Task Cancel(string orderRef, BankIdLoginOptions loginOptions)
+    public async Task Cancel(string orderRef, BankIdFlowOptions flowOptions)
     {
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
 
         try
         {
             await _bankIdApiClient.CancelAsync(orderRef);
-            await _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef, detectedDevice, loginOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef, detectedDevice, flowOptions));
         }
         catch (BankIdApiException exception)
         {
@@ -215,7 +272,7 @@ public class BankIdFlowService : IBankIdFlowService
             // are that the orderRef has already been cancelled or we have
             // a network issue. We still want to provide the GUI with the
             // validated cancellation URL though.
-            await _bankIdEventTrigger.TriggerAsync(new BankIdCancelErrorEvent(orderRef, exception, detectedDevice, loginOptions));
+            await _bankIdEventTrigger.TriggerAsync(new BankIdCancelErrorEvent(orderRef, exception, detectedDevice, flowOptions));
         }
     }
 }

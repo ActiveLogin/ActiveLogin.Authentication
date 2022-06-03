@@ -15,14 +15,14 @@ Free to use, [commercial support and training](#support--training) is available 
 
 ## Features
 
-- :id: Supports BankID Auth and Sign
+- :id: Supports BankID Auth (API, Flow and UI)
+- :pencil: Supports BankID Sign (API, Flow and UI)
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 6
 - :five: Built on V5.1 (the latest) BankID JSON API
 - :white_square_button: Supports BankID animated QR code (Safe start)
-- :lock: GDPR: Security by design
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
-- :wrench: Customizable UI
+- :wrench: Customizable ánd extensible
 - :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Provider for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
 
 
@@ -87,13 +87,26 @@ Full documentation with step by step instructions, samples, customization and de
 Active Login is designed to make it easy to get started with BankID in .NET. The most basic setup looks like this:
 
 ```csharp
+// Common
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseSimulatedEnvironment();
+    });
+
+// Auth
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankIdAuth(bankId =>
     {
-        builder
-            .UseSimulatedEnvironment()
-            .AddSameDevice();
+        bankId.AddSameDevice();
+    });
+
+// Sign
+services
+    .AddBankIdSign(bankId =>
+    {
+        bankId.AddSameDevice();
     });
 ```
 
@@ -111,7 +124,7 @@ _Note: These are samples on how to use Active Login in different situations and 
 | ------- | ----------- |
 | [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ClientSample) | ASP.NET MVC site using the IdentityServer.ServerSample as auth provider. |
 | [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ServerSample) | IdentityServer with Active Login as auth provider for BankID. |
-| [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) | ASP.NET MVC with Active Login as auth provider for BankID. |
+| [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) | ASP.NET MVC with Active Login as auth provider for BankID. Also demo of Sign. |
 | [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample) | ARM template with Azure KeyVault, Azure App Service, Azure Monitor / Application Insights etc. |
 
 _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
@@ -143,7 +156,7 @@ For commercial / business related questions, see the [FAQ at ActiveLogin.net](ht
 
 The API-wrapper (ActiveLogin.Authentication.BankId.Api) target .NET Standard 2.0, so it can be used from .NET >= 5.0, .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The package that target .NET Standard is strong named as it can be used from .NET Framework where strong naming can be relevant.
 
-The authentication module (*.AspNetCore), depend on ASP.NET 6 and therefore require .NET 6.
+The authentication module (*.AspNetCore), depend on ASP.NET 6 and therefore requires .NET 6.
 The core module (*.Core), and related packages, depend on and requires .NET 6.
 
 Our samples target .NET 6 and follow the conventions used there.

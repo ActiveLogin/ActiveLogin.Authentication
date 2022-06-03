@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Options;
-
 namespace ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 
 internal class BankIdEventTrigger : IBankIdEventTrigger
@@ -7,10 +5,10 @@ internal class BankIdEventTrigger : IBankIdEventTrigger
     private readonly List<IBankIdEventListener> _listeners;
     private readonly BankIdActiveLoginContext _bankIdActiveLoginContext;
     
-    public BankIdEventTrigger(IEnumerable<IBankIdEventListener> listeners, IOptions<BankIdActiveLoginContext> bankIdActiveLoginContext)
+    public BankIdEventTrigger(IEnumerable<IBankIdEventListener> listeners, BankIdActiveLoginContext bankIdActiveLoginContext)
     {
         _listeners = listeners.ToList();
-        _bankIdActiveLoginContext = bankIdActiveLoginContext.Value;
+        _bankIdActiveLoginContext = bankIdActiveLoginContext;
     }
 
     public async Task TriggerAsync(BankIdEvent bankIdEvent)

@@ -1,6 +1,5 @@
 using ActiveLogin.Authentication.BankId.Core;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 //

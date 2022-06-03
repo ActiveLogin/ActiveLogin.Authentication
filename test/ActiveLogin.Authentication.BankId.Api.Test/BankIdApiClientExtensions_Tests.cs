@@ -53,7 +53,7 @@ public class BankIdApiClientExtensions_Tests
             .ReturnsAsync(It.IsAny<AuthResponse>());
 
         // Act
-        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", "userVisibleDataFormat");
+        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", userVisibleData: "userVisibleData", userVisibleDataFormat: "userVisibleDataFormat");
 
         // Assert
         var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();

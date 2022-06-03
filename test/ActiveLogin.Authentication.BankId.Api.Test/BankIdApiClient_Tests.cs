@@ -186,8 +186,8 @@ public class BankIdApiClient_Tests
             "endUserIp",
             "requirement",
             "userVisibleData",
-            "userNonVisibleData",
-            "userVisibleDataFormat"
+            "userVisibleDataFormat",
+            "userNonVisibleData"
         });
     }
 
@@ -215,7 +215,11 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", "userVisibleDataFormat", new byte[1]));
+        await _bankIdApiClient.SignAsync(new SignRequest(
+            "1.1.1.1",
+            "userVisibleData",
+            userVisibleDataFormat: "userVisibleDataFormat",
+            userNonVisibleData: new byte[1]));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();

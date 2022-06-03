@@ -7,16 +7,13 @@ Free to use, [commercial support and training](https://activelogin.net/#support)
 
 ## Sample usage
 
-Call `builder.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
+Call `bankId.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
 
 ```csharp
 services
-    .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankId(bankId =>
     {
-        builder
-            //...
-            .AddApplicationInsightsEventListener();
+        bankId.AddApplicationInsightsEventListener();
     });
 ```
 

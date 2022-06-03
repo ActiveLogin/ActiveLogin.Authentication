@@ -12,8 +12,8 @@ public abstract class BankIdTypedEventListener : IBankIdEventListener
         BankIdAspNetAuthenticateSuccessEvent e => HandleAspNetAuthenticateSuccessEvent(e),
         BankIdAspNetAuthenticateFailureEvent e => HandleAspNetAuthenticateErrorEvent(e),
 
-        BankIdAuthSuccessEvent e => HandleAuthSuccessEvent(e),
-        BankIdAuthErrorEvent e => HandleAuthFailureEvent(e),
+        BankIdInitializeSuccessEvent e => HandleSuccessEvent(e),
+        BankIdInitializeErrorEvent e => HandleFailureEvent(e),
             
         BankIdCancelSuccessEvent e => HandleCancelSuccessEvent(e),
         BankIdCancelErrorEvent e => HandleCancelFailureEvent(e),
@@ -23,6 +23,9 @@ public abstract class BankIdTypedEventListener : IBankIdEventListener
         BankIdCollectFailureEvent e => HandleCollectFailureEvent(e),
         BankIdCollectErrorEvent e => HandleCollectErrorEvent(e),
 
+        BankIdSignFailureEvent e => HandleSignFailureEvent(e),
+        BankIdSignSuccessEvent e => HandleSignSuccessEvent(e),
+
         _ => Task.CompletedTask
     };
 
@@ -31,8 +34,8 @@ public abstract class BankIdTypedEventListener : IBankIdEventListener
     public virtual Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e) => Task.CompletedTask;
     public virtual Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent e) => Task.CompletedTask;
 
-    public virtual Task HandleAuthSuccessEvent(BankIdAuthSuccessEvent e) => Task.CompletedTask;
-    public virtual Task HandleAuthFailureEvent(BankIdAuthErrorEvent e) => Task.CompletedTask;
+    public virtual Task HandleSuccessEvent(BankIdInitializeSuccessEvent e) => Task.CompletedTask;
+    public virtual Task HandleFailureEvent(BankIdInitializeErrorEvent e) => Task.CompletedTask;
 
     public virtual Task HandleCancelSuccessEvent(BankIdCancelSuccessEvent e) => Task.CompletedTask;
     public virtual Task HandleCancelFailureEvent(BankIdCancelErrorEvent e) => Task.CompletedTask;
@@ -41,4 +44,8 @@ public abstract class BankIdTypedEventListener : IBankIdEventListener
     public virtual Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e) => Task.CompletedTask;
     public virtual Task HandleCollectFailureEvent(BankIdCollectFailureEvent e) => Task.CompletedTask;
     public virtual Task HandleCollectErrorEvent(BankIdCollectErrorEvent e) => Task.CompletedTask;
+
+    public virtual Task HandleSignFailureEvent(BankIdSignFailureEvent e) => Task.CompletedTask;
+    public virtual Task HandleSignSuccessEvent(BankIdSignSuccessEvent e) => Task.CompletedTask;
+
 }

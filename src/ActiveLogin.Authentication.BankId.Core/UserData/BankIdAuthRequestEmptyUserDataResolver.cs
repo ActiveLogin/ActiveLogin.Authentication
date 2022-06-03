@@ -1,6 +1,6 @@
 namespace ActiveLogin.Authentication.BankId.Core.UserData;
 
-internal class BankIdAuthRequestEmptyUserDataResolver : IBankIdAuthRequestUserDataResolver
+public class BankIdAuthRequestEmptyUserDataResolver : IBankIdAuthRequestUserDataResolver
 {
     private static readonly BankIdAuthUserData EmptyAuthUserData = new();
 

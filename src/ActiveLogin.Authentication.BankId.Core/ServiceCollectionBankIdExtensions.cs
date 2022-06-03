@@ -4,13 +4,13 @@ using System.Reflection;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
-using ActiveLogin.Authentication.BankId.Core.Persistence;
 using ActiveLogin.Authentication.BankId.Core.Qr;
-using ActiveLogin.Authentication.BankId.Core.StateHandling;
+using ActiveLogin.Authentication.BankId.Core.ResultStore;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 
@@ -23,13 +23,11 @@ public static class ServiceCollectionBankIdExtensions
     /// <param name="bankId">BankID configuration.</param>
     /// <example>
     /// <code>
-    /// .AddBankId(builder =>
+    /// .AddBankId(bankId =>
     /// {
-    ///     builder
+    ///     bankId
     ///         .UseProductionEnvironment()
     ///         .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-    ///         .AddSameDevice()
-    ///         .AddOtherDevice()
     ///         .UseQrCoderQrCodeGenerator();
     /// });
     /// </code>
@@ -47,7 +45,7 @@ public static class ServiceCollectionBankIdExtensions
         var bankIdBuilder = new BankIdBuilder(services);
 
         AddBankIdDefaultServices(bankIdBuilder);
-        UseUserAgent(bankIdBuilder, new ProductInfoHeaderValue(activeLoginName, activeLoginVersion));
+        UseUserAgentFromContext(bankIdBuilder);
 
         bankId(bankIdBuilder);
 
@@ -61,13 +59,13 @@ public static class ServiceCollectionBankIdExtensions
         services.AddTransient<IBankIdFlowSystemClock, BankIdFlowSystemClock>();
         services.AddTransient<IBankIdFlowService, BankIdFlowService>();
 
+        services.AddTransient(x => x.GetRequiredService<IOptions<BankIdActiveLoginContext>>().Value);
         services.AddTransient<IBankIdEventTrigger, BankIdEventTrigger>();
         services.AddTransient<IBankIdUserMessage, BankIdRecommendedUserMessage>();
-        services.AddTransient<IBankIdInvalidStateHandler, BankIdInvalidStateHandlerNoop>();
         services.AddTransient<IBankIdQrCodeGenerator, BankIdMissingQrCodeGenerator>();
         services.AddTransient<IBankIdSupportedDeviceDetectorByUserAgent, BankIdSupportedDeviceDetectorByUserAgent>();
 
-        builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
+        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestEmptyUserDataResolver>();
 
         builder.AddEventListener<BankIdLoggerEventListener>();
         builder.AddEventListener<BankIdResultStoreEventListener>();
@@ -75,10 +73,13 @@ public static class ServiceCollectionBankIdExtensions
         builder.AddResultStore<BankIdResultTraceLoggerStore>();
     }
 
-    private static void UseUserAgent(this IBankIdBuilder builder, ProductInfoHeaderValue productInfoHeaderValue)
+    private static void UseUserAgentFromContext(this IBankIdBuilder builder)
     {
-        builder.ConfigureHttpClient(httpClient =>
+        builder.ConfigureHttpClient((sp, httpClient) =>
         {
+            var context = sp.GetRequiredService<BankIdActiveLoginContext>();
+            var productInfoHeaderValue = new ProductInfoHeaderValue(context.ActiveLoginProductName, context.ActiveLoginProductVersion);
+
             httpClient.DefaultRequestHeaders.UserAgent.Clear();
             httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
         });

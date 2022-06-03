@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution 
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		azure-pipelines.yml = azure-pipelines.yml
+		BREAKINGCHANGES.md = BREAKINGCHANGES.md
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		global.json = global.json
@@ -94,6 +95,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "articles", "articles", "{A66B2FFF-0CB6-4F48-83DA-6C1F7DC98EBF}"
 	ProjectSection(SolutionItems) = preProject
+		docs\articles\bankid-architechture.md = docs\articles\bankid-architechture.md
 		docs\articles\bankid.md = docs\articles\bankid.md
 		docs\articles\grandid.md = docs\articles\grandid.md
 		docs\articles\monitor.md = docs\articles\monitor.md

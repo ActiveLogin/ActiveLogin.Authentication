@@ -1,0 +1,24 @@
+@model ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models.BankIdUiViewModel
+
+<div class="activelogin-bankid-ui--status-wrapper" style="display: block;">
+
+    <img class="activelogin-bankid-ui--qr-code-image" src="" alt="@Model.LocalizedQrCodeImageAltText" style="display: none;" />
+
+    <div class="activelogin-bankid-ui--status-info">
+        <div class="activelogin-bankid-ui--status-spinner">
+            <partial name="_Spinner" />
+        </div>
+
+        <div class="activelogin-bankid-ui--status-message">
+            @Model.BankUiScriptConfiguration.InitialStatusMessage
+        </div>
+    </div>
+
+    <button class="activelogin-bankid-ui--startapp-button" type="button" style="display: none;">
+        @Model.LocalizedStartAppButtonText
+    </button>
+
+    <button class="activelogin-bankid-ui--cancel-button" type="button">
+        @Model.LocalizedCancelButtonText
+    </button>
+</div>

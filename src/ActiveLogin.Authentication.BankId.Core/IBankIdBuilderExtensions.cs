@@ -1,14 +1,15 @@
 using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.Api;
-using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Cryptography;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
-using ActiveLogin.Authentication.BankId.Core.Persistence;
+using ActiveLogin.Authentication.BankId.Core.ResultStore;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
-namespace Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ActiveLogin.Authentication.BankId.Core;
 public static class IBankIdBuilderExtensions
 {
     /// <summary>
@@ -19,7 +20,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
     {
-        builder.ConfigureHttpClientHandler(httpClientHandler =>
+        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
         {
             var clientCertificate = configureClientCertificate();
             httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
@@ -38,7 +39,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
     {
-        builder.ConfigureHttpClientHandler(httpClientHandler =>
+        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
         {
             var rootCaCertificate = configureRootCaCertificate();
             var validator = new X509CertificateChainValidator(rootCaCertificate);
@@ -58,34 +59,6 @@ public static class IBankIdBuilderExtensions
     public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
     {
         builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Set what user data to supply to the auth request.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="authUserData"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, BankIdAuthUserData authUserData)
-    {
-        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Set what user data to supply to the auth request.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="authUserData"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, Action<BankIdAuthUserData> authUserData)
-    {
-        var authUserDataResult = new BankIdAuthUserData();
-        authUserData(authUserDataResult);
-        UseAuthRequestUserData(builder, authUserDataResult);
 
         return builder;
     }
@@ -128,24 +101,12 @@ public static class IBankIdBuilderExtensions
         return builder;
     }
 
-    /// <summary>
-    /// Use a custom user data resolver.
-    /// </summary>
-    /// <typeparam name="TBankIdAuthRequestUserDataResolverImplementation"></typeparam>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
-    {
-        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
-
-        return builder;
-    }
 
     internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl, string environment)
     {
         SetActiveLoginContext(builder.Services, environment, BankIdUrls.BankIdApiVersion);
 
-        builder.ConfigureHttpClient(httpClient =>
+        builder.ConfigureHttpClient((sp, httpClient) =>
         {
             httpClient.BaseAddress = apiBaseUrl;
         });

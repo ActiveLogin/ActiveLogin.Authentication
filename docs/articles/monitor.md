@@ -1,6 +1,6 @@
 # Active Login Monitor
 
-When using the `BankIdApplicationInsightsEventListener` (`builder.AddApplicationInsightsEventListener()`) structured events from the Active Login flow will be published to Application Insights (Azure Monitor). Below are samples on how to query these using [KQL](https://docs.microsoft.com/en-us/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference).
+When using the `BankIdApplicationInsightsEventListener` (`bankId.AddApplicationInsightsEventListener()`) structured events from the Active Login flow will be published to Application Insights (Azure Monitor). Below are samples on how to query these using [KQL](https://docs.microsoft.com/en-us/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference).
 
 ## Dashboard
 In our provisioning samples we include a way to deploy an Azure Dashboard displaying some of the most important metrics and queries from below. See [ActiveLogin-Monitor.json](https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/samples/AzureProvisioningSample/ActiveLogin-Monitor.json).
@@ -22,8 +22,8 @@ customEvents
     Event_TypeId = tostring(customDimensions.AL_Event_TypeId),
     Event_Severity = tostring(customDimensions.AL_Event_Severity),
     Error_ErrorReason = tostring(customDimensions.AL_Error_ErrorReason),
-    BankId_LoginOptions_LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType),
-    BankId_LoginOptions_UseQrCode = tostring(customDimensions.AL_BankId_LoginOptions_UseQrCode),
+    BankId_BankId_Options_LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType),
+    BankId_Options_UseQrCode = tostring(customDimensions.AL_BankId_Options_UseQrCode),
     BankId_ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),
     BankId_ErrorDetails = tostring(customDimensions.AL_BankId_ErrorDetails),
     BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),
@@ -67,7 +67,7 @@ customEvents
 ```kql
 customEvents
 | where name == "ActiveLogin_BankId_AspNetChallengeSuccess"
-| project LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType)
+| project LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType)
 | summarize count() by LaunchType
 | render piechart
 ```
@@ -89,7 +89,7 @@ customEvents
 | where name == "ActiveLogin_BankId_AspNetChallengeSuccess"
 | project
     DeviceType = tostring(customDimensions.AL_User_Device_Type),
-    LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType)
+    LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType)
 | project DeviceTypeAndLaunchType = strcat(DeviceType, ' - ', LaunchType)
 | summarize count() by DeviceTypeAndLaunchType
 | render piechart
@@ -187,8 +187,8 @@ customEvents
     Event_ShortName = substring(name, 19),
     Event_TypeId = tostring(customDimensions.AL_Event_TypeId),
     Event_Severity = tostring(customDimensions.AL_Event_Severity),
-    BankId_LoginOptions_LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType),
-    BankId_LoginOptions_UseQrCode = tostring(customDimensions.AL_BankId_LoginOptions_UseQrCode),
+    BankId_Options_LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType),
+    BankId_Options_UseQrCode = tostring(customDimensions.AL_BankId_Options_UseQrCode),
     BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),
     BankId_CollectHintCode = tostring(customDimensions.AL_BankId_CollectHintCode),
     BankId_User_CertNotBefore = tostring(customDimensions.AL_BankId_User_CertNotBefore),
@@ -258,8 +258,8 @@ customEvents
     Event_TypeId = tostring(customDimensions.AL_Event_TypeId),
     Event_Severity = tostring(customDimensions.AL_Event_Severity),
     Error_ErrorReason = tostring(customDimensions.AL_Error_ErrorReason),
-    BankId_LoginOptions_LaunchType = tostring(customDimensions.AL_BankId_LoginOptions_LaunchType),
-    BankId_LoginOptions_UseQrCode = tostring(customDimensions.AL_BankId_LoginOptions_UseQrCode),
+    BankId_Options_LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType),
+    BankId_Options_UseQrCode = tostring(customDimensions.AL_BankId_Options_UseQrCode),
     BankId_ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),
     BankId_ErrorDetails = tostring(customDimensions.AL_BankId_ErrorDetails),
     BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),
