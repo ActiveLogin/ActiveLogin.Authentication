@@ -104,7 +104,7 @@ The authentication modules for BankID is registered in your `Program.cs`. Depend
 
 For the UI to work, it expects there to be a `_Layout.cshtml` available so that it can render within at `@RenderBody()`.
 
-The BankID packages have UI that uses classes from [Bootstrap 4](https://getbootstrap.com/), please make sure these styles are available in the `_Layout.cshtml`.
+The BankID packages have UI is not dependent on any UI library, but the samples uses [Bootstrap](https://getbootstrap.com/), please make sure these styles are available in the `_Layout.cshtml`.
 
 Our Samples might give you an inspiration on how to do all these.
 

@@ -6,11 +6,15 @@ public class BankIdUiViewModel
     {
         BankUiScriptConfiguration = bankUiScriptConfiguration;
         BankIdUiScriptInitState = bankIdUiScriptInitState;
+
         BankIdUiSignData = signData;
     }
 
-    public string? LocalizedPageHeader { get; set; }
-    public string? LocalizedPageTitle { get; set;  }
+    public string? LocalizedPageHeader { get; init; }
+    public string? LocalizedPageTitle { get; init; }
+    public string? LocalizedStartAppButtonText { get; init; }
+    public string? LocalizedCancelButtonText { get; init; }
+    public string? LocalizedQrCodeImageAltText { get; init; }
 
     public BankIdUiScriptConfiguration BankUiScriptConfiguration { get; }
 

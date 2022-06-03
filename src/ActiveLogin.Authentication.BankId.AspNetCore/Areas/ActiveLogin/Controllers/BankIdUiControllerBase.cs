@@ -119,6 +119,10 @@ public abstract class BankIdUiControllerBase : Controller
             ProtectedUiOptions = protectedUiOptions
         };
 
+        var localizedStartAppButtonText = _localizer["BankIdUserMessage_ShortName_RFA18"];
+        var localizedCancelButtonText = _localizer["Cancel_Button"];
+        var localizedQrCodeImageAltText = _localizer["Qr_Code_Image"];
+
         if(uiState is BankIdUiSignState signState)
         {
             var uiSignData = new BankIdUiSignData
@@ -130,6 +134,10 @@ public abstract class BankIdUiControllerBase : Controller
             {
                 LocalizedPageHeader = _localizer["Sign_Header"],
                 LocalizedPageTitle = _localizer["Sign_Title"],
+
+                LocalizedStartAppButtonText = localizedStartAppButtonText,
+                LocalizedCancelButtonText = localizedCancelButtonText,
+                LocalizedQrCodeImageAltText = localizedQrCodeImageAltText
             };
         }
 
@@ -137,6 +145,10 @@ public abstract class BankIdUiControllerBase : Controller
         {
             LocalizedPageHeader = _localizer["Auth_Header"],
             LocalizedPageTitle = _localizer["Auth_Title"],
+
+            LocalizedStartAppButtonText = localizedStartAppButtonText,
+            LocalizedCancelButtonText = localizedCancelButtonText,
+            LocalizedQrCodeImageAltText = localizedQrCodeImageAltText
         };
     }
 

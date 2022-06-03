@@ -9,6 +9,73 @@
     transform: translate(-50%, -50%);
 }
 
+.activelogin-bankid-ui--header {
+    margin-bottom: 1rem;
+}
+
+.activelogin-bankid-ui--qr-code-image {
+    padding: .25rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.activelogin-bankid-ui--startapp-button,
+.activelogin-bankid-ui--cancel-button {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.activelogin-bankid-ui--startapp-button {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    margin-top: 0.5rem;
+    display: block;
+    width: 100%;
+}
+
+.activelogin-bankid-ui--cancel-button {
+    font-weight: 400;
+    color: #007bff;
+    margin-top: 0.5rem;
+    display: block;
+    width: 100%;
+}
+
+.activelogin-bankid-ui--status-info {
+    position: relative;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    padding: 1rem;
+}
+
+.activelogin-bankid-ui--status-info--progress {
+    background-color: #fff;
+    color: #000;
+}
+
+.activelogin-bankid-ui--status-info--error {
+    background-color: #dc3545;
+    color: #fff;
+}
+
 .activelogin-bankid-ui--status-icon {
     animation: status-icon-spinner 1s infinite steps(10);
 }
@@ -17,23 +84,23 @@
     margin-bottom: 0.75rem;
 }
 
-.activelogin-bankid-ui--status-spinner .activelogin-bankid-ui--status-icon {
-    width: 40px;
-    height: 40px;
-    position: relative;
-    top: 4px;
-}
+    .activelogin-bankid-ui--status-spinner .activelogin-bankid-ui--status-icon {
+        width: 40px;
+        height: 40px;
+        position: relative;
+        top: 4px;
+    }
 
-.activelogin-bankid-ui--status-spinner rect {
-    fill: #212529;
-}
+    .activelogin-bankid-ui--status-spinner rect {
+        fill: #212529;
+    }
 
 @keyframes status-icon-spinner {
-     0% {
-         transform: rotate(0deg);
-     }
+    0% {
+        transform: rotate(0);
+    }
 
-     100% {
-         transform: rotate(360deg);
-     }
- }
+    100% {
+        transform: rotate(360deg);
+    }
+}

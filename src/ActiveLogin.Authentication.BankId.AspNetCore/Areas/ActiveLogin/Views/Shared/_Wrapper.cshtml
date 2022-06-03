@@ -1,14 +1,11 @@
-@using ActiveLogin.Authentication.BankId.AspNetCore
-@using Microsoft.Extensions.Localization
 @model ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models.BankIdUiViewModel
-@inject IStringLocalizer<ActiveLoginResources> Localizer
 
 <partial name="_Style" />
 
 <div class="activelogin-bankid-ui--wrapper">
     @if (!string.IsNullOrEmpty(Model.LocalizedPageHeader))
     {
-        <div class="h3 mb-3 font-weight-normal">@Model.LocalizedPageHeader</div>
+        <h3 class="activelogin-bankid-ui--header">@Model.LocalizedPageHeader</h3>
     }
 
     <partial name="_Status" model="Model" />

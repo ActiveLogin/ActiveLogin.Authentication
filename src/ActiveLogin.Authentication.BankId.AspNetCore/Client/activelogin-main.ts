@@ -27,7 +27,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     const requiredFeatures = [window.fetch, window.sessionStorage];
     const isMissingSomeFeature = requiredFeatures.some(x => !x);
     if (isMissingSomeFeature) {
-        showStatus(configuration.unsupportedBrowserErrorMessage, "danger", false);
+        showErrorStatus(configuration.unsupportedBrowserErrorMessage);
         return;
     }
 
@@ -45,19 +45,19 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     // Elements
 
     const uiWrapperElement = <HTMLElement>document.querySelector(".activelogin-bankid-ui--wrapper");
-    const formElement = <HTMLFormElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--form");
 
     const statusWrapperElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--status-wrapper");
     const statusInfoElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--status-info");
     const statusSpinnerElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--status-spinner");
     const statusMessageElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--status-message");
-    const cancelButtonElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--cancel-button");
+
     const qrCodeElement = <HTMLImageElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--qr-code-image");
+
+    const startBankIdAppButtonElement = <HTMLButtonElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--startapp-button");
+    const cancelButtonElement = <HTMLElement>uiWrapperElement.querySelector(".activelogin-bankid-ui--cancel-button");
 
     const uiResultForm = <HTMLFormElement>document.querySelector("form[name=activelogin-bankid-ui--result-form]");
     const uiResultInput = <HTMLInputElement>uiResultForm.querySelector("input[name=uiResult]");
-
-    const startBankIdAppButtonElement = <HTMLButtonElement>uiWrapperElement.querySelector(".activelogin-bankid-ui-startapp-button");
 
     // Events
 
@@ -73,7 +73,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     // Boot
 
     function showOrderRefStatus(orderRef : string) {
-        showStatus(configuration.initialStatusMessage, "white", true);
+        showProgressStatus(configuration.initialStatusMessage);
         checkStatus(
             initState.antiXsrfRequestToken,
             initState.returnUrl,
@@ -145,15 +145,14 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
                 enableCancelButton(data.orderRef);
 
-                hide(formElement);
-                showStatus(configuration.initialStatusMessage, "white", true);
+                showProgressStatus(configuration.initialStatusMessage);
 
                 if (data.checkStatus) {
                     checkStatus(requestVerificationToken, returnUrl, protectedUiOptions, data.orderRef);
                 }
             })
             .catch(error => {
-                showStatus(error.message, "danger", false);
+                showErrorStatus(error.message);
                 hide(qrCodeElement);
                 hide(startBankIdAppButtonElement);
                 enableCancelButton();
@@ -183,7 +182,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     uiResultForm.submit();
                 } else if (!loginIsCancelledByUser) {
                     autoStartAttempts = 0;
-                    showStatus(data.statusMessage, "white", true);
+                    showProgressStatus(data.statusMessage);
                     setTimeout(() => {
                         checkStatus(requestVerificationToken, returnUrl, protectedUiOptions, orderRef);
                     }, configuration.statusRefreshIntervalMs);
@@ -191,7 +190,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             })
             .catch(error => {
                 if (!loginIsCancelledByUser) {
-                    showStatus(error.message, "danger", false);
+                    showErrorStatus(error.message);
                     hide(startBankIdAppButtonElement);
                 }
                 hide(qrCodeElement);
@@ -229,7 +228,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             })
             .catch(error => {
                 if (!loginIsCancelledByUser) {
-                    showStatus(error.message, "danger", false);
+                    showErrorStatus(error.message);
                     hide(startBankIdAppButtonElement);
                 }
                 hide(qrCodeElement);
@@ -293,13 +292,16 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             });
     }
 
-    function showStatus(status: string, type: string, spinner : boolean) {
-        let textClass = "text-white";
-        if (type === "white") {
-            textClass = "";
-        }
+    function showProgressStatus(status: string) {
+        showStatus(status, "progress", true);
+    }
 
-        statusInfoElement.className = `card activelogin-bankid-ui--status-info bg-${type} ${textClass}`;
+    function showErrorStatus(status: string) {
+        showStatus(status, "error", false);
+    }
+
+    function showStatus(status: string, statusType: string, spinner : boolean) {
+        statusInfoElement.className = `activelogin-bankid-ui--status-info activelogin-bankid-ui--status-info--${statusType}`;
         statusMessageElement.innerText = status;
         setVisibility(statusSpinnerElement, spinner, "inline-block");
         show(statusWrapperElement);
