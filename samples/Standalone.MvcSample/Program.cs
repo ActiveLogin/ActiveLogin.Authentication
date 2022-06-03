@@ -80,16 +80,16 @@ services
         }
     });
 
-// Add authentication
+// Add Active Login - Auth
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie()
-    .AddBankId(bankId =>
+    .AddBankIdAuth(bankId =>
     {
         bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
         bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
     });
 
-// Add sign
+// Add Active Login - Sign
 services.AddBankIdSign(bankId =>
 {
     bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });

@@ -1,6 +1,8 @@
-# ActiveLogin.Authentication.BankId
+# ActiveLogin.Authentication.BankId - Common
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET.
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication and signing in .NET.
+
+The most common scenbario is to use Active Login for BankID auth/login, so most of the concepts will be described from that perspective. We've designed sign to follow the same patterns and amke sure we can share things like certificate handling etc.
 
 ## Table of contents
 
@@ -19,6 +21,7 @@ ActiveLogin.Authentication enables an application to support Swedish BankID (sve
   + [Test environment](#test-environment)
   + [Production environment](#production-environment)
   + [Full sample for production](#full-sample-for-production)
+* [Sign](#sign)
 * [Basic configuration samples](#basic-configuration-samples)
   + [Using client certificate from Azure KeyVault](#using-client-certificate-from-azure-keyvault)
   + [Using client certificate from custom source](#using-client-certificate-from-custom-source)
@@ -260,6 +263,97 @@ services
             .UseQrCoderQrCodeGenerator()
             .UseUaParserDeviceDetection();
     });
+```
+
+---
+
+# Sign
+
+Sign works very similar to auth, but canät utilize the "built in" support for schemes etc. So there are some differences.
+
+At first, you need to register both the common BankID logic (environment, cert etc) as well as the sign specific configration (devices).
+
+```csharp
+// Add Active Login - BankID
+services
+    .AddBankId(bankId =>
+    {
+        bankId.AddDebugEventListener();
+        bankId.UseQrCoderQrCodeGenerator();
+        bankId.UseUaParserDeviceDetection();
+        bankId.UseSimulatedEnvironment();
+    });
+
+// Add Active Login - Sign
+services
+    .AddBankIdSign(bankId =>
+    {
+        bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
+        bankId.AddOtherDevice(BankIdSignDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
+    });
+```
+
+Once that is done you will be able to use these services in your application, for example in your controller:
+
+* `IBankIdSignConfigurationProvider` : List the registered configuraitons (SameDevice / Other Device)
+* `IBankIdSignService` : Initiate and resulve the result of sign flow
+
+```csharp
+[AllowAnonymous]
+public class SignController : Controller
+{
+    private readonly IBankIdSignConfigurationProvider _bankIdSignConfigurationProvider;
+    private readonly IBankIdSignService _bankIdSignService;
+
+    public SignController(IBankIdSignConfigurationProvider bankIdSignConfigurationProvider, IBankIdSignService bankIdSignService)
+    {
+        _bankIdSignConfigurationProvider = bankIdSignConfigurationProvider;
+        _bankIdSignService = bankIdSignService;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var configurations = await _bankIdSignConfigurationProvider.GetAllConfigurationsAsync();
+        var providers = configurations
+            .Where(x => x.DisplayName != null)
+            .Select(x => new ExternalProvider(x.DisplayName ?? x.Key, x.Key));
+        var viewModel = new BankIdViewModel(providers, "~/");
+
+        return View(viewModel);
+    }
+
+    public IActionResult Sign(string provider)
+    {
+        var props = new BankIdSignProperties("The info displayed for the user") // The user visible data
+        {
+            UserNonVisibleData = new byte[1024], // Whataver data you want to sign
+            UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1, // The format of the user visible data, use empty or the markwodn constant
+            Items =
+            {
+                {"returnUrl", "~/"},
+                {"scheme", provider}
+            }
+        };
+        var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
+        return this.BankIdInitiateSign(props, returnPath, provider);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Callback(string provider)
+    {
+        var result = await _bankIdSignService.GetSignResultAsync(provider);
+        if (result?.Succeeded != true)
+        {
+            throw new Exception("Sign error");
+        }
+
+        // Parse these to store the signed values
+        var ocspResponse = result.BankIdCompletionData?.OcspResponse;
+        var signature = result.BankIdCompletionData?.Signature;
+
+        return Redirect(result.Properties?.Items["returnUrl"] ?? "~/");
+    }
+}
 ```
 
 ---

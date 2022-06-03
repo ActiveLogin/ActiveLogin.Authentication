@@ -63,14 +63,14 @@ services.AddIdentityServer(options =>
 // Add Active Login - BankID
 
 // # Sample: Using BankID with in memory dev environment
-//services.AddBankId(bankId =>
+//services.AddBankIdAuth(bankId =>
 //    {
 //        bankId
 //            .UseSimulatedEnvironment();
 //    });
 
 // # Sample: Using BankID with production environment
-//services.AddBankId(bankId =>
+//services.AddBankIdAuth(bankId =>
 //        {
 //            bankId
 //                .UseProductionEnvironment()
@@ -123,7 +123,7 @@ services
 // Add authentication
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddBankId(bankId =>
+    .AddBankIdAuth(bankId =>
     {
         bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
         bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });

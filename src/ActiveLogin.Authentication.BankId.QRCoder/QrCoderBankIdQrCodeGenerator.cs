@@ -12,7 +12,8 @@ namespace ActiveLogin.Authentication.BankId.QrCoder;
 /// </remarks>
 public class QrCoderBankIdQrCodeGenerator : IBankIdQrCodeGenerator
 {
-    private const int PixelsPerModule = 20;
+    private const int QrPixelsPerModule = 20;
+    private const QRCodeGenerator.ECCLevel QrEccLevel = QRCodeGenerator.ECCLevel.Q;
 
     /// <summary>
     /// Generates a QR code for BankID using the auto start token.
@@ -27,12 +28,12 @@ public class QrCoderBankIdQrCodeGenerator : IBankIdQrCodeGenerator
     {
 
         using var qrGenerator = new QRCodeGenerator();
-        var qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
+        var qrCodeData = qrGenerator.CreateQrCode(content, QrEccLevel);
 
         using var qrCode = new PngByteQRCode(qrCodeData);
-        var pngQrCode = qrCode.GetGraphic(PixelsPerModule);
-        var base64QrCpde = Convert.ToBase64String(pngQrCode);
+        var pngQrCode = qrCode.GetGraphic(QrPixelsPerModule);
+        var base64QrCode = Convert.ToBase64String(pngQrCode);
 
-        return base64QrCpde;
+        return base64QrCode;
     }
 }

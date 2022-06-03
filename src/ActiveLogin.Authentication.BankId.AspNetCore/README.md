@@ -15,16 +15,14 @@ Sample usage of the ASP.NET authentication module.
 services
     .AddBankId(bankId =>
     {
-        bankId
-            .AddSameDevice();
+        bankId.UseSimulatedEnvironment();
     });
 
 services
     .AddAuthentication()
-    .AddBankId(bankId =>
+    .AddBankIdAuth(bankId =>
     {
-        bankId
-            .AddSameDevice();
+        bankId.AddSameDevice();
     });
 ```
 
@@ -48,7 +46,7 @@ services
 
 services
     .AddAuthentication()
-    .AddBankId(bankId =>
+    .AddBankIdAuth(bankId =>
     {
         bankId
             .AddSameDevice()

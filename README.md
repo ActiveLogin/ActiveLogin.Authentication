@@ -87,13 +87,26 @@ Full documentation with step by step instructions, samples, customization and de
 Active Login is designed to make it easy to get started with BankID in .NET. The most basic setup looks like this:
 
 ```csharp
+// Common
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            .UseSimulatedEnvironment()
-            .AddSameDevice();
+        bankId.UseSimulatedEnvironment();
+    });
+
+// Auth
+services
+    .AddAuthentication()
+    .AddBankIdAuth(bankId =>
+    {
+        bankId.AddSameDevice();
+    });
+
+// Sign
+services
+    .AddBankIdSign(bankId =>
+    {
+        bankId.AddSameDevice();
     });
 ```
 

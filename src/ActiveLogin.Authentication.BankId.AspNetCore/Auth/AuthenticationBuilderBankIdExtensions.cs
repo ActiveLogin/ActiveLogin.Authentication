@@ -17,7 +17,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
     /// <param name="bankId">BankID configuration.</param>
     /// <example>
     /// <code>
-    /// .AddBankId(bankId =>
+    /// .AddBankIdAuth(bankId =>
     /// {
     ///     bankId
     ///         .AddSameDevice()
@@ -26,7 +26,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
     /// </code>
     /// </example>
     /// <returns></returns>
-    public static AuthenticationBuilder AddBankId(this AuthenticationBuilder authenticationBuilder, Action<IBankIdAuthBuilder> bankId)
+    public static AuthenticationBuilder AddBankIdAuth(this AuthenticationBuilder authenticationBuilder, Action<IBankIdAuthBuilder> bankId)
     {
         var services = authenticationBuilder.Services;
 
