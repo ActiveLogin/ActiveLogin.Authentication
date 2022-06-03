@@ -64,34 +64,6 @@ public static class IBankIdBuilderExtensions
     }
 
     /// <summary>
-    /// Set what user data to supply to the auth request.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="authUserData"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, BankIdAuthUserData authUserData)
-    {
-        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Set what user data to supply to the auth request.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="authUserData"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseAuthRequestUserData(this IBankIdBuilder builder, Action<BankIdAuthUserData> authUserData)
-    {
-        var authUserDataResult = new BankIdAuthUserData();
-        authUserData(authUserDataResult);
-        UseAuthRequestUserData(builder, authUserDataResult);
-
-        return builder;
-    }
-
-    /// <summary>
     /// Add a custom event listener.
     /// </summary>
     /// <typeparam name="TBankIdEventListenerImplementation"></typeparam>
@@ -129,18 +101,6 @@ public static class IBankIdBuilderExtensions
         return builder;
     }
 
-    /// <summary>
-    /// Use a custom user data resolver.
-    /// </summary>
-    /// <typeparam name="TBankIdAuthRequestUserDataResolverImplementation"></typeparam>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
-    {
-        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
-
-        return builder;
-    }
 
     internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl, string environment)
     {

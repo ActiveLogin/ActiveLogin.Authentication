@@ -117,12 +117,18 @@ BankID requires you to sign an agreement and receive a certificate used to ident
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
         bankId
             .AddDebugEventListener();
-            .UseSimulatedEnvironment()
+            .UseSimulatedEnvironment();
+    });
+
+services
+    .AddAuthentication()
+    .AddBankIdAuth(bankId =>
+    {
+        bankId
             .AddSameDevice();
     });
 ```
@@ -136,7 +142,6 @@ Samples on how to use them in production are:
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
         bankId
@@ -152,6 +157,14 @@ services
             .AddOtherDevice()
             .UseQrCoderQrCodeGenerator()
             .UseUaParserDeviceDetection();
+    });
+
+services
+    .AddAuthentication()
+    .AddBankIdAuth(bankId =>
+    {
+        bankId
+            .UseProductionEnvironment();
     });
 ```
 
@@ -186,14 +199,10 @@ For trying out quickly (without the need of certificates) you can use an in-memo
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            .UseSimulatedEnvironment()
-            .AddSameDevice()
-            ...
-    })
+        bankId.UseSimulatedEnvironment();
+    });
 ```
 
 
@@ -203,13 +212,9 @@ The faked name and personal identity number can also be customized like this.
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            .UseSimulatedEnvironment("Alice", "Smith", "199908072391")
-            .AddSameDevice()
-            ...
+        bankId.UseSimulatedEnvironment("Alice", "Smith", "199908072391")
     });
 ```
 
@@ -219,13 +224,10 @@ services
 This will use the real REST API for BankID, connecting to the Test environment. It requires you to have the certificates described under _Preparation_ above.
 
 ```csharp
-services.AddAuthentication()
-        .AddBankId(bankId =>
+services
+    .AddBankId(bankId =>
     {
-        bankId
-            .UseTestEnvironment()
-            .AddSameDevice()
-            ...
+        bankId.UseTestEnvironment();
     });
 ```
 
@@ -235,13 +237,10 @@ services.AddAuthentication()
 This will use the real REST API for BankID, connecting to the Production environment. It requires you to have the certificates described under _Preparation_ above.
 
 ```csharp
-services.AddAuthentication()
-        .AddBankId(bankId =>
+services
+    .AddBankId(bankId =>
     {
-        bankId
-            .UseProductionEnvironment()
-            .AddSameDevice()
-            ...
+        bankId.UseProductionEnvironment();
     });
 ```
 
@@ -251,17 +250,22 @@ Finally, a full sample on how to use BankID in production with client certificat
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
+        .UseProductionEnvironment()
+        .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
+        .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
+        .UseQrCoderQrCodeGenerator()
+        .UseUaParserDeviceDetection();
+    });
+
+services
+    .AddAuthentication()
+    .AddBankIdAuth(bankId =>
+    {
         bankId
-            .UseProductionEnvironment()
-            .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-            .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             .AddSameDevice(options => { })
-            .AddOtherDevice(options => { })
-            .UseQrCoderQrCodeGenerator()
-            .UseUaParserDeviceDetection();
+            .AddOtherDevice(options => { });
     });
 ```
 
@@ -297,6 +301,8 @@ Once that is done you will be able to use these services in your application, fo
 
 * `IBankIdSignConfigurationProvider` : List the registered configuraitons (SameDevice / Other Device)
 * `IBankIdSignService` : Initiate and resulve the result of sign flow
+
+Here is a minimal sample. See `Standalone.MvcSample` for more details.
 
 ```csharp
 [AllowAnonymous]
@@ -364,8 +370,7 @@ public class SignController : Controller
 ### Using client certificate from Azure KeyVault
 
 ```csharp
-services.AddAuthentication()
-        .AddBankId(bankId =>
+services.AddBankId(bankId =>
     {
         bankId
             .UseProductionEnvironment()
@@ -378,8 +383,7 @@ services.AddAuthentication()
 ### Using client certificate from custom source
 
 ```csharp
-services.AddAuthentication()
-        .AddBankId(bankId =>
+services.AddBankId(bankId =>
     {
         bankId
             .UseProductionEnvironment()
@@ -394,8 +398,7 @@ services.AddAuthentication()
 BankID uses a self signed root ca certificate that you need to trust. This is not possible in all scenarios, like in [Azure App Service](https://azure.github.io/AppService/2021/06/22/Root-CA-on-App-Service-Guide.html). To solve this there is an extension available to trust a custom root certificate using code. It can be used like this.
 
 ```csharp
-services.AddAuthentication()
-        .AddBankId(bankId =>
+services.AddBankId(bankId =>
     {
         bankId
             .UseProductionEnvironment()
@@ -413,11 +416,9 @@ services.AddAuthentication()
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(bankId =>
+    .AddBankIdAuth(bankId =>
     {
         bankId
-            .UseProductionEnvironment()
-            ...
             .AddSameDevice()
             .AddOtherDevice();
     });
@@ -431,11 +432,9 @@ By default, `Add*Device` will use predefined schemas and display names, but they
 ```csharp
 services
     .AddAuthentication()
-    .AddBankId(bankId =>
+    .AddBankIdAuth(bankId =>
     {
         bankId
-            .UseProductionEnvironment()
-            ...
             .AddSameDevice("custom-auth-scheme", "Custom display name", options => { ... })
             .AddOtherDevice(BankIdDefaults.OtherDeviceAuthenticationScheme, "Custom display name", options => { ... });
     });
@@ -558,7 +557,13 @@ You are also able to create your own transformer by inheriting it from the inter
 Once implemented, register your implementation using:
 
 ```csharp
-bankId.AddClaimsTransformer<BankIdYourCustomClaimsTransformer>();
+services
+    .AddAuthentication()
+    .AddBankIdAuth(bankId =>
+    {
+        bankId.AddSameDevice();
+        bankId.AddClaimsTransformer<BankIdYourCustomClaimsTransformer>();
+    });
 ```
 
 The claims beeing issued by default have the names/keys specified in the public class `BankIdClaimTypes` so you can refer to them by these constants.
@@ -752,7 +757,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         // ...
-        services.AddAuthentication()
+        services
             .AddBankId(bankId =>
             {
                 bankId
@@ -779,15 +784,22 @@ Active Login comes with predefined views that you can use, but maybe you'd rathe
 The UI is bundled into the package as a Razor Class Library, a technique that allows to [override the parts you want to customize](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-2.1&tabs=visual-studio#override-views-partial-views-and-pages). The Views and Controllers that can be customized can be found in the [GitHub repo](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore/Areas/ActiveLogin).
 
 To override the default UI your web project, create the following folder:
-```Areas/ActiveLogin/Views/BankIdUiAuth```
+`Areas/ActiveLogin/Views/Shared`
 
 In this folder, you can then create any of the partials and MVC will then discover your partials and use any of them before ours. It's still possible to call our partials if you still want to use them.
 
-* `_Login.cshtml`
-* `_LoginForm.cshtml`
-* `_LoginScript.cshtml`
-* `_LoginStatus.cshtml`
-* `_LoginStyle.cshtml`
+- `Init.cshtml`
+- `_Wrapper.cshtml`
+- `_Form.cshtml`
+- `_Status.cshtml`
+- `_Script.cshtml`
+- `_Style.cshtml`
+- `_Spinner.cshtml`
+
+If you want, you can override the UI for Auth and Sign with different templates. Do so by placing the files in one of these folders:
+
+* `Areas/ActiveLogin/Views/BankIdUiAuth`
+* `Areas/ActiveLogin/Views/BankIdUiSign`
 
 See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample/Areas/ActiveLogin/Views/BankUiAuth/_Wrapper.cshtml).
 
@@ -809,6 +821,9 @@ At the moment, we trigger the events listed below. They all have unique event pr
 - Auth
     - `BankIdAuthSuccessEvent`
     - `BankIdAuthErrorEvent`
+- Sign
+    - `BankIdSignSuccessEvent`
+    - `BankIdSignErrorEvent`
 - Collect
     - `BankIdCollectPendingEvent`
     - `BankIdCollectCompletedEvent`
@@ -833,12 +848,9 @@ public class BankIdSampleEventListener : IBankIdEventListener
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            ...
-            .AddEventListener<BankIdSampleEventListener>();
+        bankId.AddEventListener<BankIdSampleEventListener>();
     });
 ```
 
@@ -851,12 +863,9 @@ Call `bankId.AddDebugEventListener()` to enable it. Good to have for local devel
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            ...
-            .AddDebugEventListener();
+        bankId.AddDebugEventListener();
     });
 ```
 
@@ -870,12 +879,9 @@ ___Note:___ This event listener is available is available through a separate pac
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            ...
-            .AddApplicationInsightsEventListener();
+        bankId.AddApplicationInsightsEventListener();
     });
 ```
 
@@ -883,12 +889,9 @@ By default it will use whatever InstrumentationKey is registered with the applic
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            ...
-            .AddApplicationInsightsEventListener("CUSTOM_KEY");
+        bankId.AddApplicationInsightsEventListener("CUSTOM_KEY");
     });
 ```
 
@@ -897,12 +900,9 @@ You can also customize what kind of data should be logged together with the Appl
 
 ```csharp
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            ...
-            .AddApplicationInsightsEventListener(options =>
+        bankId.AddApplicationInsightsEventListener(options =>
             {
                 options.LogUserPersonalIdentityNumber = false;
                 options.LogUserPersonalIdentityNumberHints = true;
@@ -966,12 +966,9 @@ public class BankIdResultSampleLoggerStore : IBankIdResultStore
 }
 
 services
-    .AddAuthentication()
     .AddBankId(bankId =>
     {
-        bankId
-            //...
-            .AddResultStore<BankIdResultSampleLoggerStore>();
+        bankId.AddResultStore<BankIdResultSampleLoggerStore>();
     });
 ```
 
@@ -1047,6 +1044,9 @@ public class BankIdAuthRequestDynamicUserDataResolver : IBankIdAuthRequestUserDa
 ```csharp
 services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestDynamicUserDataResolver>();
 ```
+
+___Note:___ For sign, user data is mandatory, and therefore part of the initiate flow.
+
 
 ### Custom QR code generation
 
@@ -1162,7 +1162,7 @@ We have choosen not to normalize the capitalization of the names as it´s hard o
 
 The `*.AspNetCore` package will issue a cookie to make the auth flow work
 
-The cookie is called: `__ActiveLogin.BankIdState`
+The cookie is called: `__ActiveLogin.BankIdUiState`
 
 The cookie is there to store state during the auth process, as the user will/might be redirected during the flow. The cookie is session based only and will be deleted once the auth process is finished and/or when the user closes the browser.
 

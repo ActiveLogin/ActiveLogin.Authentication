@@ -2,6 +2,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.Core.UserData;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,5 +75,7 @@ public static class AuthenticationBuilderBankIdAuthExtensions
         services.AddTransient<IBankIdUiResultProtector, BankIdUiResultProtector>();
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
+
+        builder.UseAuthRequestUserDataResolver<BankIdAuthRequestEmptyUserDataResolver>();
     }
 }

@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+using ActiveLogin.Authentication.BankId.Core.UserData;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,48 @@ public static class IBankIdAuthBuilderExtensions
     public static IBankIdAuthBuilder AddClaimsTransformer<TBankIdClaimsTransformerImplementation>(this IBankIdAuthBuilder builder) where TBankIdClaimsTransformerImplementation : class, IBankIdClaimsTransformer
     {
         builder.Services.AddTransient<IBankIdClaimsTransformer, TBankIdClaimsTransformerImplementation>();
+
+        return builder;
+    }
+
+
+    /// <summary>
+    /// Set what user data to supply to the auth request.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="authUserData"></param>
+    /// <returns></returns>
+    public static IBankIdAuthBuilder UseAuthRequestUserData(this IBankIdAuthBuilder builder, BankIdAuthUserData authUserData)
+    {
+        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver>(x => new BankIdAuthRequestStaticUserDataResolver(authUserData));
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Set what user data to supply to the auth request.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="authUserData"></param>
+    /// <returns></returns>
+    public static IBankIdAuthBuilder UseAuthRequestUserData(this IBankIdAuthBuilder builder, Action<BankIdAuthUserData> authUserData)
+    {
+        var authUserDataResult = new BankIdAuthUserData();
+        authUserData(authUserDataResult);
+        UseAuthRequestUserData(builder, authUserDataResult);
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Use a custom user data resolver.
+    /// </summary>
+    /// <typeparam name="TBankIdAuthRequestUserDataResolverImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdAuthBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdAuthBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
+    {
+        builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
 
         return builder;
     }
