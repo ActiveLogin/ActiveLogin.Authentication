@@ -35,6 +35,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     var qrLastRefreshTimestamp : Date = null;
     var qrIsRefreshing = false;
+    var qrRefreshTimeoutId: number = null;
 
     // OrderRef
 
@@ -189,6 +190,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 }
             })
             .catch(error => {
+                clearTimeout(qrRefreshTimeoutId);
                 if (!loginIsCancelledByUser) {
                     showErrorStatus(error.message);
                     hide(startBankIdAppButtonElement);
@@ -205,7 +207,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         const currentTime = new Date();
         const timeSinceLastRefresh = currentTime.getTime() - qrLastRefreshTimestamp.getTime();
         if (timeSinceLastRefresh < configuration.qrCodeRefreshIntervalMs) {
-            setTimeout(() => {
+            qrRefreshTimeoutId = setTimeout(() => {
                     refreshQrCode(requestVerificationToken, qrStartState);
             }, configuration.qrCodeRefreshIntervalMs);
             return;
@@ -221,7 +223,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 if (!!data.qrCodeAsBase64) {
                     qrLastRefreshTimestamp = new Date();
                     setQrCode(data.qrCodeAsBase64);
-                    setTimeout(() => {
+                    qrRefreshTimeoutId = setTimeout(() => {
                             refreshQrCode(requestVerificationToken, qrStartState);
                     }, configuration.qrCodeRefreshIntervalMs);
                 }
