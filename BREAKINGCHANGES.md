@@ -38,7 +38,7 @@ services
 
 services.AddAuthentication()
     .AddCookie()
-    .AddBankId(bankId =>
+    .AddBankIdAuth(bankId =>
     {
         bankId.AddSameDevice();
         bankId.AddOtherDevice();
