@@ -85,7 +85,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         }
 
         var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
-        return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartSecret, response.QrStartSecret);
+        return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
     public async Task<SignResponse> SignAsync(SignRequest request)
