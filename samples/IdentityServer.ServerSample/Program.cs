@@ -101,6 +101,10 @@ services
         {
             bankId.UseSimulatedEnvironment();
         }
+        else if (configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
+        {
+            bankId.UseTestEnvironment();
+        }
         else
         {
             bankId.UseProductionEnvironment();

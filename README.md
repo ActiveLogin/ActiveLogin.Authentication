@@ -184,7 +184,8 @@ We also support [devcontainer.json](https://code.visualstudio.com/docs/remote/co
 
 ### How do I run the samples locally?
 
-The samples are configured to run in simulated mode (no BankID certificate required) by default. The _Standalone.MvcSample_ is using the the most basic sample and is a good start.
+The samples are configured to run for the test environment (no BankID certificate required as it's bundled with the library) by default.
+The _Standalone.MvcSample_ is using the the most basic sample and is a good start.
 
 To run the sample: Navigate to `/Samples/Standalone.MvcSample/` and run:
 
@@ -245,6 +246,8 @@ The three primary ways to interact and stay updated with Active Login are:
 ### License
 
 [Active Login is licensed](LICENSE.md) under the very permissive [MIT license](https://opensource.org/licenses/MIT) for you to be able to use it in commercial or non-commercial applications without many restrictions.
+
+The BankID certificates from the BankID documentation are released as part of Active Login with the permission from BankID (Finansiell ID-Teknik BID AB).
 
 *All trademarks are the property of their respective owners.*
 

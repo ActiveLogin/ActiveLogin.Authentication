@@ -25,7 +25,6 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
 * [Basic configuration samples](#basic-configuration-samples)
   + [Using client certificate from Azure KeyVault](#using-client-certificate-from-azure-keyvault)
   + [Using client certificate from custom source](#using-client-certificate-from-custom-source)
-  + [Using root CA certificate](#using-root-ca-certificate)
   + [Adding schemas](#adding-schemas)
   + [Customizing schemas](#customizing-schemas)
   + [Custom schema](#custom-schema)
@@ -63,21 +62,12 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
 
 BankID requires you to use a client certificate and trust a specific root CA-certificate.
 
-1. Read through the [BankID Relying Party Guidelines](https://www.bankid.com/utvecklare/guider). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
-1. Download the SSL certificate for test ([FPTestcert2.pfx](https://www.bankid.com/utvecklare/guider)).
-1. Contact a [reseller](https://www.bankid.com/foretag/anslut-foeretag) to get your very own client certificate for production. This will probably take a few business days to get sorted. Please ask for "Direktupphandlad BankID" as they otherwise might refer you to a broker/partner. If you haven't decided on using BankID, but want to try it out anyway there are test- and simulation possibilities. See Environments below.
-1. The root CA-certificates specified in _BankID Relying Party Guidelines_ (#7 for Production and #8 for Test environment) needs to be trusted at the computer where the app will run. Save those certificates as `BankIdRootCertificate-Prod.crt` and `BankIdRootCertificate-Test.crt`.
-    1. If running in Azure App Service, where trusting custom certificates [is not supported](https://azure.github.io/AppService/2021/06/22/Root-CA-on-App-Service-Guide.html), there are extensions available in our packages to handle that scenario. See documentation below. Instead of trusting the certificate, place it in your web project and make sure `CopyToOutputDirectory` is set to `Always`.
-    1. Add the following configuration values. The `FilePath` should point to the certificate you just added, for example:
+Read through the [BankID Relying Party Guidelines](https://www.bankid.com/utvecklare/guider). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
 
-```json
-{
-    "ActiveLogin:BankId:CaCertificate:FilePath": "Certificates\\BankIdRootCertificate-[Test or Prod].crt"
-}
-```
+_For test:_ We have (with the permission from BankID) embedded the SSL certificate ([FPTestcert3_20200618.pfx](https://www.bankid.com/utvecklare/guider)) in the library.
+_For production:_ Contact a [reseller](https://www.bankid.com/foretag/anslut-foeretag) to get your very own client certificate for production. This will probably take a few business days to get sorted. Please ask for "Direktupphandlad BankID" as they otherwise might refer you to a broker/partner. If you haven't decided on using BankID, but want to try it out anyway there are test- and simulation possibilities. See Environments below.
 
-___Note:___ When using MacOS or Linux, path strings use ```'/'``` for subfolders: ```"Certificates/BankIdRootCertificate-[Test or Prod].crt"```
-
+The root CA-certificates specified in _BankID Relying Party Guidelines_ (#7 for Production and #8 for Test environment) needs to be trusted at the computer where the app will run. We have (with the permission from BankID) embedded these in the library for easy verification.
 
 ### 2. Read the documentation
 
@@ -152,7 +142,6 @@ services
             })
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-            .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
             .AddSameDevice()
             .AddOtherDevice()
             .UseQrCoderQrCodeGenerator()
@@ -221,7 +210,7 @@ services
 
 ### Test environment
 
-This will use the real REST API for BankID, connecting to the Test environment. It requires you to have the certificates described under _Preparation_ above.
+This will use the real REST API for BankID, connecting to the Test environment. It will automatically register both the root and client certificate, even though this behaviour can be disabled.
 
 ```csharp
 services
@@ -231,16 +220,36 @@ services
     });
 ```
 
+Disable adding the certificates:
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseTestEnvironment(useBankIdRootCertificate: false, useBankIdClientCertificate: false);
+    });
+```
+
 
 ### Production environment
 
-This will use the real REST API for BankID, connecting to the Production environment. It requires you to have the certificates described under _Preparation_ above.
+This will use the real REST API for BankID, connecting to the Production environment. It requires you to have the client certificates described under _Preparation_ above.
 
 ```csharp
 services
     .AddBankId(bankId =>
     {
         bankId.UseProductionEnvironment();
+    });
+```
+
+Disable adding the root certificates:
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseProductionEnvironment(useBankIdRootCertificate: false);
     });
 ```
 
@@ -254,7 +263,6 @@ services
     {
         .UseProductionEnvironment()
         .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-        .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
         .UseQrCoderQrCodeGenerator()
         .UseUaParserDeviceDetection();
     });
@@ -264,8 +272,8 @@ services
     .AddBankIdAuth(bankId =>
     {
         bankId
-            .AddSameDevice(options => { })
-            .AddOtherDevice(options => { });
+            .AddSameDevice()
+            .AddOtherDevice();
     });
 ```
 
@@ -391,22 +399,6 @@ services.AddBankId(bankId =>
             ...
     });
 ```
-
-
-### Using root CA certificate
-
-BankID uses a self signed root ca certificate that you need to trust. This is not possible in all scenarios, like in [Azure App Service](https://azure.github.io/AppService/2021/06/22/Root-CA-on-App-Service-Guide.html). To solve this there is an extension available to trust a custom root certificate using code. It can be used like this.
-
-```csharp
-services.AddBankId(bankId =>
-    {
-        bankId
-            .UseProductionEnvironment()
-            .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-            ...
-    });
-```
-
 
 ### Adding schemas
 
