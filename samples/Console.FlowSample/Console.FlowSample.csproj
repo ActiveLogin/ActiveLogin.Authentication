@@ -7,16 +7,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
 
     <Product>Active Login</Product>
-    <Description>ASP.NET sample for Active Login.</Description>
+    <Description>Console sample for Active Login.</Description>
     <Authors>Active Solution</Authors>
     <Company>Active Solution</Company>
     <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 
     <OutputType>Exe</OutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.44.0" />
+    <PackageReference Include="Spectre.Console.ImageSharp" Version="0.44.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ActiveLogin.Authentication.BankId.Core\ActiveLogin.Authentication.BankId.Core.csproj" />
