@@ -26,7 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Certificates\" />
         <Folder Include="Views\Account\" />
     </ItemGroup>
 
@@ -40,12 +39,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="Certificates\BankIdRootCertificate-Prod.crt">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="Certificates\BankIdRootCertificate-Test.crt">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="tempkey.jwk">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

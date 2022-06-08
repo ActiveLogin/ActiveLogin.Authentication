@@ -39,10 +39,10 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
     <ItemGroup>
-      <None Remove="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
-      <None Remove="BankIdResources\BankIdApiRootCertificate-Test.crt" />
-      <None Remove="BankIdResources\FPTestcert3_20200618.p12" />
-      <None Remove="Qr\qr-default.png" />
+        <None Remove="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
+        <None Remove="BankIdResources\BankIdApiRootCertificate-Test.crt" />
+        <None Remove="BankIdResources\FPTestcert3_20200618.p12" />
+        <None Remove="Qr\qr-default.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -72,9 +72,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Qr\qr-default.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </EmbeddedResource>
+        <EmbeddedResource Include="Qr\qr-default.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -84,8 +84,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
-      <Content Include="BankIdResources\BankIdApiRootCertificate-Test.crt" />
-      <Content Include="BankIdResources\FPTestcert3_20200618.p12" />
+        <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
+        <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Test.crt" />
+        <EmbeddedResource Include="BankIdResources\FPTestcert3_20200618.p12" />
     </ItemGroup>
 </Project>
