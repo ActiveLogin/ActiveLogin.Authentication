@@ -76,7 +76,6 @@ services.AddIdentityServer(options =>
 //            bankId
 //                .UseProductionEnvironment()
 //                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
-//                .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
 //        });
 
 // # Sample: BankID with production environment, custom display name and multiple environment support
@@ -102,10 +101,13 @@ services
         {
             bankId.UseSimulatedEnvironment();
         }
+        else if (configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
+        {
+            bankId.UseTestEnvironment();
+        }
         else
         {
             bankId.UseProductionEnvironment();
-            bankId.UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")));
             bankId.UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
     });

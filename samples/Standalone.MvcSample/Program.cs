@@ -68,14 +68,11 @@ services
         }
         else if (configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
         {
-            bankId.UseTestEnvironment()
-                .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
-                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+            bankId.UseTestEnvironment();
         }
         else
         {
             bankId.UseProductionEnvironment()
-                .UseRootCaCertificate(Path.Combine(environment.ContentRootPath, configuration.GetValue<string>("ActiveLogin:BankId:CaCertificate:FilePath")))
                 .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
         }
     });

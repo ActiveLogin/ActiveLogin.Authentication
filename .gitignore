@@ -289,10 +289,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-
-# Certificates
-*.crt
-
 # Signing credentials
 /samples/IdentityServer.ServerSample/keys/**
 

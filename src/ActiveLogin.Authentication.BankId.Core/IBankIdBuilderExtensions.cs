@@ -113,7 +113,7 @@ public static class IBankIdBuilderExtensions
 
         builder.Services.AddTransient<IBankIdLauncher, BankIdLauncher>();
 
-        if(builder is BankIdBuilder bankIdBuilder)
+        if (builder is BankIdBuilder bankIdBuilder)
         {
             bankIdBuilder.AfterConfiguration();
         }
@@ -125,20 +125,45 @@ public static class IBankIdBuilderExtensions
     /// Use the BankID test environment (https://appapi2.test.bankid.com/rp/vX/)
     /// </summary>
     /// <param name="builder"></param>
+    /// <param name="useBankIdRootCertificate">Use the BankID root certificate (for test) from the BankID documentation.</param>
+    /// <param name="useBankIdClientCertificate">Use the BankID client certificate (for test) from the BankID documentation.</param>
     /// <returns></returns>
-    public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder)
+    public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true, bool useBankIdClientCertificate = true)
     {
-        return builder.UseEnvironment(BankIdUrls.TestApiBaseUrl, BankIdEnvironments.Test);
+        builder.UseEnvironment(BankIdUrls.TestApiBaseUrl, BankIdEnvironments.Test);
+
+        if (useBankIdRootCertificate)
+        {
+            var cert = BankIdCertificates.BankIdApiRootCertificateTest;
+            builder.UseRootCaCertificate(() => cert);
+        }
+
+        if (useBankIdClientCertificate)
+        {
+            var cert = BankIdCertificates.BankIdApiClientCertificateTest;
+            builder.UseClientCertificate(() => cert);
+        }
+
+        return builder;
     }
 
     /// <summary>
     /// Use the BankID production environment (https://appapi2.bankid.com/rp/vX/)
     /// </summary>
     /// <param name="builder"></param>
+    /// <param name="useBankIdRootCertificate">Use the BankID root certificate (for production) from the BankID documentation.</param>
     /// <returns></returns>
-    public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder)
+    public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true)
     {
-        return builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl, BankIdEnvironments.Production);
+        builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl, BankIdEnvironments.Production);
+
+        if (useBankIdRootCertificate)
+        {
+            var cert = BankIdCertificates.BankIdApiRootCertificateProd;
+            builder.UseRootCaCertificate(() => cert);
+        }
+
+        return builder;
     }
 
     /// <summary>
