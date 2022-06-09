@@ -210,7 +210,9 @@ services
 
 ### Test environment
 
-This will use the real REST API for BankID, connecting to the Test environment. It will automatically register both the root and client certificate, even though this behaviour can be disabled.
+This will use the real REST API for BankID, connecting to the Test environment.
+
+It will automatically register both the root and client certificate, even though this behaviour can be disabled. A scenario might be that you want to use the same flow for both test and prod and therefore make sure that fetching the certificate from KeyVault works by trying that out for test.
 
 ```csharp
 services
