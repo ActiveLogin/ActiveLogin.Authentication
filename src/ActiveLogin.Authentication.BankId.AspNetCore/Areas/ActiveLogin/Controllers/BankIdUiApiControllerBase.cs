@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Controllers;
 
 [NonController]
-public abstract class BankIdUiApiControllerBase : Controller
+public abstract class BankIdUiApiControllerBase : ControllerBase
 {
     protected readonly IBankIdFlowService BankIdFlowService;
     protected readonly IBankIdUiOrderRefProtector OrderRefProtector;

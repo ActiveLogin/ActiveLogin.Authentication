@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
 
-internal abstract class BankIdUiControllerFeatureProviderBase<TController> : IApplicationFeatureProvider<ControllerFeature> where TController : Controller
+internal abstract class BankIdUiControllerFeatureProviderBase<TController> : IApplicationFeatureProvider<ControllerFeature> where TController : ControllerBase
 {
     public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
     {
