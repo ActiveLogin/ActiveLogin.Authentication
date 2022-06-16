@@ -1101,37 +1101,6 @@ ___Note:___ The class `BankIdUserVisibleDataFormats` contains constants for vali
 ```
 
 
-### Running on Linux
-
-#### Certificate handling on Linux
-
-`X509Certificate2` can not be handled in the same way when running in Linux as on Windows. The certificate is Base64 encoded and must be decoded before creating the `X509Certificate2` instance. Below is an example for the BankId root certificate:
-
-Copy the content between Begin certificate and End certificate, and paste it into a resource string in a Resource.resx file.
-
-With the certificate in the reosurce, this code can be used to create the `X509Certificate2` instance. Note the second line that decodes the Base64 string.
-
-```csharp
-var rootCertEncoded = CertificateResources.BankIdRootTestCertificate;
-var rootCertBytes = Convert.FromBase64String(rootCertEncoded);
-
-return new X509Certificate2(rootCertBytes, string.Empty, X509KeyStorageFlags.MachineKeySet);
-```
-
-### QRCode generation on Linux
-
-The `ActiveLogin.Authentication.BankId.QRCoder` package has a dependency on package [libgdiplus](https://github.com/mono/libgdiplus) on Linux.
-
-If you are using Active Login with BankID QR-Codes on either WSL (Windows Subsystem for Linux) or in a Linux Docker Container your OS must have this package installed.
-
-Add [libgdiplus](https://github.com/mono/libgdiplus) to your Dockerfile using apt-get.
-```dockerfile
-FROM mcr.microsoft.com/dotnet/core/aspnet:6.0 AS base
-RUN apt-get update && apt-get -y install libgdiplus libc6-dev
-...
-```
-
-
 ### Localization
 
 The messages are already localized to English and Swedish using the official recommended texts. To select what language that is used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization#localization-middleware).
@@ -1141,8 +1110,6 @@ The user messages that will be displayed are provided through the implementation
 ```csharp
 services.AddTransient<IBankIdUserMessageLocalizer, CustomBankIdUserMessageLocalizer>();
 ```
-
-The defualt implementation (`BankIdUserMessageStringLocalizer`) uses `Microsoft.Extensions.Localization.IStringLocalizer` and therefore chooses the texts in the `*.resx` files.
 
 
 ### Names of the person might be capitalized

@@ -4,7 +4,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserMessage;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserContext;
@@ -28,7 +27,6 @@ internal static class BankIdCommonConfiguration
 
         services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
-        services.AddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageStringLocalizer>();
         services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
     }
 

@@ -1,4 +1,4 @@
-﻿using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api.UserMessage;
 
@@ -7,7 +7,7 @@ public interface IBankIdUserMessage
     MessageShortName GetMessageShortNameForCollectResponse(
         CollectStatus collectStatus,
         CollectHintCode hintCode,
-        bool authPersonalIdentityNumberProvided,
+        bool tokenStartRequired,
         bool accessedFromMobileDevice,
         bool usingQrCode);
 

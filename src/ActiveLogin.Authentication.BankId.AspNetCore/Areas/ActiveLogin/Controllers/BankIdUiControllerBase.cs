@@ -119,7 +119,7 @@ public abstract class BankIdUiControllerBase : Controller
             ProtectedUiOptions = protectedUiOptions
         };
 
-        var localizedStartAppButtonText = _localizer["BankIdUserMessage_ShortName_RFA18"];
+        var localizedStartAppButtonText = _localizer["InitialStatus_UserMessage"];
         var localizedCancelButtonText = _localizer["Cancel_Button"];
         var localizedQrCodeImageAltText = _localizer["Qr_Code_Image"];
 

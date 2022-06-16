@@ -234,13 +234,15 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
         var usingQrCode = !unprotectedFlowOptions.SameDevice;
+        var tokenStartRequired = true; // Only flow we support
 
         var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
             collectResponse.GetCollectStatus(),
             collectResponse.GetCollectHintCode(),
-            authPersonalIdentityNumberProvided: false,
+            tokenStartRequired: tokenStartRequired,
             accessedFromMobileDevice,
-            usingQrCode);
+            usingQrCode
+        );
         var statusMessage = _bankIdUserMessageLocalizer.GetLocalizedString(messageShortName);
 
         return statusMessage;
