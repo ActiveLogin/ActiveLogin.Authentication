@@ -15,9 +15,12 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <OutputType>Exe</OutputType>
+
+    <UserSecretsId>bd92241c-9d62-4544-985e-a1a5ca341833</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="Spectre.Console" Version="0.44.0" />
     <PackageReference Include="Spectre.Console.ImageSharp" Version="0.44.0" />
   </ItemGroup>
