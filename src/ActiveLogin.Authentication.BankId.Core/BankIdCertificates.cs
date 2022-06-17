@@ -3,7 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace ActiveLogin.Authentication.BankId.Core;
 
 /// <summary>
-/// These certificates are availible in the BankID documentation and we have
+/// These certificates are available in the BankID documentation and we have
 /// made them available as part of Active Login with the permission from BankID.
 /// </summary>
 internal static class BankIdCertificates
