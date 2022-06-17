@@ -17,26 +17,26 @@ public class CompletionData
     /// Information related to the user.
     /// </summary>
     [JsonPropertyName("user")]
-    public User User { get; private set; }
+    public User User { get; }
 
     /// <summary>
     /// Information related to the device.
     /// </summary>
     [JsonPropertyName("device")]
-    public Device Device { get; private set; }
+    public Device Device { get; }
 
     /// <summary>
     /// Information related to the users certificate (BankID).
     /// </summary>
     [JsonPropertyName("cert")]
-    public Cert Cert { get; private set; }
+    public Cert Cert { get; }
 
     /// <summary>
     /// The signature. Base64-encoded.
     /// The content of the signature is described in BankID Signature Profile specification.
     /// </summary>
     [JsonPropertyName("signature")]
-    public string Signature { get; private set; }
+    public string Signature { get; }
 
     /// <summary>
     /// The OCSP response. String. Base64-encoded.
@@ -44,5 +44,5 @@ public class CompletionData
     /// The OSCP response has an extension for Nonce.
     /// </summary>
     [JsonPropertyName("ocspResponse")]
-    public string OcspResponse { get; private set; }
+    public string OcspResponse { get; }
 }

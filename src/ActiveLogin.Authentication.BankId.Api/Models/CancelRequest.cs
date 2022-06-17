@@ -20,5 +20,5 @@ public class CancelRequest
     /// The OrderRef from the response from auth or sign.
     /// </summary>
     [JsonPropertyName("orderRef")]
-    public string OrderRef { get; private set; }
+    public string OrderRef { get; }
 }

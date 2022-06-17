@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.BankId.Api.Models;
+namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 public static class CollectResponseExtensions
 {
@@ -7,7 +7,7 @@ public static class CollectResponseExtensions
     /// </summary>
     public static CollectStatus GetCollectStatus(this CollectResponse collectResponse)
     {
-        return Enum.TryParse<CollectStatus>(collectResponse.Status, true, out var parsedStatus) ? parsedStatus : CollectStatus.Unknown;
+        return BankIdApiConverters.ParseCollectStatus(collectResponse.Status);
     }
 
     /// <summary>
@@ -17,6 +17,6 @@ public static class CollectResponseExtensions
     /// <remarks>Only present for pending and failed orders.</remarks>
     public static CollectHintCode GetCollectHintCode(this CollectResponse collectResponse)
     {
-        return Enum.TryParse<CollectHintCode>(collectResponse.HintCode, true, out var parsedStatus) ? parsedStatus : CollectHintCode.Unknown;
+        return BankIdApiConverters.ParseCollectHintCode(collectResponse.HintCode);
     }
 }

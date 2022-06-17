@@ -16,5 +16,5 @@ public class Device
     /// The IP address of the user agent as the BankID server discovers it.
     /// </summary>
     [JsonPropertyName("ipAddress")]
-    public string IpAddress { get; private set; }
+    public string IpAddress { get; }
 }

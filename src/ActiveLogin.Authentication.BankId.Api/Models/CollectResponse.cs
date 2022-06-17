@@ -25,13 +25,13 @@ public class CollectResponse
     /// The orderRef in question.
     /// </summary>
     [JsonPropertyName("orderRef")]
-    public string OrderRef { get; private set; }
+    public string OrderRef { get; }
 
     /// <summary>
     /// Collect status.
     /// </summary>
     [JsonPropertyName("status")]
-    public string Status { get; private set; }
+    public string Status { get; }
 
     /// <summary>
     /// Collect hint code.
@@ -39,7 +39,7 @@ public class CollectResponse
     /// </summary>
     /// <remarks>Only present for pending and failed orders.</remarks>
     [JsonPropertyName("hintCode")]
-    public string HintCode { get; private set; }
+    public string HintCode { get; }
 
     /// <summary>
     /// The completionData includes the signature, user information and the OCSP response.
@@ -48,5 +48,5 @@ public class CollectResponse
     /// </summary>
     /// <remarks>Only present for complete orders.</remarks>
     [JsonPropertyName("completionData")]
-    public CompletionData? CompletionData { get; private set; }
+    public CompletionData? CompletionData { get; }
 }

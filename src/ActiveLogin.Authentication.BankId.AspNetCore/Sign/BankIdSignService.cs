@@ -126,13 +126,8 @@ public class BankIdSignService : IBankIdSignService
 
         return BankIdSignResult.Success(
             state.BankIdSignProperties,
-            new CompletionData(
-                ParseUser(uiResult),
-                ParseDevice(uiResult),
-                ParseCert(uiResult),
-                uiResult.Signature,
-                uiResult.OCSPResponse)
-            );
+            uiResult.GetCompletionData()
+        );
     }
 
     private BankIdUiSignState? GetStateCookie(HttpContext httpContext, BankIdSignOptions options)
@@ -182,9 +177,4 @@ public class BankIdSignService : IBankIdSignService
         var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
         httpContext.Response.Cookies.Delete(options.StateCookie.Name, cookieOptions);
     }
-
-    private static User ParseUser(BankIdUiResult uiResult) => new(uiResult.PersonalIdentityNumber, uiResult.Name, uiResult.GivenName, uiResult.Surname);
-    private static Device ParseDevice(BankIdUiResult uiResult) => new(uiResult.DetectedIpAddress);
-    private static Cert ParseCert(BankIdUiResult uiResult) => new Cert(uiResult.CertNotBefore, uiResult.CertNotAfter);
-
 }

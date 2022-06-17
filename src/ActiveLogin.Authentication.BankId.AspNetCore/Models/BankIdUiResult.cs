@@ -1,3 +1,5 @@
+using ActiveLogin.Authentication.BankId.Api.Models;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiResult
@@ -15,7 +17,7 @@ public class BankIdUiResult
         Surname = surname;
 
         Signature = signature;
-        OCSPResponse = ocspResponse;
+        OcspResponse = ocspResponse;
 
         CertNotBefore = certNotBefore;
         CertNotAfter = certNotAfter;
@@ -39,10 +41,25 @@ public class BankIdUiResult
     public string Surname { get; }
 
     public string Signature { get; }
-    public string OCSPResponse { get; }
+    public string OcspResponse { get; }
 
     public string CertNotBefore { get; }
     public string CertNotAfter { get; }
 
     public string DetectedIpAddress { get; }
+
+    internal CompletionData GetCompletionData()
+    {
+        return new CompletionData(
+            ParseUser(this),
+            ParseDevice(this),
+            ParseCert(this),
+            Signature,
+            OcspResponse
+        );
+    }
+
+    private static User ParseUser(BankIdUiResult uiResult) => new(uiResult.PersonalIdentityNumber, uiResult.Name, uiResult.GivenName, uiResult.Surname);
+    private static Device ParseDevice(BankIdUiResult uiResult) => new(uiResult.DetectedIpAddress);
+    private static Cert ParseCert(BankIdUiResult uiResult) => new(uiResult.CertNotBefore, uiResult.CertNotAfter);
 }

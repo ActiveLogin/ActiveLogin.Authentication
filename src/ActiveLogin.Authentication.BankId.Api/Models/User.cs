@@ -19,23 +19,23 @@ public class User
     /// The personal number.
     /// </summary>
     [JsonPropertyName("personalNumber")]
-    public string PersonalIdentityNumber { get; private set; }
+    public string PersonalIdentityNumber { get; }
 
     /// <summary>
     /// The given name and surname of the user.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; private set; }
+    public string Name { get; }
 
     /// <summary>
     /// The given name of the user.
     /// </summary>
     [JsonPropertyName("givenName")]
-    public string GivenName { get; private set; }
+    public string GivenName { get; }
 
     /// <summary>
     /// The surname of the user.
     /// </summary>
     [JsonPropertyName("surname")]
-    public string Surname { get; private set; }
+    public string Surname { get; }
 }

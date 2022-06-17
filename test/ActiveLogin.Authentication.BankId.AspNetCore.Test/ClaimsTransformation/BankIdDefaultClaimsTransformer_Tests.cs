@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 
@@ -15,12 +16,14 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
 
 public class BankIdDefaultClaimsTransformer_Tests
 {
+    private readonly CompletionData EmptyCompletionData = new(new User("", "", "", ""), new Device(""), new Cert("", ""), "", "");
+
     [Fact]
     public async Task Should_Add_PIN_As_Sub_Claim()
     {
         // Arrange
         var bankIdOptions = new BankIdAuthOptions();
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
 
         // Act
         var claims = await TransformClaims(context);
@@ -34,7 +37,7 @@ public class BankIdDefaultClaimsTransformer_Tests
     {
         // Arrange
         var bankIdOptions = new BankIdAuthOptions();
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "NAME", "GIVEN_NAME", "FAMILY_NAME");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "NAME", "GIVEN_NAME", "FAMILY_NAME", EmptyCompletionData);
 
         // Act
         var claims = await TransformClaims(context);
@@ -50,7 +53,7 @@ public class BankIdDefaultClaimsTransformer_Tests
     {
         // Arrange
         var bankIdOptions = new BankIdAuthOptions();
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
 
         // Act
         var claims = await TransformClaims(context);
@@ -66,7 +69,7 @@ public class BankIdDefaultClaimsTransformer_Tests
         var bankIdOptions = new BankIdAuthOptions();
         bankIdOptions.TokenExpiresIn = TimeSpan.FromHours(2);
 
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
         var systemClockMock = new Mock<ISystemClock>();
         var dateTime = new DateTime(2022, 03, 11, 05, 30, 30, DateTimeKind.Utc);
         systemClockMock.Setup(x => x.UtcNow).Returns(dateTime);
@@ -90,7 +93,7 @@ public class BankIdDefaultClaimsTransformer_Tests
             AuthenticationMethodName = "AUTH_METHOD"
         };
 
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
 
         // Act
         var claims = await TransformClaims(context);
@@ -109,7 +112,7 @@ public class BankIdDefaultClaimsTransformer_Tests
             AuthenticationMethodName = "AUTH_METHOD"
         };
 
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
 
         // Act
         var claims = await TransformClaims(context);
@@ -128,7 +131,7 @@ public class BankIdDefaultClaimsTransformer_Tests
             IdentityProviderName = "IDENTITY_PROVIDER"
         };
 
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
 
         // Act
         var claims = await TransformClaims(context);
@@ -147,7 +150,7 @@ public class BankIdDefaultClaimsTransformer_Tests
             IdentityProviderName = "IDENTITY_PROVIDER"
         };
 
-        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "");
+        var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
 
         // Act
         var claims = await TransformClaims(context);

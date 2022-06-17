@@ -23,5 +23,5 @@ public class CollectRequest
     /// The OrderRef returned from auth or sign.
     /// </summary>
     [JsonPropertyName("orderRef")]
-    public string OrderRef { get; private set; }
+    public string OrderRef { get; }
 }

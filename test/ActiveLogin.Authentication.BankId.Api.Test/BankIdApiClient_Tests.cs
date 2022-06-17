@@ -521,9 +521,9 @@ public class BankIdApiClient_Tests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("671630400000", result.CompletionData.Cert.NotBefore);
-        Assert.Equal(new DateTime(1991, 4, 14, 12, 00, 00), result.CompletionData.Cert.GetNotBeforeDateTime());
+        Assert.Equal(new DateTimeOffset(1991, 4, 14, 12, 00, 00, TimeSpan.Zero), result.CompletionData.Cert.GetNotBeforeDateTime());
         Assert.Equal("671659200000", result.CompletionData.Cert.NotAfter);
-        Assert.Equal(new DateTime(1991, 4, 14, 20, 00, 00), result.CompletionData.Cert.GetNotAfterDateTime());
+        Assert.Equal(new DateTimeOffset(1991, 4, 14, 20, 00, 00, TimeSpan.Zero), result.CompletionData.Cert.GetNotAfterDateTime());
     }
 
     [Fact]

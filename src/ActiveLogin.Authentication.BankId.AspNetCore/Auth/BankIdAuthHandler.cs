@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
@@ -127,11 +128,16 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     {
         var context = new BankIdClaimsTransformationContext(
             Options,
+
             uiAuthResult.BankIdOrderRef,
+
             uiAuthResult.PersonalIdentityNumber,
+
             uiAuthResult.Name,
             uiAuthResult.GivenName,
-            uiAuthResult.Surname
+            uiAuthResult.Surname,
+
+            uiAuthResult.GetCompletionData()
         );
 
         foreach (var transformer in _bankIdClaimsTransformers)

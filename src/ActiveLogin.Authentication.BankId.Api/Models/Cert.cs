@@ -17,11 +17,11 @@ public class Cert
     /// Start of validity of the users BankID. Represented as Unix Timestamp in Milliseconds.
     /// </summary>
     [JsonPropertyName("notBefore")]
-    public string NotBefore { get; private set; }
+    public string NotBefore { get; }
 
     /// <summary>
     /// End of validity of the Users BankID. Represented as Unix Timestamp in Milliseconds.
     /// </summary>
     [JsonPropertyName("notAfter")]
-    public string NotAfter { get; private set; }
+    public string NotAfter { get; }
 }

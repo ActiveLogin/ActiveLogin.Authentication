@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 internal class Error
 {
-    public static Error Empty = new Error(string.Empty, string.Empty);
+    public static Error Empty = new(string.Empty, string.Empty);
 
     public Error(string errorCode, string details)
     {
@@ -13,8 +13,8 @@ internal class Error
     }
 
     [JsonPropertyName("errorCode")]
-    public string ErrorCode { get; private set; }
+    public string ErrorCode { get; }
 
     [JsonPropertyName("details")]
-    public string Details { get; private set; }
+    public string Details { get; }
 }

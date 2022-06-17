@@ -35,7 +35,7 @@ public class Requirement
     /// The oid in certificate policies in the user certificate. List of String.
     /// </summary>
     [JsonPropertyName("certificatePolicies"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public List<string>? CertificatePolicies { get; private set; }
+    public List<string>? CertificatePolicies { get; }
 
     /// <summary>
     /// If set to true, the client must have been started using the AutoStartToken.
@@ -44,7 +44,7 @@ public class Requirement
     /// If set to false, the client does not need to be started using the autoStartToken.
     /// </summary>
     [JsonPropertyName("tokenStartRequired"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public bool? TokenStartRequired { get; private set; }
+    public bool? TokenStartRequired { get; }
 
     /// <summary>
     /// Users of iOS and Android devices may use fingerprint for authentication and signing if the device supports it and the user configured the device to use it.
@@ -54,5 +54,5 @@ public class Requirement
     /// If set to false, the users are not allowed to use fingerprint.
     /// </summary>
     [JsonPropertyName("allowFingerprint"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public bool? AllowFingerprint { get; private set; }
+    public bool? AllowFingerprint { get; }
 }

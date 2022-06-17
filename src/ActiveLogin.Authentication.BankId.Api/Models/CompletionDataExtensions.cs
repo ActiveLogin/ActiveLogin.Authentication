@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 
 namespace ActiveLogin.Authentication.BankId.Api.Models;
 
@@ -9,6 +9,6 @@ public static class CompletionDataExtensions
     /// </summary>
     public static string GetSignatureXml(this CompletionData completionData)
     {
-        return Encoding.UTF8.GetString(Convert.FromBase64String(completionData.Signature));
+        return BankIdApiConverters.GetXml(completionData.Signature);
     }
 }
