@@ -108,6 +108,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console.FlowSample", "samples\Console.FlowSample\Console.FlowSample.csproj", "{7BEE7534-32B1-4C8B-B416-B1AF8C7B4471}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".devcontainer", ".devcontainer", "{D5518125-531A-432D-9AB4-51D22306A5E0}"
+	ProjectSection(SolutionItems) = preProject
+		.devcontainer\devcontainer.json = .devcontainer\devcontainer.json
+		.devcontainer\Dockerfile = .devcontainer\Dockerfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
