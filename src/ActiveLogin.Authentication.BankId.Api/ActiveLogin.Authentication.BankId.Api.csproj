@@ -6,6 +6,9 @@
 
         <Description>API client that enables an application to call Swedish BankID's (svenskt BankIDs) REST API in .NET.</Description>
         <PackageTags>bankid;swedish;sweden;apiclient;netstandard</PackageTags>
+
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>StrongNameKey.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <ItemGroup>
