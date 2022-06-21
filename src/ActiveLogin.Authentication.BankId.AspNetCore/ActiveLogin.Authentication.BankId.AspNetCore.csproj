@@ -4,6 +4,8 @@
 
         <Description>ASP.NET authentication module that enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow.</Description>
         <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
+
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     </PropertyGroup>
 
     <ItemGroup>
