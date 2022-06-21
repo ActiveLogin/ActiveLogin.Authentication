@@ -1,4 +1,4 @@
-# ActiveLogin.Authentication.BankId - Common
+# ActiveLogin.Authentication.BankId
 
 ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication and signing in .NET.
 
