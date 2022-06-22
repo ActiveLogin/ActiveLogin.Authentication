@@ -103,7 +103,7 @@ These views have been renamed:
 - `_LoginStyle.cshtml` is now  `_Style.cshtml`
 - `_spinner.cshtml` is now  `_Spinner.cshtml`
 
-___Note:___ As the area and controller have been renamed these files should now be placed in `/Areas/ActiveLogin/BankIdUiAuth/` or `/Areas/ActiveLogin/Shared/`.
+___Note:___ As the area and controller have been renamed these files should now be placed in `/Areas/ActiveLogin/Views/BankIdUiAuth/` or `/Areas/ActiveLogin/Views/Shared/`.
 
 ___Note:___ Both the html, css and javascript have breaking changes. See history for respecitve file for exact changes.
 
