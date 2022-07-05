@@ -110,7 +110,7 @@ services
     .AddBankId(bankId =>
     {
         bankId
-            .AddDebugEventListener();
+            .AddDebugEventListener()
             .UseSimulatedEnvironment();
     });
 
@@ -732,11 +732,8 @@ internal static class BankIdBuilderExtensions
 {
     public static IBankIdBuilder UseClientCertificateResolver(this IBankIdBuilder builder, Func<ServiceProvider, X509CertificateCollection, string, X509Certificate> configureClientCertificateResolver)
     {
-        builder.ConfigureHttpClientHandler(httpClientHandler =>
+        builder.ConfigureHttpClientHandler((serviceProvider, httpClientHandler) =>
         {
-            var services = builder.AuthenticationBuilder.Services;
-            var serviceProvider = services.BuildServiceProvider();
-
             httpClientHandler.PooledConnectionLifetime = TimeSpan.Zero;
             httpClientHandler.SslOptions.LocalCertificateSelectionCallback =
                 (sender, host, certificates, certificate, issuers) => configureClientCertificateResolver(serviceProvider, certificates, host);
