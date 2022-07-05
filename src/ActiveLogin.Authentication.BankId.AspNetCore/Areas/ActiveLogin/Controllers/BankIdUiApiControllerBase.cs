@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
@@ -16,6 +18,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [NonController]
 public abstract class BankIdUiApiControllerBase : ControllerBase
 {
+    private static JsonSerializerOptions JsonSerializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
     protected readonly IBankIdFlowService BankIdFlowService;
     protected readonly IBankIdUiOrderRefProtector OrderRefProtector;
     protected readonly IBankIdQrStartStateProtector QrStartStateProtector;
@@ -154,17 +158,21 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
 
     protected static ActionResult OkJsonResult(object model)
     {
-        return new JsonResult(model, BankIdConstants.JsonSerializerOptions)
+        return new ContentResult
         {
-            StatusCode = StatusCodes.Status200OK
+            ContentType = "application/json",
+            StatusCode = StatusCodes.Status200OK,
+            Content = JsonSerializer.Serialize(model, JsonSerializerOptions)
         };
     }
 
     protected static ActionResult BadRequestJsonResult(object model)
     {
-        return new JsonResult(model, BankIdConstants.JsonSerializerOptions)
+        return new ContentResult
         {
-            StatusCode = StatusCodes.Status400BadRequest
+            ContentType = "application/json",
+            StatusCode = StatusCodes.Status400BadRequest,
+            Content = JsonSerializer.Serialize(model, JsonSerializerOptions)
         };
     }
 }
