@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using System.Text.Json;
 
 using ActiveLogin.Authentication.BankId.Api;
@@ -160,7 +161,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     {
         return new ContentResult
         {
-            ContentType = "application/json",
+            ContentType = MediaTypeNames.Application.Json,
             StatusCode = StatusCodes.Status200OK,
             Content = JsonSerializer.Serialize(model, JsonSerializerOptions)
         };
@@ -170,7 +171,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     {
         return new ContentResult
         {
-            ContentType = "application/json",
+            ContentType = MediaTypeNames.Application.Json,
             StatusCode = StatusCodes.Status400BadRequest,
             Content = JsonSerializer.Serialize(model, JsonSerializerOptions)
         };
