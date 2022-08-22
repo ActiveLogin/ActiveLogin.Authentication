@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <NeutralLanguage>en</NeutralLanguage>
-        <NoWarn>1701;1702;1591;CS7035</NoWarn>
+        <NoWarn>1591</NoWarn> <!-- Missing XML comment for publicly visible member -->
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <PackageId>$(AssemblyName)</PackageId>
