@@ -34,5 +34,5 @@ public class BankIdSupportedDevice
     public BankIdSupportedDeviceBrowser DeviceBrowser { get; }
 
 
-    public static BankIdSupportedDevice Unknown = new(BankIdSupportedDeviceType.Unknown, BankIdSupportedDeviceOs.Unknown, BankIdSupportedDeviceBrowser.Unknown, new BankIdSupportedDeviceOsVersion(0));
+    public static BankIdSupportedDevice Unknown = new(BankIdSupportedDeviceType.Unknown, BankIdSupportedDeviceOs.Unknown, BankIdSupportedDeviceBrowser.Unknown, BankIdSupportedDeviceOsVersion.Empty);
 }
