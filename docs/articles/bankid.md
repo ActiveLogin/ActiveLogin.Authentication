@@ -883,7 +883,7 @@ By default it will use whatever InstrumentationKey is registered with the applic
 services
     .AddBankId(bankId =>
     {
-        bankId.AddApplicationInsightsEventListener("CUSTOM_KEY");
+        bankId.AddApplicationInsightsEventListener("CUSTOM_CONNECTION_STRING");
     });
 ```
 

@@ -49,38 +49,43 @@ public static class BankIdBuilderAzureMonitorExtensions
     /// Adds an event listener that will listen for all events and write them to Application Insights
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="instrumentationKey">Application Insights instrumentation key</param>
+    /// <param name="connectionString">Application Insights connection string</param>
     /// <param name="configureOptions">Configure logging options</param>
     /// <returns></returns>
-    public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string instrumentationKey, Action<ApplicationInsightsBankIdEventListenerOptions> configureOptions)
+    public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string connectionString, Action<ApplicationInsightsBankIdEventListenerOptions> configureOptions)
     {
         var options = new ApplicationInsightsBankIdEventListenerOptions();
         configureOptions(options);
-        return AddApplicationInsightsEventListener(builder, instrumentationKey, options);
+        return AddApplicationInsightsEventListener(builder, connectionString, options);
     }
 
     /// <summary>
     /// Adds an event listener that will listen for all events and write them to Application Insights
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="instrumentationKey">Application Insights instrumentation key</param>
+    /// <param name="connectionString">Application Insights connection string</param>
     /// <returns></returns>
-    public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string instrumentationKey)
+    public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string connectionString)
     {
         var options = new ApplicationInsightsBankIdEventListenerOptions();
-        return AddApplicationInsightsEventListener(builder, instrumentationKey, options);
+        return AddApplicationInsightsEventListener(builder, connectionString, options);
     }
 
     /// <summary>
     /// Adds an event listener that will listen for all events and write them to Application Insights
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="instrumentationKey">Application Insights instrumentation key</param>
+    /// <param name="connectionString">Application Insights connection string</param>
     /// <param name="options">Logging options</param>
     /// <returns></returns>
-    public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string instrumentationKey, ApplicationInsightsBankIdEventListenerOptions options)
+    public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string connectionString, ApplicationInsightsBankIdEventListenerOptions options)
     {
-        builder.Services.AddTransient<IBankIdEventListener>(x => new BankIdApplicationInsightsEventListener(new TelemetryClient(new TelemetryConfiguration(instrumentationKey)), options));
+        builder.Services.AddTransient<IBankIdEventListener>(x =>
+        {
+            var telemetryConfiguration = new TelemetryConfiguration();
+            telemetryConfiguration.ConnectionString = connectionString;
+            return new BankIdApplicationInsightsEventListener(new TelemetryClient(telemetryConfiguration), options);
+        });
 
         return builder;
     }

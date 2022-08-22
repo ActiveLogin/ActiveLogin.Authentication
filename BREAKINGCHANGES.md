@@ -150,6 +150,12 @@ This applies to:
 - `.AddClientCertificate()`
 - `.AddClientCertificateFromAzureKeyVault()`
 
+### Application Insights Connection String instead of Instrumentation Key
+
+When using Application Insights [you should nowadays specify a connection string instead of just an instrumentation key](https://docs.microsoft.com/en-us/azure/azure-monitor/app/sdk-connection-string?tabs=net). We've updated our methods that explicitly took an instrumentation key to instead take a connection string. This applies to:
+
+- `AddApplicationInsightsEventListener()`
+
 ---
 
 

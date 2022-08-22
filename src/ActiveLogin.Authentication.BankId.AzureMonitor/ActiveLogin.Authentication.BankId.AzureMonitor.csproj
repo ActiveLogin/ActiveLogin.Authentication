@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+        <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
     </ItemGroup>
 
     <ItemGroup>
