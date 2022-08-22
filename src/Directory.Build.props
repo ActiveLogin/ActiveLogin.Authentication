@@ -5,7 +5,11 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <NeutralLanguage>en</NeutralLanguage>
-        <NoWarn>1591</NoWarn> <!-- Missing XML comment for publicly visible member -->
+        <NoWarn>1591;CS7035</NoWarn>
+        <!--
+        1591: Missing XML comment for publicly visible type or member (we can't document every single public member)
+        CS7035: Error CS7035: The specified version string does not conform to the recommended format - major.minor.build.revision (occurs on build server)
+        -->
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <PackageId>$(AssemblyName)</PackageId>
