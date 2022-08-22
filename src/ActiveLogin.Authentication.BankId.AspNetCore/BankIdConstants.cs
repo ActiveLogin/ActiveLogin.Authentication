@@ -14,11 +14,6 @@ internal static class BankIdConstants
 
     public const string LocalizationResourcesPath = "Resources";
 
-    internal static readonly JsonSerializerOptions JsonSerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     public static class AuthenticationPropertiesKeys
     {
         public const string CancelReturnUrl = "cancelReturnUrl";
