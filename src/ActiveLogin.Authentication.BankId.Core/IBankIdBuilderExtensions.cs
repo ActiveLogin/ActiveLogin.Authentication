@@ -30,6 +30,26 @@ public static class IBankIdBuilderExtensions
     }
 
     /// <summary>
+    /// Add client certificate for authenticating against the BankID API to the list of available certificates for the http client handler to choose from.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="configureClientCertificate">The certificate to add.</param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
+    {
+        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
+        {
+            var clientCertificate = configureClientCertificate();
+            httpClientHandler.SslOptions.ClientCertificates = new X509Certificate2Collection
+            {
+                clientCertificate
+            };
+        });
+
+        return builder;
+    }
+
+    /// <summary>
     /// Use this root certificate for verifying the certificate of BankID API.
     /// Use only if the root certificate can't be installed on the machine.
     /// </summary>

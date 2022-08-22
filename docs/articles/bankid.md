@@ -722,7 +722,8 @@ public class SampleInvalidStateHandler : IBankIdInvalidStateHandler
 ### Multi tenant scenario
 
 With the current architecture of Active Login all services are registered "globally" and you can't call `.AddBankId()` more than once.
-To run Active Login in a multi tenant scenario, where different customers should use different certificates, you could register multiple certificates and on runtime select the correct one per request.
+To run Active Login in a multi tenant scenario, where different customers should use different certificates, you could register multiple certificates and on runtime select the correct one per request. To register multiple certificates you need to use the `.AddClientCertificate...()` instead of `.UseClientCertificate...()` as the `.Use...()` version will overwrite any existing certificates registered with the http client handler.
+
 With our current solution, this requires you to disable pooling of the `SocketsHttpHandler` so we've decided not to ship that code in the NuGet-package, but below you'll find a sample on how it could be configured. We hope to redesign this in the future.
 
 ___Note:___ The code below is a sample and because it disables `PooledConnection` it might (and will) have performance implications.

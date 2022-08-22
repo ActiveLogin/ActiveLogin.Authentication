@@ -45,7 +45,7 @@ services.AddAuthentication()
     });
 ```
 
-### Moving extenbsion methods away from Microsoft.Extensions.DependencyInjection
+### Moving extension methods away from Microsoft.Extensions.DependencyInjection
 
 As per the [Microsoft guideline about namespaces](https://docs.microsoft.com/en-us/dotnet/core/extensions/options-library-authors#namespace-guidance) in libraries, we have moved our extension methods away from `Microsoft.Extensions.DependencyInjection` into their "natural" namespaces.
 
@@ -141,6 +141,14 @@ lease use BankIdRemoteIpAddressEndUserIpResolver instead if you need to override
 
 The use of personalIdentityNumber in the auth flow is no longer supported as BankID recomends to only use either animated QR codes or autostarttoken on the same device.
 
+### Multi tenant
+
+If you register multiple client certificates (multi tenant scenarios) you now need to use the `.AddClientCertificate...()` methods instead of `.UseClientCertificate...()`. `.UseClientCertificate...()` will remove any previously registered certificates.
+
+This applies to:
+
+- `.AddClientCertificate()`
+- `.AddClientCertificateFromAzureKeyVault()`
 
 ---
 
