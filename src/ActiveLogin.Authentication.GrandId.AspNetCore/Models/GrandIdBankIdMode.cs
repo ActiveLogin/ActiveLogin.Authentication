@@ -1,9 +1,8 @@
-﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore.Models
+﻿namespace ActiveLogin.Authentication.GrandId.AspNetCore.Models;
+
+internal enum GrandIdBankIdMode
 {
-    internal enum GrandIdBankIdMode
-    {
-        ChooseDevice = 0,
-        SameDevice = 1,
-        OtherDevice = 2
-    }
+    ChooseDevice = 0,
+    SameDevice = 1,
+    OtherDevice = 2
 }

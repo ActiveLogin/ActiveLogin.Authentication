@@ -22,7 +22,7 @@ Remember, if you contribute to code, always follow this:
 3. Update documentation when relevant.
 4. Make a PR.
 
-We might(and probably will) reject PR:s that does not follow the requirements above.
+We might (and probably will) reject PR:s that does not follow the requirements above.
 
 ## Discussion
 

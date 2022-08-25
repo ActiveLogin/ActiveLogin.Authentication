@@ -4,34 +4,33 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 
-namespace ActiveLogin.Authentication.GrandId.AspNetCore
+namespace ActiveLogin.Authentication.GrandId.AspNetCore;
+
+public abstract class GrandIdPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : GrandIdOptions
 {
-    public abstract class GrandIdPostConfigureOptions<TOptions, THandler> : IPostConfigureOptions<TOptions> where TOptions : GrandIdOptions
+    private readonly IDataProtectionProvider _dp;
+
+    protected GrandIdPostConfigureOptions(IDataProtectionProvider dataProtection)
     {
-        private readonly IDataProtectionProvider _dp;
+        _dp = dataProtection;
+    }
 
-        protected GrandIdPostConfigureOptions(IDataProtectionProvider dataProtection)
+    public void PostConfigure(string name, TOptions options)
+    {
+        options.DataProtectionProvider ??= _dp;
+
+        if (options.StateDataFormat == null)
         {
-            _dp = dataProtection;
-        }
+            var dataProtector = options.DataProtectionProvider.CreateProtector(
+                typeof(THandler).FullName ?? nameof(GrandIdPostConfigureOptions<TOptions, THandler>),
+                name,
+                "v1"
+            );
 
-        public void PostConfigure(string name, TOptions options)
-        {
-            options.DataProtectionProvider ??= _dp;
-
-            if (options.StateDataFormat == null)
-            {
-                var dataProtector = options.DataProtectionProvider.CreateProtector(
-                    typeof(THandler).FullName ?? nameof(GrandIdPostConfigureOptions<TOptions, THandler>),
-                    name,
-                    "v1"
-                );
-
-                options.StateDataFormat = new SecureDataFormat<GrandIdState>(
-                    new GrandIdStateSerializer(),
-                    dataProtector
-                );
-            }
+            options.StateDataFormat = new SecureDataFormat<GrandIdState>(
+                new GrandIdStateSerializer(),
+                dataProtector
+            );
         }
     }
 }

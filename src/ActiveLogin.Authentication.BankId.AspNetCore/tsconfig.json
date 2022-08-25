@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "outDir": "wwwroot",
+        "noImplicitAny": true,
+        "noEmitOnError": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "target": "es2018",
+        "lib": [ "dom", "es2018" ],
+        "module": "None"
+    },
+    "exclude": [
+        "node_modules",
+        "wwwroot"
+    ]
+}

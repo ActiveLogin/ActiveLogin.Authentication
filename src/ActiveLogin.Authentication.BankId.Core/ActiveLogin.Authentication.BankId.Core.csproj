@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>ActiveLogin.Authentication.BankId.Core</AssemblyName>
+
+        <Description>Core functionality to support Swedish BankID's (svenskt BankIDs) authentication workflow.</Description>
+        <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Remove="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
+        <None Remove="BankIdResources\BankIdApiRootCertificate-Test.crt" />
+        <None Remove="BankIdResources\FPTestcert3_20200618.p12" />
+        <None Remove="Qr\qr-default.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ActiveLogin.Identity.Swedish" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
+        <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
+        <None Include="README.md" Pack="True" PackagePath="README.md" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>ActiveLogin.Authentication.BankId.AspNetCore.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Qr\qr-default.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>ActiveLogin.Authentication.BankId.Core.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
+        <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Test.crt" />
+        <EmbeddedResource Include="BankIdResources\FPTestcert3_20200618.p12" />
+    </ItemGroup>
+</Project>

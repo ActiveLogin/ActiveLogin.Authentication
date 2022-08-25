@@ -1,33 +1,38 @@
-using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation
+using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
+
+namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+
+public class BankIdClaimsTransformationContext
 {
-    public class BankIdClaimsTransformationContext
+    internal BankIdClaimsTransformationContext(BankIdAuthOptions bankIdAuthOptions, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, CompletionData bankIdCompletionData)
     {
-        internal BankIdClaimsTransformationContext(BankIdOptions bankIdOptions, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname)
-        {
-            BankIdOptions = bankIdOptions;
+        BankIdAuthOptions = bankIdAuthOptions;
 
-            BankIdOrderRef = bankIdOrderRef;
+        BankIdOrderRef = bankIdOrderRef;
 
-            PersonalIdentityNumber = personalIdentityNumber;
+        PersonalIdentityNumber = personalIdentityNumber;
 
-            Name = name;
-            GivenName = givenName;
-            Surname = surname;
-        }
+        Name = name;
+        GivenName = givenName;
+        Surname = surname;
 
-        public List<Claim> Claims { get; set; } = new List<Claim>();
-
-        public BankIdOptions BankIdOptions { get; }
-
-        public string BankIdOrderRef { get; }
-
-        public string PersonalIdentityNumber { get; }
-
-        public string Name { get; }
-        public string GivenName { get; }
-        public string Surname { get; }
+        BankIdCompletionData = bankIdCompletionData;
     }
+
+    public List<Claim> Claims { get; set; } = new();
+
+    public BankIdAuthOptions BankIdAuthOptions { get; }
+
+    public string BankIdOrderRef { get; }
+
+    public string PersonalIdentityNumber { get; }
+
+    public string Name { get; }
+    public string GivenName { get; }
+    public string Surname { get; }
+
+    public CompletionData BankIdCompletionData { get; set; }
 }

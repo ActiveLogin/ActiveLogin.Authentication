@@ -6,24 +6,22 @@
 
 @if (Model.ExternalProviders.Any())
 {
-    <div class="choose-auth-provider">
-        <img src="~/static/graphics/active-login-logo-fingerprint.svg" alt="Active Login" class="choose-auth-provider-logo" />
+    <div class="choose-provider">
+        <img src="~/static/graphics/active-login-logo-fingerprint.svg" alt="Active Login" class="choose-provider-logo" />
 
         <h1 class=" mb-5 mt-2 font-weight-normal">Active Login</h1>
 
-        <ul class="list-inline">
+        <div class="d-grid gap-2">
             @foreach (var provider in Model.ExternalProviders)
             {
-                <li class="mb-2">
-                    <a class="btn btn-primary btn-block btn-lg"
-                       asp-action="ExternalLogin"
-                       asp-route-provider="@provider.AuthenticationScheme"
-                       asp-route-returnUrl="@Model.ReturnUrl">
-                        @provider.DisplayName
-                    </a>
-                </li>
+                <a class="btn btn-primary btn-lg"
+                   asp-action="ExternalLogin"
+                   asp-route-provider="@provider.AuthenticationScheme"
+                   asp-route-returnUrl="@Model.ReturnUrl">
+                    @provider.DisplayName
+                </a>
             }
-        </ul>
+        </div>
     </div>
 }
 

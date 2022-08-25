@@ -4,45 +4,44 @@ using System.Text.Json.Nodes;
 
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.Api.Test
+namespace ActiveLogin.Authentication.BankId.Api.Test;
+
+internal class JsonTests
 {
-    internal class JsonTests
+    public static void AssertOnlyProperties(string jsonContent, string[] expectedPaths)
     {
-        public static void AssertOnlyProperties(string jsonContent, string[] expectedPaths)
+        var jsonDocument = JsonDocument.Parse(jsonContent);
+        var jsonPaths = new List<string>();
+        foreach (var item in jsonDocument.RootElement.EnumerateObject())
         {
-            var jsonDocument = JsonDocument.Parse(jsonContent);
-            var jsonPaths = new List<string>();
-            foreach (var item in jsonDocument.RootElement.EnumerateObject())
-            {
-                jsonPaths.Add(item.Name);
-            }
-
-            Assert.Equal(expectedPaths, jsonPaths);
+            jsonPaths.Add(item.Name);
         }
 
-        public static void AssertProperty<TValue>(string jsonContent, string expectedProperty, TValue expectedValue)
-        {
-            var jsonContentNode = JsonNode.Parse(jsonContent);
-            Assert.Equal(expectedValue, jsonContentNode[expectedProperty].GetValue<TValue>());
-        }
+        Assert.Equal(expectedPaths, jsonPaths);
+    }
 
-        public static void AssertSubProperty<TValue>(string jsonContent, string expectedParentProperty, string expectedProperty, TValue expectedValue)
-        {
-            var jsonContentNode = JsonNode.Parse(jsonContent);
-            Assert.Equal(expectedValue, jsonContentNode[expectedParentProperty][expectedProperty].GetValue<TValue>());
-        }
-        public static void AssertSubProperty<TValue>(string jsonContent, string expectedParentProperty, string expectedProperty, List<TValue> expectedValue)
-        {
-            var jsonContentNode = JsonNode.Parse(jsonContent);
-            var expectedAsString = JsonSerializer.Serialize(expectedValue);
+    public static void AssertProperty<TValue>(string jsonContent, string expectedProperty, TValue expectedValue)
+    {
+        var jsonContentNode = JsonNode.Parse(jsonContent);
+        Assert.Equal(expectedValue, jsonContentNode[expectedProperty].GetValue<TValue>());
+    }
 
-            Assert.Equal(expectedAsString, jsonContentNode[expectedParentProperty][expectedProperty].ToJsonString());
-        }
+    public static void AssertSubProperty<TValue>(string jsonContent, string expectedParentProperty, string expectedProperty, TValue expectedValue)
+    {
+        var jsonContentNode = JsonNode.Parse(jsonContent);
+        Assert.Equal(expectedValue, jsonContentNode[expectedParentProperty][expectedProperty].GetValue<TValue>());
+    }
+    public static void AssertSubProperty<TValue>(string jsonContent, string expectedParentProperty, string expectedProperty, List<TValue> expectedValue)
+    {
+        var jsonContentNode = JsonNode.Parse(jsonContent);
+        var expectedAsString = JsonSerializer.Serialize(expectedValue);
 
-        public static void AssertPropertyIsEmptyObject(string jsonContent, string expectedProperty)
-        {
-            var jsonContentNode = JsonNode.Parse(jsonContent);
-            Assert.Equal("{}", jsonContentNode[expectedProperty].ToJsonString());
-        }
+        Assert.Equal(expectedAsString, jsonContentNode[expectedParentProperty][expectedProperty].ToJsonString());
+    }
+
+    public static void AssertPropertyIsEmptyObject(string jsonContent, string expectedProperty)
+    {
+        var jsonContentNode = JsonNode.Parse(jsonContent);
+        Assert.Equal("{}", jsonContentNode[expectedProperty].ToJsonString());
     }
 }

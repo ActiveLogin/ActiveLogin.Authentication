@@ -8,6 +8,7 @@ variables:
 
 trigger:
 - main
+- v*
 
 stages:
 - stage: BuildNuget
@@ -156,30 +157,6 @@ stages:
       vmImage: '$(vmImage)'
 
     steps:
-
-    - task: DownloadSecureFile@1
-      displayName: 'Download secure file: BankIdRootCertificate-Prod.crt'
-      inputs:
-        secureFile: 'BankIdRootCertificate-Prod.crt'
-
-    - task: CopyFiles@2
-      displayName: 'Copy secure file: BankIdRootCertificate-Prod.crt'
-      inputs:
-        SourceFolder: '$(Agent.TempDirectory)'
-        Contents: 'BankIdRootCertificate-Prod.crt'
-        TargetFolder: samples/IdentityServer.ServerSample/Certificates
-
-    - task: DownloadSecureFile@1
-      displayName: 'Download secure file: BankIdRootCertificate-Test.crt'
-      inputs:
-        secureFile: 'BankIdRootCertificate-Test.crt'
-
-    - task: CopyFiles@2
-      displayName: 'Copy secure file: BankIdRootCertificate-Test.crt'
-      inputs:
-        SourceFolder: '$(Agent.TempDirectory)'
-        Contents: 'BankIdRootCertificate-Test.crt'
-        TargetFolder: samples/IdentityServer.ServerSample/Certificates
 
     - task: UseDotNet@2
       displayName: 'Install: .NET Core SDK'

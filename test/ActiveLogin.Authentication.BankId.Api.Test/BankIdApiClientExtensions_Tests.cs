@@ -6,126 +6,125 @@ using Xunit;
 
 // ReSharper disable InvokeAsExtensionMethod
 
-namespace ActiveLogin.Authentication.BankId.Api.Test
+namespace ActiveLogin.Authentication.BankId.Api.Test;
+
+public class BankIdApiClientExtensions_Tests
 {
-    public class BankIdApiClientExtensions_Tests
+    [Fact]
+    public async Task AuthAsync_WithEndUserIp_ShouldMap_ToAuthRequest_WithEndUserIp()
     {
-        [Fact]
-        public async Task AuthAsync_WithEndUserIp_ShouldMap_ToAuthRequest_WithEndUserIp()
-        {
-            // Arrange
-            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-            bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
-                               .ReturnsAsync(It.IsAny<AuthResponse>());
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
+            .ReturnsAsync(It.IsAny<AuthResponse>());
 
-            // Act
-            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1");
+        // Act
+        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1");
 
-            // Assert
-            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
-            Assert.Equal("1.1.1.1", request.EndUserIp);
-            Assert.Null(request.PersonalIdentityNumber);
-        }
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
+        Assert.Equal("1.1.1.1", request.EndUserIp);
+        Assert.Null(request.PersonalIdentityNumber);
+    }
 
-        [Fact]
-        public async Task AuthAsync_WithEndUserIp_AndPin_ShouldMap_ToAuthRequest_WithEndUserIp_AndPin()
-        {
-            // Arrange
-            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-            bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
-                .ReturnsAsync(It.IsAny<AuthResponse>());
+    [Fact]
+    public async Task AuthAsync_WithEndUserIp_AndPin_ShouldMap_ToAuthRequest_WithEndUserIp_AndPin()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
+            .ReturnsAsync(It.IsAny<AuthResponse>());
 
-            // Act
-            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "201801012392");
+        // Act
+        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "201801012392");
 
-            // Assert
-            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
-            Assert.Equal("1.1.1.1", request.EndUserIp);
-            Assert.Equal("201801012392", request.PersonalIdentityNumber);
-        }
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
+        Assert.Equal("1.1.1.1", request.EndUserIp);
+        Assert.Equal("201801012392", request.PersonalIdentityNumber);
+    }
 
-        [Fact]
-        public async Task AuthAsync_WithEndUserIp_AndUserData_ShouldMap_ToAuthRequest_WithEndUserIp_AndUserData_Base64Encoded()
-        {
-            // Arrange
-            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-            bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
-                .ReturnsAsync(It.IsAny<AuthResponse>());
+    [Fact]
+    public async Task AuthAsync_WithEndUserIp_AndUserData_ShouldMap_ToAuthRequest_WithEndUserIp_AndUserData_Base64Encoded()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
+            .ReturnsAsync(It.IsAny<AuthResponse>());
 
-            // Act
-            await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", "userVisibleDataFormat");
+        // Act
+        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", userVisibleData: "userVisibleData", userVisibleDataFormat: "userVisibleDataFormat");
 
-            // Assert
-            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
-            Assert.Equal("1.1.1.1", request.EndUserIp);
-            Assert.Equal("dXNlclZpc2libGVEYXRh", request.UserVisibleData);
-            Assert.Equal("userVisibleDataFormat", request.UserVisibleDataFormat);
-        }
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
+        Assert.Equal("1.1.1.1", request.EndUserIp);
+        Assert.Equal("dXNlclZpc2libGVEYXRh", request.UserVisibleData);
+        Assert.Equal("userVisibleDataFormat", request.UserVisibleDataFormat);
+    }
 
-        [Fact]
-        public async Task SignAsync_WithEndUserIp_ShouldMap_ToSignRequest_WithEndUserIp()
-        {
-            // Arrange
-            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-            bankIdApiClientMock.Setup(client => client.SignAsync(It.IsAny<SignRequest>()))
-                               .ReturnsAsync(It.IsAny<SignResponse>());
+    [Fact]
+    public async Task SignAsync_WithEndUserIp_ShouldMap_ToSignRequest_WithEndUserIp()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.SignAsync(It.IsAny<SignRequest>()))
+            .ReturnsAsync(It.IsAny<SignResponse>());
 
-            // Act
-            await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData");
+        // Act
+        await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData");
 
-            // Assert
-            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
-            Assert.Equal("1.1.1.1", request.EndUserIp);
-            Assert.Null(request.PersonalIdentityNumber);
-        }
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
+        Assert.Equal("1.1.1.1", request.EndUserIp);
+        Assert.Null(request.PersonalIdentityNumber);
+    }
 
-        [Fact]
-        public async Task SignAsync_WithEndUserIp_AndPin_ShouldMap_ToSignRequest_WithEndUserIp_AndPin()
-        {
-            // Arrange
-            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-            bankIdApiClientMock.Setup(client => client.SignAsync(It.IsAny<SignRequest>()))
-                .ReturnsAsync(It.IsAny<SignResponse>());
+    [Fact]
+    public async Task SignAsync_WithEndUserIp_AndPin_ShouldMap_ToSignRequest_WithEndUserIp_AndPin()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.SignAsync(It.IsAny<SignRequest>()))
+            .ReturnsAsync(It.IsAny<SignResponse>());
 
-            // Act
-            await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", null, "201801012392");
+        // Act
+        await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", null, "201801012392");
 
-            // Assert
-            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
-            Assert.Equal("1.1.1.1", request.EndUserIp);
-            Assert.Equal("201801012392", request.PersonalIdentityNumber);
-        }
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
+        Assert.Equal("1.1.1.1", request.EndUserIp);
+        Assert.Equal("201801012392", request.PersonalIdentityNumber);
+    }
 
-        [Fact]
-        public async Task CollectAsync_WithOrderRef_ShouldMap_ToCollectRequest_WithOrderRef()
-        {
-            // Arrange
-            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-            bankIdApiClientMock.Setup(client => client.CollectAsync(It.IsAny<CollectRequest>()))
-                .ReturnsAsync(It.IsAny<CollectResponse>());
+    [Fact]
+    public async Task CollectAsync_WithOrderRef_ShouldMap_ToCollectRequest_WithOrderRef()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.CollectAsync(It.IsAny<CollectRequest>()))
+            .ReturnsAsync(It.IsAny<CollectResponse>());
 
-            // Act
-            await BankIdApiClientExtensions.CollectAsync(bankIdApiClientMock.Object, "or");
+        // Act
+        await BankIdApiClientExtensions.CollectAsync(bankIdApiClientMock.Object, "or");
 
-            // Assert
-            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CollectRequest>();
-            Assert.Equal("or", request.OrderRef);
-        }
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CollectRequest>();
+        Assert.Equal("or", request.OrderRef);
+    }
 
-        [Fact]
-        public async Task CancelAsync_WithOrderRef_ShouldMap_ToCancelRequest_WithOrderRef()
-        {
-            // Arrange
-            var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-            bankIdApiClientMock.Setup(client => client.CancelAsync(It.IsAny<CancelRequest>()))
-                .ReturnsAsync(It.IsAny<CancelResponse>());
+    [Fact]
+    public async Task CancelAsync_WithOrderRef_ShouldMap_ToCancelRequest_WithOrderRef()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.CancelAsync(It.IsAny<CancelRequest>()))
+            .ReturnsAsync(It.IsAny<CancelResponse>());
 
-            // Act
-            await BankIdApiClientExtensions.CancelAsync(bankIdApiClientMock.Object, "or");
+        // Act
+        await BankIdApiClientExtensions.CancelAsync(bankIdApiClientMock.Object, "or");
 
-            // Assert
-            var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CancelRequest>();
-            Assert.Equal("or", request.OrderRef);
-        }
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, CancelRequest>();
+        Assert.Equal("or", request.OrderRef);
     }
 }

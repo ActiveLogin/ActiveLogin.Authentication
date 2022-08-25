@@ -1,0 +1,33 @@
+@model Standalone.MvcSample.Models.SignResultViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Result (sign)";
+}
+
+<h2 class="h4 m2-1 mt-5 text-center">Document signed!</h2>
+<div class="card">
+    <div class="card-body">
+        <dl>
+            <dt>Document hash</dt>
+            <dd>@Model.HashCodeOfSignedDocument</dd>
+
+            <dt>Document filename</dt>
+            <dd>@Model.FileName</dd>
+
+            <dt>Document filetype</dt>
+            <dd>@Model.FileType</dd>
+
+            <dt>Name of signee</dt>
+            <dd>@Model.Name</dd>
+
+            <dt>Personal identity number</dt>
+            <dd>@Model.PersonalIdentityNumber</dd>
+
+            <dt>IP address of signee</dt>
+            <dd>@Model.IpAddress</dd>
+
+            <dt>Signature content</dt>
+            <dd><pre>@Model.SignatureXml</pre></dd>
+        </dl>
+    </div>
+</div>

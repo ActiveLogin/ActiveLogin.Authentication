@@ -1,43 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <NeutralLanguage>en</NeutralLanguage>
-        <NoWarn>1701;1702;1591;CS7035</NoWarn>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-
-        <Product>Active Login</Product>
         <AssemblyName>ActiveLogin.Authentication.BankId.AspNetCore</AssemblyName>
-        <PackageId>ActiveLogin.Authentication.BankId.AspNetCore</PackageId>
-
-        <VersionPrefix>5.0.1</VersionPrefix>
-        <!--<VersionSuffix>rc-2</VersionSuffix>-->
-        <AssemblyVersion>5.0.0.0</AssemblyVersion>
-        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
-        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
 
         <Description>ASP.NET authentication module that enables an application to support Swedish BankID's (svenskt BankIDs) authentication workflow.</Description>
         <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
 
-        <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>
-        <Company>Active Solution</Company>
-        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
-
-        <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
-        <PackageIcon>icon.png</PackageIcon>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     </PropertyGroup>
 
     <ItemGroup>
@@ -53,29 +21,22 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Core\ActiveLogin.Authentication.BankId.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Update="Resources\BankIdHandler.resx">
+        <EmbeddedResource Update="Resources\ActiveLoginResources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>BankIdHandler.Designer.cs</LastGenOutput>
+            <LastGenOutput>ActiveLoginResources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-        <EmbeddedResource Update="Resources\BankIdHandler.sv.resx">
+        <EmbeddedResource Update="Resources\ActiveLoginResources.sv.resx">
             <Generator>ResXFileCodeGenerator</Generator>
-        </EmbeddedResource>
-        <None Remove="Resources\qr-default-en.png" />
-        <EmbeddedResource Include="Resources\qr-default-en.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </EmbeddedResource>
-        <None Remove="Resources\qr-default-sv.png" />
-        <EmbeddedResource Include="Resources\qr-default-sv.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Resources\BankIdHandler.Designer.cs">
-            <DependentUpon>BankIdHandler.resx</DependentUpon>
+        <Compile Update="Resources\ActiveLoginResources.Designer.cs">
+            <DependentUpon>ActiveLoginResources.resx</DependentUpon>
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
         </Compile>
@@ -92,4 +53,24 @@
             <_Parameter1>ActiveLogin.Authentication.BankId.AspNetCore.Test</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.7.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="tsconfig.json">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
+            CompileTypeScript;
+            $(ResolveCurrentProjectStaticWebAssetsInputs)
+        </ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
+    </PropertyGroup>
 </Project>

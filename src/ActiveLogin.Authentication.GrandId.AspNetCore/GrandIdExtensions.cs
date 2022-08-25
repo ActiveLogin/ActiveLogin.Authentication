@@ -1,32 +1,31 @@
-﻿using System;
+using System;
 using System.Net.Http.Headers;
 using System.Reflection;
-using ActiveLogin.Authentication.GrandId.AspNetCore;
+
 using Microsoft.AspNetCore.Authentication;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace ActiveLogin.Authentication.GrandId.AspNetCore;
+
+public static class GrandIdExtensions
 {
-    public static class GrandIdExtensions
+    public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdBuilder> grandId)
     {
-        public static AuthenticationBuilder AddGrandId(this AuthenticationBuilder builder, Action<IGrandIdBuilder> grandId)
-        {
-            var grandIdBuilder = new GrandIdBuilder(builder);
+        var grandIdBuilder = new GrandIdBuilder(builder);
 
-            grandIdBuilder.UseUserAgent(GetActiveLoginUserAgent());
+        grandIdBuilder.UseUserAgent(GetActiveLoginUserAgent());
 
-            grandId(grandIdBuilder);
+        grandId(grandIdBuilder);
 
-            return builder;
-        }
+        return builder;
+    }
 
-        private static ProductInfoHeaderValue GetActiveLoginUserAgent()
-        {
-            var productName = GrandIdConstants.ProductName;
-            var productAssembly = typeof(GrandIdExtensions).Assembly;
-            var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
-            var productVersion = assemblyFileVersion?.Version ?? "Unknown";
+    private static ProductInfoHeaderValue GetActiveLoginUserAgent()
+    {
+        var productName = GrandIdConstants.ProductName;
+        var productAssembly = typeof(GrandIdExtensions).Assembly;
+        var assemblyFileVersion = productAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+        var productVersion = assemblyFileVersion?.Version ?? "Unknown";
 
-            return new ProductInfoHeaderValue(productName, productVersion);
-        }
+        return new ProductInfoHeaderValue(productName, productVersion);
     }
 }

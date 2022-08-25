@@ -1,49 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <NeutralLanguage>en</NeutralLanguage>
-        <NoWarn>1701;1702;1591;CS7035</NoWarn>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-        <Product>Active Login</Product>
         <AssemblyName>ActiveLogin.Authentication.BankId.Api</AssemblyName>
-        <PackageId>ActiveLogin.Authentication.BankId.Api</PackageId>
-
-        <VersionPrefix>5.0.1</VersionPrefix>
-        <!--<VersionSuffix>rc-2</VersionSuffix>-->
-        <AssemblyVersion>5.0.0.0</AssemblyVersion>
-        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
-        <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
-
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>StrongNameKey.snk</AssemblyOriginatorKeyFile>
 
         <Description>API client that enables an application to call Swedish BankID's (svenskt BankIDs) REST API in .NET.</Description>
         <PackageTags>bankid;swedish;sweden;apiclient;netstandard</PackageTags>
 
-        <Authors>Active Solution;Peter Örneholm;Nikolay Krondev;Elin Fokine;Robert Folkesson;Jakob Ehn</Authors>
-        <Company>Active Solution</Company>
-        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
-
-        <PackageProjectUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication</PackageProjectUrl>
-        <PackageIcon>icon.png</PackageIcon>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/ActiveLogin/ActiveLogin.Authentication.git</RepositoryUrl>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>StrongNameKey.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-        <PackageReference Include="System.Text.Json" Version="6.0.2" />
+        <PackageReference Include="System.Text.Json" Version="6.0.5" />
     </ItemGroup>
 
     <ItemGroup>

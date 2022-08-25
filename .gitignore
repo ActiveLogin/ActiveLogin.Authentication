@@ -289,9 +289,9 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-
-# Certificates
-*.crt
-
 # Signing credentials
 /samples/IdentityServer.ServerSample/keys/**
+
+# TS Output
+activelogin-main.js
+activelogin-main.js.map

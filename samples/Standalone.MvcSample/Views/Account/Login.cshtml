@@ -1,4 +1,4 @@
-@model Standalone.MvcSample.Models.AccountLoginViewModel
+@model Standalone.MvcSample.Models.BankIdViewModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Demo";
@@ -6,22 +6,20 @@
 
 @if (Model.ExternalProviders.Any())
 {
-    <div class="choose-auth-provider">
-        <h1 class=" mb-5 mt-2 font-weight-normal">Active Login</h1>
+    <div class="choose-provider">
+        <h1 class="mb-5 mt-2 font-weight-normal">Active Login</h1>
 
-        <ul class="list-inline">
+        <div class="d-grid gap-2">
             @foreach (var provider in Model.ExternalProviders)
             {
-                <li class="mb-2">
-                    <a class="btn btn-primary btn-block btn-lg"
-                       asp-action="ExternalLogin"
-                       asp-route-provider="@provider.AuthenticationScheme"
-                       asp-route-returnUrl="@Model.ReturnUrl">
-                        @provider.DisplayName
-                    </a>
-                </li>
+                <a class="btn btn-primary btn-lg"
+                           asp-action="ExternalLogin"
+                           asp-route-provider="@provider.BankIdScheme"
+                           asp-route-returnUrl="@Model.ReturnUrl">
+                    @provider.DisplayName
+                </a>
             }
-        </ul>
+        </div>
     </div>
 }
 

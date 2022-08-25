@@ -15,14 +15,14 @@ Free to use, [commercial support and training](#support--training) is available 
 
 ## Features
 
-- :id: Supports BankID Auth and Sign
+- :id: Supports BankID Auth (API, Flow and UI)
+- :pencil: Supports BankID Sign (API, Flow and UI)
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 6
 - :five: Built on V5.1 (the latest) BankID JSON API
 - :white_square_button: Supports BankID animated QR code (Safe start)
-- :lock: GDPR: Security by design
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
-- :wrench: Customizable UI
+- :wrench: Customizable ánd extensible
 - :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Provider for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
 
 
@@ -70,11 +70,12 @@ CI-builds from main of all packages are available in our [GitHub Packages feed](
 | Project | Description | NuGet | Downloads |
 | ------- | ----------- | ----  | --------- |
 | [BankId.Api](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.Api) | API client for the Swedish BankID REST API. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.Api.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/) |
+| [BankId.Core](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.Core) | Core functionality for the BankID flow. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.Core.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Core/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.Core.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Core/) |
 | [BankId.AspNetCore](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore) | ASP.NET authentication module for Swedish BankID. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/) |
-| [BankId.AspNetCore.Azure](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.Azure) | Azure KeyVault integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.Azure.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.Azure/) |
-| [BankId.AspNetCore.AzureMonitor](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor) | Azure Monitor (Application Insights) integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor/) |
-| [BankId.AspNetCore.QRCoder](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder) | QR code generation using QRCoder the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.QRCoder/) |
-| [BankId.AspNetCore.UAParser](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore.UACoder) | Device and browser detection using UAParser. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore.UAParser/) |
+| [BankId.AzureKeyVault](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AzureKeyVault) | Azure KeyVault integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AzureKeyVault.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureKeyVault/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AzureKeyVault.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureKeyVault/) |
+| [BankId.AzureMonitor](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AzureMonitor) | Azure Monitor (Application Insights) integrations for the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureMonitor/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AzureMonitor.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureMonitor/) |
+| [BankId.QRCoder](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.QRCoder) | QR code generation using QRCoder the AspNetCore package. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.QRCoder/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.QRCoder.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.QRCoder/) |
+| [BankId.UAParser](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.UACoder) | Device and browser detection using UAParser. | [![NuGet](https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.UAParser/) | [![NuGet (Pre)](https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.UAParser.svg)](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.UAParser/) |
 
 
 ## Usage & Docs
@@ -86,13 +87,26 @@ Full documentation with step by step instructions, samples, customization and de
 Active Login is designed to make it easy to get started with BankID in .NET. The most basic setup looks like this:
 
 ```csharp
+// Common
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseSimulatedEnvironment();
+    });
+
+// Auth
 services
     .AddAuthentication()
-    .AddBankId(builder =>
+    .AddBankIdAuth(bankId =>
     {
-        builder
-            .UseSimulatedEnvironment()
-            .AddSameDevice();
+        bankId.AddSameDevice();
+    });
+
+// Sign
+services
+    .AddBankIdSign(bankId =>
+    {
+        bankId.AddSameDevice();
     });
 ```
 
@@ -110,7 +124,7 @@ _Note: These are samples on how to use Active Login in different situations and 
 | ------- | ----------- |
 | [IdentityServer.ClientSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ClientSample) | ASP.NET MVC site using the IdentityServer.ServerSample as auth provider. |
 | [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ServerSample) | IdentityServer with Active Login as auth provider for BankID. |
-| [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) | ASP.NET MVC with Active Login as auth provider for BankID. |
+| [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) | ASP.NET MVC with Active Login as auth provider for BankID. Also demo of Sign. |
 | [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample) | ARM template with Azure KeyVault, Azure App Service, Azure Monitor / Application Insights etc. |
 
 _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
@@ -120,8 +134,10 @@ A live demo is available at [https://demo.activelogin.net/](https://demo.activel
 ## Tests
 
 * [BankId.Api.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.Api.Test)
+* [BankId.Core.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.Core.Test)
 * [BankId.AspNetCore.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AspNetCore.Test)
-* [BankId.AspNetCore.Azure.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AspNetCore.Azure.Test)
+* [BankId.UAParser.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.UAParser.Test)
+* [BankId.AzureKeyVault.Test](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AzureKeyVault.Test)
 
 
 ---
@@ -140,7 +156,8 @@ For commercial / business related questions, see the [FAQ at ActiveLogin.net](ht
 
 The API-wrapper (ActiveLogin.Authentication.BankId.Api) target .NET Standard 2.0, so it can be used from .NET >= 5.0, .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The package that target .NET Standard is strong named as it can be used from .NET Framework where strong naming can be relevant.
 
-The authentication module (*.AspNetCore), and related packages, depend on ASP.NET 6 and therefore require .NET 6.
+The authentication module (*.AspNetCore), depend on ASP.NET 6 and therefore requires .NET 6.
+The core module (*.Core), and related packages, depend on and requires .NET 6.
 
 Our samples target .NET 6 and follow the conventions used there.
 
@@ -167,7 +184,8 @@ We also support [devcontainer.json](https://code.visualstudio.com/docs/remote/co
 
 ### How do I run the samples locally?
 
-The samples are configured to run in simulated mode (no BankID certificate required) by default. The _Standalone.MvcSample_ is using the the most basic sample and is a good start.
+The samples are configured to run for the test environment (no BankID certificate required as it's bundled with the library) by default.
+The _Standalone.MvcSample_ is using the the most basic sample and is a good start.
 
 To run the sample: Navigate to `/Samples/Standalone.MvcSample/` and run:
 
@@ -228,6 +246,8 @@ The three primary ways to interact and stay updated with Active Login are:
 ### License
 
 [Active Login is licensed](LICENSE.md) under the very permissive [MIT license](https://opensource.org/licenses/MIT) for you to be able to use it in commercial or non-commercial applications without many restrictions.
+
+The BankID certificates from the BankID documentation are released as part of Active Login with the permission from BankID (Finansiell ID-Teknik BID AB).
 
 *All trademarks are the property of their respective owners.*
 
