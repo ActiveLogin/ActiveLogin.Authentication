@@ -12,11 +12,11 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 Breaking changes between version 5.0.0 and 6.0.0.
 
-___Note:___ Version is a major release with large set of refactorings, name changes and namespace changes. We have not covered it all, but tried to summarize the major ones below. In v6 we introduced Sign and wanted to refactor and rename things to make i consistent and easy to use both/either of them. This will cause some work when upgrading from a previous version.
+___Note:___ Version is a major release with a large set of refactorings, name changes, and namespace changes. We have not covered it all, but tried to summarize the major ones below. In v6 we introduced Sign and wanted to refactor and rename things to make i consistent and easy to use both/either of them. This will cause some work when upgrading from a previous version.
 
 ### Renaming NuGet-packages
 
-As all of the support packages related to Azure etc. now only depends on the Core package, we have renamed a few packages to reflect this:
+As all of the support packages related to Azure etc. now only depend on the Core package, we have renamed a few packages to reflect this:
 
 - `ActiveLogin.Authentication.BankId.AspNetCore.Azure` is now `ActiveLogin.Authentication.BankId.AzureKeyVault`
 - `ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor` is now `ActiveLogin.Authentication.BankId.AzureMonitor`
@@ -25,7 +25,7 @@ As all of the support packages related to Azure etc. now only depends on the Cor
 
 ### Auth functionality is now separate from core functionality
 
-This means that you need to register the common configuration first and then the auth specifc conf, like this:
+This means that you need to register the common configuration first and then the auth specific conf, like this:
 
 ```csharp
 services
@@ -49,7 +49,7 @@ services.AddAuthentication()
 
 As per the [Microsoft guideline about namespaces](https://docs.microsoft.com/en-us/dotnet/core/extensions/options-library-authors#namespace-guidance) in libraries, we have moved our extension methods away from `Microsoft.Extensions.DependencyInjection` into their "natural" namespaces.
 
-This means that in your `Program.cs` you might needs to import these namespaces:
+This means that in your `Program.cs` you might need to import these namespaces:
 
 ```csharp
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
@@ -73,7 +73,7 @@ app.UseStaticFiles();
 
 Core functionality that is not tied to web (AspNetCore) is moved into a separate package called `ActiveLogin.Authentication.BankId.Core`.
 
-If you directly use/extend/impleement anything related to these areas you might have to update your references:
+If you directly use/extend/implement anything related to these areas you might have to update your references:
 
 - `IBankIdEndUserIpResolver`
 - `IBankIdLauncher`
@@ -105,7 +105,7 @@ These views have been renamed:
 
 ___Note:___ As the area and controller have been renamed these files should now be placed in `/Areas/ActiveLogin/Views/BankIdUiAuth/` or `/Areas/ActiveLogin/Views/Shared/`.
 
-___Note:___ Both the html, css and javascript have breaking changes. See history for respecitve file for exact changes.
+___Note:___ Both the html, css and javascript have breaking changes. See history for respective file for exact changes.
 
 ### Renaming BankIdDefaults
 
@@ -116,11 +116,11 @@ The default values for `SameDeviceAuthenticationScheme`, `OtherDeviceAuthenticat
 ### Removing dependency on HttpContext in ActiveLogin.Authentication.BankId.Core
 
 No classes or interfaces in `ActiveLogin.Authentication.BankId.Core` will have a dependency on ``HttpContext`. `HttpContext` would previously be passed as arguments to some methods defined in our interfaces.
-If you need `HttpContext` for you implementation, take a dependency on `IHttpContextAccessor` to achive the same functionality - this is how we solve it internally as well.
+If you need `HttpContext` for your implementation, take a dependency on `IHttpContextAccessor` to achieve the same functionality - this is how we solve it internally as well.
 
 ### Name changes for *Login
 
-To reflect that we now support both auth and sign we have renamed alot of classes called something with `Login`. For example:
+To reflect that we now support both auth and sign we have renamed a lot of classes called something with `Login`. For example:
 
 - `BankIdLoginResult` is now `BankIdUiResult`
 - `BankIdLoginOptions` is now `BankIdUiOptions`
@@ -135,15 +135,15 @@ These properties have been renamed:
 ### BankIdDynamicEndUserIpResolver removed
 
 BankIdDynamicEndUserIpResolver removed is now removed. It was a shorthand for a scenario that should be very uncommon.
-lease use BankIdRemoteIpAddressEndUserIpResolver instead if you need to override end user ip retreival.
+lease use BankIdRemoteIpAddressEndUserIpResolver instead if you need to override end user ip retrieval.
 
 ### No manual input of PersonalIdentityNumber
 
-The use of personalIdentityNumber in the auth flow is no longer supported as BankID recomends to only use either animated QR codes or autostarttoken on the same device.
+The use of personalIdentityNumber in the auth flow is no longer supported as BankID recommends to only using either animated QR codes or autostarttoken on the same device.
 
 ### Multi tenant
 
-If you register multiple client certificates (multi tenant scenarios) you now need to use the `.AddClientCertificate...()` methods instead of `.UseClientCertificate...()`. `.UseClientCertificate...()` will remove any previously registered certificates.
+If you register multiple client certificates (multi-tenant scenarios) you now need to use the `.AddClientCertificate...()` methods instead of `.UseClientCertificate...()`. `.UseClientCertificate...()` will remove any previously registered certificates.
 
 This applies to:
 
