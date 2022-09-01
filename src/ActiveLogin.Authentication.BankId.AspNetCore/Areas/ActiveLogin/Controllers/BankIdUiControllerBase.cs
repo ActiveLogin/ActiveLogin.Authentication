@@ -58,7 +58,6 @@ public abstract class BankIdUiControllerBase : Controller
             return new EmptyResult();
         }
 
-        protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
         var antiforgeryTokens = _antiforgery.GetAndStoreTokens(HttpContext);
 
         var protectedState = Request.Cookies[uiOptions.StateCookieName];
