@@ -293,7 +293,42 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         Assert.Equal("/", GetInlineJsonValue(transactionContent, "returnUrl"));
         Assert.Equal("/", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
-        Assert.Equal("Ignored", GetInlineJsonValue(transactionContent, "protectedUiOptions"));
+        Assert.Equal("X", GetInlineJsonValue(transactionContent, "protectedUiOptions"));
+    }
+
+    [Fact]
+    public async Task Init_Preserves_UI_Options()
+    {
+        // Arrange
+        using var server = CreateServer(o =>
+            {
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
+            },
+            DefaultAppConfiguration(async context =>
+            {
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
+            }),
+            services =>
+            {
+                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
+                services.AddTransient(s => _bankIdUiStateProtector.Object);
+            });
+
+        // Act
+        var request =
+            CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Auth?returnUrl=%2F&uiOptions=UIOPTIONS&orderRef=Y");
+        var transaction = await request.GetAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+
+        var transactionContent = await transaction.Content.ReadAsStringAsync();
+        
+        Assert.Equal("UIOPTIONS", GetInlineJsonValue(transactionContent, "protectedUiOptions"));
     }
 
     [Fact]
