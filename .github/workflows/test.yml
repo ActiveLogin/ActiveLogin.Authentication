@@ -1,0 +1,37 @@
+name: Test
+
+on:
+  push:
+    branches: [ main, v* ]
+  pull_request:
+    branches: [ main, v* ]
+  schedule:
+    - cron: '30 3 * * *'
+env:
+  dotnetBuildConfiguration: 'Release'
+  dotnetVerbosity: 'Detailed'
+
+jobs:
+  test:
+    name: Run all tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            include:
+            - os: windows-latest
+            - os: macos-latest
+            - os: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.7.2
+      
+      - name: Dotnet restore
+        run: dotnet restore --verbosity ${{ env.dotnetVerbosity }}
+        shell: pwsh
+      
+      - name: Dotnet test
+        run: dotnet test --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
+        shell: pwsh
