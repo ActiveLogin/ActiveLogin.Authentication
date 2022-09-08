@@ -8,7 +8,7 @@
     <ItemGroup>
         <None Remove="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
         <None Remove="BankIdResources\BankIdApiRootCertificate-Test.crt" />
-        <None Remove="BankIdResources\FPTestcert3_20200618.p12" />
+        <None Remove="BankIdResources\FPTestcert4_20220818.p12" />
         <None Remove="Qr\qr-default.png" />
     </ItemGroup>
 
@@ -53,6 +53,6 @@
     <ItemGroup>
         <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
         <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Test.crt" />
-        <EmbeddedResource Include="BankIdResources\FPTestcert3_20200618.p12" />
+        <EmbeddedResource Include="BankIdResources\FPTestcert4_20220818.p12" />
     </ItemGroup>
 </Project>
