@@ -10,7 +10,7 @@ internal static class BankIdCertificates
 {
     public static readonly X509Certificate2 BankIdApiRootCertificateProd = GetCertFromResourceStream("BankIdApiRootCertificate-Prod.crt");
     public static readonly X509Certificate2 BankIdApiRootCertificateTest = GetCertFromResourceStream("BankIdApiRootCertificate-Test.crt");
-    public static readonly X509Certificate2 BankIdApiClientCertificateTest = GetCertFromResourceStream("FPTestcert3_20200618.p12", "qwerty123");
+    public static readonly X509Certificate2 BankIdApiClientCertificateTest = GetCertFromResourceStream("FPTestcert4_20220818.p12", "qwerty123");
 
     private static X509Certificate2 GetCertFromResourceStream(string filename, string? password = null)
     {
