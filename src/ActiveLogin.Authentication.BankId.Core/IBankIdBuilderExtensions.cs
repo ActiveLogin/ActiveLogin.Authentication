@@ -17,7 +17,7 @@ public static class IBankIdBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="configureClientCertificate">The certificate to use.</param>
     /// <returns></returns>
-    public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
+    public static IBankIdBuilder AddClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
     {
         builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
         {
@@ -35,7 +35,7 @@ public static class IBankIdBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="configureClientCertificate">The certificate to add.</param>
     /// <returns></returns>
-    public static IBankIdBuilder AddClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
+    public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
     {
         builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
         {
