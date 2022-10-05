@@ -7,6 +7,11 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ---
 
+## Version 6.0.3
+
+Breaking changes in 6.0.3:
+
+- As stated in #384 we had mixed up the UseClientCertificate() and AddClientCertificate() extension methods. These have now been reversed. This would be a breaking change if you add multiple certificates but should affect the majority of consumers.
 
 ## Version 6.0.0
 
