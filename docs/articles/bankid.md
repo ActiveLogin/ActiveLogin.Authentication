@@ -756,7 +756,7 @@ public class Startup
                     .AddClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate1"))
                     .AddClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate2"))
                     .AddClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate3"))
-                    .AddClientCertificateResolver((serviceCollection, certificates, hostname) =>
+                    .UseClientCertificateResolver((serviceCollection, certificates, hostname) =>
                     {
                         // Apply logic here to select the correct certificate
                         return certificates[0];
