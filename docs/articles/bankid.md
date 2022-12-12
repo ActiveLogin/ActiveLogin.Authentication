@@ -793,7 +793,7 @@ If you want, you can override the UI for Auth and Sign with different templates.
 * `Areas/ActiveLogin/Views/BankIdUiAuth`
 * `Areas/ActiveLogin/Views/BankIdUiSign`
 
-See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample/Areas/ActiveLogin/Views/BankUiAuth/_Wrapper.cshtml).
+See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample/Areas/ActiveLogin/Views/BankIdUiAuth/_Wrapper.cshtml).
 
 
 ### Event listeners
