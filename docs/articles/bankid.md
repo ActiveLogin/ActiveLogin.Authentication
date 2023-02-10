@@ -283,7 +283,7 @@ services
 
 # Sign
 
-Sign works very similar to auth, but canät utilize the "built in" support for schemes etc. So there are some differences.
+Sign works very similar to auth, but can't utilize the "built in" support for schemes etc. So there are some differences.
 
 At first, you need to register both the common BankID logic (environment, cert etc) as well as the sign specific configration (devices).
 
