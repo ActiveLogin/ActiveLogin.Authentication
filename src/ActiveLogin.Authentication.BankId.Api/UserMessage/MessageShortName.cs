@@ -36,5 +36,6 @@ public enum MessageShortName
     RFA19,
     RFA20,
     RFA21,
-    RFA22
+    RFA22,
+    RFA23
 }

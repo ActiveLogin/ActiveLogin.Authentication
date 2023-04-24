@@ -37,7 +37,7 @@ public class BankIdUserMessageLocalizer : IBankIdUserMessageLocalizer
         { MessageShortName.RFA20, new("Vill du identifiera dig eller skriva under med ett BankID på den här enheten eller på en annan enhet?", "Would you like to identify yourself or sign with a BankID on this device, or on another device?") },
         { MessageShortName.RFA21, new("Identifiering eller underskrift pågår.", "Identification or signing in progress.") },
         { MessageShortName.RFA22, new("Okänt fel. Försök igen.", "Unknown error. Please try again.") },
-        { MessageShortName.RFA22, new("Fotografera och läs av din ID-handling med BankID-appen.", "Using your BankID app, take a photo of, and scan, your ID document.") }
+        { MessageShortName.RFA23, new("Fotografera och läs av din ID-handling med BankID-appen.", "Using your BankID app, take a photo of, and scan, your ID document.") }
     };
 
     public string GetLocalizedString(MessageShortName messageShortName)

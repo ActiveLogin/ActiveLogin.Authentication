@@ -70,5 +70,10 @@ public enum CollectHintCode
     /// 1) RP did not use autoStartToken when starting BankID security program/app. RP must correct this in their implementation.
     /// 2) The client software was not installed or other problem with the user’s computer.
     /// </summary>
-    StartFailed
+    StartFailed,
+
+    /// <summary>
+    /// Order is pending. A client has launched and received the order but additional steps for providing MRTD (Machine Readable Travel Document) information is required to proceed with the order.
+    /// </summary>
+    userMrtd
 }

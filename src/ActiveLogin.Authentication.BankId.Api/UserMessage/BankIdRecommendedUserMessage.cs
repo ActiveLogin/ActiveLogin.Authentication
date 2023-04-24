@@ -29,7 +29,9 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
         new (MessageShortName.RFA17B, CollectHintCode.StartFailed, usingQrCode: true),
 
         new (MessageShortName.RFA21, CollectStatus.Pending, CollectHintCode.Unknown),
-        new (MessageShortName.RFA22, CollectStatus.Failed, CollectHintCode.Unknown)
+        new (MessageShortName.RFA22, CollectStatus.Failed, CollectHintCode.Unknown),
+
+        new (MessageShortName.RFA23, CollectStatus.Pending, CollectHintCode.userMrtd)
     };
 
     private static readonly List<ErrorResponseMapping> ErrorResponseMappings = new List<ErrorResponseMapping>()
