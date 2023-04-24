@@ -84,7 +84,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp).ConfigureAwait(false);
         return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
@@ -95,27 +95,22 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp).ConfigureAwait(false);
         return new SignResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
-    private async Task<OrderResponse> GetOrderResponseAsync(string? personalIdentityNumber, string endUserIp)
+    private async Task<OrderResponse> GetOrderResponseAsync(string endUserIp)
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
-        if (personalIdentityNumber == null || string.IsNullOrWhiteSpace(personalIdentityNumber))
-        {
-            personalIdentityNumber = _personalIdentityNumber;
-        }
-
-        await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
+        await EnsureNoExistingAuth(_personalIdentityNumber).ConfigureAwait(false);
 
         var orderRef = GetRandomToken();
         var autoStartToken = GetRandomToken();
         var qrStartToken = GetRandomToken();
         var qrStartSecret = GetRandomToken();
 
-        var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
+        var auth = new Auth(endUserIp, orderRef, _personalIdentityNumber);
         _auths.Add(orderRef, auth);
         return new OrderResponse(orderRef, autoStartToken, qrStartToken, qrStartSecret);
     }

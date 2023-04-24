@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api.Models;
@@ -19,31 +19,31 @@ public class BankIdSimulatedApiClient_Tests
     }
 
     [Fact]
-    public async Task AuthAsync_WithSamePersonalIdentityNumber_AtTheSameTime__ShouldThrow()
+    public async Task AuthAsync_MultipleAuthAtTheSameTime__ShouldThrow()
     {
         // Arange
 
         // Act
-        await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392"));
+        await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
 
         // Assert
-        await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "201801012392")));
+        await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2")));
     }
 
     [Fact]
-    public async Task AuthAsync_WithSamePersonalIdentityNumber_OneAtTheTime__ShouldBeAllowed()
+    public async Task AuthAsync_OneAuthAtTheTime__ShouldBeAllowed()
     {
         // Arange
 
         // Act
-        var firstAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392"));
+        var firstAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
         CollectResponse firstCollectResponse;
         do
         {
             firstCollectResponse = await _bankIdClient.CollectAsync(new CollectRequest(firstAuthResponse.OrderRef));
         } while (firstCollectResponse.GetCollectStatus() != CollectStatus.Complete);
 
-        var secondAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2", "201801012392"));
+        var secondAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2"));
         CollectResponse secondCollectResponse;
         do
         {
@@ -78,16 +78,16 @@ public class BankIdSimulatedApiClient_Tests
     }
 
     [Fact]
-    public async Task CollectAsync_WithSpecifiedEndUserIp_AndPin_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
+    public async Task CollectAsync_WithSpecifiedEndUserIp_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
     {
         // Arange
-        var bankIdClient = new BankIdSimulatedApiClient("x", "x", "x", "x")
+        var bankIdClient = new BankIdSimulatedApiClient("x", "x", "x", "201801012392")
         {
             Delay = TimeSpan.Zero
         };
 
         // Act
-        var authResponse = await bankIdClient.AuthAsync(new AuthRequest("2.2.2.2", "201801012392"));
+        var authResponse = await bankIdClient.AuthAsync(new AuthRequest("2.2.2.2"));
         CollectResponse collectResponse;
         do
         {

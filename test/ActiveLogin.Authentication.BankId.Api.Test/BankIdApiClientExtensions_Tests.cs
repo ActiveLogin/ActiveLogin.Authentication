@@ -24,24 +24,6 @@ public class BankIdApiClientExtensions_Tests
         // Assert
         var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
         Assert.Equal("1.1.1.1", request.EndUserIp);
-        Assert.Null(request.PersonalIdentityNumber);
-    }
-
-    [Fact]
-    public async Task AuthAsync_WithEndUserIp_AndPin_ShouldMap_ToAuthRequest_WithEndUserIp_AndPin()
-    {
-        // Arrange
-        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-        bankIdApiClientMock.Setup(client => client.AuthAsync(It.IsAny<AuthRequest>()))
-            .ReturnsAsync(It.IsAny<AuthResponse>());
-
-        // Act
-        await BankIdApiClientExtensions.AuthAsync(bankIdApiClientMock.Object, "1.1.1.1", "201801012392");
-
-        // Assert
-        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, AuthRequest>();
-        Assert.Equal("1.1.1.1", request.EndUserIp);
-        Assert.Equal("201801012392", request.PersonalIdentityNumber);
     }
 
     [Fact]
@@ -76,24 +58,6 @@ public class BankIdApiClientExtensions_Tests
         // Assert
         var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
         Assert.Equal("1.1.1.1", request.EndUserIp);
-        Assert.Null(request.PersonalIdentityNumber);
-    }
-
-    [Fact]
-    public async Task SignAsync_WithEndUserIp_AndPin_ShouldMap_ToSignRequest_WithEndUserIp_AndPin()
-    {
-        // Arrange
-        var bankIdApiClientMock = new Mock<IBankIdApiClient>(MockBehavior.Strict);
-        bankIdApiClientMock.Setup(client => client.SignAsync(It.IsAny<SignRequest>()))
-            .ReturnsAsync(It.IsAny<SignResponse>());
-
-        // Act
-        await BankIdApiClientExtensions.SignAsync(bankIdApiClientMock.Object, "1.1.1.1", "userVisibleData", null, "201801012392");
-
-        // Assert
-        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdApiClient, SignRequest>();
-        Assert.Equal("1.1.1.1", request.EndUserIp);
-        Assert.Equal("201801012392", request.PersonalIdentityNumber);
     }
 
     [Fact]

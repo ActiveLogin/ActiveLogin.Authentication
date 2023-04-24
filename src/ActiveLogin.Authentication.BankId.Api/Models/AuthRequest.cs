@@ -14,10 +14,6 @@ public class AuthRequest : Request
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
-    /// <param name="personalIdentityNumber">
-    /// The personal number of the user. 12 digits, century must be included (YYYYMMDDSSSC).
-    /// If the personal number is excluded, the client must be started with the AutoStartToken returned in the response.
-    /// </param>
     /// <param name="requirement">Requirements on how the auth or sign order must be performed.</param>
     /// <param name="userVisibleData">
     /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
@@ -31,7 +27,6 @@ public class AuthRequest : Request
     /// </param>
     public AuthRequest(
         string endUserIp,
-        string? personalIdentityNumber = null,
         Requirement? requirement = null,
         string? userVisibleData = null,
         byte[]? userNonVisibleData = null,
@@ -40,7 +35,6 @@ public class AuthRequest : Request
             endUserIp,
             userVisibleData: userVisibleData,
             userNonVisibleData: userNonVisibleData,
-            personalIdentityNumber: personalIdentityNumber,
             requirement: requirement,
             userVisibleDataFormat: userVisibleDataFormat)
     {

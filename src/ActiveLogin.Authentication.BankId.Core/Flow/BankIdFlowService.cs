@@ -104,7 +104,6 @@ public class BankIdFlowService : IBankIdFlowService
 
         return new AuthRequest(
             endUserIp,
-            null,
             authRequestRequirement,
             userData.UserVisibleData,
             userData.UserNonVisibleData,
