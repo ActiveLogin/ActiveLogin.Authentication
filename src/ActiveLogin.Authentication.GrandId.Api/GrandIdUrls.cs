@@ -12,6 +12,11 @@ public static class GrandIdUrls
     /// </summary>
     public static readonly Uri ProductionApiBaseUrl = new Uri("https://client.grandid.com/json1.1/");
 
+     /// <summary>
+    /// Base url for production API.
+    /// </summary>
+    public static readonly Uri SwedishProductionApiBaseUrl = new Uri("https://client.e-identitet.se");
+
     /// <summary>
     /// Base url for test API.
     /// </summary>
