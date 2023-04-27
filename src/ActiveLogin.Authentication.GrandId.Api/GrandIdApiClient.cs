@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api.Models;
+
 
 namespace ActiveLogin.Authentication.GrandId.Api;
 
@@ -46,19 +48,19 @@ public class GrandIdApiClient : IGrandIdApiClient
         var url = GetUrl("FederatedLogin", queryStringParams);
         var postData = new Dictionary<string, string?>
         {
-            { "callbackUrl", GetBase64EncodedString(request.CallbackUrl) },
-            { "deviceChoice", GetBoolString(request.UseChooseDevice) },
-            { "thisDevice", GetBoolString(request.UseSameDevice) },
-            { "askForSSN", GetBoolString(request.AskForPersonalIdentityNumber) },
-            { "personalNumber", request.PersonalIdentityNumber },
-            { "mobileBankId", GetBoolString(request.RequireMobileBankId) },
-            { "customerURL", GetBase64EncodedString(request.CustomerUrl) },
-            { "gui", GetBoolString(request.ShowGui) },
-            { "userVisibleData", GetBase64EncodedString(request.SignUserVisibleData) },
-            { "userNonVisibleData", GetBase64EncodedString(request.SignUserNonVisibleData) }
+            { "callbackUrl", GetBase64EncodedString(request.CallbackUrl) }
+            // { "deviceChoice", GetBoolString(request.UseChooseDevice) },
+            // { "thisDevice", GetBoolString(request.UseSameDevice) },
+            // { "askForSSN", GetBoolString(request.AskForPersonalIdentityNumber) },
+            // { "personalNumber", request.PersonalIdentityNumber }
+            // { "mobileBankId", GetBoolString(request.RequireMobileBankId) },
+            // { "customerURL", GetBase64EncodedString(request.CustomerUrl) }
+            // { "gui", GetBoolString(request.ShowGui) },
+            // { "userVisibleData", GetBase64EncodedString(request.SignUserVisibleData) },
+            // { "userNonVisibleData", GetBase64EncodedString(request.SignUserNonVisibleData) }
         };
-
         var fullResponse = await PostFullResponseAndEnsureSuccess<BankIdFederatedLoginFullResponse>(url, postData);
+        
         return new BankIdFederatedLoginResponse(fullResponse);
     }
 

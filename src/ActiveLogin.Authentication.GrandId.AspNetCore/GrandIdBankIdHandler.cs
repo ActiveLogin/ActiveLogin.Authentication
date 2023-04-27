@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ActiveLogin.Authentication.GrandId.Api;
 using ActiveLogin.Authentication.GrandId.Api.Models;
