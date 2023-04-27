@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ActiveLogin.Authentication.GrandId.Api;
 
@@ -13,9 +13,9 @@ public static class GrandIdUrls
     public static readonly Uri ProductionApiBaseUrl = new Uri("https://client.grandid.com/json1.1/");
 
      /// <summary>
-    /// Base url for production API.
+    /// Base url for swedish production API.
     /// </summary>
-    public static readonly Uri SwedishProductionApiBaseUrl = new Uri("https://client.e-identitet.se");
+    public static readonly Uri SwedishProductionApiBaseUrl = new Uri("https://client.e-identitet.se/json1.1/");
 
     /// <summary>
     /// Base url for test API.

@@ -48,7 +48,7 @@ public static class GrandIdBuilderEnvironmentExtensions
     /// <returns></returns>
     public static IGrandIdBuilder UseProductionEnvironment(this IGrandIdBuilder builder, Action<IGrandIdEnvironmentConfiguration> configuration)
     {
-        return builder.UseEnvironment(GrandIdUrls.ProductionApiBaseUrl, configuration);
+        return builder.UseEnvironment(GrandIdUrls.SwedishProductionApiBaseUrl, configuration);
     }
 
     /// <summary>
