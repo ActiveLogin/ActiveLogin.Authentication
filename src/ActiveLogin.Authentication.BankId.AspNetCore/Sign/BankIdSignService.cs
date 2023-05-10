@@ -63,7 +63,7 @@ public class BankIdSignService : IBankIdSignService
         var uiOptions = new BankIdUiOptions(
             options.BankIdCertificatePolicies,
             options.BankIdSameDevice,
-            options.BankIdAllowBiometric,
+            options.BankIdRequirePinCode,
             BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
             options.StateCookie.Name ?? string.Empty
         );

@@ -97,7 +97,7 @@ public class BankIdFlowService : IBankIdFlowService
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
 
-        var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.AllowBiometric);
+        var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.RequirePinCode);
 
         var authRequestContext = new BankIdAuthRequestContext(endUserIp, authRequestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
@@ -154,7 +154,7 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
-        var requestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.AllowBiometric);
+        var requestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.RequirePinCode);
 
         return new SignRequest(
             endUserIp,

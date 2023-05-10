@@ -10,9 +10,9 @@ public class BankIdSignOptions
     public List<string> BankIdCertificatePolicies { get; set; } = new();
 
     /// <summary>
-    /// Users of iOS and Android devices may use fingerprint or face recognition for authentication if the device supports it and the user configured the device to use it.
+    /// Users are required to sign the transaction with their PIN code, even if they have biometrics activated.
     /// </summary>
-    public bool BankIdAllowBiometric { get; set; } = true;
+    public bool BankIdRequirePinCode { get; set; } = false;
 
     /// <summary>
     /// Auto launch the BankID app on the current device.

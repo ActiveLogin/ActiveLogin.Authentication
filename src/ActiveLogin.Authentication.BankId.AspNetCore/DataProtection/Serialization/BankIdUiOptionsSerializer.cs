@@ -10,7 +10,7 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
     {
         writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies));
         writer.Write(model.SameDevice);
-        writer.Write(model.AllowBiometric);
+        writer.Write(model.RequirePinCode);
         writer.Write(model.CancelReturnUrl);
         writer.Write(model.StateCookieName);
     }

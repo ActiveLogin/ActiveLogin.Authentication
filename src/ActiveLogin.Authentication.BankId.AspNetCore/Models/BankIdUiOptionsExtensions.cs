@@ -7,6 +7,6 @@ public static class BankIdUiOptionsExtensions
     public static BankIdFlowOptions ToBankIdFlowOptions(this BankIdUiOptions options) => new(
         options.CertificatePolicies,
         options.SameDevice,
-        options.AllowBiometric
+        options.RequirePinCode
     );
 }

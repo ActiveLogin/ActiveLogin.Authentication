@@ -5,16 +5,16 @@ public class BankIdFlowOptions
     public BankIdFlowOptions(
         List<string> certificatePolicies,
         bool sameDevice,
-        bool allowBiometric)
+        bool requirePinCode)
     {
         CertificatePolicies = certificatePolicies;
         SameDevice = sameDevice;
-        AllowBiometric = allowBiometric;
+        RequirePinCode = requirePinCode;
     }
 
     public List<string> CertificatePolicies { get; }
         
     public bool SameDevice { get; }
 
-    public bool AllowBiometric { get; }
+    public bool RequirePinCode { get; }
 }
