@@ -106,16 +106,17 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true)));
+        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true, true)));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
         var contentString = await request.Content.ReadAsStringAsync();
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
         JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "mrtd", true);
     }
 
     [Fact]
@@ -291,16 +292,17 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true)));
+        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true, true)));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
         var contentString = await request.Content.ReadAsStringAsync();
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
         JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "mrtd", true);
         JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
         JsonTests.AssertProperty(contentString, "userNonVisibleData", "dXNlck5vblZpc2libGVEYXRh");
         JsonTests.AssertOnlyProperties(contentString, new[]

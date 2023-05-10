@@ -24,11 +24,19 @@ public class Requirement
     /// If set to true, the user is required to use pin code
     /// If set to false, the users is not required to use pin code and are allowed to use fingerprint.
     /// </param>
-    public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? pinCode = null)
+    /// <param name="mrtd">
+    /// If present, and set to "true", the client needs to provide MRTD (Machine readable travel document)
+    /// information to complete the order. Only Swedish passports and national ID cards are supported.
+    /// 
+    /// If set to true, the user is required to provide MRTD information to complete the order.
+    /// If set to false or not provided, the users is not required to provide MRTD information to complete the order.
+    /// </param>
+    public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? pinCode = null, bool? mrtd = null)
     {
         CertificatePolicies = certificatePolicies;
         TokenStartRequired = tokenStartRequired;
         PinCode = pinCode;
+        Mrtd = mrtd;
     }
 
     /// <summary>
@@ -55,4 +63,14 @@ public class Requirement
     /// </summary>
     [JsonPropertyName("pinCode"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool? PinCode { get; }
+
+    /// <summary>
+    /// If present, and set to "true", the client needs to provide MRTD (Machine readable travel document)
+    /// information to complete the order. Only Swedish passports and national ID cards are supported.
+    /// 
+    /// If set to true, the user is required to provide MRTD information to complete the order.
+    /// If set to false, the users is not required to provide MRTD information to complete the order.
+    /// </summary>
+    [JsonPropertyName("mrtd"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool? Mrtd { get; }
 }
