@@ -113,7 +113,7 @@ public class BankIdApiClient_Tests
         var contentString = await request.Content.ReadAsStringAsync();
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertSubProperty(contentString, "requirement", "allowFingerprint", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
         JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
     }
@@ -298,7 +298,7 @@ public class BankIdApiClient_Tests
         var contentString = await request.Content.ReadAsStringAsync();
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertSubProperty(contentString, "requirement", "allowFingerprint", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
         JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
         JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");

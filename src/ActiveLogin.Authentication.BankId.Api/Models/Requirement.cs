@@ -17,18 +17,18 @@ public class Requirement
     /// 
     /// If set to false, the client does not need to be started using the autoStartToken.
     /// </param>
-    /// <param name="allowFingerprint">
-    /// Users of iOS and Android devices may use fingerprint for authentication and signing if the device supports it and the user configured the device to use it.
-    /// No other devices are supported at this point.
+    /// <param name="pinCode">
+    /// Users are required to sign the transaction with their PIN 
+    /// code, even if they have biometrics activated.
     /// 
-    /// If set to true, the users are allowed to use fingerprint.
-    /// If set to false, the users are not allowed to use fingerprint.
+    /// If set to true, the user is required to use pin code
+    /// If set to false, the users is not required to use pin code and are allowed to use fingerprint.
     /// </param>
-    public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? allowFingerprint = null)
+    public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? pinCode = null)
     {
         CertificatePolicies = certificatePolicies;
         TokenStartRequired = tokenStartRequired;
-        AllowFingerprint = allowFingerprint;
+        PinCode = pinCode;
     }
 
     /// <summary>
@@ -47,12 +47,12 @@ public class Requirement
     public bool? TokenStartRequired { get; }
 
     /// <summary>
-    /// Users of iOS and Android devices may use fingerprint for authentication and signing if the device supports it and the user configured the device to use it.
-    /// No other devices are supported at this point.
+    /// Users are required to sign the transaction with their PIN 
+    /// code, even if they have biometrics activated.
     /// 
-    /// If set to true, the users are allowed to use fingerprint.
-    /// If set to false, the users are not allowed to use fingerprint.
+    /// If set to true, the user is required to use pin code
+    /// If set to false, the users is not required to use pin code and are allowed to use fingerprint.
     /// </summary>
-    [JsonPropertyName("allowFingerprint"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public bool? AllowFingerprint { get; }
+    [JsonPropertyName("pinCode"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool? PinCode { get; }
 }
