@@ -31,12 +31,16 @@ public class Requirement
     /// If set to true, the user is required to provide MRTD information to complete the order.
     /// If set to false or not provided, the users is not required to provide MRTD information to complete the order.
     /// </param>
-    public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? pinCode = null, bool? mrtd = null)
+    /// <param name="personalNumber">
+    /// A personal number to be used to complete the transaction. If a BankID with another personal number attempts to sign the transaction, it fails.
+    /// </param>
+    public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? pinCode = null, bool? mrtd = null, string? personalNumber = null)
     {
         CertificatePolicies = certificatePolicies;
         TokenStartRequired = tokenStartRequired;
         PinCode = pinCode;
         Mrtd = mrtd;
+        PersonalNumber = personalNumber;
     }
 
     /// <summary>
@@ -73,4 +77,10 @@ public class Requirement
     /// </summary>
     [JsonPropertyName("mrtd"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool? Mrtd { get; }
+
+    /// <summary>
+    /// A personal number to be used to complete the transaction. If a BankID with another personal number attempts to sign the transaction, it fails.
+    /// </summary>
+    [JsonPropertyName("personalNumber"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string? PersonalNumber { get; }
 }

@@ -106,7 +106,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true, true)));
+        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -117,6 +117,7 @@ public class BankIdApiClient_Tests
         JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "mrtd", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "personalNumber", "190001010101");
     }
 
     [Fact]
@@ -292,7 +293,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true, true)));
+        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -303,6 +304,7 @@ public class BankIdApiClient_Tests
         JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "mrtd", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "personalNumber", "190001010101");
         JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
         JsonTests.AssertProperty(contentString, "userNonVisibleData", "dXNlck5vblZpc2libGVEYXRh");
         JsonTests.AssertOnlyProperties(contentString, new[]
