@@ -24,10 +24,16 @@ public class BankIdAuthOptions : RemoteAuthenticationOptions
     public bool BankIdRequirePinCode { get; set; } = false;
 
     /// <summary>
+    /// If present, and set to "true", the client needs to provide MRTD (Machine readable travel document)
+    /// information to complete the order. Only Swedish passports and national ID cards are supported.
+    /// </summary>
+    public bool BankIdRequireMrtd { get; set; } = false;
+
+    /// <summary>
     /// Auto launch the BankID app on the current device.
     /// </summary>
     internal bool BankIdSameDevice { get; set; } = false;
-    
+
 
     private CookieBuilder _stateCookieBuilder = new()
     {

@@ -156,6 +156,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             Options.BankIdCertificatePolicies,
             Options.BankIdSameDevice,
             Options.BankIdRequirePinCode,
+            Options.BankIdRequireMrtd,
             BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
             Options.StateCookie.Name ?? string.Empty
         );

@@ -5,11 +5,13 @@ public class BankIdFlowOptions
     public BankIdFlowOptions(
         List<string> certificatePolicies,
         bool sameDevice,
-        bool requirePinCode)
+        bool requirePinCode,
+        bool requireMrtd)
     {
         CertificatePolicies = certificatePolicies;
         SameDevice = sameDevice;
         RequirePinCode = requirePinCode;
+        RequireMrtd = requireMrtd;
     }
 
     public List<string> CertificatePolicies { get; }
@@ -17,4 +19,6 @@ public class BankIdFlowOptions
     public bool SameDevice { get; }
 
     public bool RequirePinCode { get; }
+
+    public bool RequireMrtd { get; }
 }
