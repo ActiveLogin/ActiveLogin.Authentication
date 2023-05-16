@@ -404,6 +404,22 @@ public class BankIdApiClient_Tests
     }
 
     [Fact]
+    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCallInitiator()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"callInitiator\":\"User\" }");
+        var bankIdClient = new BankIdApiClient(httpClient);
+
+        // Act
+        var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("User", result.CallInitiator);
+        Assert.Equal(CollectCallInitiator.User, result.GetCollectCallInitiator());
+    }
+
+    [Fact]
     public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnOrderRef()
     {
         // Arrange

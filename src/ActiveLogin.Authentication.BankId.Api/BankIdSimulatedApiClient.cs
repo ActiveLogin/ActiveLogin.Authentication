@@ -157,7 +157,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
 
         var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
 
-        return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
+        return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData, null);
     }
 
     private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
