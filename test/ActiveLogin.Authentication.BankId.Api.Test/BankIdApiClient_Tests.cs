@@ -487,7 +487,7 @@ public class BankIdApiClient_Tests
     public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataDevice()
     {
         // Arrange
-        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"device\": { \"ipAddress\": \"1.1.1.1\" } } }");
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"device\": { \"ipAddress\": \"1.1.1.1\", \"uhi\": \"OZvYM9VvyiAmG7NA5jU5zqGcVpo=\" } } }");
         var bankIdClient = new BankIdApiClient(httpClient);
 
         // Act
@@ -496,6 +496,22 @@ public class BankIdApiClient_Tests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("1.1.1.1", result.CompletionData.Device.IpAddress);
+        Assert.Equal("OZvYM9VvyiAmG7NA5jU5zqGcVpo=", result.CompletionData.Device.Uhi);
+    }
+
+    [Fact]
+    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataBankIdIssueDate()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"bankIdIssueDate\": \"2023-01-01\" } }");
+        var bankIdClient = new BankIdApiClient(httpClient);
+
+        // Act
+        var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("2023-01-01", result.CompletionData.BankIdIssueDate);
     }
 
     [Fact]

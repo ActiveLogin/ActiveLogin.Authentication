@@ -149,6 +149,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             user.Name,
             user.GivenName,
             user.Surname,
+            completionData.BankIdIssueDate, 
             completionData.Signature,
             completionData.OcspResponse,
             completionData.Device.IpAddress,

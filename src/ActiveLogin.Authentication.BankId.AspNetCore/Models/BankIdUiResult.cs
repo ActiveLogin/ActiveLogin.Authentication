@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiResult
 {
-    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
+    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
     {
         IsSuccessful = isSuccessful;
 
@@ -16,6 +16,8 @@ public class BankIdUiResult
         GivenName = givenName;
         Surname = surname;
 
+        BankIdIssueDate = bankIdIssueDate;
+
         Signature = signature;
         OcspResponse = ocspResponse;
 
@@ -23,9 +25,9 @@ public class BankIdUiResult
         DetectedUniqueHardwareId = detectedUniqueHardwareId;
     }
 
-    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
+    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
     {
-        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, signature, ocspResponse, detectedIpAddress, detectedUniqueHardwareId);
+        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, bankIdIssueDate, signature, ocspResponse, detectedIpAddress, detectedUniqueHardwareId);
     }
 
     public bool IsSuccessful { get; }
@@ -38,6 +40,8 @@ public class BankIdUiResult
     public string GivenName { get; }
     public string Surname { get; }
 
+    public string BankIdIssueDate { get; }
+
     public string Signature { get; }
     public string OcspResponse { get; }
 
@@ -49,6 +53,7 @@ public class BankIdUiResult
         return new CompletionData(
             ParseUser(this),
             ParseDevice(this),
+            BankIdIssueDate,
             Signature,
             OcspResponse
         );

@@ -13,6 +13,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     private const string DefaultSurname = "Surname";
     private const string DefaultPersonalIdentityNumber = "199908072391";
     private const string DefaultUniqueHardwareId = "OZvYM9VvyiAmG7NA5jU5zqGcVpo=";
+    private const string DefaultBankIdIssueDate = "2023-01-01";
 
     private static readonly List<CollectState> DefaultCollectStates = new()
     {
@@ -28,6 +29,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     private readonly string _surname;
     private readonly string _name;
     private readonly string _personalIdentityNumber;
+    private readonly string _bankIdIssueDate;
     private readonly string _uniqueHardwareId;
     private readonly List<CollectState> _collectStates;
 
@@ -55,21 +57,22 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     }
 
     public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
-        : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, DefaultUniqueHardwareId, collectStates)
+        : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, collectStates)
     {
     }
 
     public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber)
-        : this(givenName, surname, name, personalIdentityNumber, DefaultUniqueHardwareId, DefaultCollectStates)
+        : this(givenName, surname, name, personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, DefaultCollectStates)
     {
     }
 
-    public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, string uniqueHardwareId, List<CollectState> collectStates)
+    public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, string bankIdIssueDate, string uniqueHardwareId, List<CollectState> collectStates)
     {
         _givenName = givenName;
         _surname = surname;
         _name = name;
         _personalIdentityNumber = personalIdentityNumber;
+        _bankIdIssueDate = bankIdIssueDate;
         _uniqueHardwareId = uniqueHardwareId;
         _collectStates = collectStates;
     }
@@ -175,7 +178,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         var signature = string.Empty; // Not implemented in the simulated client
         var ocspResponse = string.Empty; // Not implemented in the simulated client
 
-        return new CompletionData(user, device, signature, ocspResponse);
+        return new CompletionData(user, device, _bankIdIssueDate, signature, ocspResponse);
     }
 
     private CollectStatus GetStatus(int collectCalls)
