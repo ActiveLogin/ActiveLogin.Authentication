@@ -16,7 +16,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.ClaimsTransformation
 
 public class BankIdDefaultClaimsTransformer_Tests
 {
-    private readonly CompletionData EmptyCompletionData = new(new User("", "", "", ""), new Device("", ""), "", "", "");
+    private readonly CompletionData EmptyCompletionData = new(new User("", "", "", ""), new Device("", ""), "", new StepUp(false), "", "");
 
     [Fact]
     public async Task Should_Add_PIN_As_Sub_Claim()

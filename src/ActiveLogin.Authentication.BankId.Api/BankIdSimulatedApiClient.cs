@@ -175,10 +175,11 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
 
         var user = new User(personalIdentityNumber, _name, _givenName, _surname);
         var device = new Device(endUserIp, _uniqueHardwareId);
+        var stepUp = new StepUp(false); // Mrtd not supported in the simulated client
         var signature = string.Empty; // Not implemented in the simulated client
         var ocspResponse = string.Empty; // Not implemented in the simulated client
 
-        return new CompletionData(user, device, _bankIdIssueDate, signature, ocspResponse);
+        return new CompletionData(user, device, _bankIdIssueDate, stepUp, signature, ocspResponse);
     }
 
     private CollectStatus GetStatus(int collectCalls)

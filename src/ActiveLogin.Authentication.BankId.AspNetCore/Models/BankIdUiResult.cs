@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiResult
 {
-    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
+    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, bool mrtdVerified, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
     {
         IsSuccessful = isSuccessful;
 
@@ -18,6 +18,8 @@ public class BankIdUiResult
 
         BankIdIssueDate = bankIdIssueDate;
 
+        MrtdVerified = mrtdVerified;
+
         Signature = signature;
         OcspResponse = ocspResponse;
 
@@ -25,9 +27,9 @@ public class BankIdUiResult
         DetectedUniqueHardwareId = detectedUniqueHardwareId;
     }
 
-    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
+    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, bool mrtdVerified, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
     {
-        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, bankIdIssueDate, signature, ocspResponse, detectedIpAddress, detectedUniqueHardwareId);
+        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, bankIdIssueDate, mrtdVerified, signature, ocspResponse, detectedIpAddress, detectedUniqueHardwareId);
     }
 
     public bool IsSuccessful { get; }
@@ -42,6 +44,8 @@ public class BankIdUiResult
 
     public string BankIdIssueDate { get; }
 
+    public bool MrtdVerified { get; }
+
     public string Signature { get; }
     public string OcspResponse { get; }
 
@@ -54,6 +58,7 @@ public class BankIdUiResult
             ParseUser(this),
             ParseDevice(this),
             BankIdIssueDate,
+            ParseStepUp(this),
             Signature,
             OcspResponse
         );
@@ -61,4 +66,5 @@ public class BankIdUiResult
 
     private static User ParseUser(BankIdUiResult uiResult) => new(uiResult.PersonalIdentityNumber, uiResult.Name, uiResult.GivenName, uiResult.Surname);
     private static Device ParseDevice(BankIdUiResult uiResult) => new(uiResult.DetectedIpAddress, uiResult.DetectedUniqueHardwareId);
+    private static StepUp ParseStepUp(BankIdUiResult uiResult) => new(uiResult.MrtdVerified);
 }

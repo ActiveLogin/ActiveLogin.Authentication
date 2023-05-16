@@ -515,6 +515,21 @@ public class BankIdApiClient_Tests
     }
 
     [Fact]
+    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataStepUp()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"stepUp\": { \"mrtd\": true } } }");
+        var bankIdClient = new BankIdApiClient(httpClient);
+
+        // Act
+        var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.True(result.CompletionData.StepUp.Mrtd);
+    }
+
+    [Fact]
     public async Task CancelAsync_WithCancelRequest__ShouldPostToBankIdCancel_WithJsonPayload()
     {
         // Arrange

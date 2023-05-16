@@ -4,11 +4,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 public class CompletionData
 {
-    public CompletionData(User user, Device device, string bankIdIssueDate, string signature, string ocspResponse)
+    public CompletionData(User user, Device device, string bankIdIssueDate, StepUp stepUp, string signature, string ocspResponse)
     {
         User = user;
         Device = device;
         BankIdIssueDate = bankIdIssueDate;
+        StepUp = stepUp;
         Signature = signature;
         OcspResponse = ocspResponse;
     }
@@ -30,6 +31,12 @@ public class CompletionData
     /// </summary>
     [JsonPropertyName("bankIdIssueDate")]
     public string BankIdIssueDate { get; }
+
+    /// <summary>
+    /// Information about extra verifications that were part of the transaction. 
+    /// </summary>
+    [JsonPropertyName("stepUp")]
+    public StepUp StepUp { get; }
 
     /// <summary>
     /// The signature. Base64-encoded.

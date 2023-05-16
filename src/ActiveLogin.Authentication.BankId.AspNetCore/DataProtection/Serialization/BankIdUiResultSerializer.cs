@@ -18,6 +18,8 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
 
         writer.Write(model.BankIdIssueDate);
 
+        writer.Write(model.MrtdVerified);
+
         writer.Write(model.Signature);
         writer.Write(model.OcspResponse);
 
@@ -39,6 +41,8 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
             reader.ReadString(),
 
             reader.ReadString(),
+
+            reader.ReadBoolean(),
 
             reader.ReadString(),
             reader.ReadString(),
