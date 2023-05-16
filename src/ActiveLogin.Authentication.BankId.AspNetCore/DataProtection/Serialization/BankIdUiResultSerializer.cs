@@ -20,6 +20,7 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
         writer.Write(model.OcspResponse);
 
         writer.Write(model.DetectedIpAddress);
+        writer.Write(model.DetectedUniqueHardwareId);
     }
 
     protected override BankIdUiResult Read(BinaryReader reader)
@@ -38,6 +39,7 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
             reader.ReadString(),
             reader.ReadString(),
 
+            reader.ReadString(),
             reader.ReadString()
         );
     }

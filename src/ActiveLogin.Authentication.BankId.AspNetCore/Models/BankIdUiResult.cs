@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiResult
 {
-    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress)
+    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
     {
         IsSuccessful = isSuccessful;
 
@@ -20,11 +20,12 @@ public class BankIdUiResult
         OcspResponse = ocspResponse;
 
         DetectedIpAddress = detectedIpAddress;
+        DetectedUniqueHardwareId = detectedUniqueHardwareId;
     }
 
-    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress)
+    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
     {
-        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, signature, ocspResponse, detectedIpAddress);
+        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, signature, ocspResponse, detectedIpAddress, detectedUniqueHardwareId);
     }
 
     public bool IsSuccessful { get; }
@@ -41,6 +42,7 @@ public class BankIdUiResult
     public string OcspResponse { get; }
 
     public string DetectedIpAddress { get; }
+    public string DetectedUniqueHardwareId { get; }
 
     internal CompletionData GetCompletionData()
     {
@@ -53,5 +55,5 @@ public class BankIdUiResult
     }
 
     private static User ParseUser(BankIdUiResult uiResult) => new(uiResult.PersonalIdentityNumber, uiResult.Name, uiResult.GivenName, uiResult.Surname);
-    private static Device ParseDevice(BankIdUiResult uiResult) => new(uiResult.DetectedIpAddress);
+    private static Device ParseDevice(BankIdUiResult uiResult) => new(uiResult.DetectedIpAddress, uiResult.DetectedUniqueHardwareId);
 }
