@@ -19,9 +19,6 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
         writer.Write(model.Signature);
         writer.Write(model.OcspResponse);
 
-        writer.Write(model.CertNotBefore);
-        writer.Write(model.CertNotAfter);
-
         writer.Write(model.DetectedIpAddress);
     }
 
@@ -35,9 +32,6 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
             reader.ReadString(),
 
             reader.ReadString(),
-            reader.ReadString(),
-            reader.ReadString(),
-
             reader.ReadString(),
             reader.ReadString(),
 

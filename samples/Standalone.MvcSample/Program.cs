@@ -56,7 +56,6 @@ services
             options.LogUserNames = false;
 
             options.LogDeviceIpAddress = false;
-            options.LogCertificateDates = true;
         });
 
         bankId.UseQrCoderQrCodeGenerator();

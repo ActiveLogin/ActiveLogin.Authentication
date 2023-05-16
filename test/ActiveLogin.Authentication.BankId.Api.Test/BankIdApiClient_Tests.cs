@@ -499,24 +499,6 @@ public class BankIdApiClient_Tests
     }
 
     [Fact]
-    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataCertDates_ConvetedFromUnixEpochMillisecondsToDateTime()
-    {
-        // Arrange
-        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"cert\": { \"notBefore\": \"671630400000\", \"notAfter\": \"671659200000\" } } }");
-        var bankIdClient = new BankIdApiClient(httpClient);
-
-        // Act
-        var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal("671630400000", result.CompletionData.Cert.NotBefore);
-        Assert.Equal(new DateTimeOffset(1991, 4, 14, 12, 00, 00, TimeSpan.Zero), result.CompletionData.Cert.GetNotBeforeDateTime());
-        Assert.Equal("671659200000", result.CompletionData.Cert.NotAfter);
-        Assert.Equal(new DateTimeOffset(1991, 4, 14, 20, 00, 00, TimeSpan.Zero), result.CompletionData.Cert.GetNotAfterDateTime());
-    }
-
-    [Fact]
     public async Task CancelAsync_WithCancelRequest__ShouldPostToBankIdCancel_WithJsonPayload()
     {
         // Arrange

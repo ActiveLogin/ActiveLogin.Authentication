@@ -155,12 +155,6 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             properties.Add(PropertyName_BankIdUserDeviceIpAddress, e.CompletionData.Device.IpAddress);
         }
 
-        if (_options.LogCertificateDates)
-        {
-            properties.Add(PropertyName_BankIdUserCertNotBefore, e.CompletionData.Cert.NotBefore);
-            properties.Add(PropertyName_BankIdUserCertNotAfter, e.CompletionData.Cert.NotAfter);
-        }
-
         var personalIdentityNumber = PersonalIdentityNumber.Parse(e.CompletionData.User.PersonalIdentityNumber);
         return Track(
             e,

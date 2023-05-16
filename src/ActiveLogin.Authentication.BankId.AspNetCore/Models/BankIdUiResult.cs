@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiResult
 {
-    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string certNotBefore, string certNotAfter, string detectedIpAddress)
+    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress)
     {
         IsSuccessful = isSuccessful;
 
@@ -19,15 +19,12 @@ public class BankIdUiResult
         Signature = signature;
         OcspResponse = ocspResponse;
 
-        CertNotBefore = certNotBefore;
-        CertNotAfter = certNotAfter;
-
         DetectedIpAddress = detectedIpAddress;
     }
 
-    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string certNotBefore, string certNotAfter, string detectedIpAddress)
+    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string signature, string ocspResponse, string detectedIpAddress)
     {
-        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, signature, ocspResponse, certNotBefore, certNotAfter, detectedIpAddress);
+        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, signature, ocspResponse, detectedIpAddress);
     }
 
     public bool IsSuccessful { get; }
@@ -43,9 +40,6 @@ public class BankIdUiResult
     public string Signature { get; }
     public string OcspResponse { get; }
 
-    public string CertNotBefore { get; }
-    public string CertNotAfter { get; }
-
     public string DetectedIpAddress { get; }
 
     internal CompletionData GetCompletionData()
@@ -53,7 +47,6 @@ public class BankIdUiResult
         return new CompletionData(
             ParseUser(this),
             ParseDevice(this),
-            ParseCert(this),
             Signature,
             OcspResponse
         );
@@ -61,5 +54,4 @@ public class BankIdUiResult
 
     private static User ParseUser(BankIdUiResult uiResult) => new(uiResult.PersonalIdentityNumber, uiResult.Name, uiResult.GivenName, uiResult.Surname);
     private static Device ParseDevice(BankIdUiResult uiResult) => new(uiResult.DetectedIpAddress);
-    private static Cert ParseCert(BankIdUiResult uiResult) => new(uiResult.CertNotBefore, uiResult.CertNotAfter);
 }

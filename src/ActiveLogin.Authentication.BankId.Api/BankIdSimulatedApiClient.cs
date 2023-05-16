@@ -169,16 +169,10 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
 
         var user = new User(personalIdentityNumber, _name, _givenName, _surname);
         var device = new Device(endUserIp);
-
-        var certNow = DateTime.UtcNow;
-        var certNotBefore = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(-1));
-        var certNotAfter = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(1));
-        var cert = new Cert(certNotBefore.ToString("D"), certNotAfter.ToString("D"));
-
         var signature = string.Empty; // Not implemented in the simulated client
         var ocspResponse = string.Empty; // Not implemented in the simulated client
 
-        return new CompletionData(user, device, cert, signature, ocspResponse);
+        return new CompletionData(user, device, signature, ocspResponse);
     }
 
     private static long UnixTimestampMillisecondsFromDateTime(DateTime dateTime)

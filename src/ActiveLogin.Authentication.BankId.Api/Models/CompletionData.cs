@@ -4,11 +4,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 public class CompletionData
 {
-    public CompletionData(User user, Device device, Cert cert, string signature, string ocspResponse)
+    public CompletionData(User user, Device device, string signature, string ocspResponse)
     {
         User = user;
         Device = device;
-        Cert = cert;
         Signature = signature;
         OcspResponse = ocspResponse;
     }
@@ -24,12 +23,6 @@ public class CompletionData
     /// </summary>
     [JsonPropertyName("device")]
     public Device Device { get; }
-
-    /// <summary>
-    /// Information related to the users certificate (BankID).
-    /// </summary>
-    [JsonPropertyName("cert")]
-    public Cert Cert { get; }
 
     /// <summary>
     /// The signature. Base64-encoded.
