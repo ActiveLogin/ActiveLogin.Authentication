@@ -33,7 +33,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     private readonly string _uniqueHardwareId;
     private readonly List<CollectState> _collectStates;
 
-    private readonly Dictionary<string, Auth> _auths = new();
+    private readonly Dictionary<string, Session> _sessions = new();
     private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
     public BankIdSimulatedApiClient()
@@ -90,7 +90,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.EndUserIp).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false).ConfigureAwait(false);
         return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
@@ -101,11 +101,11 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.EndUserIp).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false).ConfigureAwait(false);
         return new SignResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
-    private async Task<OrderResponse> GetOrderResponseAsync(string endUserIp)
+    private async Task<OrderResponse> GetOrderResponseAsync(string endUserIp, bool mrtd)
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
@@ -116,8 +116,8 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         var qrStartToken = GetRandomToken();
         var qrStartSecret = GetRandomToken();
 
-        var auth = new Auth(endUserIp, orderRef, _personalIdentityNumber);
-        _auths.Add(orderRef, auth);
+        var session = new Session(endUserIp, orderRef, _personalIdentityNumber, mrtd);
+        _sessions.Add(orderRef, session);
         return new OrderResponse(orderRef, autoStartToken, qrStartToken, qrStartSecret);
     }
 
@@ -128,9 +128,9 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
 
     private async Task EnsureNoExistingAuth(string personalIdentityNumber)
     {
-        if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
+        if (_sessions.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
         {
-            var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
+            var existingAuthOrderRef = _sessions.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
             await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
 
             throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
@@ -141,32 +141,32 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
-        if (!_auths.ContainsKey(request.OrderRef))
+        if (!_sessions.ContainsKey(request.OrderRef))
         {
             throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found.");
         }
 
-        var auth = _auths[request.OrderRef];
-        var status = GetStatus(auth.CollectCalls);
-        var hintCode = GetHintCode(auth.CollectCalls);
+        var session = _sessions[request.OrderRef];
+        var status = GetStatus(session.CollectCalls);
+        var hintCode = GetHintCode(session.CollectCalls);
 
         if (status != CollectStatus.Complete)
         {
-            auth.CollectCalls += 1;
-            return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString());
+            session.CollectCalls += 1;
+            return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString());
         }
 
-        if (_auths.ContainsKey(request.OrderRef))
+        if (_sessions.ContainsKey(request.OrderRef))
         {
-            _auths.Remove(request.OrderRef);
+            _sessions.Remove(request.OrderRef);
         }
 
-        var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
+        var completionData = GetCompletionData(session.EndUserIp, status, session.PersonalIdentityNumber, session.Mrtd);
 
-        return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData, null);
+        return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString(), completionData, null);
     }
 
-    private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
+    private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber, bool mrtd)
     {
         if (status != CollectStatus.Complete)
         {
@@ -175,7 +175,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
 
         var user = new User(personalIdentityNumber, _name, _givenName, _surname);
         var device = new Device(endUserIp, _uniqueHardwareId);
-        var stepUp = new StepUp(false); // Mrtd not supported in the simulated client
+        var stepUp = mrtd ? new StepUp(true) : null;
         var signature = string.Empty; // Not implemented in the simulated client
         var ocspResponse = string.Empty; // Not implemented in the simulated client
 
@@ -203,9 +203,9 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
-        if (_auths.ContainsKey(request.OrderRef))
+        if (_sessions.ContainsKey(request.OrderRef))
         {
-            _auths.Remove(request.OrderRef);
+            _sessions.Remove(request.OrderRef);
         }
 
         return new CancelResponse();
@@ -216,13 +216,14 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         await Task.Delay(Delay).ConfigureAwait(false);
     }
 
-    private class Auth
+    private class Session
     {
-        public Auth(string endUserIp, string orderRef, string personalIdentityNumber)
+        public Session(string endUserIp, string orderRef, string personalIdentityNumber, bool mrtd)
         {
             EndUserIp = endUserIp;
             OrderRef = orderRef;
             PersonalIdentityNumber = personalIdentityNumber;
+            Mrtd = mrtd;
         }
 
         public string EndUserIp { get; }
@@ -230,6 +231,8 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         public string OrderRef { get; }
 
         public string PersonalIdentityNumber { get; }
+
+        public bool Mrtd { get; }
 
         public int CollectCalls { get; set; }
     }

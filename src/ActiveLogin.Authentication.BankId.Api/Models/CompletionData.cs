@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 public class CompletionData
 {
-    public CompletionData(User user, Device device, string bankIdIssueDate, StepUp stepUp, string signature, string ocspResponse)
+    public CompletionData(User user, Device device, string bankIdIssueDate, StepUp? stepUp, string signature, string ocspResponse)
     {
         User = user;
         Device = device;
