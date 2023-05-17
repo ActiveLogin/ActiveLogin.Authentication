@@ -75,5 +75,5 @@ public enum CollectHintCode
     /// <summary>
     /// Order is pending. A client has launched and received the order but additional steps for providing MRTD (Machine Readable Travel Document) information is required to proceed with the order.
     /// </summary>
-    userMrtd
+    UserMrtd
 }

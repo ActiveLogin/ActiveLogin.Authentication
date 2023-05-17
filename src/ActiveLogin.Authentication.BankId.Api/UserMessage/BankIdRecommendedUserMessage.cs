@@ -6,20 +6,14 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
 {
     private static readonly List<CollectResponseMapping> CollectResponseMappings = new()
     {
-        new (MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, tokenStartRequired: true, usingQrCode: true),
-        new (MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.NoClient }, tokenStartRequired: true, usingQrCode: false),
-        new (MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.NoClient, tokenStartRequired: false),
+        new (MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction }, usingQrCode: true),
+        new (MessageShortName.RFA13, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction }, usingQrCode: false),
 
-        new (MessageShortName.RFA1QR, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, tokenStartRequired: true, usingQrCode: true),
-        new (MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, tokenStartRequired: true, usingQrCode: false),
-        new (MessageShortName.RFA13, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction, CollectHintCode.NoClient }, tokenStartRequired: false),
+        new (MessageShortName.RFA1, CollectStatus.Pending, CollectHintCode.NoClient),
 
         new (MessageShortName.RFA9, CollectStatus.Pending, CollectHintCode.UserSign),
-        new (MessageShortName.RFA14A, CollectStatus.Pending, CollectHintCode.Started, tokenStartRequired: true, accessedFromMobileDevice: false),
-        new (MessageShortName.RFA14B, CollectStatus.Pending, CollectHintCode.Started, tokenStartRequired: true, accessedFromMobileDevice: true),
-        new (MessageShortName.RFA15A, CollectStatus.Pending, CollectHintCode.Started, tokenStartRequired: false, accessedFromMobileDevice: false),
-        new (MessageShortName.RFA15B, CollectStatus.Pending, CollectHintCode.Started, tokenStartRequired: false, accessedFromMobileDevice: true),
-
+        new (MessageShortName.RFA15A, CollectStatus.Pending, CollectHintCode.Started, accessedFromMobileDevice: false),
+        new (MessageShortName.RFA15B, CollectStatus.Pending, CollectHintCode.Started, accessedFromMobileDevice: true),
 
         new (MessageShortName.RFA3, CollectHintCode.Cancelled),
         new (MessageShortName.RFA6, CollectHintCode.UserCancel),
@@ -31,7 +25,7 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
         new (MessageShortName.RFA21, CollectStatus.Pending, CollectHintCode.Unknown),
         new (MessageShortName.RFA22, CollectStatus.Failed, CollectHintCode.Unknown),
 
-        new (MessageShortName.RFA23, CollectStatus.Pending, CollectHintCode.userMrtd)
+        new (MessageShortName.RFA23, CollectStatus.Pending, CollectHintCode.UserMrtd)
     };
 
     private static readonly List<ErrorResponseMapping> ErrorResponseMappings = new List<ErrorResponseMapping>()
@@ -44,14 +38,12 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
     public MessageShortName GetMessageShortNameForCollectResponse(
         CollectStatus collectStatus,
         CollectHintCode hintCode,
-        bool tokenStartRequired,
         bool accessedFromMobileDevice,
         bool usingQrCode)
     {
         var mapping = CollectResponseMappings
             .Where(x => !x.CollectStatuses.Any() || x.CollectStatuses.Contains(collectStatus))
             .Where(x => !x.CollectHintCodes.Any() || x.CollectHintCodes.Contains(hintCode))
-            .Where(x => x.TokenStartRequired == null || x.TokenStartRequired == tokenStartRequired)
             .Where(x => x.AccessedFromMobileDevice == null || x.AccessedFromMobileDevice == accessedFromMobileDevice)
             .Where(x => x.UsingQrCode == null || x.UsingQrCode == usingQrCode)
             .FirstOrDefault(x => x.MessageShortName != MessageShortName.Unknown);
@@ -74,12 +66,11 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
 
         public List<CollectHintCode> CollectHintCodes { get; } = new List<CollectHintCode>();
         public List<CollectStatus> CollectStatuses { get; } = new List<CollectStatus>();
-        public bool? TokenStartRequired { get; }
         public bool? AccessedFromMobileDevice { get; }
         public bool? UsingQrCode { get; }
 
-        public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, CollectHintCode collectHintCode, bool? tokenStartRequired = null, bool? accessedFromMobileDevice = null)
-            : this(messageShortName, new List<CollectStatus>() { collectStatus }, new List<CollectHintCode>() { collectHintCode }, tokenStartRequired, accessedFromMobileDevice)
+        public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, CollectHintCode collectHintCode, bool? accessedFromMobileDevice = null)
+            : this(messageShortName, new List<CollectStatus>() { collectStatus }, new List<CollectHintCode>() { collectHintCode }, accessedFromMobileDevice)
         {
         }
 
@@ -89,12 +80,7 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
         }
 
         public CollectResponseMapping(MessageShortName messageShortName, CollectHintCode collectHintCode, bool usingQrCode)
-            : this(messageShortName, new List<CollectStatus>() { }, new List<CollectHintCode>() { collectHintCode }, null, null, usingQrCode)
-        {
-        }
-
-        public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, params CollectHintCode[] collectHintCodes)
-            : this(messageShortName, new List<CollectStatus>() { collectStatus }, collectHintCodes.ToList())
+            : this(messageShortName, new List<CollectStatus>() { }, new List<CollectHintCode>() { collectHintCode }, null, usingQrCode)
         {
         }
 
@@ -102,14 +88,12 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
             MessageShortName messageShortName,
             IEnumerable<CollectStatus> collectStatuses,
             IEnumerable<CollectHintCode> collectHintCodes,
-            bool? tokenStartRequired = null,
             bool? accessedFromMobileDevice = null,
             bool? usingQrCode = null)
         {
             MessageShortName = messageShortName;
             CollectStatuses.AddRange(collectStatuses);
             CollectHintCodes.AddRange(collectHintCodes);
-            TokenStartRequired = tokenStartRequired;
             AccessedFromMobileDevice = accessedFromMobileDevice;
             UsingQrCode = usingQrCode;
         }

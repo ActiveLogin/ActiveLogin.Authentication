@@ -11,12 +11,6 @@ public class Requirement
     /// 
     /// </summary>
     /// <param name="certificatePolicies">The oid in certificate policies in the user certificate. List of String.</param>
-    /// <param name="tokenStartRequired">
-    /// If set to true, the client must have been started using the AutoStartToken.
-    /// To be used if it is important that the BankID App is on the same device as the RP service.
-    /// 
-    /// If set to false, the client does not need to be started using the autoStartToken.
-    /// </param>
     /// <param name="pinCode">
     /// Users are required to sign the transaction with their PIN 
     /// code, even if they have biometrics activated.
@@ -34,10 +28,9 @@ public class Requirement
     /// <param name="personalNumber">
     /// A personal number to be used to complete the transaction. If a BankID with another personal number attempts to sign the transaction, it fails.
     /// </param>
-    public Requirement(List<string>? certificatePolicies = null, bool? tokenStartRequired = null, bool? pinCode = null, bool? mrtd = null, string? personalNumber = null)
+    public Requirement(List<string>? certificatePolicies = null, bool? pinCode = null, bool? mrtd = null, string? personalNumber = null)
     {
         CertificatePolicies = certificatePolicies;
-        TokenStartRequired = tokenStartRequired;
         PinCode = pinCode;
         Mrtd = mrtd;
         PersonalNumber = personalNumber;
@@ -48,15 +41,6 @@ public class Requirement
     /// </summary>
     [JsonPropertyName("certificatePolicies"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public List<string>? CertificatePolicies { get; }
-
-    /// <summary>
-    /// If set to true, the client must have been started using the AutoStartToken.
-    /// To be used if it is important that the BankID App is on the same device as the RP service.
-    /// 
-    /// If set to false, the client does not need to be started using the autoStartToken.
-    /// </summary>
-    [JsonPropertyName("tokenStartRequired"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public bool? TokenStartRequired { get; }
 
     /// <summary>
     /// Users are required to sign the transaction with their PIN 
