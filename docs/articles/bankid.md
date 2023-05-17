@@ -678,7 +678,6 @@ The defaults for cancellation are as follows:
 
 * Same Device Scheme returns to scheme selection
 * Other Device Scheme returns to scheme selection when using QR codes
-* Other Device Scheme returns to PIN input when using PIN input instead of QR codes
 
 It is possible to override the default navigation when cancelling an authentication request. The URL used for navigation is set through the `cancelReturnUrl` item in the `AuthenticationProperties` passed in the authentication challenge.
 
@@ -902,7 +901,7 @@ services
                 options.LogUserNames = false;
 
                 options.LogDeviceIpAddress = false;
-                options.LogCertificateDates = true;
+                options.LogDeviceUniqueHardwareId = true;
 
                 // And more...
             });
