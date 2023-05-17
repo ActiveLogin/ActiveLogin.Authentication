@@ -7,7 +7,6 @@ public interface IBankIdUserMessage
     MessageShortName GetMessageShortNameForCollectResponse(
         CollectStatus collectStatus,
         CollectHintCode hintCode,
-        bool tokenStartRequired,
         bool accessedFromMobileDevice,
         bool usingQrCode);
 
