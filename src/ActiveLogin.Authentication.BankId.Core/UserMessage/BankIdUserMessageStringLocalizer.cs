@@ -9,7 +9,7 @@ public class BankIdUserMessageLocalizer : IBankIdUserMessageLocalizer
     private static readonly Dictionary<MessageShortName, Translation> Translations = new()
     {
         { MessageShortName.RFA1, new("Starta BankID-appen", "Start your BankID app.") },
-        { MessageShortName.RFA2, new("Du har inte BankID-appen installerad. Kontakta din internetbank.", "The BankID app is not installed. Please contact your internet bank.") },
+        { MessageShortName.RFA2, new("Du har inte BankID-appen installerad. Kontakta din bank.", "The BankID app is not installed. Please contact your bank.") },
         { MessageShortName.RFA3, new("Åtgärden avbruten. Försök igen.", "The action was cancelled. Please try again") },
         { MessageShortName.RFA4, new("En identifiering eller underskrift för det här personnumret är redan påbörjad. Försök igen.", "An identification or signing for this personal number is already started. Please try again.") },
         { MessageShortName.RFA5, new("Något gick fel. Försök igen.", "Something went wrong. Please try again") },
