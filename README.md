@@ -52,7 +52,6 @@ ___Note:___ This Readme reflects the state of our main branch and the code docum
   + [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
   + [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
   + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
-  + [Where did the packages for GrandId / Svensk E-identitet go?](#where-did-the-packages-for-grandid--svensk-e-identitet-go)
 * [Active Login](#active-login)
   + [Security](#security)
   + [Contribute](#contribute)
@@ -199,14 +198,6 @@ dotnet run
 Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of IdentityServer (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID support.
 
 ![Active Login with Azure AD B2C](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-setup-azuread-b2c.png)
-
-
-### Where did the packages for GrandId / Svensk E-identitet go?
-
-The packages in ActiveLogin for Svensk E-identitet / GrandID are not beeing worked on anymore, and are therefore not supported as part of this open source project.
-
-The [documentation available](docs/articles/grandid.md) is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
-
 
 
 ---

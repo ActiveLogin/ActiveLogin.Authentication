@@ -4,7 +4,7 @@
 
 Active Login is an open source project under the MIT-license and the software is provided "as is", without warranty of any kind.
 
-The work we do regarding feature updates, security patches and maintenence is focused on the latest stable of the BankID-libraries available on NuGet. GrandID is not supported anymore.
+The work we do regarding feature updates, security patches and maintenence is focused on the latest stable of the BankID-libraries available on NuGet.
 
 If you need an SLA, support for older versions or patches to be applied to older versions we can help you on a case to case basis, see contact details under [Commercial support](https://activelogin.net/#support).
 
