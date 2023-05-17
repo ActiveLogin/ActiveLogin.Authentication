@@ -18,9 +18,19 @@ public class ApplicationInsightsBankIdEventListenerOptions
     public bool LogUserNames { get; set; } = false;
 
     /// <summary>
+    /// If issue date of the users Bank Id should be logged.
+    /// </summary>
+    public bool LogUserBankIdIssueDate { get; set; } = false;
+
+    /// <summary>
     /// If ip address of the device should be logged.
     /// </summary>
     public bool LogDeviceIpAddress { get; set; } = false;
+
+    /// <summary>
+    /// If unique hardware id of the device should be logged.
+    /// </summary>
+    public bool LogDeviceUniqueHardwareId { get; set; } = false;
 
     /// <summary>
     /// If detected user device should be logged (browser, os, os version, type).

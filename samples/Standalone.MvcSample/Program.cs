@@ -55,7 +55,10 @@ services
 
             options.LogUserNames = false;
 
+            options.LogUserBankIdIssueDate = false;
+
             options.LogDeviceIpAddress = false;
+            options.LogDeviceUniqueHardwareId = false;
         });
 
         bankId.UseQrCoderQrCodeGenerator();

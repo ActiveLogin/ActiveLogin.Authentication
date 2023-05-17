@@ -34,9 +34,10 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
     private const string PropertyName_BankIdOrderRef = "AL_BankId_OrderRef";
     private const string PropertyName_BankIdCollectHintCode = "AL_BankId_CollectHintCode";
 
-    private const string PropertyName_BankIdUserCertNotBefore = "AL_BankId_User_CertNotBefore";
-    private const string PropertyName_BankIdUserCertNotAfter = "AL_BankId_User_CertNotAfter";
     private const string PropertyName_BankIdUserDeviceIpAddress = "AL_BankId_User_DeviceIpAddress";
+    private const string PropertyName_BankIdUserDeviceUniqueHardwareId = "AL_BankId_User_DeviceUniqueHardwareId";
+
+    private const string PropertyName_BankIdUserBankIdIssueDate = "AL_BankId_User_BankIdIssueDate";
 
     private const string PropertyName_UserDeviceBrowser = "AL_User_Device_Browser";
     private const string PropertyName_UserDeviceOs = "AL_User_Device_Os";
@@ -150,9 +151,19 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             properties.Add(PropertyName_UserSurname, e.CompletionData.User.Surname);
         }
 
+        if (_options.LogUserBankIdIssueDate)
+        {
+            properties.Add(PropertyName_BankIdUserBankIdIssueDate, e.CompletionData.BankIdIssueDate);
+        }
+
         if (_options.LogDeviceIpAddress)
         {
             properties.Add(PropertyName_BankIdUserDeviceIpAddress, e.CompletionData.Device.IpAddress);
+        }
+
+        if (_options.LogDeviceUniqueHardwareId)
+        {
+            properties.Add(PropertyName_BankIdUserDeviceUniqueHardwareId, e.CompletionData.Device.Uhi);
         }
 
         var personalIdentityNumber = PersonalIdentityNumber.Parse(e.CompletionData.User.PersonalIdentityNumber);
