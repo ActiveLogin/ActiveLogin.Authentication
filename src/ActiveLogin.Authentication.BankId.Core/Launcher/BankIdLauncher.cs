@@ -20,14 +20,24 @@ internal class BankIdLauncher : IBankIdLauncher
     private const string IosFirefoxScheme = "firefox://";
 
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
+    private readonly List<IBankIdLauncherCustomAppCallback> _customAppCallbacks;
 
-    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector)
+    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IEnumerable<IBankIdLauncherCustomAppCallback> customAppCallbacks)
     {
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+        _customAppCallbacks = customAppCallbacks.ToList();
     }
 
-    public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request)
+    public async Task<BankIdLaunchInfo> GetLaunchInfo(LaunchUrlRequest request)
     {
+        var customAppCallback = await GetRelevantCustomAppCallbackAsync(_customAppCallbacks);
+
+        if (customAppCallback != null)
+        {
+            var launchUrl = customAppCallback.GetCustomAppReturnUrlScheme();
+        }
+
+
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
         var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice);
@@ -146,6 +156,19 @@ internal class BankIdLauncher : IBankIdLauncher
             // Return empty string so user can go back manually, will catch unknown third party browsers
             _ => string.Empty
         };
+    }
+
+    private static async Task<IBankIdLauncherCustomAppCallback?> GetRelevantCustomAppCallbackAsync(List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    {
+        foreach (var callback in customAppCallbacks)
+        {
+            if (await callback.IsCustomApp())
+            {
+                return callback;
+            }
+        }
+
+        return null;
     }
 
     private static string Base64Encode(string value)
