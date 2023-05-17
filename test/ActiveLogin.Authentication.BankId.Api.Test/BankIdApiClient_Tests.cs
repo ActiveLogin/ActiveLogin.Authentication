@@ -100,48 +100,23 @@ public class BankIdApiClient_Tests
         });
     }
 
-
-    [Fact]
-    public async Task AuthAsync_WithEndUserIp_AndPin__ShouldPostJsonPayload_WithEndUserIp_AndPersonalNumber_AndNoRequirements()
-    {
-        // Arrange
-
-        // Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392"));
-
-        // Assert
-        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
-
-        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
-        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
-        JsonTests.AssertOnlyProperties(contentString, new[]
-        {
-            "endUserIp",
-            "personalNumber",
-            "requirement"
-        });
-    }
-
-
     [Fact]
     public async Task AuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
     {
         // Arrange
 
         // Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
+        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
         var contentString = await request.Content.ReadAsStringAsync();
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
-        JsonTests.AssertSubProperty(contentString, "requirement", "allowFingerprint", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
-        JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "mrtd", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "personalNumber", "190001010101");
     }
 
     [Fact]
@@ -170,7 +145,7 @@ public class BankIdApiClient_Tests
         string asBase64 = Convert.ToBase64String(userNonVisibleData);
 
         //Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", null, null, "Hello", userNonVisibleData, "simpleMarkdownV1"));
+        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", null, "Hello", userNonVisibleData, "simpleMarkdownV1"));
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -241,7 +216,7 @@ public class BankIdApiClient_Tests
     }
 
     [Fact]
-    public async Task SignAsync_WithEndUserIp__ShouldPostJsonPayload_WithEndUserIp_AndUserVisibleData_AndNoPersonalNumber_AndRequirementAsEmptyObject()
+    public async Task SignAsync_WithEndUserIp__ShouldPostJsonPayload_WithEndUserIp_AndUserVisibleData_AndRequirementAsEmptyObject()
     {
         // Arrange
 
@@ -264,25 +239,23 @@ public class BankIdApiClient_Tests
     }
 
     [Fact]
-    public async Task SignAsync_WithEndUserIp_AndPin__ShouldPostJsonPayload_WithEndUserIp_AndPersonalNumber_AndUserVisibleData_AndNoRequirements()
+    public async Task SignAsync_WithEndUserIp__ShouldPostJsonPayload_WithEndUserIp_AndUserVisibleData_AndNoRequirements()
     {
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null, "201801012392"));
+        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
         var contentString = await request.Content.ReadAsStringAsync();
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
         JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
         JsonTests.AssertOnlyProperties(contentString, new[]
         {
             "endUserIp",
-            "personalNumber",
             "requirement",
             "userVisibleData"
         });
@@ -319,23 +292,22 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), "201801012392", new Requirement(new List<string> { "req1", "req2" }, true, true)));
+        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
         var contentString = await request.Content.ReadAsStringAsync();
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
-        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
-        JsonTests.AssertSubProperty(contentString, "requirement", "allowFingerprint", true);
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
-        JsonTests.AssertSubProperty(contentString, "requirement", "tokenStartRequired", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "mrtd", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "personalNumber", "190001010101");
         JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
         JsonTests.AssertProperty(contentString, "userNonVisibleData", "dXNlck5vblZpc2libGVEYXRh");
         JsonTests.AssertOnlyProperties(contentString, new[]
         {
             "endUserIp",
-            "personalNumber",
             "requirement",
             "userVisibleData",
             "userNonVisibleData"
@@ -430,6 +402,22 @@ public class BankIdApiClient_Tests
     }
 
     [Fact]
+    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCallInitiator()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"callInitiator\":\"User\" }");
+        var bankIdClient = new BankIdApiClient(httpClient);
+
+        // Act
+        var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("User", result.CallInitiator);
+        Assert.Equal(CollectCallInitiator.User, result.GetCollectCallInitiator());
+    }
+
+    [Fact]
     public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnOrderRef()
     {
         // Arrange
@@ -497,7 +485,7 @@ public class BankIdApiClient_Tests
     public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataDevice()
     {
         // Arrange
-        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"device\": { \"ipAddress\": \"1.1.1.1\" } } }");
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"device\": { \"ipAddress\": \"1.1.1.1\", \"uhi\": \"OZvYM9VvyiAmG7NA5jU5zqGcVpo=\" } } }");
         var bankIdClient = new BankIdApiClient(httpClient);
 
         // Act
@@ -506,13 +494,14 @@ public class BankIdApiClient_Tests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("1.1.1.1", result.CompletionData.Device.IpAddress);
+        Assert.Equal("OZvYM9VvyiAmG7NA5jU5zqGcVpo=", result.CompletionData.Device.Uhi);
     }
 
     [Fact]
-    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataCertDates_ConvetedFromUnixEpochMillisecondsToDateTime()
+    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataBankIdIssueDate()
     {
         // Arrange
-        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"cert\": { \"notBefore\": \"671630400000\", \"notAfter\": \"671659200000\" } } }");
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"bankIdIssueDate\": \"2023-01-01\" } }");
         var bankIdClient = new BankIdApiClient(httpClient);
 
         // Act
@@ -520,10 +509,22 @@ public class BankIdApiClient_Tests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal("671630400000", result.CompletionData.Cert.NotBefore);
-        Assert.Equal(new DateTimeOffset(1991, 4, 14, 12, 00, 00, TimeSpan.Zero), result.CompletionData.Cert.GetNotBeforeDateTime());
-        Assert.Equal("671659200000", result.CompletionData.Cert.NotAfter);
-        Assert.Equal(new DateTimeOffset(1991, 4, 14, 20, 00, 00, TimeSpan.Zero), result.CompletionData.Cert.GetNotAfterDateTime());
+        Assert.Equal("2023-01-01", result.CompletionData.BankIdIssueDate);
+    }
+
+    [Fact]
+    public async Task CollectAsync_WithCollectRequest__ShouldParseAndReturnCompletionDataStepUp()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"stepUp\": { \"mrtd\": true } } }");
+        var bankIdClient = new BankIdApiClient(httpClient);
+
+        // Act
+        var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.True(result.CompletionData.StepUp.Mrtd);
     }
 
     [Fact]

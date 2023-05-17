@@ -155,7 +155,8 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         var uiOptions = new BankIdUiOptions(
             Options.BankIdCertificatePolicies,
             Options.BankIdSameDevice,
-            Options.BankIdAllowBiometric,
+            Options.BankIdRequirePinCode,
+            Options.BankIdRequireMrtd,
             BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
             Options.StateCookie.Name ?? string.Empty
         );

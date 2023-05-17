@@ -16,13 +16,15 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
         writer.Write(model.GivenName);
         writer.Write(model.Surname);
 
+        writer.Write(model.BankIdIssueDate);
+
+        writer.Write(model.MrtdVerified);
+
         writer.Write(model.Signature);
         writer.Write(model.OcspResponse);
 
-        writer.Write(model.CertNotBefore);
-        writer.Write(model.CertNotAfter);
-
         writer.Write(model.DetectedIpAddress);
+        writer.Write(model.DetectedUniqueHardwareId);
     }
 
     protected override BankIdUiResult Read(BinaryReader reader)
@@ -39,11 +41,13 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
             reader.ReadString(),
 
             reader.ReadString(),
-            reader.ReadString(),
+
+            reader.ReadBoolean(),
 
             reader.ReadString(),
             reader.ReadString(),
 
+            reader.ReadString(),
             reader.ReadString()
         );
     }

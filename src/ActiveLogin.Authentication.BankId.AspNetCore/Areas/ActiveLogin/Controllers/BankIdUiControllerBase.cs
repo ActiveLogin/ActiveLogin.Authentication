@@ -161,6 +161,6 @@ public abstract class BankIdUiControllerBase : Controller
     {
         return uiOptions.SameDevice
             ? MessageShortName.RFA13
-            : MessageShortName.RFA1QR;
+            : MessageShortName.RFA1;
     }
 }

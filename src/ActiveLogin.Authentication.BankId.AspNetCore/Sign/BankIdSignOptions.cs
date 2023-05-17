@@ -10,9 +10,15 @@ public class BankIdSignOptions
     public List<string> BankIdCertificatePolicies { get; set; } = new();
 
     /// <summary>
-    /// Users of iOS and Android devices may use fingerprint or face recognition for authentication if the device supports it and the user configured the device to use it.
+    /// Users are required to sign the transaction with their PIN code, even if they have biometrics activated.
     /// </summary>
-    public bool BankIdAllowBiometric { get; set; } = true;
+    public bool BankIdRequirePinCode { get; set; } = false;
+
+    /// <summary>
+    /// If present, and set to "true", the client needs to provide MRTD (Machine readable travel document)
+    /// information to complete the order. Only Swedish passports and national ID cards are supported.
+    /// </summary>
+    public bool BankIdRequireMrtd { get; set; } = false;
 
     /// <summary>
     /// Auto launch the BankID app on the current device.

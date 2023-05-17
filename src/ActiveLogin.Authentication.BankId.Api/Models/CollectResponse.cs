@@ -8,15 +8,16 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 public class CollectResponse
 {
     public CollectResponse(string orderRef, string status, string hintCode)
-        : this(orderRef, status, hintCode, null)
+        : this(orderRef, status, hintCode, null, null)
     {
     }
 
     [JsonConstructor]
-    public CollectResponse(string orderRef, string status, string hintCode, CompletionData? completionData)
+    public CollectResponse(string orderRef, string status, string hintCode, CompletionData? completionData, string? callInitiator)
     {
         OrderRef = orderRef;
         Status = status;
+        CallInitiator = callInitiator;
         HintCode = hintCode;
         CompletionData = completionData;
     }
@@ -40,6 +41,14 @@ public class CollectResponse
     /// <remarks>Only present for pending and failed orders.</remarks>
     [JsonPropertyName("hintCode")]
     public string HintCode { get; }
+
+    /// <summary>
+    /// Collect call initiator.
+    /// Indicates whether RP or user initiated a phone/auth, if phone authentication.
+    /// </summary>
+    /// <remarks>Only present for phone authentication.</remarks>
+    [JsonPropertyName("callInitiator")]
+    public string? CallInitiator { get; }
 
     /// <summary>
     /// The completionData includes the signature, user information and the OCSP response.

@@ -7,9 +7,10 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 /// </summary>
 public class Device
 {
-    public Device(string ipAddress)
+    public Device(string ipAddress, string uhi)
     {
         IpAddress = ipAddress;
+        Uhi = uhi;
     }
 
     /// <summary>
@@ -17,4 +18,10 @@ public class Device
     /// </summary>
     [JsonPropertyName("ipAddress")]
     public string IpAddress { get; }
+
+    /// <summary>
+    /// A unique hardware id of the users device.
+    /// </summary>
+    [JsonPropertyName("uhi")]
+    public string Uhi { get; }
 }

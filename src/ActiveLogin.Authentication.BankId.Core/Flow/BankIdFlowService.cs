@@ -97,14 +97,13 @@ public class BankIdFlowService : IBankIdFlowService
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
 
-        var authRequestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.AllowBiometric);
+        var authRequestRequirement = new Requirement(certificatePolicies, flowOptions.RequirePinCode, flowOptions.RequireMrtd);
 
         var authRequestContext = new BankIdAuthRequestContext(endUserIp, authRequestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
 
         return new AuthRequest(
             endUserIp,
-            null,
             authRequestRequirement,
             userData.UserVisibleData,
             userData.UserNonVisibleData,
@@ -155,7 +154,7 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
-        var requestRequirement = new Requirement(certificatePolicies, tokenStartRequired: true, flowOptions.AllowBiometric);
+        var requestRequirement = new Requirement(certificatePolicies, flowOptions.RequirePinCode, flowOptions.RequireMrtd);
 
         return new SignRequest(
             endUserIp,
@@ -234,12 +233,10 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var accessedFromMobileDevice = detectedDevice.DeviceType == BankIdSupportedDeviceType.Mobile;
         var usingQrCode = !unprotectedFlowOptions.SameDevice;
-        var tokenStartRequired = true; // Only flow we support
 
         var messageShortName = _bankIdUserMessage.GetMessageShortNameForCollectResponse(
             collectResponse.GetCollectStatus(),
             collectResponse.GetCollectHintCode(),
-            tokenStartRequired: tokenStartRequired,
             accessedFromMobileDevice,
             usingQrCode
         );

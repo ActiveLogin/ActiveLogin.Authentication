@@ -89,9 +89,10 @@ services
             options.LogUserPersonalIdentityNumberHints = true;
 
             options.LogUserNames = false;
+            options.LogUserBankIdIssueDate = false;
 
             options.LogDeviceIpAddress = false;
-            options.LogCertificateDates = true;
+            options.LogDeviceUniqueHardwareId = false;
         });
 
         bankId.UseQrCoderQrCodeGenerator();

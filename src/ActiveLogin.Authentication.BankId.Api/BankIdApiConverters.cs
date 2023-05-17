@@ -43,6 +43,14 @@ public class BankIdApiConverters
     }
 
     /// <summary>
+    /// Parse collect call initiator from string.
+    /// </summary>
+    public static CollectCallInitiator ParseCollectCallInitiator(string? callInitiator)
+    {
+        return Enum.TryParse<CollectCallInitiator>(callInitiator, true, out var parsedStatus) ? parsedStatus : CollectCallInitiator.Unknown;
+    }
+
+    /// <summary>
     /// Get XML from Base64 encoded string.
     /// </summary>
     public static string GetXml(string base64EncodedXml)
