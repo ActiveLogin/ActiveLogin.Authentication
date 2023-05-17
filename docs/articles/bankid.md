@@ -902,6 +902,7 @@ services
 
                 options.LogDeviceIpAddress = false;
                 options.LogDeviceUniqueHardwareId = true;
+                options.LogUserBankIdIssueDate = true;
 
                 // And more...
             });
