@@ -441,8 +441,12 @@ BankId options allows you to set and override some options such as these.
 ```csharp
 .AddOtherDevice(options =>
 {
-    // If the user can use biometric identification such as fingerprint or face recognition
-    options.BankIdAllowBiometric = false;
+    // If the client needs to provide MRTD (Machine readable travel document) information to complete the order.
+    // Only Swedish passports and national ID cards are supported.
+    options.BankIdRequireMrtd = true;
+
+    // Users are required to sign the transaction with their PIN code, even if they have biometrics activated.
+    options.BankIdRequirePinCode = true;
 
     // Limit possible login methods to, for example, only allow BankID on smartcard.
     options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(...);
