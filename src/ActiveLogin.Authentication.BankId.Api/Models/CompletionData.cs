@@ -36,7 +36,7 @@ public class CompletionData
     /// Information about extra verifications that were part of the transaction. 
     /// </summary>
     [JsonPropertyName("stepUp")]
-    public StepUp StepUp { get; }
+    public StepUp? StepUp { get; }
 
     /// <summary>
     /// The signature. Base64-encoded.

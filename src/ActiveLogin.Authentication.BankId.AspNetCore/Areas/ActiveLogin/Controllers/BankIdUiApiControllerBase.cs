@@ -150,7 +150,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             user.GivenName,
             user.Surname,
             completionData.BankIdIssueDate,
-            completionData.StepUp.Mrtd,
+            completionData.StepUp?.Mrtd ?? false,
             completionData.Signature,
             completionData.OcspResponse,
             completionData.Device.IpAddress,
