@@ -6,8 +6,8 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
 {
     private static readonly List<CollectResponseMapping> CollectResponseMappings = new()
     {
-        new (MessageShortName.RFA1, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction }, usingQrCode: true),
-        new (MessageShortName.RFA13, new [] { CollectStatus.Pending }, new [] { CollectHintCode.OutstandingTransaction }, usingQrCode: false),
+        new (MessageShortName.RFA1, CollectStatus.Pending, CollectHintCode.OutstandingTransaction, usingQrCode: true),
+        new (MessageShortName.RFA13, CollectStatus.Pending, CollectHintCode.OutstandingTransaction, usingQrCode: false),
 
         new (MessageShortName.RFA1, CollectStatus.Pending, CollectHintCode.NoClient),
 
@@ -69,17 +69,12 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
         public bool? AccessedFromMobileDevice { get; }
         public bool? UsingQrCode { get; }
 
-        public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, CollectHintCode collectHintCode, bool? accessedFromMobileDevice = null)
-            : this(messageShortName, new List<CollectStatus>() { collectStatus }, new List<CollectHintCode>() { collectHintCode }, accessedFromMobileDevice)
+        public CollectResponseMapping(MessageShortName messageShortName, CollectStatus collectStatus, CollectHintCode collectHintCode, bool? accessedFromMobileDevice = null, bool? usingQrCode = null)
+            : this(messageShortName, new List<CollectStatus>() { collectStatus }, new List<CollectHintCode>() { collectHintCode }, accessedFromMobileDevice, usingQrCode)
         {
         }
 
-        public CollectResponseMapping(MessageShortName messageShortName, params CollectHintCode[] collectHintCodes)
-            : this(messageShortName, new List<CollectStatus>() { }, collectHintCodes.ToList())
-        {
-        }
-
-        public CollectResponseMapping(MessageShortName messageShortName, CollectHintCode collectHintCode, bool usingQrCode)
+        public CollectResponseMapping(MessageShortName messageShortName, CollectHintCode collectHintCode, bool? usingQrCode = null)
             : this(messageShortName, new List<CollectStatus>() { }, new List<CollectHintCode>() { collectHintCode }, null, usingQrCode)
         {
         }
