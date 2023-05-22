@@ -609,7 +609,9 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             .ConfigureServices(services =>
             {
                 services.AddBankId(configureBankId);
-                services.AddAuthentication().AddBankIdAuth(configureBankIdAuth);
+                services.AddAuthentication()
+                    .AddCookie()
+                    .AddBankIdAuth(configureBankIdAuth);
                 services.AddMvc();
                 configureServices?.Invoke(services);
             });
