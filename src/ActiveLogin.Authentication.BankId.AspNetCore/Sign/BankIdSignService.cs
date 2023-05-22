@@ -12,6 +12,7 @@ using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
@@ -107,13 +108,13 @@ public class BankIdSignService : IBankIdSignService
         await _antiforgery.ValidateRequestAsync(httpContext);
 
         var protectedUiResult = httpContext.Request.Form[BankIdConstants.FormParameters.UiResult];
-        if (string.IsNullOrEmpty(protectedUiResult))
+        if (StringValues.IsNullOrEmpty(protectedUiResult))
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
             return new BankIdSignResult(false, state.BankIdSignProperties);
         }
 
-        var uiResult = _uiResultProtector.Unprotect(protectedUiResult);
+        var uiResult = _uiResultProtector.Unprotect(protectedUiResult.ToString());
         if (!uiResult.IsSuccessful)
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));

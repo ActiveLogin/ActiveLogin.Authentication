@@ -5,7 +5,35 @@ Here we try to make a summary of the major breaking changes in things that you a
 ___Note:___ We might, and will probably, miss to document some of this - if so - please make a PR to this file and add a note on such breaking change.
 
 
+## TOC
+
+* [Version 7.0.0](#version-700)
+* [Version 6.0.3](#version-603)
+* [Version 6.0.0](#version-600)
+* [Version 5.0.0](#version-500)
+* [Version 4.0.0](#version-400)
+
 ---
+
+## Version 7.0.0
+
+Breaking changes between version 7.0.0 and 6.0.3
+
+### Upgrade to .NET 7
+
+We now require .NET 7 - so this requires you to upgrade your website that uses Active Login.
+
+### API changes
+
+The API has changed to reflect the new BankID API (v 6.0). An overview of those changes can be found [in this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/402).
+
+### Custom options
+
+Some API changes (as described above) propagates to the options you can customize per authentication scheme. The following options have been changed:
+
+- `BankIdAllowBiometric` is removed and replaced by `BankIdRequirePinCode`. This has the opposite meaning as the old option, so be sure to update your code if you have used this.
+
+
 
 ## Version 6.0.3
 
