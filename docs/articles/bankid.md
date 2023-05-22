@@ -138,7 +138,6 @@ services
             .AddApplicationInsightsEventListener(options =>
             {
                 options.LogUserPersonalIdentityNumberHints = true;
-                options.LogCertificateDates = true;
             })
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))

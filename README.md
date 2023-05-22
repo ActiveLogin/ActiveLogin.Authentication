@@ -17,7 +17,7 @@ Free to use, [commercial support and training](#support--training) is available 
 
 - :id: Supports BankID Auth (API, Flow and UI)
 - :pencil: Supports BankID Sign (API, Flow and UI)
-- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 6
+- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 7
 - :five: Built on V6.0 (the latest) BankID JSON API
 - :white_square_button: Supports BankID animated QR code (Secure start)
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
@@ -155,10 +155,10 @@ For commercial / business related questions, see the [FAQ at ActiveLogin.net](ht
 
 The API-wrapper (ActiveLogin.Authentication.BankId.Api) target .NET Standard 2.0, so it can be used from .NET >= 5.0, .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The package that target .NET Standard is strong named as it can be used from .NET Framework where strong naming can be relevant.
 
-The authentication module (*.AspNetCore), depend on ASP.NET 6 and therefore requires .NET 6.
-The core module (*.Core), and related packages, depend on and requires .NET 6.
+The authentication module (*.AspNetCore), depend on ASP.NET 7 and therefore requires .NET 7.
+The core module (*.Core), and related packages, depend on and requires .NET 7.
 
-Our samples target .NET 6 and follow the conventions used there.
+Our samples target .NET 7 and follow the conventions used there.
 
 
 ### How do I build the solution locally?

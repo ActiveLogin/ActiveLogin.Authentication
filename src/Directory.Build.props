@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -15,7 +15,7 @@
         <PackageId>$(AssemblyName)</PackageId>
 
         <VersionPrefix>7.0.0</VersionPrefix>
-        <!--<VersionSuffix>rc-1</VersionSuffix>-->
+        <VersionSuffix>alpha-1</VersionSuffix>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>

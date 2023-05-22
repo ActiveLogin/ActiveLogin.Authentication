@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
@@ -81,12 +82,12 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         await _antiforgery.ValidateRequestAsync(httpContext);
 
         var protectedUiResult = Request.Form[BankIdConstants.FormParameters.UiResult];
-        if (string.IsNullOrEmpty(protectedUiResult))
+        if (StringValues.IsNullOrEmpty(protectedUiResult))
         {
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
         }
 
-        var uiResult = _uiResultProtector.Unprotect(protectedUiResult);
+        var uiResult = _uiResultProtector.Unprotect(protectedUiResult.ToString());
         if (!uiResult.IsSuccessful)
         {
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);

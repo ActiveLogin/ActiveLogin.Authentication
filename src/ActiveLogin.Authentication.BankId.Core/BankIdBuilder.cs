@@ -1,4 +1,5 @@
 using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.Api;
 
@@ -18,7 +19,18 @@ internal class BankIdBuilder : IBankIdBuilder
         Services = services;
 
         ConfigureHttpClient((sp, httpClient) => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
-        ConfigureHttpClientHandler((sp, httpClientHandler) => httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12);
+        ConfigureHttpClientHandler((sp, httpClientHandler) =>
+        {
+            httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12;
+
+            // From .NET 7 it seems as we have to implement this to get
+            httpClientHandler.SslOptions.LocalCertificateSelectionCallback = (sender, host, certificates, certificate, issuers) => GetFirstCertificate(certificates)!;
+        });
+    }
+
+    private static X509Certificate? GetFirstCertificate(X509CertificateCollection localcertificates)
+    {
+        return localcertificates.Count == 0 ? null : localcertificates[0];
     }
 
     public void ConfigureHttpClient(Action<IServiceProvider, HttpClient> configureHttpClient)
