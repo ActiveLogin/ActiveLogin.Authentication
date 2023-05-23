@@ -18,7 +18,7 @@ Free to use, [commercial support and training](#support--training) is available 
 - :id: Supports BankID Auth (API, Flow and UI)
 - :pencil: Supports BankID Sign (API, Flow and UI)
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 7
-- :five: Built on V6.0 (the latest) BankID JSON API
+- 6️⃣: Built on V6.0 (the latest) BankID JSON API
 - :white_square_button: Supports BankID animated QR code (Secure start)
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
