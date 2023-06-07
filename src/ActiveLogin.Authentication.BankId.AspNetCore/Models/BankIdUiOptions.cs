@@ -5,13 +5,15 @@ public class BankIdUiOptions
     public BankIdUiOptions(
         List<string> certificatePolicies,
         bool sameDevice,
-        bool allowBiometric,
+        bool requirePinCode,
+        bool requireMrtd,
         string cancelReturnUrl,
         string stateCookieName)
     {
         CertificatePolicies = certificatePolicies;
         SameDevice = sameDevice;
-        AllowBiometric = allowBiometric;
+        RequirePinCode = requirePinCode;
+        RequireMrtd = requireMrtd;
         CancelReturnUrl = cancelReturnUrl;
         StateCookieName = stateCookieName;
     }
@@ -20,7 +22,9 @@ public class BankIdUiOptions
 
     public bool SameDevice { get; }
 
-    public bool AllowBiometric { get; }
+    public bool RequirePinCode { get; }
+
+    public bool RequireMrtd { get; }
 
     public string CancelReturnUrl { get; }
 

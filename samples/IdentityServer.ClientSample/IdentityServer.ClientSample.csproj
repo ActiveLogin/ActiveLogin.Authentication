@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -10,14 +10,14 @@
         <Description>ASP.NET sample for Active Login.</Description>
         <Authors>Active Solution</Authors>
         <Company>Active Solution</Company>
-        <Copyright>Copyright © 2018-2022 Active Solution</Copyright>
+        <Copyright>Copyright © 2018-2023 Active Solution</Copyright>
 
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.5" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     </ItemGroup>
 

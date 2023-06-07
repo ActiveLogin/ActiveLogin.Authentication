@@ -5,7 +5,7 @@ namespace ActiveLogin.Authentication.BankId.Api;
 /// </summary>
 public static class BankIdUrls
 {
-    public const string BankIdApiVersion = "5.1";
+    public const string BankIdApiVersion = "6.0";
 
     /// <summary>
     /// Base url for production API. Needs to be used in conjunction with a production certificate.

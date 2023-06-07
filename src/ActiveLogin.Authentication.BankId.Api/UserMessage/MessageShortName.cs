@@ -5,12 +5,6 @@ public enum MessageShortName
     Unknown,
 
     RFA1,
-
-    /// <summary>
-    /// Special version of RFA1 we use to be explicit about scanning the QR-code.
-    /// </summary>
-    RFA1QR,
-
     RFA2,
     RFA3,
     RFA4,
@@ -20,9 +14,6 @@ public enum MessageShortName
     RFA9,
 
     RFA13,
-
-    RFA14A,
-    RFA14B,
 
     RFA15A,
     RFA15B,
@@ -36,5 +27,6 @@ public enum MessageShortName
     RFA19,
     RFA20,
     RFA21,
-    RFA22
+    RFA22,
+    RFA23
 }

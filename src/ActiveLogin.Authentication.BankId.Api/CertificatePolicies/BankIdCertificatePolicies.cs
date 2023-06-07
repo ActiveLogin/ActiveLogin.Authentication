@@ -24,7 +24,6 @@ public static class BankIdCertificatePolicies
             BankIdCertificatePolicy.BankIdOnFile => BankIdCertificatePolicyConstants.BankIdOnFileProductionEnvironment,
             BankIdCertificatePolicy.BankIdOnSmartCard => BankIdCertificatePolicyConstants.BankIdOnSmartCardProductionEnvironment,
             BankIdCertificatePolicy.MobileBankId => BankIdCertificatePolicyConstants.MobileBankIdProductionEnvironment,
-            BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard => BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardProductionEnvironment,
 
             _ => string.Empty,
         };
@@ -37,7 +36,6 @@ public static class BankIdCertificatePolicies
             BankIdCertificatePolicy.BankIdOnFile => BankIdCertificatePolicyConstants.BankIdOnFileTestEnvironment,
             BankIdCertificatePolicy.BankIdOnSmartCard => BankIdCertificatePolicyConstants.BankIdOnSmartCardTestEnvironment,
             BankIdCertificatePolicy.MobileBankId => BankIdCertificatePolicyConstants.MobileBankIdTestEnvironment,
-            BankIdCertificatePolicy.NordeaEidOnFileAndOnSmartCard => BankIdCertificatePolicyConstants.NordeaEidOnFileAndOnSmartCardTestEnvironment,
             BankIdCertificatePolicy.TestBankId => BankIdCertificatePolicyConstants.TestBankIdTestEnvironment,
 
             _ => string.Empty,

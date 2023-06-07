@@ -138,7 +138,6 @@ services
             .AddApplicationInsightsEventListener(options =>
             {
                 options.LogUserPersonalIdentityNumberHints = true;
-                options.LogCertificateDates = true;
             })
             .UseProductionEnvironment()
             .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"))
@@ -441,8 +440,12 @@ BankId options allows you to set and override some options such as these.
 ```csharp
 .AddOtherDevice(options =>
 {
-    // If the user can use biometric identification such as fingerprint or face recognition
-    options.BankIdAllowBiometric = false;
+    // If the client needs to provide MRTD (Machine readable travel document) information to complete the order.
+    // Only Swedish passports and national ID cards are supported.
+    options.BankIdRequireMrtd = true;
+
+    // Users are required to sign the transaction with their PIN code, even if they have biometrics activated.
+    options.BankIdRequirePinCode = true;
 
     // Limit possible login methods to, for example, only allow BankID on smartcard.
     options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(...);
@@ -678,7 +681,6 @@ The defaults for cancellation are as follows:
 
 * Same Device Scheme returns to scheme selection
 * Other Device Scheme returns to scheme selection when using QR codes
-* Other Device Scheme returns to PIN input when using PIN input instead of QR codes
 
 It is possible to override the default navigation when cancelling an authentication request. The URL used for navigation is set through the `cancelReturnUrl` item in the `AuthenticationProperties` passed in the authentication challenge.
 
@@ -902,7 +904,8 @@ services
                 options.LogUserNames = false;
 
                 options.LogDeviceIpAddress = false;
-                options.LogCertificateDates = true;
+                options.LogDeviceUniqueHardwareId = true;
+                options.LogUserBankIdIssueDate = true;
 
                 // And more...
             });

@@ -19,4 +19,14 @@ public static class CollectResponseExtensions
     {
         return BankIdApiConverters.ParseCollectHintCode(collectResponse.HintCode);
     }
+
+    /// <summary>
+    /// Call initiator.
+    /// Indicates whether RP or user initiated a phone/auth, if phone authentication. 
+    /// </summary>
+    /// <remarks>Only present for phone authentication.</remarks>
+    public static CollectCallInitiator GetCollectCallInitiator(this CollectResponse collectResponse)
+    {
+        return BankIdApiConverters.ParseCollectCallInitiator(collectResponse.CallInitiator);
+    }
 }

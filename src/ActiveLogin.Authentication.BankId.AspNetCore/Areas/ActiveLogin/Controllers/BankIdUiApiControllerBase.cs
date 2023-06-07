@@ -149,11 +149,12 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             user.Name,
             user.GivenName,
             user.Surname,
+            completionData.BankIdIssueDate,
+            completionData.StepUp?.Mrtd ?? false,
             completionData.Signature,
             completionData.OcspResponse,
-            completionData.Cert.NotBefore,
-            completionData.Cert.NotAfter,
-            completionData.Device.IpAddress);
+            completionData.Device.IpAddress,
+            completionData.Device.Uhi);
         return _uiAuthResultProtector.Protect(uiResult);
     }
 

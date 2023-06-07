@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     </ItemGroup>
 
@@ -23,13 +23,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference
-            Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
+        <ProjectReference Include="..\ActiveLogin.Authentication.BankId.Api\ActiveLogin.Authentication.BankId.Api.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True"
-              PackagePath="icon.png" />
+        <None Include="..\..\docs\images\active-login-logo-fingerprint-blue-v2-256x256.png" Pack="True" PackagePath="icon.png" />
         <None Include="..\..\LICENSE.md" Pack="True" PackagePath="LICENSE.md" />
         <None Include="README.md" Pack="True" PackagePath="README.md" />
     </ItemGroup>

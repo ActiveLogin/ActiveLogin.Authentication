@@ -16,7 +16,7 @@ public static class IdentityServerConfig
             new Client
             {
                 ClientName = "Active Login - IdentityServer - MvcClientSample",
-                ClientId = clientsConfiguration["MvcClient:ClientId"],
+                ClientId = clientsConfiguration["MvcClient:ClientId"] ?? string.Empty,
                 ClientSecrets =
                 {
                     new Secret(clientsConfiguration["MvcClient:ClientSecret"].Sha256())
@@ -24,8 +24,8 @@ public static class IdentityServerConfig
 
                 AllowedGrantTypes = GrantTypes.Code,
 
-                RedirectUris = { clientsConfiguration["MvcClient:RedirectUri"] },
-                PostLogoutRedirectUris = { clientsConfiguration["MvcClient:PostLogoutRedirectUri"] },
+                RedirectUris = { clientsConfiguration["MvcClient:RedirectUri"] ?? string.Empty },
+                PostLogoutRedirectUris = { clientsConfiguration["MvcClient:PostLogoutRedirectUri"] ?? string.Empty },
 
                 AllowedScopes = new List<string>
                 {

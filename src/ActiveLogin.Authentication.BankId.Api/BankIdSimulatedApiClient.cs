@@ -12,6 +12,8 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     private const string DefaultGivenName = "GivenName";
     private const string DefaultSurname = "Surname";
     private const string DefaultPersonalIdentityNumber = "199908072391";
+    private const string DefaultUniqueHardwareId = "OZvYM9VvyiAmG7NA5jU5zqGcVpo=";
+    private const string DefaultBankIdIssueDate = "2023-01-01";
 
     private static readonly List<CollectState> DefaultCollectStates = new()
     {
@@ -27,9 +29,11 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     private readonly string _surname;
     private readonly string _name;
     private readonly string _personalIdentityNumber;
+    private readonly string _bankIdIssueDate;
+    private readonly string _uniqueHardwareId;
     private readonly List<CollectState> _collectStates;
 
-    private readonly Dictionary<string, Auth> _auths = new();
+    private readonly Dictionary<string, Session> _sessions = new();
     private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
     public BankIdSimulatedApiClient()
@@ -53,21 +57,23 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     }
 
     public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
-        : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, collectStates)
+        : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, collectStates)
     {
     }
 
     public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber)
-        : this(givenName, surname, name, personalIdentityNumber, DefaultCollectStates)
+        : this(givenName, surname, name, personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, DefaultCollectStates)
     {
     }
 
-    public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, List<CollectState> collectStates)
+    public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, string bankIdIssueDate, string uniqueHardwareId, List<CollectState> collectStates)
     {
         _givenName = givenName;
         _surname = surname;
         _name = name;
         _personalIdentityNumber = personalIdentityNumber;
+        _bankIdIssueDate = bankIdIssueDate;
+        _uniqueHardwareId = uniqueHardwareId;
         _collectStates = collectStates;
     }
 
@@ -84,7 +90,7 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false).ConfigureAwait(false);
         return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
@@ -95,28 +101,23 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.PersonalIdentityNumber, request.EndUserIp).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false).ConfigureAwait(false);
         return new SignResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
-    private async Task<OrderResponse> GetOrderResponseAsync(string? personalIdentityNumber, string endUserIp)
+    private async Task<OrderResponse> GetOrderResponseAsync(string endUserIp, bool mrtd)
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
-        if (personalIdentityNumber == null || string.IsNullOrWhiteSpace(personalIdentityNumber))
-        {
-            personalIdentityNumber = _personalIdentityNumber;
-        }
-
-        await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
+        await EnsureNoExistingAuth(_personalIdentityNumber).ConfigureAwait(false);
 
         var orderRef = GetRandomToken();
         var autoStartToken = GetRandomToken();
         var qrStartToken = GetRandomToken();
         var qrStartSecret = GetRandomToken();
 
-        var auth = new Auth(endUserIp, orderRef, personalIdentityNumber);
-        _auths.Add(orderRef, auth);
+        var session = new Session(endUserIp, orderRef, _personalIdentityNumber, mrtd);
+        _sessions.Add(orderRef, session);
         return new OrderResponse(orderRef, autoStartToken, qrStartToken, qrStartSecret);
     }
 
@@ -127,9 +128,9 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
 
     private async Task EnsureNoExistingAuth(string personalIdentityNumber)
     {
-        if (_auths.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
+        if (_sessions.Any(x => x.Value.PersonalIdentityNumber == personalIdentityNumber))
         {
-            var existingAuthOrderRef = _auths.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
+            var existingAuthOrderRef = _sessions.First(x => x.Value.PersonalIdentityNumber == personalIdentityNumber).Key;
             await CancelAsync(new CancelRequest(existingAuthOrderRef)).ConfigureAwait(false);
 
             throw new BankIdApiException(ErrorCode.AlreadyInProgress, "A login for this user is already in progress.");
@@ -140,32 +141,32 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
-        if (!_auths.ContainsKey(request.OrderRef))
+        if (!_sessions.ContainsKey(request.OrderRef))
         {
             throw new BankIdApiException(ErrorCode.NotFound, "OrderRef not found.");
         }
 
-        var auth = _auths[request.OrderRef];
-        var status = GetStatus(auth.CollectCalls);
-        var hintCode = GetHintCode(auth.CollectCalls);
+        var session = _sessions[request.OrderRef];
+        var status = GetStatus(session.CollectCalls);
+        var hintCode = GetHintCode(session.CollectCalls);
 
         if (status != CollectStatus.Complete)
         {
-            auth.CollectCalls += 1;
-            return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString());
+            session.CollectCalls += 1;
+            return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString());
         }
 
-        if (_auths.ContainsKey(request.OrderRef))
+        if (_sessions.ContainsKey(request.OrderRef))
         {
-            _auths.Remove(request.OrderRef);
+            _sessions.Remove(request.OrderRef);
         }
 
-        var completionData = GetCompletionData(auth.EndUserIp, status, auth.PersonalIdentityNumber);
+        var completionData = GetCompletionData(session.EndUserIp, status, session.PersonalIdentityNumber, session.Mrtd);
 
-        return new CollectResponse(auth.OrderRef, status.ToString(), hintCode.ToString(), completionData);
+        return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString(), completionData, null);
     }
 
-    private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber)
+    private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber, bool mrtd)
     {
         if (status != CollectStatus.Complete)
         {
@@ -173,23 +174,12 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         }
 
         var user = new User(personalIdentityNumber, _name, _givenName, _surname);
-        var device = new Device(endUserIp);
-
-        var certNow = DateTime.UtcNow;
-        var certNotBefore = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(-1));
-        var certNotAfter = UnixTimestampMillisecondsFromDateTime(certNow.AddMonths(1));
-        var cert = new Cert(certNotBefore.ToString("D"), certNotAfter.ToString("D"));
-
+        var device = new Device(endUserIp, _uniqueHardwareId);
+        var stepUp = mrtd ? new StepUp(true) : null;
         var signature = string.Empty; // Not implemented in the simulated client
         var ocspResponse = string.Empty; // Not implemented in the simulated client
 
-        return new CompletionData(user, device, cert, signature, ocspResponse);
-    }
-
-    private static long UnixTimestampMillisecondsFromDateTime(DateTime dateTime)
-    {
-        var offset = new DateTimeOffset(dateTime);
-        return offset.ToUnixTimeMilliseconds();
+        return new CompletionData(user, device, _bankIdIssueDate, stepUp, signature, ocspResponse);
     }
 
     private CollectStatus GetStatus(int collectCalls)
@@ -213,9 +203,9 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
-        if (_auths.ContainsKey(request.OrderRef))
+        if (_sessions.ContainsKey(request.OrderRef))
         {
-            _auths.Remove(request.OrderRef);
+            _sessions.Remove(request.OrderRef);
         }
 
         return new CancelResponse();
@@ -226,13 +216,14 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         await Task.Delay(Delay).ConfigureAwait(false);
     }
 
-    private class Auth
+    private class Session
     {
-        public Auth(string endUserIp, string orderRef, string personalIdentityNumber)
+        public Session(string endUserIp, string orderRef, string personalIdentityNumber, bool mrtd)
         {
             EndUserIp = endUserIp;
             OrderRef = orderRef;
             PersonalIdentityNumber = personalIdentityNumber;
+            Mrtd = mrtd;
         }
 
         public string EndUserIp { get; }
@@ -240,6 +231,8 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
         public string OrderRef { get; }
 
         public string PersonalIdentityNumber { get; }
+
+        public bool Mrtd { get; }
 
         public int CollectCalls { get; set; }
     }

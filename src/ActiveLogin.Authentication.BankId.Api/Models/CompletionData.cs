@@ -4,11 +4,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 public class CompletionData
 {
-    public CompletionData(User user, Device device, Cert cert, string signature, string ocspResponse)
+    public CompletionData(User user, Device device, string bankIdIssueDate, StepUp? stepUp, string signature, string ocspResponse)
     {
         User = user;
         Device = device;
-        Cert = cert;
+        BankIdIssueDate = bankIdIssueDate;
+        StepUp = stepUp;
         Signature = signature;
         OcspResponse = ocspResponse;
     }
@@ -26,10 +27,16 @@ public class CompletionData
     public Device Device { get; }
 
     /// <summary>
-    /// Information related to the users certificate (BankID).
+    /// The date the BankID was issued to the user. The issue date of the ID expressed using ISO 8601 date format YYYY-MM-DD with a UTC time zone offset.
     /// </summary>
-    [JsonPropertyName("cert")]
-    public Cert Cert { get; }
+    [JsonPropertyName("bankIdIssueDate")]
+    public string BankIdIssueDate { get; }
+
+    /// <summary>
+    /// Information about extra verifications that were part of the transaction. 
+    /// </summary>
+    [JsonPropertyName("stepUp")]
+    public StepUp? StepUp { get; }
 
     /// <summary>
     /// The signature. Base64-encoded.

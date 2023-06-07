@@ -8,7 +8,7 @@
 [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms.
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Active Login is not a product created by BankID. Rather, it is an unofficial project that was developed by Active Solution.
 
 Free to use, [commercial support and training](#support--training) is available if you need assistance or a quick start.
 
@@ -17,9 +17,9 @@ Free to use, [commercial support and training](#support--training) is available 
 
 - :id: Supports BankID Auth (API, Flow and UI)
 - :pencil: Supports BankID Sign (API, Flow and UI)
-- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 6
-- :five: Built on V5.1 (the latest) BankID JSON API
-- :white_square_button: Supports BankID animated QR code (Safe start)
+- :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 7
+- 6️⃣: Built on V6.0 (the latest) BankID JSON API
+- :white_square_button: Supports BankID animated QR code (Secure start)
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable ánd extensible
@@ -52,7 +52,6 @@ ___Note:___ This Readme reflects the state of our main branch and the code docum
   + [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
   + [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
   + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
-  + [Where did the packages for GrandId / Svensk E-identitet go?](#where-did-the-packages-for-grandid--svensk-e-identitet-go)
 * [Active Login](#active-login)
   + [Security](#security)
   + [Contribute](#contribute)
@@ -156,10 +155,10 @@ For commercial / business related questions, see the [FAQ at ActiveLogin.net](ht
 
 The API-wrapper (ActiveLogin.Authentication.BankId.Api) target .NET Standard 2.0, so it can be used from .NET >= 5.0, .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The package that target .NET Standard is strong named as it can be used from .NET Framework where strong naming can be relevant.
 
-The authentication module (*.AspNetCore), depend on ASP.NET 6 and therefore requires .NET 6.
-The core module (*.Core), and related packages, depend on and requires .NET 6.
+The authentication module (*.AspNetCore), depend on ASP.NET 7 and therefore requires .NET 7.
+The core module (*.Core), and related packages, depend on and requires .NET 7.
 
-Our samples target .NET 6 and follow the conventions used there.
+Our samples target .NET 7 and follow the conventions used there.
 
 
 ### How do I build the solution locally?
@@ -199,14 +198,6 @@ dotnet run
 Azure AD B2C supports using custom identity providers that supports [Open ID Connect](https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc). If you deploy Active Login as part of IdentityServer (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID support.
 
 ![Active Login with Azure AD B2C](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-setup-azuread-b2c.png)
-
-
-### Where did the packages for GrandId / Svensk E-identitet go?
-
-The packages in ActiveLogin for Svensk E-identitet / GrandID are not beeing worked on anymore, and are therefore not supported as part of this open source project.
-
-The [documentation available](docs/articles/grandid.md) is provided as is and reflects the state for the 4.0.0 release of the GrandId packages.
-
 
 
 ---

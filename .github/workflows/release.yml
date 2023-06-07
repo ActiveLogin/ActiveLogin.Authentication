@@ -23,8 +23,6 @@ jobs:
         - ActiveLogin.Authentication.BankId.AzureMonitor
         - ActiveLogin.Authentication.BankId.QRCoder
         - ActiveLogin.Authentication.BankId.UAParser
-        - ActiveLogin.Authentication.GrandId.AspNetCore
-        - ActiveLogin.Authentication.GrandId.AspNetCore
     steps:
       - name: 'Download artifact'
         uses: actions/github-script@v5
