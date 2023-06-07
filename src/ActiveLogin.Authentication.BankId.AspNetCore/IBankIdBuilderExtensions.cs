@@ -37,6 +37,6 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder AddCustomAppCallbackByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, string returnUrl)
     {
-        return AddCustomAppCallbackByUserAgent(builder, isApplicable, s => returnUrl);
+        return AddCustomAppCallbackByUserAgent(builder, isApplicable, context => returnUrl);
     }
 }
