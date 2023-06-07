@@ -1,5 +1,6 @@
 using System.Globalization;
 
+using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.AzureKeyVault;
@@ -63,6 +64,9 @@ services
 
         bankId.UseQrCoderQrCodeGenerator();
         bankId.UseUaParserDeviceDetection();
+
+        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("Instagram"), "instagram://");
+        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), "fb://");
 
         if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
         {

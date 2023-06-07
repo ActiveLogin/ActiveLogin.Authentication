@@ -2,6 +2,6 @@ namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
 public interface IBankIdLauncherCustomAppCallback
 {
-    public Task<bool> IsCustomApp();
-    public Task<string> GetCustomAppReturnUrlScheme();
+    public Task<bool> IsApplicable(BankIdLauncherCustomAppCallbackContext context);
+    public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context);
 }
