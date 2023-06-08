@@ -85,12 +85,12 @@ public static class IBankIdBuilderExtensions
     /// <summary>
     /// Add a custom event listener.
     /// </summary>
-    /// <typeparam name="TBankIdEventListenerImplementation"></typeparam>
+    /// <typeparam name="TImplementation"></typeparam>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IBankIdBuilder AddEventListener<TBankIdEventListenerImplementation>(this IBankIdBuilder builder) where TBankIdEventListenerImplementation : class, IBankIdEventListener
+    public static IBankIdBuilder AddEventListener<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IBankIdEventListener
     {
-        builder.Services.AddTransient<IBankIdEventListener, TBankIdEventListenerImplementation>();
+        builder.Services.AddTransient<IBankIdEventListener, TImplementation>();
 
         return builder;
     }
@@ -110,16 +110,28 @@ public static class IBankIdBuilderExtensions
     /// <summary>
     /// Adds a class that will be called when BankID returns a valid signed in user.
     /// </summary>
-    /// <typeparam name="TResultStoreImplementation"></typeparam>
+    /// <typeparam name="TImplementation"></typeparam>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IBankIdBuilder AddResultStore<TResultStoreImplementation>(this IBankIdBuilder builder) where TResultStoreImplementation : class, IBankIdResultStore
+    public static IBankIdBuilder AddResultStore<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IBankIdResultStore
     {
-        builder.Services.AddTransient<IBankIdResultStore, TResultStoreImplementation>();
+        builder.Services.AddTransient<IBankIdResultStore, TImplementation>();
 
         return builder;
     }
 
+    /// <summary>
+    /// Adds a class to resolve custom return url.
+    /// </summary>
+    /// <typeparam name="TImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddCustomAppCallback<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IBankIdLauncherCustomAppCallback
+    {
+        builder.Services.AddTransient<IBankIdLauncherCustomAppCallback, TImplementation>();
+
+        return builder;
+    }
 
     internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl, string environment)
     {

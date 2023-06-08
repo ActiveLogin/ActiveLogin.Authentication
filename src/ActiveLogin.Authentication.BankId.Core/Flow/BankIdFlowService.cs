@@ -62,7 +62,7 @@ public class BankIdFlowService : IBankIdFlowService
 
         if (flowOptions.SameDevice)
         {
-            var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
+            var launchInfo = await GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
             return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeSameDevice(launchInfo));
         }
         else
@@ -120,7 +120,7 @@ public class BankIdFlowService : IBankIdFlowService
 
         if (flowOptions.SameDevice)
         {
-            var launchInfo = GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
+            var launchInfo = await GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
             return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeSameDevice(launchInfo));
         }
         else
@@ -165,7 +165,7 @@ public class BankIdFlowService : IBankIdFlowService
         );
     }
 
-    private BankIdLaunchInfo GetBankIdLaunchInfo(string redirectUrl, string autoStartToken)
+    private Task<BankIdLaunchInfo> GetBankIdLaunchInfo(string redirectUrl, string autoStartToken)
     {
         var launchUrlRequest = new LaunchUrlRequest(redirectUrl, autoStartToken);
 

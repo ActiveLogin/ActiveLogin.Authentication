@@ -1076,6 +1076,70 @@ In Active Login device and browser detection is required for example to determin
 
 The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supports the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
 
+#### Shorthand for only overriding return URL for custom apps
+
+If you want to support your custom app, or a third party app (like the built in browsers in Instagram, Facebook etc.) we've made it simple to support those scenarios by allowing you to specify a custom return URL.
+
+The most common scenario is that you will set the schema for the app as return URL if you detect a specific User Agent, so for that scenario we've made an extension method.
+
+In the sample below we add support for Instagram and Facebook:
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        // ...
+
+        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("Instagram"), "instagram://");
+        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), "fb://");
+
+        // ...
+    });
+```
+
+If you need to do something custom, you can implement `IBankIdLauncherCustomAppCallback`:
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        // ...
+
+        bankId.AddCustomAppCallback<BankIdFacebookAppCallback>();
+
+        // ...
+    });
+```
+
+````csharp
+public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public BankIdFacebookAppCallback(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public Task<bool> IsApplicable(BankIdLauncherCustomAppCallbackContext context)
+    {
+        var userAgent = _httpContextAccessor.HttpContext?.Request.Headers.UserAgent.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(userAgent))
+        {
+            return Task.FromResult(false);
+        }
+
+        var isFacebook = userAgent.Contains("FBAN") || userAgent.Contains("FBAV");
+        return Task.FromResult(isFacebook);
+    }
+
+    public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context)
+    {
+        return Task.FromResult("fb://");
+    }
+}
+
+```
 
 ### Use api wrapper only
 

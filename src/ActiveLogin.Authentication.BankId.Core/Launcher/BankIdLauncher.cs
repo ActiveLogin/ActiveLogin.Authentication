@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 
 using ActiveLogin.Authentication.BankId.Core.Helpers;
@@ -20,19 +21,21 @@ internal class BankIdLauncher : IBankIdLauncher
     private const string IosFirefoxScheme = "firefox://";
 
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
+    private readonly List<IBankIdLauncherCustomAppCallback> _customAppCallbacks;
 
-    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector)
+    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IEnumerable<IBankIdLauncherCustomAppCallback> customAppCallbacks)
     {
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+        _customAppCallbacks = customAppCallbacks.ToList();
     }
 
-    public BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request)
+    public async Task<BankIdLaunchInfo> GetLaunchInfo(LaunchUrlRequest request)
     {
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
         var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice);
 
-        var launchUrl = GetLaunchUrl(detectedDevice, request);
+        var launchUrl = await GetLaunchUrl(detectedDevice, request, _customAppCallbacks);
         return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn);
     }
 
@@ -57,10 +60,10 @@ internal class BankIdLauncher : IBankIdLauncher
                && detectedDevice.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari;
     }
 
-    private string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
+    private async Task<string> GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
     {
         var prefix = GetPrefixPart(device);
-        var queryString = GetQueryStringPart(device, request);
+        var queryString = await GetQueryStringPart(device, request, customAppCallbacks);
 
         return $"{prefix}{queryString}";
     }
@@ -97,7 +100,7 @@ internal class BankIdLauncher : IBankIdLauncher
                );
     }
 
-    private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request)
+    private async Task<string> GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
     {
         var queryStringParams = new Dictionary<string, string>();
 
@@ -111,13 +114,22 @@ internal class BankIdLauncher : IBankIdLauncher
             queryStringParams.Add(BankIdRpRefQueryStringParamName, Base64Encode(request.RelyingPartyReference));
         }
 
-        queryStringParams.Add(BankIdRedirectQueryStringParamName, GetRedirectUrl(device, request));
+        var redirectUrl = await GetRedirectUrl(device, request, customAppCallbacks);
+        queryStringParams.Add(BankIdRedirectQueryStringParamName, redirectUrl);
 
         return QueryStringGenerator.ToQueryString(queryStringParams);
     }
 
-    private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request)
+    private static async Task<string> GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
     {
+        // Allow for easy override of callback url
+        var customAppCallbackContext = new BankIdLauncherCustomAppCallbackContext(device, request);
+        var customAppCallback = await GetRelevantCustomAppCallbackAsync(customAppCallbackContext, customAppCallbacks);
+        if (customAppCallback != null)
+        {
+            return await customAppCallback.GetCustomAppReturnUrl(customAppCallbackContext);
+        }
+
         // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2
         return device.DeviceOs == BankIdSupportedDeviceOs.Ios
             ? GetIOsBrowserSpecificRedirectUrl(device, request.RedirectUrl)
@@ -146,6 +158,19 @@ internal class BankIdLauncher : IBankIdLauncher
             // Return empty string so user can go back manually, will catch unknown third party browsers
             _ => string.Empty
         };
+    }
+
+    private static async Task<IBankIdLauncherCustomAppCallback?> GetRelevantCustomAppCallbackAsync(BankIdLauncherCustomAppCallbackContext customAppCallbackContext, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    {
+        foreach (var callback in customAppCallbacks)
+        {
+            if (await callback.IsApplicable(customAppCallbackContext))
+            {
+                return callback;
+            }
+        }
+
+        return null;
     }
 
     private static string Base64Encode(string value)

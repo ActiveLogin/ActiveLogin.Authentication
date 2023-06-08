@@ -10,5 +10,5 @@ public interface IBankIdLauncher
     /// </summary>
     /// <param name="request">Launch info</param>
     /// <returns></returns>
-    BankIdLaunchInfo GetLaunchInfo(LaunchUrlRequest request);
+    Task<BankIdLaunchInfo> GetLaunchInfo(LaunchUrlRequest request);
 }
