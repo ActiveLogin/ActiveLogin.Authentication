@@ -18,7 +18,7 @@ internal class BankIdBuilder : IBankIdBuilder
     {
         Services = services;
 
-        ConfigureHttpClient((sp, httpClient) => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
+        ConfigureHttpClient((sp, httpClient) => httpClient.BaseAddress = BankIdUrls.AppApiProductionBaseUrl);
         ConfigureHttpClientHandler((sp, httpClientHandler) =>
         {
             httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12;
@@ -45,7 +45,7 @@ internal class BankIdBuilder : IBankIdBuilder
 
     public void AfterConfiguration()
     {
-        Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>((sp, httpClient) =>
+        Services.AddHttpClient<IBankIdAppApiClient, BankIdAppApiClient>((sp, httpClient) =>
             {
                 _httpClientConfigurators.ForEach(configurator => configurator(sp, httpClient));
             })

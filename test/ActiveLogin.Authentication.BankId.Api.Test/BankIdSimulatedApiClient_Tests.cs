@@ -8,11 +8,11 @@ namespace ActiveLogin.Authentication.BankId.Api.Test;
 
 public class BankIdSimulatedApiClient_Tests
 {
-    private readonly BankIdSimulatedApiClient _bankIdClient;
+    private readonly BankIdSimulatedAppApiClient _bankIdAppClient;
 
     public BankIdSimulatedApiClient_Tests()
     {
-        _bankIdClient = new BankIdSimulatedApiClient
+        _bankIdAppClient = new BankIdSimulatedAppApiClient
         {
             Delay = TimeSpan.Zero
         };
@@ -24,10 +24,10 @@ public class BankIdSimulatedApiClient_Tests
         // Arange
 
         // Act
-        await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        await _bankIdAppClient.AuthAsync(new AuthRequest("1.1.1.1"));
 
         // Assert
-        await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2")));
+        await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdAppClient.AuthAsync(new AuthRequest("1.1.1.2")));
     }
 
     [Fact]
@@ -36,18 +36,18 @@ public class BankIdSimulatedApiClient_Tests
         // Arange
 
         // Act
-        var firstAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        var firstAuthResponse = await _bankIdAppClient.AuthAsync(new AuthRequest("1.1.1.1"));
         CollectResponse firstCollectResponse;
         do
         {
-            firstCollectResponse = await _bankIdClient.CollectAsync(new CollectRequest(firstAuthResponse.OrderRef));
+            firstCollectResponse = await _bankIdAppClient.CollectAsync(new CollectRequest(firstAuthResponse.OrderRef));
         } while (firstCollectResponse.GetCollectStatus() != CollectStatus.Complete);
 
-        var secondAuthResponse = await _bankIdClient.AuthAsync(new AuthRequest("1.1.1.2"));
+        var secondAuthResponse = await _bankIdAppClient.AuthAsync(new AuthRequest("1.1.1.2"));
         CollectResponse secondCollectResponse;
         do
         {
-            secondCollectResponse = await _bankIdClient.CollectAsync(new CollectRequest(secondAuthResponse.OrderRef));
+            secondCollectResponse = await _bankIdAppClient.CollectAsync(new CollectRequest(secondAuthResponse.OrderRef));
         } while (secondCollectResponse.GetCollectStatus() != CollectStatus.Complete);
 
         // Assert
@@ -57,7 +57,7 @@ public class BankIdSimulatedApiClient_Tests
     public async Task CollectAsync_WithDefaultValuesInConstructor__ShouldReturnPersonInfo()
     {
         // Arange
-        var bankIdClient = new BankIdSimulatedApiClient("gn", "sn", "n", "201801012392")
+        var bankIdClient = new BankIdSimulatedAppApiClient("gn", "sn", "n", "201801012392")
         {
             Delay = TimeSpan.Zero
         };
@@ -81,7 +81,7 @@ public class BankIdSimulatedApiClient_Tests
     public async Task CollectAsync_WithSpecifiedEndUserIp_InAuthRequest__ShouldReturnPersonInfo_WithEndUserIp_AndPin()
     {
         // Arange
-        var bankIdClient = new BankIdSimulatedApiClient("x", "x", "x", "201801012392")
+        var bankIdClient = new BankIdSimulatedAppApiClient("x", "x", "x", "201801012392")
         {
             Delay = TimeSpan.Zero
         };
@@ -103,13 +103,13 @@ public class BankIdSimulatedApiClient_Tests
     public async Task CancelAsync_CancelsTheCollectFlow()
     {
         // Arange
-        var statuses = new List<BankIdSimulatedApiClient.CollectState>
+        var statuses = new List<BankIdSimulatedAppApiClient.CollectState>
         {
-            new BankIdSimulatedApiClient.CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
-            new BankIdSimulatedApiClient.CollectState(CollectStatus.Pending, CollectHintCode.Started),
-            new BankIdSimulatedApiClient.CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
+            new BankIdSimulatedAppApiClient.CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
+            new BankIdSimulatedAppApiClient.CollectState(CollectStatus.Pending, CollectHintCode.Started),
+            new BankIdSimulatedAppApiClient.CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
         };
-        var bankIdClient = new BankIdSimulatedApiClient(statuses)
+        var bankIdClient = new BankIdSimulatedAppApiClient(statuses)
         {
             Delay = TimeSpan.Zero
         };

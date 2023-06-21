@@ -20,7 +20,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Test;
 public class BankIdApiClient_Tests
 {
     private readonly Mock<HttpMessageHandler> _messageHandlerMock;
-    private readonly BankIdApiClient _bankIdApiClient;
+    private readonly BankIdAppApiClient _bankIdAppApiClient;
 
     public BankIdApiClient_Tests()
     {
@@ -34,7 +34,7 @@ public class BankIdApiClient_Tests
         {
             BaseAddress = new Uri("https://bankid/")
         };
-        _bankIdApiClient = new BankIdApiClient(httpClient);
+        _bankIdAppApiClient = new BankIdAppApiClient(httpClient);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class BankIdApiClient_Tests
         {
             BaseAddress = new Uri("https://bankid/")
         };
-        var bankIdApiClient = new BankIdApiClient(httpClient);
+        var bankIdApiClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var exception = await Assert.ThrowsAsync<BankIdApiException>(() => bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1")));
@@ -67,7 +67,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1"));
 
         // Assert
         Assert.Single(_messageHandlerMock.Invocations);
@@ -85,7 +85,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1"));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -106,7 +106,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
+        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -124,7 +124,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\", \"qrStartSecret\": \"ghi790\", \"qrStartToken\": \"jkl123\" }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
@@ -145,7 +145,7 @@ public class BankIdApiClient_Tests
         string asBase64 = Convert.ToBase64String(userNonVisibleData);
 
         //Act
-        await _bankIdApiClient.AuthAsync(new AuthRequest("1.1.1.1", null, "Hello", userNonVisibleData, "simpleMarkdownV1"));
+        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1", null, "Hello", userNonVisibleData, "simpleMarkdownV1"));
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -172,7 +172,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
+        await _bankIdAppApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
 
         // Assert
         Assert.Single(_messageHandlerMock.Invocations);
@@ -190,7 +190,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest(
+        await _bankIdAppApiClient.SignAsync(new SignRequest(
             "1.1.1.1",
             "userVisibleData",
             userVisibleDataFormat: "userVisibleDataFormat",
@@ -221,7 +221,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
+        await _bankIdAppApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -244,7 +244,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null));
+        await _bankIdAppApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", null));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -267,7 +267,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", userNonVisibleData: new byte[1]));
+        await _bankIdAppApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", userNonVisibleData: new byte[1]));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -292,7 +292,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
+        await _bankIdAppApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -319,7 +319,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\", \"qrStartSecret\": \"ghi790\", \"qrStartToken\": \"jkl123\" }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData"));
@@ -338,7 +338,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.CollectAsync(new CollectRequest("abc123"));
+        await _bankIdAppApiClient.CollectAsync(new CollectRequest("abc123"));
 
         // Assert
         Assert.Single(_messageHandlerMock.Invocations);
@@ -356,7 +356,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.CollectAsync(new CollectRequest("abc123"));
+        await _bankIdAppApiClient.CollectAsync(new CollectRequest("abc123"));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -374,7 +374,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"hintCode\":\"OutstandingTransaction\" }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -390,7 +390,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"status\":\"Pending\" }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -406,7 +406,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"callInitiator\":\"User\" }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -422,7 +422,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\":\"abc123\" }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -437,7 +437,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": {  \"signature\": \"s\", \"ocspResponse\": \"or\" } }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -453,7 +453,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"signature\": \"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHNhbXBsZT48dmFsdWU+SGk8L3ZhbHVlPjxjb250ZW50PkJ5ZTwvY29uZW50Pjwvc2FtcGxlPg==\" } }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -468,7 +468,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"user\": { \"personalNumber\": \"201801012392\", \"name\": \"n\", \"givenName\": \"gn\", \"surname\": \"sn\" } } }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -486,7 +486,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"device\": { \"ipAddress\": \"1.1.1.1\", \"uhi\": \"OZvYM9VvyiAmG7NA5jU5zqGcVpo=\" } } }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -502,7 +502,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"bankIdIssueDate\": \"2023-01-01\" } }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -517,7 +517,7 @@ public class BankIdApiClient_Tests
     {
         // Arrange
         var httpClient = GetHttpClientMockWithOkResponse("{ \"completionData\": { \"stepUp\": { \"mrtd\": true } } }");
-        var bankIdClient = new BankIdApiClient(httpClient);
+        var bankIdClient = new BankIdAppApiClient(httpClient);
 
         // Act
         var result = await bankIdClient.CollectAsync(new CollectRequest("x"));
@@ -533,7 +533,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.CancelAsync(new CancelRequest("x"));
+        await _bankIdAppApiClient.CancelAsync(new CancelRequest("x"));
 
         // Assert
         Assert.Single(_messageHandlerMock.Invocations);
@@ -551,7 +551,7 @@ public class BankIdApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdApiClient.CancelAsync(new CancelRequest("abc123"));
+        await _bankIdAppApiClient.CancelAsync(new CancelRequest("abc123"));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();

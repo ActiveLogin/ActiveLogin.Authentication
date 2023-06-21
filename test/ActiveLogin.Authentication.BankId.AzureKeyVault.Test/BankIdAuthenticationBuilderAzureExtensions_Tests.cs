@@ -45,7 +45,7 @@ public class BankIdBuilderAzureExtension
 
             var provider = SetupTest(config);
 
-            Assert.Throws<UriFormatException>(() => provider.GetService<IBankIdApiClient>());
+            Assert.Throws<UriFormatException>(() => provider.GetService<IBankIdAppApiClient>());
         }
 
         [Fact]

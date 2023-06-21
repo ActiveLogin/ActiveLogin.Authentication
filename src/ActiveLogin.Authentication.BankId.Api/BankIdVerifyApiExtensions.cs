@@ -7,7 +7,7 @@ public static class BankIdVerifyApiExtensions
     /// <summary>
     /// Perform verification of digital ID card from BankID.
     /// </summary>
-    /// <param name="apiClient">The <see cref="IBankIdApiClient"/> instance.</param>
+    /// <param name="apiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
     /// <param name="qrCode">The complete content of the scanned QR code.</param>
     public static Task<VerifyResponse> VerifyAsync(this IBankIdVerifyApiClient apiClient, string qrCode)
     {

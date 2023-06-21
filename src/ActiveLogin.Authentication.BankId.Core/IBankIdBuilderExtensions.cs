@@ -135,7 +135,7 @@ public static class IBankIdBuilderExtensions
 
     internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl, string environment)
     {
-        SetActiveLoginContext(builder.Services, environment, BankIdUrls.BankIdApiVersion);
+        SetActiveLoginContext(builder.Services, environment, BankIdUrls.AppApiVersion);
 
         builder.ConfigureHttpClient((sp, httpClient) =>
         {
@@ -161,7 +161,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true, bool useBankIdClientCertificate = true)
     {
-        builder.UseEnvironment(BankIdUrls.TestApiBaseUrl, BankIdEnvironments.Test);
+        builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdEnvironments.Test);
 
         if (useBankIdRootCertificate)
         {
@@ -186,7 +186,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true)
     {
-        builder.UseEnvironment(BankIdUrls.ProductionApiBaseUrl, BankIdEnvironments.Production);
+        builder.UseEnvironment(BankIdUrls.AppApiProductionBaseUrl, BankIdEnvironments.Production);
 
         if (useBankIdRootCertificate)
         {
@@ -203,7 +203,7 @@ public static class IBankIdBuilderExtensions
     /// <param name="builder"></param>
     /// <returns></returns>
     public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder)
-        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient());
+        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedAppApiClient());
 
     /// <summary>
     /// Use simulated (in memory) environment. To be used for automated testing.
@@ -213,7 +213,7 @@ public static class IBankIdBuilderExtensions
     /// <param name="surname">Fake surname</param>
     /// <returns></returns>
     public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname)
-        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname));
+        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedAppApiClient(givenName, surname));
 
     /// <summary>
     /// Use simulated (in memory) environment. To be used for automated testing.
@@ -224,11 +224,11 @@ public static class IBankIdBuilderExtensions
     /// <param name="personalIdentityNumber">Fake personal identity number</param>
     /// <returns></returns>
     public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname, string personalIdentityNumber)
-        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedApiClient(givenName, surname, personalIdentityNumber));
+        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedAppApiClient(givenName, surname, personalIdentityNumber));
 
-    private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdApiClient> bankIdDevelopmentApiClient)
+    private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdAppApiClient> bankIdDevelopmentApiClient)
     {
-        SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedApiClient.Version);
+        SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedAppApiClient.Version);
 
         builder.Services.AddSingleton(bankIdDevelopmentApiClient);
         builder.Services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();

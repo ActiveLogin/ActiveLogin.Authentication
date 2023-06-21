@@ -16,36 +16,36 @@ public abstract class BankId_Ui_Tests_Base
 {
     private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
 
-    protected class TestBankIdApi : IBankIdApiClient
+    protected class TestBankIdAppApi : IBankIdAppApiClient
     {
-        private readonly IBankIdApiClient _bankIdApiClient;
+        private readonly IBankIdAppApiClient _bankIdAppApiClient;
 
         public bool CancelAsyncIsCalled { get; private set; }
 
-        public TestBankIdApi(IBankIdApiClient bankIdApiClient)
+        public TestBankIdAppApi(IBankIdAppApiClient bankIdAppApiClient)
         {
-            _bankIdApiClient = bankIdApiClient;
+            _bankIdAppApiClient = bankIdAppApiClient;
         }
 
         public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            return _bankIdApiClient.AuthAsync(request);
+            return _bankIdAppApiClient.AuthAsync(request);
         }
 
         public Task<SignResponse> SignAsync(SignRequest request)
         {
-            return _bankIdApiClient.SignAsync(request);
+            return _bankIdAppApiClient.SignAsync(request);
         }
 
         public Task<CollectResponse> CollectAsync(CollectRequest request)
         {
-            return _bankIdApiClient.CollectAsync(request);
+            return _bankIdAppApiClient.CollectAsync(request);
         }
 
         public Task<CancelResponse> CancelAsync(CancelRequest request)
         {
             CancelAsyncIsCalled = true;
-            return _bankIdApiClient.CancelAsync(request);
+            return _bankIdAppApiClient.CancelAsync(request);
         }
     }
 
