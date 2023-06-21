@@ -10,6 +10,16 @@ namespace ActiveLogin.Authentication.BankId.Api;
 public class BankIdApiConverters
 {
     /// <summary>
+    /// Parse an ISO 8601 timestamp (yyyy-MM-ddTHH:mm:ssZ) into DateTime.
+    /// </summary>
+    /// <param name="timestamp"></param>
+    /// <returns></returns>
+    public static DateTime ParseIso8601DateTime(string timestamp)
+    {
+        return DateTime.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal);
+    }
+
+    /// <summary>
     /// Parse unix timestamp from milliseconds as string.
     /// </summary>
     /// <returns></returns>

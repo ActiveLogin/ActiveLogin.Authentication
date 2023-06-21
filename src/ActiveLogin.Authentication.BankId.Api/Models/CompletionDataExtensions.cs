@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 public static class CompletionDataExtensions
