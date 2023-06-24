@@ -6,11 +6,11 @@ using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test;
 
-public class BankIdSimulatedApiClient_Tests
+public class BankIdSimulatedAppApiClient_Tests
 {
     private readonly BankIdSimulatedAppApiClient _bankIdAppClient;
 
-    public BankIdSimulatedApiClient_Tests()
+    public BankIdSimulatedAppApiClient_Tests()
     {
         _bankIdAppClient = new BankIdSimulatedAppApiClient
         {

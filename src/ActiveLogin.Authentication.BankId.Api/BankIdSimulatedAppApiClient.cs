@@ -3,7 +3,7 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 namespace ActiveLogin.Authentication.BankId.Api;
 
 /// <summary>
-/// Dummy implementation that simulates the BankId API. Can be used for development and testing purposes.
+/// Dummy implementation that simulates the BankId App API. Can be used for development and testing purposes.
 /// </summary>
 public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 {

@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 /// </summary>
 public class VerifyResponse
 {
-    public VerifyResponse(string transactionType, VerifyUser user, VerifyUser verification, VerifyUser authentication)
+    public VerifyResponse(string transactionType, VerifyUser user, VerifyVerification verification, VerifyAuthentication authentication)
     {
         TransactionType = transactionType;
         User = user;
@@ -31,11 +31,11 @@ public class VerifyResponse
     /// Information related to the verification of the authenticated digital ID cardholder.
     /// </summary>
     [JsonPropertyName("verification")]
-    public VerifyUser Verification { get; }
+    public VerifyVerification Verification { get; }
 
     /// <summary>
     /// Information related to the authenticated ID cardholder.
     /// </summary>
     [JsonPropertyName("authentication")]
-    public VerifyUser Authentication { get; }
+    public VerifyAuthentication Authentication { get; }
 }

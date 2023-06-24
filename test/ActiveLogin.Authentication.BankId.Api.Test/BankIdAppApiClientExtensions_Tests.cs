@@ -8,7 +8,7 @@ using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test;
 
-public class BankIdApiClientExtensions_Tests
+public class BankIdAppApiClientExtensions_Tests
 {
     [Fact]
     public async Task AuthAsync_WithEndUserIp_ShouldMap_ToAuthRequest_WithEndUserIp()

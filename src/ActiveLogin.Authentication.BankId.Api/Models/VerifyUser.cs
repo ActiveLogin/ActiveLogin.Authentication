@@ -7,12 +7,12 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 /// </summary>
 public class VerifyUser
 {
-    public VerifyUser(string personalIdentityNumber, string name, string givenName, string surname, int age)
+    public VerifyUser(string personalIdentityNumber, string givenName, string surname, string name, int age)
     {
         PersonalIdentityNumber = personalIdentityNumber;
-        Name = name;
         GivenName = givenName;
         Surname = surname;
+        Name = name;
         Age = age;
     }
 
@@ -21,12 +21,6 @@ public class VerifyUser
     /// </summary>
     [JsonPropertyName("personalNumber")]
     public string PersonalIdentityNumber { get; }
-
-    /// <summary>
-    /// The digital ID cardholder's given name and surname.
-    /// </summary>
-    [JsonPropertyName("name")]
-    public string Name { get; }
 
     /// <summary>
     /// The digital ID cardholder's given name.
@@ -39,6 +33,12 @@ public class VerifyUser
     /// </summary>
     [JsonPropertyName("surname")]
     public string Surname { get; }
+
+    /// <summary>
+    /// The digital ID cardholder's given name and surname.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string Name { get; }
 
     /// <summary>
     /// The digital ID cardholder's age.

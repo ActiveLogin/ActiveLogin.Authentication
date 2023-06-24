@@ -5,6 +5,7 @@ using ActiveLogin.Authentication.BankId.Core.Cryptography;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.ResultStore;
+using ActiveLogin.Identity.Swedish;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +20,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder AddClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
     {
-        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
+        builder.ConfigureAppApiHttpClientHandler((sp, httpClientHandler) =>
         {
             var clientCertificate = configureClientCertificate();
             httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
@@ -37,16 +38,16 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureClientCertificate)
     {
-        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
-        {
-            var clientCertificate = configureClientCertificate();
-            httpClientHandler.SslOptions.ClientCertificates = new X509Certificate2Collection
-            {
-                clientCertificate
-            };
-        });
+        builder.ConfigureAppApiHttpClientHandler(ConfigureHttpClientHandler);
+        builder.ConfigureVerifyApiHttpClientHandler(ConfigureHttpClientHandler);
 
         return builder;
+
+        void ConfigureHttpClientHandler(IServiceProvider sp, SocketsHttpHandler httpClientHandler)
+        {
+            var clientCertificate = configureClientCertificate();
+            httpClientHandler.SslOptions.ClientCertificates = new X509Certificate2Collection { clientCertificate };
+        }
     }
 
     /// <summary>
@@ -58,14 +59,17 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, Func<X509Certificate2> configureRootCaCertificate)
     {
-        builder.ConfigureHttpClientHandler((sp, httpClientHandler) =>
+        builder.ConfigureAppApiHttpClientHandler(ConfigureHttpClientHandler);
+        builder.ConfigureVerifyApiHttpClientHandler(ConfigureHttpClientHandler);
+
+        return builder;
+
+        void ConfigureHttpClientHandler(IServiceProvider sp, SocketsHttpHandler httpClientHandler)
         {
             var rootCaCertificate = configureRootCaCertificate();
             var validator = new X509CertificateChainValidator(rootCaCertificate);
             httpClientHandler.SslOptions.RemoteCertificateValidationCallback = validator.Validate;
-        });
-
-        return builder;
+        }
     }
 
     /// <summary>
@@ -133,13 +137,18 @@ public static class IBankIdBuilderExtensions
         return builder;
     }
 
-    internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri apiBaseUrl, string environment)
+    internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri appApiBaseUrl, Uri verifyApiBaseUrl, string environment)
     {
-        SetActiveLoginContext(builder.Services, environment, BankIdUrls.AppApiVersion);
+        SetActiveLoginContext(builder.Services, environment, BankIdUrls.AppApiVersion, BankIdUrls.VerifyApiVersion);
 
-        builder.ConfigureHttpClient((sp, httpClient) =>
+        builder.ConfigureAppApiHttpClient((sp, httpClient) =>
         {
-            httpClient.BaseAddress = apiBaseUrl;
+            httpClient.BaseAddress = appApiBaseUrl;
+        });
+
+        builder.ConfigureVerifyApiHttpClient((sp, httpClient) =>
+        {
+            httpClient.BaseAddress = verifyApiBaseUrl;
         });
 
         builder.Services.AddTransient<IBankIdLauncher, BankIdLauncher>();
@@ -161,7 +170,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true, bool useBankIdClientCertificate = true)
     {
-        builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdEnvironments.Test);
+        builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdUrls.VerifyApiTestBaseUrl, BankIdEnvironments.Test);
 
         if (useBankIdRootCertificate)
         {
@@ -186,7 +195,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true)
     {
-        builder.UseEnvironment(BankIdUrls.AppApiProductionBaseUrl, BankIdEnvironments.Production);
+        builder.UseEnvironment(BankIdUrls.AppApiProductionBaseUrl, BankIdUrls.VerifyApiProductionBaseUrl, BankIdEnvironments.Production);
 
         if (useBankIdRootCertificate)
         {
@@ -203,7 +212,12 @@ public static class IBankIdBuilderExtensions
     /// <param name="builder"></param>
     /// <returns></returns>
     public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder)
-        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedAppApiClient());
+    {
+        return UseSimulatedEnvironment(builder,
+            x => new BankIdSimulatedAppApiClient(),
+            x => new BankIdSimulatedVerifyApiClient()
+        );
+    }
 
     /// <summary>
     /// Use simulated (in memory) environment. To be used for automated testing.
@@ -213,7 +227,12 @@ public static class IBankIdBuilderExtensions
     /// <param name="surname">Fake surname</param>
     /// <returns></returns>
     public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname)
-        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedAppApiClient(givenName, surname));
+    {
+        return UseSimulatedEnvironment(builder,
+            x => new BankIdSimulatedAppApiClient(givenName, surname),
+            x => new BankIdSimulatedVerifyApiClient(givenName, surname)
+        );
+    }
 
     /// <summary>
     /// Use simulated (in memory) environment. To be used for automated testing.
@@ -224,24 +243,31 @@ public static class IBankIdBuilderExtensions
     /// <param name="personalIdentityNumber">Fake personal identity number</param>
     /// <returns></returns>
     public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, string givenName, string surname, string personalIdentityNumber)
-        => UseSimulatedEnvironment(builder, x => new BankIdSimulatedAppApiClient(givenName, surname, personalIdentityNumber));
-
-    private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdAppApiClient> bankIdDevelopmentApiClient)
     {
-        SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedAppApiClient.Version);
+        return UseSimulatedEnvironment(builder,
+            x => new BankIdSimulatedAppApiClient(givenName, surname, personalIdentityNumber),
+            x => new BankIdSimulatedVerifyApiClient(givenName, surname, personalIdentityNumber)
+        );
+    }
 
-        builder.Services.AddSingleton(bankIdDevelopmentApiClient);
+    private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdAppApiClient> bankIdSimulatedAppApiClient, Func<IServiceProvider, IBankIdVerifyApiClient> bankIdSimulatedVerifyApiClient)
+    {
+        SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedAppApiClient.Version, BankIdSimulatedVerifyApiClient.Version);
+
+        builder.Services.AddSingleton(bankIdSimulatedAppApiClient);
+        builder.Services.AddSingleton(bankIdSimulatedVerifyApiClient);
         builder.Services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();
 
         return builder;
     }
 
-    private static void SetActiveLoginContext(IServiceCollection services, string environment, string apiVersion)
+    private static void SetActiveLoginContext(IServiceCollection services, string environment, string appApiVersion, string verifyApiVersion)
     {
         services.Configure<BankIdActiveLoginContext>(context =>
         {
             context.BankIdApiEnvironment = environment;
-            context.BankIdApiVersion = apiVersion;
+            context.BankIdAppApiVersion = appApiVersion;
+            context.BankIdVerifyApiVersion = verifyApiVersion;
         });
     }
 }

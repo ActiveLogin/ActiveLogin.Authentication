@@ -77,14 +77,17 @@ public static class ServiceCollectionBankIdExtensions
 
     private static void UseUserAgentFromContext(this IBankIdBuilder builder)
     {
-        builder.ConfigureHttpClient((sp, httpClient) =>
-        {
-            var context = sp.GetRequiredService<BankIdActiveLoginContext>();
-            var productInfoHeaderValue = new ProductInfoHeaderValue(context.ActiveLoginProductName, context.ActiveLoginProductVersion);
+        builder.ConfigureAppApiHttpClient(ConfigureHttpClientWithUserAgent);
+        builder.ConfigureVerifyApiHttpClient(ConfigureHttpClientWithUserAgent);
+    }
 
-            httpClient.DefaultRequestHeaders.UserAgent.Clear();
-            httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
-        });
+    private static void ConfigureHttpClientWithUserAgent(IServiceProvider sp, HttpClient httpClient)
+    {
+        var context = sp.GetRequiredService<BankIdActiveLoginContext>();
+        var productInfoHeaderValue = new ProductInfoHeaderValue(context.ActiveLoginProductName, context.ActiveLoginProductVersion);
+
+        httpClient.DefaultRequestHeaders.UserAgent.Clear();
+        httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
     }
 
     private static (string name, string version) GetActiveLoginInfo()

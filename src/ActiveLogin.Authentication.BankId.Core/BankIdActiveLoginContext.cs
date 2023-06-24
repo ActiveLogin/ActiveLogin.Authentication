@@ -6,5 +6,6 @@ public class BankIdActiveLoginContext
     public string ActiveLoginProductVersion { get; set; } = string.Empty;
 
     public string BankIdApiEnvironment { get; set; } = string.Empty;
-    public string BankIdApiVersion { get; set; } = string.Empty;
+    public string BankIdAppApiVersion { get; set; } = string.Empty;
+    public string BankIdVerifyApiVersion { get; set; } = string.Empty;
 }
