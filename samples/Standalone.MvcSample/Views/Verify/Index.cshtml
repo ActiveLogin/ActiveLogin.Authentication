@@ -1,0 +1,102 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Demo (verify)";
+}
+<!--
+
+DISCLAIMER
+
+These are samples on how to use Active Login in different situations
+and might not represent optimal way of setting up
+ASP.NET MVC, IdentityServer or other components.
+
+Please see this as inspiration, not a complete template.
+
+The below code lacks erro handling etc. and is only intended as inspiration.
+
+-->
+<style>
+    #preview {
+        width: 500px;
+        height: 500px;
+        position: relative;
+    }
+
+    video {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>
+
+<div id="preview">
+    <video id="video" width="300" height="200"></video>
+    <canvas id="canvas" hidden></canvas>
+</div>
+<progress id="progress"></progress>
+<div id="result"></div>
+
+<script src="https://unpkg.com/jsqr"></script>
+<script>
+    (() => {
+        const video = document.createElement("video");
+        const canvasElement = document.getElementById("canvas");
+        const canvas = canvasElement.getContext("2d", { willReadFrequently: true });
+        const resultElement = document.getElementById("result");
+        const progressElement = document.getElementById("progress");
+
+        let isWaitingForApiResponse = false;
+        progressElement.style.visibility = "hidden";
+
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
+            video.srcObject = stream;
+            video.setAttribute("playsinline", true);
+            video.play();
+            requestAnimationFrame(tick);
+        });
+
+        function tick() {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvasElement.hidden = false;
+                canvasElement.height = video.videoHeight;
+                canvasElement.width = video.videoWidth;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+                if (!isWaitingForApiResponse) {
+                    var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                    var code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                    if (code) {
+                        if (code.data.startsWith("BANKIDF.")) {
+                            progressElement.style.visibility = "visible";
+                            isWaitingForApiResponse = true;
+
+                            fetch("/verify/api",
+                                {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ qrCodeContent: code.data })
+                                }).then(response => response.json())
+                                .then(data => {
+                                    // Display the result
+                                    resultElement.innerText = `Identity Number: ${data.personalIdentityNumber}`
+                                        + `\nName: ${data.name}`
+                                        + `\nGiven name: ${data.givenName}`
+                                        + `\nSurname: ${data.surname}`
+                                        + `\nAge: ${data.age}`
+                                        + `\nIdentified at: ${new Date(data.identifiedAt).toLocaleString()}`
+                                        + `\nVerified at: ${new Date(data.verifiedAt).toLocaleString()}`;
+                                })
+                                .catch(error => console.error('Error:', error))
+                                .finally(() => {
+                                    isWaitingForApiResponse = false;
+                                    progressElement.style.visibility = "hidden";
+                                });
+                        }
+                    }
+                }
+            }
+            requestAnimationFrame(tick);
+        }
+    })();
+</script>

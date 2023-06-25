@@ -66,7 +66,7 @@ public class BankIdSimulatedVerifyApiClient : IBankIdVerifyApiClient
 
     private static VerifyAuthentication GetAuthentication(DateTimeOffset now)
     {
-        var identifiedAt = GetIso8601Timestamp(now, TimeSpan.FromSeconds(15));
+        var identifiedAt = GetIso8601Timestamp(now, TimeSpan.FromSeconds(60));
         var orderRef = GetRandomToken();
         var signature = string.Empty; // Not implemented in the simulated client
         var ocspResponse = string.Empty; // Not implemented in the simulated client
