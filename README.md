@@ -17,7 +17,7 @@ Free to use, [commercial support and training](#support--training) is available 
 
 - :id: Supports BankID Auth (API, Flow and UI)
 - :pencil: Supports BankID Sign (API, Flow and UI)
-- :neutral_face: Supports BankID Verify digital ID card
+- :relaxed: Supports BankID Verify digital ID card (API)
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 7
 - :six: Built on V6.0 (the latest) BankID JSON API
 - :checkered_flag: Supports BankID animated QR code (Secure start)
