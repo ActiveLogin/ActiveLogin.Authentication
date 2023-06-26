@@ -12,29 +12,60 @@ ASP.NET MVC, IdentityServer or other components.
 
 Please see this as inspiration, not a complete template.
 
-The below code lacks erro handling etc. and is only intended as inspiration.
+The below code lacks error handling etc. and is only intended as inspiration.
 
 -->
 <style>
-    #preview {
-        width: 500px;
-        height: 500px;
-        position: relative;
+    #video {
+        display: none;
     }
 
-    video {
+    #canvas {
+        width: 100%;
         max-width: 100%;
-        max-height: 100%;
+    }
+
+    #progress {
+        visibility: hidden;
+    }
+
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .wrapper .card {
+        max-width: 500px;
+        width: 100%;
     }
 </style>
 
-<div id="preview">
-    <video id="video" width="300" height="200"></video>
-    <canvas id="canvas" hidden></canvas>
-</div>
-<progress id="progress"></progress>
-<div id="result"></div>
+<h1>Active Login - Verify digital ID card from BankID</h1>
 
+<p>
+    <em>NOTE:</em> This is a simple demo on how to verify a digital ID card from BankID. The sample lacks error handling etc. and is only intended as inspiration.
+</p>
+<section class="wrapper">
+    <h2 class="h4 m2-1 mt-5">Scan your digital ID card here</h2>
+    <div class="card">
+        <div class="card-body">
+            <div id="preview">
+                <video id="video" width="300" height="200"></video>
+                <canvas id="canvas" hidden></canvas>
+            </div>
+        </div>
+    </div>
+
+    <progress id="progress"></progress>
+
+    <h2 class="h4 m2-1 mt-5">Scan result</h2>
+    <div class="card text-left">
+        <div class="card-body">
+            <div id="result"></div>
+        </div>
+    </div>
+</section>
 <script src="https://unpkg.com/jsqr"></script>
 <script>
     (() => {
@@ -79,13 +110,31 @@ The below code lacks erro handling etc. and is only intended as inspiration.
                                 }).then(response => response.json())
                                 .then(data => {
                                     // Display the result
-                                    resultElement.innerText = `Identity Number: ${data.personalIdentityNumber}`
-                                        + `\nName: ${data.name}`
-                                        + `\nGiven name: ${data.givenName}`
-                                        + `\nSurname: ${data.surname}`
-                                        + `\nAge: ${data.age}`
-                                        + `\nIdentified at: ${new Date(data.identifiedAt).toLocaleString()}`
-                                        + `\nVerified at: ${new Date(data.verifiedAt).toLocaleString()}`;
+                                    let dlElement = document.createElement("dl");
+
+                                    let dataItems = [
+                                        { label: "Identity Number", value: data.personalIdentityNumber },
+                                        { label: "Name", value: data.name },
+                                        { label: "Given name", value: data.givenName },
+                                        { label: "Surname", value: data.surname },
+                                        { label: "Age", value: data.age },
+                                        { label: "Identified at", value: new Date(data.identifiedAt).toLocaleString() },
+                                        { label: "Verified at", value: new Date(data.verifiedAt).toLocaleString() }
+                                    ];
+
+                                    for(let item of dataItems) {
+                                        let dtElement = document.createElement("dt");
+                                        dtElement.innerText = item.label;
+
+                                        let ddElement = document.createElement("dd");
+                                        ddElement.innerText = item.value;
+
+                                        dlElement.appendChild(dtElement);
+                                        dlElement.appendChild(ddElement);
+                                    }
+
+                                    resultElement.innerHTML = "";
+                                    resultElement.appendChild(dlElement);
                                 })
                                 .catch(error => console.error('Error:', error))
                                 .finally(() => {

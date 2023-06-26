@@ -5,19 +5,30 @@ Built on NET Standard and packaged as NuGet-packages they are easy to install an
 
 Free to use, [commercial support and training](https://activelogin.net/#support) is available if you need assistance or a quick start. 
 
+There is one Api for the "App API" and one for the "Verify API".
+
 ## Sample usage
 
 The constructor for the api client takes an `HttpClient` and you need to configure that `HttpClient` with a `BaseAddress`, `Tls12`, client certificates etc. depending on your needs.
 
-The client have these public methods.
+The clients have these public methods.
 
+*App API:*
 ```csharp
-public class BankIdApiClient : IBankIdApiClient
+public class BankIdAppApiClient : IBankIdAppApiClient
 {
     public Task<AuthResponse> AuthAsync(AuthRequest request) { ... }
     public Task<SignResponse> SignAsync(SignRequest request) { ... }
     public Task<CollectResponse> CollectAsync(CollectRequest request) { ... }
     public Task<CancelResponse> CancelAsync(CancelRequest request) { ... }
+}
+```
+
+*Verify API:*
+```csharp
+public class BankIdVerifyApiClient : IBankIdVerifyApiClient
+{
+    public Task<VerifyResponse> VerifyAsync(VerifyRequest request) { ... }
 }
 ```
 

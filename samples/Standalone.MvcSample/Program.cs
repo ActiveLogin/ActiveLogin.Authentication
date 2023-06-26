@@ -12,7 +12,6 @@ using ActiveLogin.Authentication.BankId.UaParser;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Azure;
 
 
 //

@@ -27,6 +27,16 @@ We now require .NET 7 - so this requires you to upgrade your website that uses A
 
 The API has changed to reflect the new BankID API (v 6.0). An overview of those changes can be found [in this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/402).
 
+#### Rename API Wrapper
+
+As we've added support for the new Verify API, we have renamed the existing API into App API. These changes shouold gho unnoiced for most of you if you are using the high level abstractions.
+
+* `IBankIdApiClient` is renamed into `IBankIdAppApiClient`
+* `BankIdApiClient` is renamed into `BankIdAppApiClient`
+* `BankIdSimulatedApiClient` is renamed into `BankIdSimulatedAppApiClient`
+* `BankIdSimulatedApiClient` is renamed into `BankIdSimulatedAppApiClient`
+* `BankIdApiClientExtensions` is renamed into `BankIdAppApiClientExtensions`
+
 ### Custom options
 
 Some API changes (as described above) propagates to the options you can customize per authentication scheme. The following options have been changed:

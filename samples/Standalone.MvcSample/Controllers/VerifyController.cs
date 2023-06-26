@@ -1,7 +1,6 @@
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Standalone.MvcSample.Models;
@@ -18,7 +17,6 @@ namespace Standalone.MvcSample.Controllers;
 // Please see this as inspiration, not a complete template.
 //
 
-[AllowAnonymous]
 public class VerifyController : Controller
 {
     private readonly IBankIdVerifyApiClient _bankIdVerifyApiClient;
@@ -35,7 +33,6 @@ public class VerifyController : Controller
     }
 
     [HttpPost("/verify/api")]
-    [AllowAnonymous]
     public async Task<ActionResult<VerifyResultModel>> Verify([FromBody] VerifyRequestModel model)
     {
         ArgumentNullException.ThrowIfNull(model, nameof(model));
