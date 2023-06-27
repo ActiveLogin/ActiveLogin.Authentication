@@ -29,7 +29,7 @@ The API has changed to reflect the new BankID API (v 6.0). An overview of those 
 
 #### Rename API Wrapper
 
-As we've added support for the new Verify API, we have renamed the existing API into App API. These changes shouold gho unnoiced for most of you if you are using the high level abstractions.
+As we've added support for the new Verify API, we have renamed the existing API into App API. These changes should go unnoticed for most of you if you are using the high level abstractions.
 
 * `IBankIdApiClient` is renamed into `IBankIdAppApiClient`
 * `BankIdApiClient` is renamed into `BankIdAppApiClient`
