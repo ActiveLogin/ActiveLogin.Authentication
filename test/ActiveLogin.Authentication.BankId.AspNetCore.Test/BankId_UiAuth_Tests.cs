@@ -533,7 +533,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
-        var testBankIdApi = new TestBankIdApi(new BankIdSimulatedApiClient());
+        var testBankIdApi = new TestBankIdAppApi(new BankIdSimulatedAppApiClient());
 
         using var server = CreateServer(
             o =>
@@ -553,7 +553,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             {
                 services.AddTransient(s => _bankIdUiOptionsProtector.Object);
                 services.AddTransient(s => _bankIdUiStateProtector.Object);
-                services.AddSingleton<IBankIdApiClient>(s => testBankIdApi);
+                services.AddSingleton<IBankIdAppApiClient>(s => testBankIdApi);
             });
 
         // Arrange csrf info

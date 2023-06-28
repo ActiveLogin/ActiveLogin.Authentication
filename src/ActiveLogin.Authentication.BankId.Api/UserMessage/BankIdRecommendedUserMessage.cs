@@ -32,7 +32,7 @@ public class BankIdRecommendedUserMessage : IBankIdUserMessage
     {
         new (MessageShortName.RFA3, ErrorCode.Canceled),
         new (MessageShortName.RFA4, ErrorCode.AlreadyInProgress),
-        new (MessageShortName.RFA5, ErrorCode.RequestTimeout, ErrorCode.Maintenance, ErrorCode.InternalError)
+        new (MessageShortName.RFA5, ErrorCode.RequestTimeout, ErrorCode.Maintenance, ErrorCode.InternalError, ErrorCode.TooManyRequests, ErrorCode.MethodNotAllowed, ErrorCode.VerificationFailed)
     };
 
     public MessageShortName GetMessageShortNameForCollectResponse(

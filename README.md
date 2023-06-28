@@ -17,9 +17,10 @@ Free to use, [commercial support and training](#support--training) is available 
 
 - :id: Supports BankID Auth (API, Flow and UI)
 - :pencil: Supports BankID Sign (API, Flow and UI)
+- :relaxed: Supports BankID Verify digital ID card (API)
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 7
-- 6️⃣: Built on V6.0 (the latest) BankID JSON API
-- :white_square_button: Supports BankID animated QR code (Secure start)
+- :six: Built on V6.0 (the latest) BankID JSON API
+- :checkered_flag: Supports BankID animated QR code (Secure start)
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
 - :wrench: Customizable ánd extensible
@@ -90,7 +91,7 @@ Active Login is designed to make it easy to get started with BankID in .NET. The
 services
     .AddBankId(bankId =>
     {
-        bankId.UseSimulatedEnvironment();
+        bankId.UseTestEnvironment();
     });
 
 // Auth

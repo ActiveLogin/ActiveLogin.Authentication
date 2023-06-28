@@ -71,6 +71,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Sign" asp-action="Index">Sign</a>
                         </li>
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Verify" asp-action="Index">Verify</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

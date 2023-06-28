@@ -1,0 +1,151 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Demo (verify)";
+}
+<!--
+
+DISCLAIMER
+
+These are samples on how to use Active Login in different situations
+and might not represent optimal way of setting up
+ASP.NET MVC, IdentityServer or other components.
+
+Please see this as inspiration, not a complete template.
+
+The below code lacks error handling etc. and is only intended as inspiration.
+
+-->
+<style>
+    #video {
+        display: none;
+    }
+
+    #canvas {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #progress {
+        visibility: hidden;
+    }
+
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .wrapper .card {
+        max-width: 500px;
+        width: 100%;
+    }
+</style>
+
+<h1>Active Login - Verify digital ID card from BankID</h1>
+
+<p>
+    <em>NOTE:</em> This is a simple demo on how to verify a digital ID card from BankID. The sample lacks error handling etc. and is only intended as inspiration.
+</p>
+<section class="wrapper">
+    <h2 class="h4 m2-1 mt-5">Scan your digital ID card here</h2>
+    <div class="card">
+        <div class="card-body">
+            <div id="preview">
+                <video id="video" width="300" height="200"></video>
+                <canvas id="canvas" hidden></canvas>
+            </div>
+        </div>
+    </div>
+
+    <progress id="progress"></progress>
+
+    <h2 class="h4 m2-1 mt-5">Scan result</h2>
+    <div class="card text-left">
+        <div class="card-body">
+            <div id="result"></div>
+        </div>
+    </div>
+</section>
+<script src="https://unpkg.com/jsqr"></script>
+<script>
+    (() => {
+        const video = document.createElement("video");
+        const canvasElement = document.getElementById("canvas");
+        const canvas = canvasElement.getContext("2d", { willReadFrequently: true });
+        const resultElement = document.getElementById("result");
+        const progressElement = document.getElementById("progress");
+
+        let isWaitingForApiResponse = false;
+        progressElement.style.visibility = "hidden";
+
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function (stream) {
+            video.srcObject = stream;
+            video.setAttribute("playsinline", true);
+            video.play();
+            requestAnimationFrame(tick);
+        });
+
+        function tick() {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvasElement.hidden = false;
+                canvasElement.height = video.videoHeight;
+                canvasElement.width = video.videoWidth;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+                if (!isWaitingForApiResponse) {
+                    var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                    var code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                    if (code) {
+                        if (code.data.startsWith("BANKIDF.")) {
+                            progressElement.style.visibility = "visible";
+                            isWaitingForApiResponse = true;
+
+                            fetch("/verify/api",
+                                {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ qrCodeContent: code.data })
+                                }).then(response => response.json())
+                                .then(data => {
+                                    // Display the result
+                                    let dlElement = document.createElement("dl");
+
+                                    let dataItems = [
+                                        { label: "Identity Number", value: data.personalIdentityNumber },
+                                        { label: "Name", value: data.name },
+                                        { label: "Given name", value: data.givenName },
+                                        { label: "Surname", value: data.surname },
+                                        { label: "Age", value: data.age },
+                                        { label: "Identified at", value: new Date(data.identifiedAt).toLocaleString() },
+                                        { label: "Verified at", value: new Date(data.verifiedAt).toLocaleString() }
+                                    ];
+
+                                    for(let item of dataItems) {
+                                        let dtElement = document.createElement("dt");
+                                        dtElement.innerText = item.label;
+
+                                        let ddElement = document.createElement("dd");
+                                        ddElement.innerText = item.value;
+
+                                        dlElement.appendChild(dtElement);
+                                        dlElement.appendChild(ddElement);
+                                    }
+
+                                    resultElement.innerHTML = "";
+                                    resultElement.appendChild(dlElement);
+                                })
+                                .catch(error => console.error('Error:', error))
+                                .finally(() => {
+                                    isWaitingForApiResponse = false;
+                                    progressElement.style.visibility = "hidden";
+                                });
+                        }
+                    }
+                }
+            }
+            requestAnimationFrame(tick);
+        }
+    })();
+</script>

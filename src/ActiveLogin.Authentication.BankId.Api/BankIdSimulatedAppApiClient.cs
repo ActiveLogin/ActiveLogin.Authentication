@@ -3,9 +3,9 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 namespace ActiveLogin.Authentication.BankId.Api;
 
 /// <summary>
-/// Dummy implementation that simulates the BankId API. Can be used for development and testing purposes.
+/// Dummy implementation that simulates the BankId App API. Can be used for development and testing purposes.
 /// </summary>
-public class BankIdSimulatedApiClient : IBankIdApiClient
+public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 {
     public const string Version = "1.0";
 
@@ -36,37 +36,37 @@ public class BankIdSimulatedApiClient : IBankIdApiClient
     private readonly Dictionary<string, Session> _sessions = new();
     private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
-    public BankIdSimulatedApiClient()
+    public BankIdSimulatedAppApiClient()
         : this(DefaultCollectStates)
     {
     }
 
-    public BankIdSimulatedApiClient(List<CollectState> collectStates)
+    public BankIdSimulatedAppApiClient(List<CollectState> collectStates)
         : this(DefaultGivenName, DefaultSurname, DefaultPersonalIdentityNumber, collectStates)
     {
     }
 
-    public BankIdSimulatedApiClient(string givenName, string surname)
+    public BankIdSimulatedAppApiClient(string givenName, string surname)
         : this(givenName, surname, DefaultPersonalIdentityNumber)
     {
     }
 
-    public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber)
+    public BankIdSimulatedAppApiClient(string givenName, string surname, string personalIdentityNumber)
         : this(givenName, surname, personalIdentityNumber, DefaultCollectStates)
     {
     }
 
-    public BankIdSimulatedApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
+    public BankIdSimulatedAppApiClient(string givenName, string surname, string personalIdentityNumber, List<CollectState> collectStates)
         : this(givenName, surname, $"{givenName} {surname}", personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, collectStates)
     {
     }
 
-    public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber)
+    public BankIdSimulatedAppApiClient(string givenName, string surname, string name, string personalIdentityNumber)
         : this(givenName, surname, name, personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, DefaultCollectStates)
     {
     }
 
-    public BankIdSimulatedApiClient(string givenName, string surname, string name, string personalIdentityNumber, string bankIdIssueDate, string uniqueHardwareId, List<CollectState> collectStates)
+    public BankIdSimulatedAppApiClient(string givenName, string surname, string name, string personalIdentityNumber, string bankIdIssueDate, string uniqueHardwareId, List<CollectState> collectStates)
     {
         _givenName = givenName;
         _surname = surname;

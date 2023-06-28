@@ -17,7 +17,7 @@ public class BankIdFlowService : IBankIdFlowService
 {
     private const int MaxRetryLoginAttempts = 5;
 
-    private readonly IBankIdApiClient _bankIdApiClient;
+    private readonly IBankIdAppApiClient _bankIdAppApiClient;
     private readonly IBankIdFlowSystemClock _bankIdFlowSystemClock;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
     private readonly IBankIdUserMessage _bankIdUserMessage;
@@ -29,7 +29,7 @@ public class BankIdFlowService : IBankIdFlowService
     private readonly IBankIdLauncher _bankIdLauncher;
 
     public BankIdFlowService(
-        IBankIdApiClient bankIdApiClient,
+        IBankIdAppApiClient bankIdAppApiClient,
         IBankIdFlowSystemClock bankIdFlowSystemClock,
         IBankIdEventTrigger bankIdEventTrigger,
         IBankIdUserMessage bankIdUserMessage,
@@ -41,7 +41,7 @@ public class BankIdFlowService : IBankIdFlowService
         IBankIdLauncher bankIdLauncher
     )
     {
-        _bankIdApiClient = bankIdApiClient;
+        _bankIdAppApiClient = bankIdAppApiClient;
         _bankIdFlowSystemClock = bankIdFlowSystemClock;
         _bankIdEventTrigger = bankIdEventTrigger;
         _bankIdUserMessage = bankIdUserMessage;
@@ -83,7 +83,7 @@ public class BankIdFlowService : IBankIdFlowService
         try
         {
             var request = await GetAuthRequest(flowOptions);
-            return await _bankIdApiClient.AuthAsync(request);
+            return await _bankIdAppApiClient.AuthAsync(request);
         }
         catch (BankIdApiException bankIdApiException)
         {
@@ -141,7 +141,7 @@ public class BankIdFlowService : IBankIdFlowService
         try
         {
             var request = GetSignRequest(flowOptions, bankIdSignData);
-            return await _bankIdApiClient.SignAsync(request);
+            return await _bankIdAppApiClient.SignAsync(request);
         }
         catch (BankIdApiException bankIdApiException)
         {
@@ -220,7 +220,7 @@ public class BankIdFlowService : IBankIdFlowService
     {
         try
         {
-            return await _bankIdApiClient.CollectAsync(orderRef);
+            return await _bankIdAppApiClient.CollectAsync(orderRef);
         }
         catch (BankIdApiException bankIdApiException)
         {
@@ -262,7 +262,7 @@ public class BankIdFlowService : IBankIdFlowService
 
         try
         {
-            await _bankIdApiClient.CancelAsync(orderRef);
+            await _bankIdAppApiClient.CancelAsync(orderRef);
             await _bankIdEventTrigger.TriggerAsync(new BankIdCancelSuccessEvent(orderRef, detectedDevice, flowOptions));
         }
         catch (BankIdApiException exception)

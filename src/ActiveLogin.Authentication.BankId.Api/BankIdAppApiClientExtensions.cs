@@ -5,10 +5,10 @@ namespace ActiveLogin.Authentication.BankId.Api;
 /// <summary>
 /// Extensions to enable easier access to common api scenarios.
 /// </summary>
-public static class BankIdApiClientExtensions
+public static class BankIdAppApiClientExtensions
 {
     /// <summary></summary>
-    /// <param name="apiClient">The <see cref="IBankIdApiClient"/> instance.</param>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
     /// <param name="endUserIp">
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
@@ -29,14 +29,14 @@ public static class BankIdApiClientExtensions
     /// For further information of formatting options, please study the document Guidelines for Formatted Text.
     /// </param>
     public static Task<AuthResponse> AuthAsync(
-        this IBankIdApiClient apiClient,
+        this IBankIdAppApiClient appApiClient,
         string endUserIp,
         Requirement? requirement = null,
         string? userVisibleData = null,
         byte[]? userNonVisibleData = null,
         string? userVisibleDataFormat = null)
     {
-        return apiClient.AuthAsync(new(
+        return appApiClient.AuthAsync(new(
             endUserIp,
             userVisibleData: userVisibleData,
             userNonVisibleData: userNonVisibleData,
@@ -47,7 +47,7 @@ public static class BankIdApiClientExtensions
     /// <summary>
     /// Initiates an authentication order. Use the collect method to query the status of the order.
     /// </summary>
-    /// <param name="apiClient">The <see cref="IBankIdApiClient"/> instance.</param>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
     /// <param name="endUserIp">
     /// The user IP address as seen by RP.String.IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
@@ -57,15 +57,15 @@ public static class BankIdApiClientExtensions
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<AuthResponse> AuthAsync(this IBankIdApiClient apiClient, string endUserIp)
+    public static Task<AuthResponse> AuthAsync(this IBankIdAppApiClient appApiClient, string endUserIp)
     {
-        return apiClient.AuthAsync(new AuthRequest(endUserIp));
+        return appApiClient.AuthAsync(new AuthRequest(endUserIp));
     }
 
     /// <summary>
     /// Initiates an authentication order. Use the collect method to query the status of the order.
     /// </summary>
-    /// <param name="apiClient">The <see cref="IBankIdApiClient"/> instance.</param>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
     /// <param name="endUserIp">
     /// The user IP address as seen by RP.String.IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
@@ -78,15 +78,15 @@ public static class BankIdApiClientExtensions
     /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<SignResponse> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData)
+    public static Task<SignResponse> SignAsync(this IBankIdAppApiClient appApiClient, string endUserIp, string userVisibleData)
     {
-        return apiClient.SignAsync(new SignRequest(endUserIp, userVisibleData));
+        return appApiClient.SignAsync(new SignRequest(endUserIp, userVisibleData));
     }
 
     /// <summary>
     /// Initiates an authentication order. Use the collect method to query the status of the order.
     /// </summary>
-    /// <param name="apiClient">The <see cref="IBankIdApiClient"/> instance.</param>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
     /// <param name="endUserIp">
     /// The user IP address as seen by RP.String.IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
@@ -102,9 +102,9 @@ public static class BankIdApiClientExtensions
     /// Data not displayed to the user.
     /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<SignResponse> SignAsync(this IBankIdApiClient apiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData)
+    public static Task<SignResponse> SignAsync(this IBankIdAppApiClient appApiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData)
     {
-        return apiClient.SignAsync(new SignRequest(
+        return appApiClient.SignAsync(new SignRequest(
             endUserIp,
             userVisibleData,
             userNonVisibleData: userNonVisibleData));
@@ -115,22 +115,22 @@ public static class BankIdApiClientExtensions
     /// RP should keep on calling collect every two seconds as long as status indicates pending.
     /// RP must abort if status indicates failed.
     /// </summary>
-    /// <param name="apiClient">The <see cref="IBankIdApiClient"/> instance.</param>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
     /// <param name="orderRef">The OrderRef returned from auth or sign.</param>
     /// <returns>The user identity is returned when complete.</returns>
-    public static Task<CollectResponse> CollectAsync(this IBankIdApiClient apiClient, string orderRef)
+    public static Task<CollectResponse> CollectAsync(this IBankIdAppApiClient appApiClient, string orderRef)
     {
-        return apiClient.CollectAsync(new CollectRequest(orderRef));
+        return appApiClient.CollectAsync(new CollectRequest(orderRef));
     }
 
     /// <summary>
     /// Cancels an ongoing sign or auth order.
     /// This is typically used if the user cancels the order in your service or app.
     /// </summary>
-    /// <param name="apiClient">The <see cref="IBankIdApiClient"/> instance.</param>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
     /// <param name="orderRef">The OrderRef returned from auth or sign.</param>
-    public static Task<CancelResponse> CancelAsync(this IBankIdApiClient apiClient, string orderRef)
+    public static Task<CancelResponse> CancelAsync(this IBankIdAppApiClient appApiClient, string orderRef)
     {
-        return apiClient.CancelAsync(new CancelRequest(orderRef));
+        return appApiClient.CancelAsync(new CancelRequest(orderRef));
     }
 }

@@ -11,21 +11,30 @@ internal class BankIdBuilder : IBankIdBuilder
 {
     public IServiceCollection Services { get; }
 
-    private readonly List<Action<IServiceProvider, HttpClient>> _httpClientConfigurators = new();
-    private readonly List<Action<IServiceProvider, SocketsHttpHandler>> _httpClientHandlerConfigurators = new();
+    private readonly List<Action<IServiceProvider, HttpClient>> _httpClientAppApiConfigurators = new();
+    private readonly List<Action<IServiceProvider, SocketsHttpHandler>> _httpClientHandlerAppApiConfigurators = new();
+
+    private readonly List<Action<IServiceProvider, HttpClient>> _httpClientVerifyApiConfigurators = new();
+    private readonly List<Action<IServiceProvider, SocketsHttpHandler>> _httpClientHandlerVerifyApiConfigurators = new();
+
 
     public BankIdBuilder(IServiceCollection services)
     {
         Services = services;
 
-        ConfigureHttpClient((sp, httpClient) => httpClient.BaseAddress = BankIdUrls.ProductionApiBaseUrl);
-        ConfigureHttpClientHandler((sp, httpClientHandler) =>
-        {
-            httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12;
+        ConfigureAppApiHttpClient((sp, httpClient) => httpClient.BaseAddress = BankIdUrls.AppApiProductionBaseUrl);
+        ConfigureAppApiHttpClientHandler(ConfigureHttpClientHandlerForSsl);
 
-            // From .NET 7 it seems as we have to implement this to get
-            httpClientHandler.SslOptions.LocalCertificateSelectionCallback = (sender, host, certificates, certificate, issuers) => GetFirstCertificate(certificates)!;
-        });
+        ConfigureVerifyApiHttpClient((sp, httpClient) => httpClient.BaseAddress = BankIdUrls.VerifyApiProductionBaseUrl);
+        ConfigureVerifyApiHttpClientHandler(ConfigureHttpClientHandlerForSsl);
+    }
+
+    private void ConfigureHttpClientHandlerForSsl(IServiceProvider sp, SocketsHttpHandler httpClientHandler)
+    {
+        httpClientHandler.SslOptions.EnabledSslProtocols = SslProtocols.Tls12;
+
+        // From .NET 7 it seems as we have to implement this to get
+        httpClientHandler.SslOptions.LocalCertificateSelectionCallback = (sender, host, certificates, certificate, issuers) => GetFirstCertificate(certificates)!;
     }
 
     private static X509Certificate? GetFirstCertificate(X509CertificateCollection localcertificates)
@@ -33,26 +42,47 @@ internal class BankIdBuilder : IBankIdBuilder
         return localcertificates.Count == 0 ? null : localcertificates[0];
     }
 
-    public void ConfigureHttpClient(Action<IServiceProvider, HttpClient> configureHttpClient)
+    public void ConfigureAppApiHttpClient(Action<IServiceProvider, HttpClient> configureHttpClient)
     {
-        _httpClientConfigurators.Add(configureHttpClient);
+        _httpClientAppApiConfigurators.Add(configureHttpClient);
     }
 
-    public void ConfigureHttpClientHandler(Action<IServiceProvider, SocketsHttpHandler> configureHttpClientHandler)
+    public void ConfigureAppApiHttpClientHandler(Action<IServiceProvider, SocketsHttpHandler> configureHttpClientHandler)
     {
-        _httpClientHandlerConfigurators.Add(configureHttpClientHandler);
+        _httpClientHandlerAppApiConfigurators.Add(configureHttpClientHandler);
+    }
+
+    public void ConfigureVerifyApiHttpClient(Action<IServiceProvider, HttpClient> configureHttpClient)
+    {
+        _httpClientVerifyApiConfigurators.Add(configureHttpClient);
+    }
+
+    public void ConfigureVerifyApiHttpClientHandler(Action<IServiceProvider, SocketsHttpHandler> configureHttpClientHandler)
+    {
+        _httpClientHandlerVerifyApiConfigurators.Add(configureHttpClientHandler);
     }
 
     public void AfterConfiguration()
     {
-        Services.AddHttpClient<IBankIdApiClient, BankIdApiClient>((sp, httpClient) =>
+        Services.AddHttpClient<IBankIdAppApiClient, BankIdAppApiClient>((sp, httpClient) =>
             {
-                _httpClientConfigurators.ForEach(configurator => configurator(sp, httpClient));
+                _httpClientAppApiConfigurators.ForEach(configurator => configurator(sp, httpClient));
             })
             .ConfigurePrimaryHttpMessageHandler(sp =>
             {
                 var httpClientHandler = new SocketsHttpHandler();
-                _httpClientHandlerConfigurators.ForEach(configurator => configurator(sp, httpClientHandler));
+                _httpClientHandlerAppApiConfigurators.ForEach(configurator => configurator(sp, httpClientHandler));
+                return httpClientHandler;
+            });
+
+        Services.AddHttpClient<IBankIdVerifyApiClient, BankIdVerifyApiClient>((sp, httpClient) =>
+            {
+                _httpClientVerifyApiConfigurators.ForEach(configurator => configurator(sp, httpClient));
+            })
+            .ConfigurePrimaryHttpMessageHandler(sp =>
+            {
+                var httpClientHandler = new SocketsHttpHandler();
+                _httpClientHandlerVerifyApiConfigurators.ForEach(configurator => configurator(sp, httpClientHandler));
                 return httpClientHandler;
             });
     }

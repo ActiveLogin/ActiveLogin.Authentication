@@ -15,7 +15,7 @@ public abstract class BankIdEvent
         ActiveLoginProductVersion = context.ActiveLoginProductVersion;
 
         BankIdApiEnvironment = context.BankIdApiEnvironment;
-        BankIdApiVersion = context.BankIdApiVersion;
+        BankIdAppApiVersion = context.BankIdAppApiVersion;
     }
 
     /// <summary>
@@ -49,5 +49,5 @@ public abstract class BankIdEvent
     /// <summary>
     /// BankId API version targeted.
     /// </summary>
-    public string BankIdApiVersion { get; private set; } = string.Empty;
+    public string BankIdAppApiVersion { get; private set; } = string.Empty;
 }

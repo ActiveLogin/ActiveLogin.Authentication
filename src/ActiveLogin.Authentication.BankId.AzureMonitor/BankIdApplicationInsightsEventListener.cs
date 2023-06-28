@@ -265,7 +265,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
         allProperties.Add(PropertyName_ProductName, e.ActiveLoginProductName);
         allProperties.Add(PropertyName_ProductVersion, e.ActiveLoginProductVersion);
         allProperties.Add(PropertyName_BankIdApiEnvironment, e.BankIdApiEnvironment);
-        allProperties.Add(PropertyName_BankIdApiVersion, e.BankIdApiVersion);
+        allProperties.Add(PropertyName_BankIdApiVersion, e.BankIdAppApiVersion);
 
         allProperties.Add(PropertyName_EventTypeName, e.EventTypeName);
         allProperties.Add(PropertyName_EventTypeId, e.EventTypeId.ToString("D"));

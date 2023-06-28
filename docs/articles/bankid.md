@@ -43,6 +43,7 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
   + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
   + [Custom QR code generation](#custom-qr-code-generation)
   + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
+  + [Verify digital ID card](#verify-digital-id-card)
   + [Use api wrapper only](#use-api-wrapper-only)
   + [Running on Linux](#running-on-linux)
   + [Localization](#localization)
@@ -1141,16 +1142,81 @@ public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
 
 ```
 
+### Verify digital ID card
+
+To use the API for "Verify digital ID card" you first need to register the BankID services, select an environment etc.
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId
+            .AddDebugEventListener()
+            .UseTestEnvironment();
+    });
+```
+
+Then you can use the Verify API from, for example, an MVC Controller. The API allows you to send in the content of the QR-code and responds with the verification details.
+
+In the example below the client (HTML/JS for example) have already decoded the QR-code.
+
+```csharp
+public class VerifyRequestModel
+{
+    public string QrCodeContent { get; set; } = string.Empty;
+}
+
+public class VerifyController : Controller
+{
+    private readonly IBankIdVerifyApiClient _bankIdVerifyApiClient;
+
+    public VerifyController(IBankIdVerifyApiClient bankIdVerifyApiClient)
+    {
+        _bankIdVerifyApiClient = bankIdVerifyApiClient;
+    }
+
+    [HttpPost("/verify/api")]
+    public async Task<ActionResult<string>> Verify([FromBody] VerifyRequestModel model)
+    {
+        // Minimalistic sample implementation
+
+        ArgumentNullException.ThrowIfNull(model, nameof(model));
+        if (string.IsNullOrEmpty(model.QrCodeContent))
+        {
+            throw new ArgumentNullException(nameof(model.QrCodeContent));
+        }
+
+        var verifyResult = await _bankIdVerifyApiClient.VerifyAsync(model.QrCodeContent);
+        return verifyResult.User.PersonalIdentityNumber;
+    }
+}
+```
+
 ### Use api wrapper only
 
 We have seperated the API-wrapper for BankID into a separate package so that you can use it in other scenarios we have not covered. They look like this and are both well documented using XML-comments.
 
 The constructor for these ApiClients takes an `HttpClient` and you need to configure that `HttpClient` with a `BaseAddress`, `Tls12`, client certificates etc. depending on your needs.
 
-___Note:___ The `BankIdApiClient` class below is available in the `ActiveLogin.Authentication.BankId.Api` package.
+For easy use the APIs you register the BankID services, select an environment etc. and then the APIs are ready to be injected using IoC.
+
+
 
 ```csharp
-public class BankIdApiClient : IBankIdApiClient
+services
+    .AddBankId(bankId =>
+    {
+        bankId
+            .AddDebugEventListener()
+            .UseTestEnvironment();
+    });
+```
+
+___Note:___ The `BankIdApiClient` class below is available in the `ActiveLogin.Authentication.BankId.Api` package.
+
+*App API:*
+```csharp
+public class BankIdAppApiClient : IBankIdAppApiClient
 {
     public Task<AuthResponse> AuthAsync(AuthRequest request) { ... }
     public Task<SignResponse> SignAsync(SignRequest request) { ... }
@@ -1159,10 +1225,12 @@ public class BankIdApiClient : IBankIdApiClient
 }
 ```
 
-___Note:___ The class `BankIdUserVisibleDataFormats` contains constants for valid values of `userVisibleDataFormat`, example:
-
+*Verify API:*
 ```csharp
-    BankIdUserVisibleDataFormats.SimpleMarkdownV1
+public class BankIdVerifyApiClient : IBankIdVerifyApiClient
+{
+    public Task<VerifyResponse> VerifyAsync(VerifyRequest request) { ... }
+}
 ```
 
 
