@@ -17,12 +17,12 @@ using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Api.Test;
 
-public class BankIdApiClient_Tests
+public class BankIdAppApiClient_Tests
 {
     private readonly Mock<HttpMessageHandler> _messageHandlerMock;
     private readonly BankIdAppApiClient _bankIdAppApiClient;
 
-    public BankIdApiClient_Tests()
+    public BankIdAppApiClient_Tests()
     {
         _messageHandlerMock = GetHttpClientMessageHandlerMock(new HttpResponseMessage
         {

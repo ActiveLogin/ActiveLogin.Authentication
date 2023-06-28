@@ -1,4 +1,4 @@
-﻿namespace ActiveLogin.Authentication.BankId.Api.Models;
+namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 /// <summary>
 /// Possible values of error codes returned from an error response.
@@ -30,17 +30,44 @@ public enum ErrorCode
 
     Canceled,
 
+    /// <summary>
+    /// A call was processed, but resulted in a non-valid validation of the presented ID card.
+    /// 
+    /// Possible reasons:
+    /// 
+    /// The QR code did not correlate to a known ID card
+    /// The ID card was closed before the validation request could be completed
+    /// The ID card was revoked or expired
+    /// </summary>
+    VerificationFailed,
+
     // 401
     Unauthorized,
 
     // 404
     NotFound,
 
+    // 405
+    MethodNotAllowed,
+
     // 408,
     RequestTimeout,
 
     // 415,
     UnsupportedMediaType,
+
+    // 429
+    /// <summary>
+    /// If the RP has called the APIs an excessive number of times.
+    /// The response contains the following HTTP headers according to IETF draft-polli-ratelimit-headers-00 section 3:
+    /// 
+    /// RateLimit-Limit
+    /// RateLimit-Remaining
+    /// RateLimit-Reset
+    /// 
+    /// SeeRate-limiting under Technical details in section Introduction for more details.
+    /// </summary>
+    TooManyRequests,
 
     // 500,
     InternalError,

@@ -2,7 +2,7 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 
 namespace ActiveLogin.Authentication.BankId.Api;
 
-public static class BankIdVerifyApiExtensions
+public static class BankIdVerifyApiClientExtensions
 {
     /// <summary>
     /// Perform verification of digital ID card from BankID.
