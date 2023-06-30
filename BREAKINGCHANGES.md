@@ -43,7 +43,9 @@ Some API changes (as described above) propagates to the options you can customiz
 
 - `BankIdAllowBiometric` is removed and replaced by `BankIdRequirePinCode`. This has the opposite meaning as the old option, so be sure to update your code if you have used this.
 
+### IBankIdLauncher.GetLaunchInfo is now async
 
+The method `GetLaunchInfo` on `IBankIdLauncher` is now renamed into `GetLaunchInfoAsync` and made async to allow for dynamic retreival.
 
 ## Version 6.0.3
 
