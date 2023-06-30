@@ -29,7 +29,7 @@ internal class BankIdLauncher : IBankIdLauncher
         _customAppCallbacks = customAppCallbacks.ToList();
     }
 
-    public async Task<BankIdLaunchInfo> GetLaunchInfo(LaunchUrlRequest request)
+    public async Task<BankIdLaunchInfo> GetLaunchInfoAsync(LaunchUrlRequest request)
     {
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);

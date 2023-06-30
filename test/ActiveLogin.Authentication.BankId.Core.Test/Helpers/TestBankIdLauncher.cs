@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Test.Helpers;
 
 internal class TestBankIdLauncher : IBankIdLauncher
 {
-    public Task<BankIdLaunchInfo> GetLaunchInfo(LaunchUrlRequest request)
+    public Task<BankIdLaunchInfo> GetLaunchInfoAsync(LaunchUrlRequest request)
     {
         // Always redirect back without user interaction in simulated mode
         return Task.FromResult(new BankIdLaunchInfo(request.RedirectUrl, false, false));
