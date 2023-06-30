@@ -1112,7 +1112,7 @@ services
     });
 ```
 
-````csharp
+```csharp
 public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
