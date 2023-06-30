@@ -169,7 +169,7 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var launchUrlRequest = new LaunchUrlRequest(redirectUrl, autoStartToken);
 
-        return _bankIdLauncher.GetLaunchInfo(launchUrlRequest);
+        return _bankIdLauncher.GetLaunchInfoAsync(launchUrlRequest);
     }
 
     public async Task<BankIdFlowCollectResult> Collect(string orderRef, int autoStartAttempts, BankIdFlowOptions flowOptions)
