@@ -47,6 +47,11 @@ public abstract class BankId_Ui_Tests_Base
             CancelAsyncIsCalled = true;
             return _bankIdAppApiClient.CancelAsync(request);
         }
+
+        public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     protected async Task<HttpResponseMessage> MakeRequestWithRequiredContext(string bankIdType, string path, TestServer server, HttpContent content)

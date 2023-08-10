@@ -210,6 +210,10 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 
         return new CancelResponse();
     }
+    public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
     private async Task SimulateResponseDelay()
     {

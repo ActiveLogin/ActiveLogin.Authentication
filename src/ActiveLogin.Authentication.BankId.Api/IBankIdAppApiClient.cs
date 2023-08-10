@@ -32,4 +32,10 @@ public interface IBankIdAppApiClient
     /// This is typically used if the user cancels the order in your service or app.
     /// </summary>
     Task<CancelResponse> CancelAsync(CancelRequest request);
+
+    /// <summary>
+    /// Initiates an authentication order when the user is talking to the RP over the phone.
+    /// Use the collect method to query the status of the order.
+    /// </summary>
+    Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request);
 }

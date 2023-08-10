@@ -55,4 +55,13 @@ public class BankIdAppApiClient : IBankIdAppApiClient
     {
         return _httpClient.PostAsync<CancelRequest, CancelResponse>("cancel", request);
     }
+
+    /// <summary>
+    /// Initiates an authentication order when the user is talking to the RP over the phone.
+    /// Use the collect method to query the status of the order.
+    /// </summary>
+    public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
+    {
+        return _httpClient.PostAsync<PhoneAuthRequest, PhoneAuthResponse>("/phone/auth", request);
+    }
 }
