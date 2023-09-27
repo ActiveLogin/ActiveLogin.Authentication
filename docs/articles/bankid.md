@@ -1142,6 +1142,30 @@ public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
 
 ```
 
+By default, Safari on iOS will reload when you return from the BankID
+app. If the flow starts in a native iOS app, you want to turn off this
+behavior using `IReloadPageOnReturnFromBankIdApp` if you are using an
+embedded Web View in your app.
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        // ...
+
+        bankId.AddReloadPageOnReturnFromBankIdApp<ReloadPageOnReturnFromBankIdApp>();
+
+        // ...
+    });
+```
+
+```csharp
+public class ReloadPageOnReturnFromBankIdApp : IReloadPageOnReturnFromBankIdApp
+{
+        public bool DeviceWillReloadPageOnReturn(BankIdSupportedDevice detectedDevice) => true;
+}
+```
+
 ### Verify digital ID card
 
 To use the API for "Verify digital ID card" you first need to register the BankID services, select an environment etc.

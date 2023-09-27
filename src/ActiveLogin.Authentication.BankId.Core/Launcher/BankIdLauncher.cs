@@ -22,11 +22,13 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly List<IBankIdLauncherCustomAppCallback> _customAppCallbacks;
+    private readonly IReloadPageOnReturnFromBankIdApp? _reloadPageOnReturnFromBankIdApp;
 
-    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IEnumerable<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IEnumerable<IBankIdLauncherCustomAppCallback> customAppCallbacks, IReloadPageOnReturnFromBankIdApp? reloadPageOnReturnFromBankIdApp = null)
     {
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         _customAppCallbacks = customAppCallbacks.ToList();
+        _reloadPageOnReturnFromBankIdApp = reloadPageOnReturnFromBankIdApp;
     }
 
     public async Task<BankIdLaunchInfo> GetLaunchInfoAsync(LaunchUrlRequest request)
@@ -54,6 +56,12 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
     {
+        // Allow users to customize reload behaviour.
+        if (_reloadPageOnReturnFromBankIdApp != null)
+        {
+            return _reloadPageOnReturnFromBankIdApp.DeviceWillReloadPageOnReturn(detectedDevice);
+        }
+
         // When returned from the BankID app Safari on iOS will refresh the page/tab.
 
         return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
