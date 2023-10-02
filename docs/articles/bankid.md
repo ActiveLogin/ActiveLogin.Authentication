@@ -1144,25 +1144,18 @@ public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
 
 By default, Safari on iOS will reload when you return from the BankID
 app. If the flow starts in a native iOS app, you want to turn off this
-behavior using `IReloadPageOnReturnFromBankIdApp` if you are using an
-embedded Web View in your app.
+behavior by implementing
+`IBankIdLauncherCustomAppCallback.ReloadPageOnReturnFromBankIdApp` if
+you are using an embedded Web View in your app.
 
 ```csharp
-services
-    .AddBankId(bankId =>
-    {
-        // ...
-
-        bankId.AddReloadPageOnReturnFromBankIdApp<ReloadPageOnReturnFromBankIdApp>();
-
-        // ...
-    });
-```
-
-```csharp
-public class ReloadPageOnReturnFromBankIdApp : IReloadPageOnReturnFromBankIdApp
+public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
 {
-        public bool DeviceWillReloadPageOnReturn(BankIdSupportedDevice detectedDevice) => true;
+        ...
+
+        public ReloadBehaviourOnReturnFromBankIdApp
+            ReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice) =>
+            ReloadBehaviourOnReturnFromBankIdApp.Never;
 }
 ```
 

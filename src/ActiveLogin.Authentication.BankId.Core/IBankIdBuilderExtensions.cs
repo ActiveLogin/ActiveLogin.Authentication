@@ -136,19 +136,6 @@ public static class IBankIdBuilderExtensions
         return builder;
     }
 
-    /// <summary>
-    /// Adds a class to control browser reload behaviour.
-    /// </summary>
-    /// <typeparam name="TImplementation"></typeparam>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static IBankIdBuilder AddReloadPageOnReturnFromBankIdApp<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IReloadPageOnReturnFromBankIdApp
-    {
-        builder.Services.AddTransient<IReloadPageOnReturnFromBankIdApp, TImplementation>();
-
-        return builder;
-    }
-
     internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri appApiBaseUrl, Uri verifyApiBaseUrl, string environment)
     {
         SetActiveLoginContext(builder.Services, environment, BankIdUrls.AppApiVersion, BankIdUrls.VerifyApiVersion);

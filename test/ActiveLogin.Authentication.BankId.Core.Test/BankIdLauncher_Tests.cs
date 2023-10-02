@@ -10,12 +10,11 @@ namespace ActiveLogin.Authentication.BankId.Core.Test;
 public class BankIdLauncher_Tests
 {
     [Fact]
-    public async Task BankIdLauncherReloadPageOnReturnFromBankIdApp_Should_Be_Ignored_When_Null()
+    public async Task BankIdLauncher_Should_DefaultReloadBehavior()
     {
         var launcher = new BankIdLauncher(
             new TestBankIdSupportedDeviceDetector(),
-            System.Array.Empty<IBankIdLauncherCustomAppCallback>(),
-            reloadPageOnReturnFromBankIdApp: null); // Default behaviour on return from BankID app
+            System.Array.Empty<IBankIdLauncherCustomAppCallback>());
 
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("", ""));
 
@@ -23,28 +22,39 @@ public class BankIdLauncher_Tests
     }
 
     [Fact]
-    public async Task BankIdLauncherReloadPageOnReturnFromBankIdApp_Should_Use_Override()
+    public async Task BankIdLauncher_Should_UseReloadBehaviourWhenImplemented()
     {
         var launcher = new BankIdLauncher(
             new TestBankIdSupportedDeviceDetector(),
-            System.Array.Empty<IBankIdLauncherCustomAppCallback>(),
-            new TestReloadPageOnReturnFromBankIdApp()); // Override behaviour on return from BankID app
+            new [] { new TestBankIdLauncherCustomAppCallback() }); // Override behaviour on return from BankID app
 
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest(string.Empty, string.Empty));
 
         Assert.True(info.DeviceWillReloadPageOnReturnFromBankIdApp);
     }
 
-    private class TestReloadPageOnReturnFromBankIdApp : IReloadPageOnReturnFromBankIdApp
+    private class TestBankIdLauncherCustomAppCallback : IBankIdLauncherCustomAppCallback
     {
-        public bool DeviceWillReloadPageOnReturn(BankIdSupportedDevice detectedDevice) => true;
+        public Task<bool> IsApplicable(BankIdLauncherCustomAppCallbackContext context)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context)
+        {
+            return Task.FromResult("/return");
+        }
+
+        public ReloadBehaviourOnReturnFromBankIdApp
+            ReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice) =>
+            ReloadBehaviourOnReturnFromBankIdApp.Always;
     }
 
     private class TestBankIdSupportedDeviceDetector : IBankIdSupportedDeviceDetector
     {
         public BankIdSupportedDevice Detect()
         {
-            // A device that will reload the page on return from BankID app (Desktop Windows)
+            // A device that will not reload the page on return from BankID app (Desktop Windows)
             return new BankIdSupportedDevice(
                 BankIdSupportedDeviceType.Desktop,
                 BankIdSupportedDeviceOs.Windows,
