@@ -41,14 +41,13 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         IOptionsMonitor<BankIdAuthOptions> options,
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
-        ISystemClock clock,
         IBankIdUiStateProtector uiStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUiResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
-        : base(options, loggerFactory, encoder, clock)
+        : base(options, loggerFactory, encoder)
     {
         _httpContextAccessor = httpContextAccessor;
         _antiforgery = antiforgery;
@@ -115,7 +114,12 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     {
         if (Options.TokenExpiresIn.HasValue)
         {
-            properties.ExpiresUtc = Clock.UtcNow.Add(Options.TokenExpiresIn.Value);
+            if (Options.TimeProvider == null)
+            {
+                throw new InvalidOperationException(BankIdConstants.ErrorMessages.TimeProviderNotSet);
+            }
+
+            properties.ExpiresUtc = Options.TimeProvider?.GetUtcNow().Add(Options.TokenExpiresIn.Value);
         }
 
         var claims = await GetClaims(uiAuthResult);
@@ -189,8 +193,13 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     {
         Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
 
+        if (Options.TimeProvider == null)
+        {
+            throw new InvalidOperationException(BankIdConstants.ErrorMessages.TimeProviderNotSet);
+        }
+
         var state = new BankIdUiAuthState(properties);
-        var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+        var cookieOptions = Options.StateCookie.Build(Context, Options.TimeProvider.GetUtcNow());
         var cookieValue = _uiStateProtector.Protect(state);
 
         Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
@@ -213,7 +222,12 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     {
         Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
 
-        var cookieOptions = Options.StateCookie.Build(Context, Clock.UtcNow);
+        if (Options.TimeProvider == null)
+        {
+            throw new InvalidOperationException(BankIdConstants.ErrorMessages.TimeProviderNotSet);
+        }
+
+        var cookieOptions = Options.StateCookie.Build(Context, Options.TimeProvider.GetUtcNow());
         Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
     }
 }
