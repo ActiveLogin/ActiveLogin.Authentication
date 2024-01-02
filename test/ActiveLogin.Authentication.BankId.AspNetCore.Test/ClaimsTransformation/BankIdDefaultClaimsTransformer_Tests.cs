@@ -70,9 +70,9 @@ public class BankIdDefaultClaimsTransformer_Tests
         bankIdOptions.TokenExpiresIn = TimeSpan.FromHours(2);
 
         var context = new BankIdClaimsTransformationContext(bankIdOptions, "", "381123-9106", "", "", "", EmptyCompletionData);
-        var systemClockMock = new Mock<ISystemClock>();
+        var systemClockMock = new Mock<TimeProvider>();
         var dateTime = new DateTime(2022, 03, 11, 05, 30, 30, DateTimeKind.Utc);
-        systemClockMock.Setup(x => x.UtcNow).Returns(dateTime);
+        systemClockMock.Setup(x => x.GetUtcNow()).Returns(dateTime);
         var claimsTransformer = new BankIdDefaultClaimsTransformer(systemClockMock.Object);
 
         // Act
@@ -161,7 +161,7 @@ public class BankIdDefaultClaimsTransformer_Tests
 
     private async Task<List<Claim>> TransformClaims(BankIdClaimsTransformationContext context)
     {
-        var claimsTransformer = new BankIdDefaultClaimsTransformer(new SystemClock());
+        var claimsTransformer = new BankIdDefaultClaimsTransformer(TimeProvider.System);
 
         await claimsTransformer.TransformClaims(context);
         return context.Claims;

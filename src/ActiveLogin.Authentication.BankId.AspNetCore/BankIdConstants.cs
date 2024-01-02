@@ -32,6 +32,8 @@ internal static class BankIdConstants
 
     public static class ErrorMessages
     {
+        public const string TimeProviderNotSet = "TimeProvider must be set.";
+
         public const string CouldNotAccessHttpContext = "Can't access HttpContext";
 
         public const string InvalidReturnUrl = "Invalid returnUrl. Needs to be a local url.";
