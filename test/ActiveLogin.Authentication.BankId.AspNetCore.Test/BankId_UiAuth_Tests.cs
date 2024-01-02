@@ -502,10 +502,6 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             {
                 services.AddTransient(s => _bankIdUiOptionsProtector.Object);
                 services.AddTransient(s => _bankIdUiStateProtector.Object);
-                services.AddMvc().AddJsonOptions(configure =>
-                {
-                    configure.JsonSerializerOptions.PropertyNamingPolicy = null;
-                });
             });
 
 
