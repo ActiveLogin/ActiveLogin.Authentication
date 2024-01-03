@@ -1,16 +1,14 @@
 using ActiveLogin.Identity.Swedish;
 
-using Microsoft.AspNetCore.Authentication;
-
 namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 
 public class BankIdDefaultClaimsTransformer : IBankIdClaimsTransformer
 {
-    public ISystemClock Clock { get; }
+    public TimeProvider TimeProvider { get; }
 
-    public BankIdDefaultClaimsTransformer(ISystemClock clock)
+    public BankIdDefaultClaimsTransformer(TimeProvider timeProvider)
     {
-        Clock = clock;
+        TimeProvider = timeProvider;
     }
 
     public Task TransformClaims(BankIdClaimsTransformationContext context)
@@ -40,7 +38,7 @@ public class BankIdDefaultClaimsTransformer : IBankIdClaimsTransformer
     {
         if (context.BankIdAuthOptions.TokenExpiresIn.HasValue)
         {
-            var expiresUtc = Clock.UtcNow.Add(context.BankIdAuthOptions.TokenExpiresIn.Value);
+            var expiresUtc = TimeProvider.GetUtcNow().Add(context.BankIdAuthOptions.TokenExpiresIn.Value);
             context.AddClaim(BankIdClaimTypes.Expires, GetJwtExpires(expiresUtc));
         }
 

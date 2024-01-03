@@ -87,53 +87,7 @@ stages:
 
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: '$(artifactName)'
-
-- stage: SignNuget
-  displayName: 'Sign NuGet packages'
-  dependsOn: BuildNuget
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  jobs:
-  - job: SignNuGet
-    displayName: 'Sign Windows'
-    pool:
-        vmImage: 'windows-latest'
-
-    variables:
-    - group: Active Login   # Contains codesigningCertPassword: Password for code signing cert
-
-    - name: sourceArtifactName
-      value: 'nuget-windows'
-
-    - name: targetArtifactName
-      value: 'nuget-windows-signed'
-
-    - name: pathToNugetPackages
-      value: '**/*.nupkg'
-
-    steps:
-    - download: current
-      artifact: '$(sourceArtifactName)'
-
-    - task: DownloadSecureFile@1
-      displayName: 'Download secure file: activesolution-codesigning-cert.pfx'
-      name: codesigningCert
-      inputs:
-        secureFile: 'activesolution-codesigning-cert.pfx'
-
-    - task: NuGetToolInstaller@1
-      displayName: 'Install: NuGet'
-      inputs:
-        versionSpec: 5.x
-
-    - task: NuGetCommand@2
-      displayName: 'nuget sign'
-      inputs:
-        command: custom
-        arguments: 'sign "$(Pipeline.Workspace)/$(pathToNugetPackages)" -CertificatePath "$(codesigningCert.secureFilePath)" -CertificatePassword "$(codesigningCertPassword)" -Timestamper "$(codesigningTimestamperUrl)"'
-
-    - publish: '$(Pipeline.Workspace)/$(sourceArtifactName)'
-      artifact: '$(targetArtifactName)'
-
+  
 - stage: BuildSamples
   displayName:  'Build samples'
   dependsOn: []

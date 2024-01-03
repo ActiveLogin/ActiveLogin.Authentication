@@ -7,6 +7,7 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ## TOC
 
+* [Version 8.0.0](#version-800)
 * [Version 7.0.0](#version-700)
 * [Version 6.0.3](#version-603)
 * [Version 6.0.0](#version-600)
@@ -14,6 +15,15 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 * [Version 4.0.0](#version-400)
 
 ---
+
+
+## Version 8.0.0
+
+Breaking changes between version 8.0.0 and 7.0.0
+
+### Upgrade to .NET 7
+
+We now require .NET 8 - so this requires you to upgrade your website that uses Active Login.
 
 ## Version 7.0.0
 

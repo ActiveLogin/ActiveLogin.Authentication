@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Api;
@@ -503,10 +504,6 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             {
                 services.AddTransient(s => _bankIdUiOptionsProtector.Object);
                 services.AddTransient(s => _bankIdUiStateProtector.Object);
-                services.AddMvc().AddJsonOptions(configure =>
-                {
-                    configure.JsonSerializerOptions.PropertyNamingPolicy = null;
-                });
             });
 
 
