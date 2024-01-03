@@ -33,9 +33,12 @@ internal class BankIdLauncher : IBankIdLauncher
     {
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
-        var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice);
 
-        var launchUrl = await GetLaunchUrl(detectedDevice, request, _customAppCallbacks);
+        var customAppCallbackContext = new BankIdLauncherCustomAppCallbackContext(detectedDevice, request);
+        var customAppCallback = await GetRelevantCustomAppCallbackAsync(customAppCallbackContext, _customAppCallbacks);
+
+        var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice, customAppCallback);
+        var launchUrl = await GetLaunchUrl(detectedDevice, request, customAppCallback);
         return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn);
     }
 
@@ -52,18 +55,27 @@ internal class BankIdLauncher : IBankIdLauncher
                && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Opera;
     }
 
-    private bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice)
+    private bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice, IBankIdLauncherCustomAppCallback? customAppCallback)
     {
-        // When returned from the BankID app Safari on iOS will refresh the page/tab.
+        var reloadBehaviour = customAppCallback?.ReloadPageOnReturnFromBankIdApp(detectedDevice) ??
+                              ReloadBehaviourOnReturnFromBankIdApp.Default;
 
-        return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
-               && detectedDevice.DeviceBrowser == BankIdSupportedDeviceBrowser.Safari;
+        return reloadBehaviour switch
+        {
+            ReloadBehaviourOnReturnFromBankIdApp.Always => true,
+            ReloadBehaviourOnReturnFromBankIdApp.Never => false,
+
+            // By default, Safari on iOS will refresh the page/tab when returned from the BankID app
+            ReloadBehaviourOnReturnFromBankIdApp.Default => detectedDevice is { DeviceOs: BankIdSupportedDeviceOs.Ios, DeviceBrowser: BankIdSupportedDeviceBrowser.Safari },
+
+            _ => throw new ArgumentOutOfRangeException(nameof(reloadBehaviour), reloadBehaviour, "Unknown reload behaviour")
+        };
     }
 
-    private async Task<string> GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    private async Task<string> GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request, IBankIdLauncherCustomAppCallback? customAppCallback)
     {
         var prefix = GetPrefixPart(device);
-        var queryString = await GetQueryStringPart(device, request, customAppCallbacks);
+        var queryString = await GetQueryStringPart(device, request, customAppCallback);
 
         return $"{prefix}{queryString}";
     }
@@ -100,7 +112,7 @@ internal class BankIdLauncher : IBankIdLauncher
                );
     }
 
-    private async Task<string> GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    private async Task<string> GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, IBankIdLauncherCustomAppCallback? customAppCallback)
     {
         var queryStringParams = new Dictionary<string, string>();
 
@@ -114,19 +126,18 @@ internal class BankIdLauncher : IBankIdLauncher
             queryStringParams.Add(BankIdRpRefQueryStringParamName, Base64Encode(request.RelyingPartyReference));
         }
 
-        var redirectUrl = await GetRedirectUrl(device, request, customAppCallbacks);
+        var redirectUrl = await GetRedirectUrl(device, request, customAppCallback);
         queryStringParams.Add(BankIdRedirectQueryStringParamName, redirectUrl);
 
         return QueryStringGenerator.ToQueryString(queryStringParams);
     }
 
-    private static async Task<string> GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    private static async Task<string> GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request, IBankIdLauncherCustomAppCallback? customAppCallback)
     {
         // Allow for easy override of callback url
-        var customAppCallbackContext = new BankIdLauncherCustomAppCallbackContext(device, request);
-        var customAppCallback = await GetRelevantCustomAppCallbackAsync(customAppCallbackContext, customAppCallbacks);
         if (customAppCallback != null)
         {
+            var customAppCallbackContext = new BankIdLauncherCustomAppCallbackContext(device, request);
             return await customAppCallback.GetCustomAppReturnUrl(customAppCallbackContext);
         }
 
