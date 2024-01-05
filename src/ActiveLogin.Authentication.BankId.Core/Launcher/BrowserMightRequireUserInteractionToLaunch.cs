@@ -1,9 +1,9 @@
 namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
 /// <summary>
-/// Represents the reload behaviour of the browser when returning from the BankID app.
+/// Represents the result of a custom app launch.
 /// </summary>
-public enum BrowserReloadBehaviourOnReturnFromBankIdApp
+public enum BrowserMightRequireUserInteractionToLaunch
 {
     /// <summary>
     /// Use the default implementation in Active Login.
@@ -11,12 +11,12 @@ public enum BrowserReloadBehaviourOnReturnFromBankIdApp
     Default = 0,
 
     /// <summary>
-    /// The browser will always reload the page.
+    /// The browser will always require user interaction to launch BankID app.
     /// </summary>
     Always,
 
     /// <summary>
-    /// The browser will never reload the page.
+    /// The browser will never require user interaction to launch BankID app.
     /// </summary>
     Never
 }

@@ -64,8 +64,8 @@ services
         bankId.UseQrCoderQrCodeGenerator();
         bankId.UseUaParserDeviceDetection();
 
-        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("Instagram"), "instagram://");
-        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), "fb://");
+        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("Instagram"), "instagram://");
+        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), "fb://");
 
         if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
         {

@@ -20,45 +20,52 @@ internal class BankIdLauncher : IBankIdLauncher
     private const string IosFirefoxScheme = "firefox://";
 
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
-    private readonly List<IBankIdLauncherCustomAppCallback> _customAppCallbacks;
+    private readonly List<IBankIdLauncherCustomBrowser> _customBrowsers;
 
-    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IEnumerable<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    public BankIdLauncher(IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IEnumerable<IBankIdLauncherCustomBrowser> customBrowsers)
     {
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
-        _customAppCallbacks = customAppCallbacks.ToList();
+        _customBrowsers = customBrowsers.ToList();
     }
 
     public async Task<BankIdLaunchInfo> GetLaunchInfoAsync(LaunchUrlRequest request)
     {
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
-        var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice);
 
-        var customAppCallbackContext = new BankIdLauncherCustomAppCallbackContext(detectedDevice, request);
-        var customAppCallback = await GetRelevantCustomAppCallbackAsync(customAppCallbackContext, _customAppCallbacks);
-        var customAppCallbackResult = customAppCallback != null ? (await customAppCallback.GetCustomAppCallbackResult(customAppCallbackContext)) : null;
+        var customBrowserContext = new BankIdLauncherCustomBrowserContext(detectedDevice, request);
+        var customBrowser = await GetRelevantCustomAppCallbackAsync(customBrowserContext, _customBrowsers);
+        var customBrowserConfig = customBrowser != null ? (await customBrowser.GetCustomAppCallbackResult(customBrowserContext)) : null;
 
-        var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice, customAppCallbackResult);
-        var launchUrl = GetLaunchUrl(detectedDevice, request, customAppCallbackResult);
-        
+        var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice, customBrowserConfig);
+        var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice, customBrowserConfig);
+        var launchUrl = GetLaunchUrl(detectedDevice, request, customBrowserConfig);
+
         return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn);
     }
 
-    private bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice)
+    private bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
-        // On Android, some browsers will (for security reasons) not launching a
-        // third party app/scheme (BankID) if there is no user interaction.
-        //
-        // - Chrome, Edge, Samsung Internet Browser and Brave is confirmed to require User Interaction
-        // - Firefox and Opera is confirmed to work without User Interaction
+        var userInteractionBehaviour = customBrowserConfig?.BrowserMightRequireUserInteractionToLaunch ?? BrowserMightRequireUserInteractionToLaunch.Default;
 
-        return detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android
-               && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
-               && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Opera;
+        return userInteractionBehaviour switch
+        {
+            BrowserMightRequireUserInteractionToLaunch.Always => true,
+            BrowserMightRequireUserInteractionToLaunch.Never => false,
+
+            // On Android, some browsers will (for security reasons) not launching a
+            // third party app/scheme (BankID) if there is no user interaction.
+            //
+            // - Chrome, Edge, Samsung Internet Browser and Brave is confirmed to require User Interaction
+            // - Firefox and Opera is confirmed to work without User Interaction
+            _ => detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android
+                 && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
+                 && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Opera
+        };
     }
 
-    private bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice, BankIdLauncherCustomAppCallbackResult? customAppCallbackResult)
+    private bool GetDeviceWillReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
-        var reloadBehaviour = customAppCallbackResult?.BrowserReloadBehaviourOnReturnFromBankIdApp ?? BrowserReloadBehaviourOnReturnFromBankIdApp.Default;
+        var reloadBehaviour = customBrowserConfig?.BrowserReloadBehaviourOnReturnFromBankIdApp ?? BrowserReloadBehaviourOnReturnFromBankIdApp.Default;
 
         return reloadBehaviour switch
         {
@@ -74,10 +81,10 @@ internal class BankIdLauncher : IBankIdLauncher
         };
     }
 
-    private string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomAppCallbackResult? customAppCallback)
+    private string GetLaunchUrl(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
         var prefix = GetPrefixPart(device);
-        var queryString = GetQueryStringPart(device, request, customAppCallback);
+        var queryString = GetQueryStringPart(device, request, customBrowserConfig);
 
         return $"{prefix}{queryString}";
     }
@@ -94,22 +101,12 @@ internal class BankIdLauncher : IBankIdLauncher
         // Only Safari on IOS and Chrome or Edge on Android version >= 6 seems to support
         //  the https://app.bankid.com/ launch url
 
-        return IsSafariOnIos(device)
-               || IsChromeOrEdgeOnAndroid6OrGreater(device);
-    }
-
-    private static bool IsSafariOnIos(BankIdSupportedDevice device)
-    {
         return device is
         {
             DeviceOs: BankIdSupportedDeviceOs.Ios,
             DeviceBrowser: BankIdSupportedDeviceBrowser.Safari
-        };
-    }
-
-    private static bool IsChromeOrEdgeOnAndroid6OrGreater(BankIdSupportedDevice device)
-    {
-        return device is
+        }
+        or
         {
             DeviceOs: BankIdSupportedDeviceOs.Android,
             DeviceOsVersion.MajorVersion: >= 6,
@@ -117,7 +114,7 @@ internal class BankIdLauncher : IBankIdLauncher
         };
     }
 
-    private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomAppCallbackResult? customAppCallback)
+    private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
         var queryStringParams = new Dictionary<string, string>();
 
@@ -131,28 +128,28 @@ internal class BankIdLauncher : IBankIdLauncher
             queryStringParams.Add(BankIdRpRefQueryStringParamName, Base64Encode(request.RelyingPartyReference));
         }
 
-        var redirectUrl = GetRedirectUrl(device, request, customAppCallback);
+        var redirectUrl = GetRedirectUrl(device, request, customBrowserConfig);
         queryStringParams.Add(BankIdRedirectQueryStringParamName, redirectUrl);
 
         return QueryStringGenerator.ToQueryString(queryStringParams);
     }
 
-    private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomAppCallbackResult? customAppCallbackResult)
+    private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
-        // Allow for easy override of callback url
-        if (customAppCallbackResult != null && customAppCallbackResult.ReturnUrl != null)
-        {
-            return customAppCallbackResult.ReturnUrl;
-        }
-
         // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2
         return device.DeviceOs == BankIdSupportedDeviceOs.Ios
-            ? GetIOsBrowserSpecificRedirectUrl(device, request.RedirectUrl)
+            ? GetIOsBrowserSpecificRedirectUrl(device, request.RedirectUrl, customBrowserConfig)
             : NullRedirectUrl;
     }
 
-    private static string GetIOsBrowserSpecificRedirectUrl(BankIdSupportedDevice device, string redirectUrl)
+    private static string GetIOsBrowserSpecificRedirectUrl(BankIdSupportedDevice device, string redirectUrl, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
+        // Allow for easy override of callback url
+        if (customBrowserConfig != null && customBrowserConfig.IosReturnUrl != null)
+        {
+            return customBrowserConfig.IosReturnUrl;
+        }
+
         // If it is a third party browser, don't specify the return URL, just the browser scheme.
         // This will launch the browser with the last page used (the Active Login status page).
         // If a URL is specified these browsers will open that URL in a new tab and we will lose context.
@@ -175,11 +172,11 @@ internal class BankIdLauncher : IBankIdLauncher
         };
     }
 
-    private static async Task<IBankIdLauncherCustomAppCallback?> GetRelevantCustomAppCallbackAsync(BankIdLauncherCustomAppCallbackContext customAppCallbackContext, List<IBankIdLauncherCustomAppCallback> customAppCallbacks)
+    private static async Task<IBankIdLauncherCustomBrowser?> GetRelevantCustomAppCallbackAsync(BankIdLauncherCustomBrowserContext customBrowserContext, List<IBankIdLauncherCustomBrowser> customAppCallbacks)
     {
         foreach (var callback in customAppCallbacks)
         {
-            if (await callback.IsApplicable(customAppCallbackContext))
+            if (await callback.IsApplicable(customBrowserContext))
             {
                 return callback;
             }

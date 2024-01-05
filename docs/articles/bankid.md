@@ -1077,11 +1077,15 @@ In Active Login device and browser detection is required for example to determin
 
 The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supports the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
 
-#### Shorthand for only overriding return URL for custom apps
+#### Shorthand for only overriding config for custom browsers
 
-If you want to support your custom app, or a third party app (like the built in browsers in Instagram, Facebook etc.) we've made it simple to support those scenarios by allowing you to specify a custom return URL.
+If you want to support your custom app, or a third party app (like the built in browsers in Instagram, Facebook etc.) we've made it simple to support those scenarios by allowing you to specify a custom browser config.
 
 The most common scenario is that you will set the schema for the app as return URL if you detect a specific User Agent, so for that scenario we've made an extension method.
+
+Note: The return url will onlt by applied on iOS, as Android will return the user to the app automatically.
+
+```csharp
 
 In the sample below we add support for Instagram and Facebook:
 
@@ -1091,14 +1095,14 @@ services
     {
         // ...
 
-        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("Instagram"), "instagram://");
-        bankId.AddCustomAppCallbackByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), "fb://");
+        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("Instagram"), "instagram://");
+        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), "fb://");
 
         // ...
     });
 ```
 
-If you need to do something custom, you can implement `IBankIdLauncherCustomAppCallback`:
+If you need, you can also specify the reload behaviour on the custom browser:
 
 ```csharp
 services
@@ -1106,14 +1110,28 @@ services
     {
         // ...
 
-        bankId.AddCustomAppCallback<BankIdFacebookAppCallback>();
+        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("Instagram"), new BankIdLauncherUserAgentCustomBrowser("instagram://", BrowserReloadBehaviourOnReturnFromBankIdApp.Never));
+
+        // ...
+    });
+```
+
+If you need to do something custom, you can implement `IBankIdLauncherCustomBrowser`:
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        // ...
+
+        bankId.AddCustomBrowser<BankIdFacebookAppBrowserConfig>();
 
         // ...
     });
 ```
 
 ```csharp
-public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
+public class BankIdFacebookAppBrowserConfig : IBankIdLauncherCustomAppCallback
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -1137,7 +1155,7 @@ public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
     public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context)
     {
         return Task.FromResult(
-            new BankIdLauncherCustomAppCallbackResult("fb://", BrowserReloadBehaviourOnReturnFromBankIdApp.Never)
+            new BankIdLauncherCustomAppCallbackResult("fb://", BrowserReloadBehaviourOnReturnFromBankIdApp.Never, BrowserMightRequireUserInteractionToLaunch.Default)
         );
     }
 }

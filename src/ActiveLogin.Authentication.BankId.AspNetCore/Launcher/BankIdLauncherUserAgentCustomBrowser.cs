@@ -4,20 +4,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 
-public class BankIdLauncherUserAgentCustomAppCallback : IBankIdLauncherCustomAppCallback
+public class BankIdLauncherUserAgentCustomBrowser : IBankIdLauncherCustomBrowser
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly Func<string, bool> _isApplicable;
-    private readonly Func<BankIdLauncherCustomAppCallbackContext, BankIdLauncherCustomAppCallbackResult> _getResult;
+    private readonly Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> _getResult;
 
-    public BankIdLauncherUserAgentCustomAppCallback(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomAppCallbackContext, BankIdLauncherCustomAppCallbackResult> getResult)
+    public BankIdLauncherUserAgentCustomBrowser(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> getResult)
     {
         _httpContextAccessor = httpContextAccessor;
         _isApplicable = isApplicable;
         _getResult = getResult;
     }
 
-    public Task<bool> IsApplicable(BankIdLauncherCustomAppCallbackContext context)
+    public Task<bool> IsApplicable(BankIdLauncherCustomBrowserContext context)
     {
         var userAgent = _httpContextAccessor.HttpContext?.Request.Headers.UserAgent.FirstOrDefault();
         if (string.IsNullOrWhiteSpace(userAgent))
@@ -29,7 +29,7 @@ public class BankIdLauncherUserAgentCustomAppCallback : IBankIdLauncherCustomApp
         return Task.FromResult(isApplicable);
     }
 
-    public Task<BankIdLauncherCustomAppCallbackResult> GetCustomAppCallbackResult(BankIdLauncherCustomAppCallbackContext context)
+    public Task<BankIdLauncherCustomBrowserConfig> GetCustomAppCallbackResult(BankIdLauncherCustomBrowserContext context)
     {
         var result = _getResult(context);
         return Task.FromResult(result);

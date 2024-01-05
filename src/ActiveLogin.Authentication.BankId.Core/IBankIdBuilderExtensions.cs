@@ -124,14 +124,14 @@ public static class IBankIdBuilderExtensions
     }
 
     /// <summary>
-    /// Adds a class to resolve custom return url.
+    /// Adds a class to resolve custom browser config.
     /// </summary>
     /// <typeparam name="TImplementation"></typeparam>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IBankIdBuilder AddCustomAppCallback<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IBankIdLauncherCustomAppCallback
+    public static IBankIdBuilder AddCustomBrowser<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IBankIdLauncherCustomBrowser
     {
-        builder.Services.AddTransient<IBankIdLauncherCustomAppCallback, TImplementation>();
+        builder.Services.AddTransient<IBankIdLauncherCustomBrowser, TImplementation>();
 
         return builder;
     }

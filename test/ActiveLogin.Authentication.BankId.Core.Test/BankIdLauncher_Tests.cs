@@ -14,7 +14,7 @@ public class BankIdLauncher_Tests
     {
         var launcher = new BankIdLauncher(
             new TestBankIdSupportedDeviceDetector(),
-            System.Array.Empty<IBankIdLauncherCustomAppCallback>());
+            System.Array.Empty<IBankIdLauncherCustomBrowser>());
 
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("", ""));
 
@@ -26,24 +26,24 @@ public class BankIdLauncher_Tests
     {
         var launcher = new BankIdLauncher(
             new TestBankIdSupportedDeviceDetector(),
-            new [] { new TestBankIdLauncherCustomAppCallback() }); // Override behaviour on return from BankID app
+            new [] { new TestBankIdLauncherCustomBrowser() }); // Override behaviour on return from BankID app
 
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest(string.Empty, string.Empty));
 
         Assert.True(info.DeviceWillReloadPageOnReturnFromBankIdApp);
     }
 
-    private class TestBankIdLauncherCustomAppCallback : IBankIdLauncherCustomAppCallback
+    private class TestBankIdLauncherCustomBrowser : IBankIdLauncherCustomBrowser
     {
-        public Task<bool> IsApplicable(BankIdLauncherCustomAppCallbackContext context)
+        public Task<bool> IsApplicable(BankIdLauncherCustomBrowserContext context)
         {
             return Task.FromResult(true);
         }
 
-        public Task<BankIdLauncherCustomAppCallbackResult> GetCustomAppCallbackResult(BankIdLauncherCustomAppCallbackContext context)
+        public Task<BankIdLauncherCustomBrowserConfig> GetCustomAppCallbackResult(BankIdLauncherCustomBrowserContext context)
         {
             return Task.FromResult(
-                new BankIdLauncherCustomAppCallbackResult("/return", BrowserReloadBehaviourOnReturnFromBankIdApp.Always)
+                new BankIdLauncherCustomBrowserConfig("/return", BrowserReloadBehaviourOnReturnFromBankIdApp.Always)
             );
         }
     }
