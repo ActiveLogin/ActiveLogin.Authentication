@@ -14,29 +14,43 @@ public static class IBankIdBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="isApplicable"></param>
-    /// <param name="getReturnUrl"></param>
+    /// <param name="returnUrl"></param>
     /// <returns></returns>
-    public static IBankIdBuilder AddCustomAppCallbackByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, Func<BankIdLauncherCustomAppCallbackContext, string> getReturnUrl)
+    public static IBankIdBuilder AddCustomBrowserByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, string returnUrl)
     {
-        builder.Services.AddTransient<IBankIdLauncherCustomAppCallback>(x =>
-        {
-            var httpContextAccessor = x.GetRequiredService<IHttpContextAccessor>();
-            var customApp = new BankIdLauncherUserAgentCustomAppCallback(httpContextAccessor, isApplicable, getReturnUrl);
-            return customApp;
-        });
-
-        return builder;
+        return AddCustomBrowserByUserAgent(builder, isApplicable, context => returnUrl);
     }
 
     /// <summary>
-    /// Adds a custom return url resolver.
+    /// Adds support for a custom browser (like a third party app).
+    /// When only returnUrl is specified, the reload behaviour will fall back to "Never". As we know, only Safari on iOS have the Always behaviour.
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="isApplicable"></param>
-    /// <param name="returnUrl"></param>
+    /// <param name="getReturnUrl"></param>
     /// <returns></returns>
-    public static IBankIdBuilder AddCustomAppCallbackByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, string returnUrl)
+    public static IBankIdBuilder AddCustomBrowserByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, string> getReturnUrl)
     {
-        return AddCustomAppCallbackByUserAgent(builder, isApplicable, context => returnUrl);
+        BankIdLauncherCustomBrowserConfig GetResult(BankIdLauncherCustomBrowserContext context) => new(getReturnUrl(context), BrowserReloadBehaviourOnReturnFromBankIdApp.Never);
+
+        return AddCustomBrowserByUserAgent(builder, isApplicable, GetResult);
+    }
+
+    /// <summary>
+    /// Adds support for a custom browser (like a third party app).
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="isApplicable"></param>
+    /// <param name="getResult"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddCustomBrowserByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> getResult)
+    {
+        builder.Services.AddTransient<IBankIdLauncherCustomBrowser>(x =>
+        {
+            var httpContextAccessor = x.GetRequiredService<IHttpContextAccessor>();
+            return new BankIdLauncherCustomBrowserByUserAgent(httpContextAccessor, isApplicable, getResult);
+        });
+
+        return builder;
     }
 }

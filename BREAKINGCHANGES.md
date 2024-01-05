@@ -21,6 +21,17 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 Breaking changes between version 8.0.0 and 7.0.0
 
+### IBankIdLauncherCustomAppCallback becomes IBankIdLauncherCustomBrowser
+
+We have broadedned the scope of the interface `IBankIdLauncherCustomAppCallback` to `IBankIdLauncherCustomBrowser` to allow for more flexibility in the implementation.
+
+We have renamed these things as a result of that:
+* `IBankIdLauncherCustomAppCallback` becomes `IBankIdLauncherCustomBrowser`
+* `AddCustomAppCallback` becomes `AddCustomBrowser`
+* `AddCustomAppCallbackByUserAgent` becomes `AddCustomBrowserByUserAgent`
+
+Also, the return URL is now only applied on iOS, as the expected behaviour on Android is to apply null so that Android automatically can return to the previous app.
+
 ### Upgrade to .NET 7
 
 We now require .NET 8 - so this requires you to upgrade your website that uses Active Login.

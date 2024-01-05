@@ -2,9 +2,9 @@ using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 
 namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
-public class BankIdLauncherCustomAppCallbackContext
+public class BankIdLauncherCustomBrowserContext
 {
-    internal BankIdLauncherCustomAppCallbackContext(BankIdSupportedDevice device, LaunchUrlRequest launchUrlRequest)
+    public BankIdLauncherCustomBrowserContext(BankIdSupportedDevice device, LaunchUrlRequest launchUrlRequest)
     {
         Device = device;
         LaunchUrlRequest = launchUrlRequest;

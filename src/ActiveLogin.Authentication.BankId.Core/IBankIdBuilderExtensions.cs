@@ -124,14 +124,28 @@ public static class IBankIdBuilderExtensions
     }
 
     /// <summary>
-    /// Adds a class to resolve custom return url.
+    /// Adds a class to resolve custom browser config.
     /// </summary>
     /// <typeparam name="TImplementation"></typeparam>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IBankIdBuilder AddCustomAppCallback<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IBankIdLauncherCustomAppCallback
+    public static IBankIdBuilder AddCustomBrowser<TImplementation>(this IBankIdBuilder builder) where TImplementation : class, IBankIdLauncherCustomBrowser
     {
-        builder.Services.AddTransient<IBankIdLauncherCustomAppCallback, TImplementation>();
+        builder.Services.AddTransient<IBankIdLauncherCustomBrowser, TImplementation>();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds support for a custom browser (like a third party app).
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="isApplicable"></param>
+    /// <param name="getResult"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddCustomBrowserByContext(this IBankIdBuilder builder, Func<BankIdLauncherCustomBrowserContext, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> getResult)
+    {
+        builder.Services.AddTransient<IBankIdLauncherCustomBrowser>(x => new BankIdLauncherCustomBrowserByContext(isApplicable, getResult));
 
         return builder;
     }

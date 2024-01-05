@@ -4,20 +4,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 
-public class BankIdLauncherUserAgentCustomAppCallback : IBankIdLauncherCustomAppCallback
+public class BankIdLauncherCustomBrowserByUserAgent : IBankIdLauncherCustomBrowser
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly Func<string, bool> _isApplicable;
-    private readonly Func<BankIdLauncherCustomAppCallbackContext, string> _getReturnUrl;
+    private readonly Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> _getResult;
 
-    public BankIdLauncherUserAgentCustomAppCallback(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomAppCallbackContext, string> getReturnUrl)
+    public BankIdLauncherCustomBrowserByUserAgent(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> getResult)
     {
         _httpContextAccessor = httpContextAccessor;
         _isApplicable = isApplicable;
-        _getReturnUrl = getReturnUrl;
+        _getResult = getResult;
     }
 
-    public Task<bool> IsApplicable(BankIdLauncherCustomAppCallbackContext context)
+    public Task<bool> IsApplicable(BankIdLauncherCustomBrowserContext context)
     {
         var userAgent = _httpContextAccessor.HttpContext?.Request.Headers.UserAgent.FirstOrDefault();
         if (string.IsNullOrWhiteSpace(userAgent))
@@ -29,9 +29,9 @@ public class BankIdLauncherUserAgentCustomAppCallback : IBankIdLauncherCustomApp
         return Task.FromResult(isApplicable);
     }
 
-    public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context)
+    public Task<BankIdLauncherCustomBrowserConfig> GetCustomAppCallbackResult(BankIdLauncherCustomBrowserContext context)
     {
-        var returnUrl = _getReturnUrl(context);
-        return Task.FromResult(returnUrl);
+        var result = _getResult(context);
+        return Task.FromResult(result);
     }
 }
