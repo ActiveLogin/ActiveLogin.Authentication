@@ -32,8 +32,6 @@ We have renamed these things as a result of that:
 
 Also, the return URL is now only applied on iOS, as the expected behaviour on Android is to apply null so that Android automatically can return to the previous app.
 
-```csharp
-
 ### Upgrade to .NET 7
 
 We now require .NET 8 - so this requires you to upgrade your website that uses Active Login.
