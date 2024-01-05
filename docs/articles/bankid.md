@@ -1085,8 +1085,6 @@ The most common scenario is that you will set the schema for the app as return U
 
 Note: The return url will onlt by applied on iOS, as Android will return the user to the app automatically.
 
-```csharp
-
 In the sample below we add support for Instagram and Facebook:
 
 ```csharp
