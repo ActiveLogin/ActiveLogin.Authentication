@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
 public class BankIdLauncherCustomAppCallbackContext
 {
-    internal BankIdLauncherCustomAppCallbackContext(BankIdSupportedDevice device, LaunchUrlRequest launchUrlRequest)
+    public BankIdLauncherCustomAppCallbackContext(BankIdSupportedDevice device, LaunchUrlRequest launchUrlRequest)
     {
         Device = device;
         LaunchUrlRequest = launchUrlRequest;

@@ -8,13 +8,13 @@ public class BankIdLauncherUserAgentCustomAppCallback : IBankIdLauncherCustomApp
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly Func<string, bool> _isApplicable;
-    private readonly Func<BankIdLauncherCustomAppCallbackContext, string> _getReturnUrl;
+    private readonly Func<BankIdLauncherCustomAppCallbackContext, BankIdLauncherCustomAppCallbackResult> _getResult;
 
-    public BankIdLauncherUserAgentCustomAppCallback(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomAppCallbackContext, string> getReturnUrl)
+    public BankIdLauncherUserAgentCustomAppCallback(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomAppCallbackContext, BankIdLauncherCustomAppCallbackResult> getResult)
     {
         _httpContextAccessor = httpContextAccessor;
         _isApplicable = isApplicable;
-        _getReturnUrl = getReturnUrl;
+        _getResult = getResult;
     }
 
     public Task<bool> IsApplicable(BankIdLauncherCustomAppCallbackContext context)
@@ -29,9 +29,9 @@ public class BankIdLauncherUserAgentCustomAppCallback : IBankIdLauncherCustomApp
         return Task.FromResult(isApplicable);
     }
 
-    public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context)
+    public Task<BankIdLauncherCustomAppCallbackResult> GetCustomAppCallbackResult(BankIdLauncherCustomAppCallbackContext context)
     {
-        var returnUrl = _getReturnUrl(context);
-        return Task.FromResult(returnUrl);
+        var result = _getResult(context);
+        return Task.FromResult(result);
     }
 }

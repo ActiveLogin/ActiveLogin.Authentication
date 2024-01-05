@@ -40,14 +40,12 @@ public class BankIdLauncher_Tests
             return Task.FromResult(true);
         }
 
-        public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context)
+        public Task<BankIdLauncherCustomAppCallbackResult> GetCustomAppCallbackResult(BankIdLauncherCustomAppCallbackContext context)
         {
-            return Task.FromResult("/return");
+            return Task.FromResult(
+                new BankIdLauncherCustomAppCallbackResult("/return", BrowserReloadBehaviourOnReturnFromBankIdApp.Always)
+            );
         }
-
-        public ReloadBehaviourOnReturnFromBankIdApp
-            ReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice) =>
-            ReloadBehaviourOnReturnFromBankIdApp.Always;
     }
 
     private class TestBankIdSupportedDeviceDetector : IBankIdSupportedDeviceDetector

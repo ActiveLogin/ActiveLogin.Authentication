@@ -1136,27 +1136,12 @@ public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
 
     public Task<string> GetCustomAppReturnUrl(BankIdLauncherCustomAppCallbackContext context)
     {
-        return Task.FromResult("fb://");
+        return Task.FromResult(
+            new BankIdLauncherCustomAppCallbackResult("fb://", BrowserReloadBehaviourOnReturnFromBankIdApp.Never)
+        );
     }
 }
 
-```
-
-By default, Safari on iOS will reload when you return from the BankID
-app. If the flow starts in a native iOS app, you want to turn off this
-behavior by implementing
-`IBankIdLauncherCustomAppCallback.ReloadPageOnReturnFromBankIdApp` if
-you are using an embedded Web View in your app.
-
-```csharp
-public class BankIdFacebookAppCallback : IBankIdLauncherCustomAppCallback
-{
-        ...
-
-        public ReloadBehaviourOnReturnFromBankIdApp
-            ReloadPageOnReturnFromBankIdApp(BankIdSupportedDevice detectedDevice) =>
-            ReloadBehaviourOnReturnFromBankIdApp.Never;
-}
 ```
 
 ### Verify digital ID card
