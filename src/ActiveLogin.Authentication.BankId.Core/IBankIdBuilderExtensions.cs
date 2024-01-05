@@ -136,6 +136,20 @@ public static class IBankIdBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Adds support for a custom browser (like a third party app).
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="isApplicable"></param>
+    /// <param name="getResult"></param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddCustomBrowserByContext(this IBankIdBuilder builder, Func<BankIdLauncherCustomBrowserContext, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> getResult)
+    {
+        builder.Services.AddTransient<IBankIdLauncherCustomBrowser>(x => new BankIdLauncherCustomBrowserByContext(isApplicable, getResult));
+
+        return builder;
+    }
+
     internal static IBankIdBuilder UseEnvironment(this IBankIdBuilder builder, Uri appApiBaseUrl, Uri verifyApiBaseUrl, string environment)
     {
         SetActiveLoginContext(builder.Services, environment, BankIdUrls.AppApiVersion, BankIdUrls.VerifyApiVersion);

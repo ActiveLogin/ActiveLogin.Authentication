@@ -20,7 +20,7 @@ public static class IBankIdBuilderExtensions
     {
         return AddCustomBrowserByUserAgent(builder, isApplicable, context => returnUrl);
     }
-    
+
     /// <summary>
     /// Adds support for a custom browser (like a third party app).
     /// When only returnUrl is specified, the reload behaviour will fall back to "Never". As we know, only Safari on iOS have the Always behaviour.
@@ -48,8 +48,7 @@ public static class IBankIdBuilderExtensions
         builder.Services.AddTransient<IBankIdLauncherCustomBrowser>(x =>
         {
             var httpContextAccessor = x.GetRequiredService<IHttpContextAccessor>();
-            var customApp = new BankIdLauncherUserAgentCustomBrowser(httpContextAccessor, isApplicable, getResult);
-            return customApp;
+            return new BankIdLauncherCustomBrowserByUserAgent(httpContextAccessor, isApplicable, getResult);
         });
 
         return builder;

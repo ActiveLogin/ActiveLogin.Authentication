@@ -58,7 +58,7 @@ internal class BankIdLauncher : IBankIdLauncher
             // - Chrome, Edge, Samsung Internet Browser and Brave is confirmed to require User Interaction
             // - Firefox and Opera is confirmed to work without User Interaction
             _ => detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android
-                 && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
+                 && 
                  && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Opera
         };
     }

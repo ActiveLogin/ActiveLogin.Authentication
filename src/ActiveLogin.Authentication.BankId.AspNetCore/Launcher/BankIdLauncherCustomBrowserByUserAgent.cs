@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 
-public class BankIdLauncherUserAgentCustomBrowser : IBankIdLauncherCustomBrowser
+public class BankIdLauncherCustomBrowserByUserAgent : IBankIdLauncherCustomBrowser
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly Func<string, bool> _isApplicable;
     private readonly Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> _getResult;
 
-    public BankIdLauncherUserAgentCustomBrowser(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> getResult)
+    public BankIdLauncherCustomBrowserByUserAgent(IHttpContextAccessor httpContextAccessor, Func<string, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, BankIdLauncherCustomBrowserConfig> getResult)
     {
         _httpContextAccessor = httpContextAccessor;
         _isApplicable = isApplicable;
