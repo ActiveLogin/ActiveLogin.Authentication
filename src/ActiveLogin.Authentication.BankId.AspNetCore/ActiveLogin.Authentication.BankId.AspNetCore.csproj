@@ -61,16 +61,21 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Update="tsconfig.json">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
     <PropertyGroup>
         <ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
             CompileTypeScript;
             $(ResolveCurrentProjectStaticWebAssetsInputs)
         </ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TypeScriptOutDir>wwwroot</TypeScriptOutDir>
+        <TypeScriptNoImplicitAny>true</TypeScriptNoImplicitAny>
+        <TypeScriptNoEmitOnError>true</TypeScriptNoEmitOnError>
+        <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+        <TypeScriptSourceMap>true</TypeScriptSourceMap>
+        <TypeScriptTarget>es2018</TypeScriptTarget>
+        <TypeScriptLib>dom,es2018</TypeScriptLib>
+        <TypeScriptModuleKind>None</TypeScriptModuleKind>
     </PropertyGroup>
 </Project>
