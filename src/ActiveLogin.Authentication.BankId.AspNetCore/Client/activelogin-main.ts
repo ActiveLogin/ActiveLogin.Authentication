@@ -33,7 +33,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // QR
 
-    var qrLastRefreshTimestamp : Date = null;
+    var qrLastRefreshTimestamp: Date = null;
     var qrIsRefreshing = false;
     var qrRefreshTimeoutId: number = null;
 
@@ -63,7 +63,16 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     // Events
 
     if (sessionOrderRef) {
-        showOrderRefStatus(sessionOrderRef);
+        document.addEventListener("DOMContentLoaded", () => {
+            enableCancelButton(
+                initState.antiXsrfRequestToken,
+                initState.cancelReturnUrl,
+                initState.protectedUiOptions,
+                sessionOrderRef
+            );
+
+            showOrderRefStatus(sessionOrderRef);
+        });
     } else {
         document.addEventListener("DOMContentLoaded", () => {
             resetUi();
@@ -73,7 +82,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // Boot
 
-    function showOrderRefStatus(orderRef : string) {
+    function showOrderRefStatus(orderRef: string) {
         showProgressStatus(configuration.initialStatusMessage);
         checkStatus(
             initState.antiXsrfRequestToken,
@@ -102,16 +111,15 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     var flowIsCancelledByUser = false;
     var flowIsFinished = false;
 
+    function enableCancelButton(requestVerificationToken: string, cancelUrl: string, protectedUiOptions: string, orderRef: string = null) {
+        var onCancelButtonClick = (event: Event) => {
+            cancel(requestVerificationToken, cancelUrl, protectedUiOptions, orderRef);
+            event.target.removeEventListener("click", onCancelButtonClick);
+        };
+        cancelButtonElement.addEventListener("click", onCancelButtonClick);
+    }
     function initialize(requestVerificationToken: string, returnUrl: string, cancelUrl: string, protectedUiOptions: string) {
         flowIsCancelledByUser = false;
-
-        function enableCancelButton(orderRef : string = null) {
-            var onCancelButtonClick = (event : Event) => {
-                cancel(requestVerificationToken, cancelUrl, protectedUiOptions, orderRef);
-                event.target.removeEventListener("click", onCancelButtonClick);
-            };
-            cancelButtonElement.addEventListener("click", onCancelButtonClick);
-        }
 
         postJson(configuration.bankIdInitializeApiUrl,
             requestVerificationToken,
@@ -126,7 +134,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     }
 
                     if (data.deviceMightRequireUserInteractionToLaunchBankIdApp) {
-                        var startBankIdAppButtonOnClick = (event : Event) => {
+                        var startBankIdAppButtonOnClick = (event: Event) => {
                             window.location.href = data.redirectUri;
                             hide(startBankIdAppButtonElement);
                             event.target.removeEventListener("click", startBankIdAppButtonOnClick);
@@ -145,7 +153,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     refreshQrCode(requestVerificationToken, data.qrStartState);
                 }
 
-                enableCancelButton(data.orderRef);
+                enableCancelButton(requestVerificationToken, cancelUrl, protectedUiOptions, data.orderRef);
 
                 showProgressStatus(configuration.initialStatusMessage);
 
@@ -157,7 +165,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 showErrorStatus(error.message);
                 hide(qrCodeElement);
                 hide(startBankIdAppButtonElement);
-                enableCancelButton();
+                enableCancelButton(requestVerificationToken, cancelUrl, protectedUiOptions);
             });
     }
 
@@ -208,12 +216,12 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         if (flowIsCancelledByUser || flowIsFinished || qrIsRefreshing) {
             return;
         }
-        
+
         const currentTime = new Date();
         const timeSinceLastRefresh = currentTime.getTime() - qrLastRefreshTimestamp.getTime();
         if (timeSinceLastRefresh < configuration.qrCodeRefreshIntervalMs) {
             qrRefreshTimeoutId = setTimeout(() => {
-                    refreshQrCode(requestVerificationToken, qrStartState);
+                refreshQrCode(requestVerificationToken, qrStartState);
             }, configuration.qrCodeRefreshIntervalMs);
             return;
         }
@@ -229,7 +237,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     qrLastRefreshTimestamp = new Date();
                     setQrCode(data.qrCodeAsBase64);
                     qrRefreshTimeoutId = setTimeout(() => {
-                            refreshQrCode(requestVerificationToken, qrStartState);
+                        refreshQrCode(requestVerificationToken, qrStartState);
                     }, configuration.qrCodeRefreshIntervalMs);
                 }
             })
@@ -249,7 +257,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             });
     }
 
-    function setQrCode(qrCodeAsBase64 : string) {
+    function setQrCode(qrCodeAsBase64: string) {
         qrCodeElement.src = 'data:image/png;base64, ' + qrCodeAsBase64;
         show(qrCodeElement);
     }
@@ -311,14 +319,14 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         showStatus(status, "error", false);
     }
 
-    function showStatus(status: string, statusType: string, spinner : boolean) {
+    function showStatus(status: string, statusType: string, spinner: boolean) {
         statusInfoElement.className = `activelogin-bankid-ui--status-info activelogin-bankid-ui--status-info--${statusType}`;
         statusMessageElement.innerText = status;
         setVisibility(statusSpinnerElement, spinner, "inline-block");
         show(statusWrapperElement);
     }
 
-    function setVisibility(element : HTMLElement, visible : boolean, display : string = null) {
+    function setVisibility(element: HTMLElement, visible: boolean, display: string = null) {
         if (visible) {
             show(element, display);
         } else {
@@ -326,7 +334,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         }
     }
 
-    function show(element : HTMLElement, display : string = "block") {
+    function show(element: HTMLElement, display: string = "block") {
         if (!element) {
             return;
         }
@@ -334,7 +342,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         element.style.display = display;
     }
 
-    function hide(element : HTMLElement) {
+    function hide(element: HTMLElement) {
         if (!element) {
             return;
         }
