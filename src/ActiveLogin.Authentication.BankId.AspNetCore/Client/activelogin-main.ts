@@ -22,6 +22,8 @@ interface IBankIdUiScriptInitState {
 }
 
 function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState: IBankIdUiScriptInitState) {
+    const fetchRetryRetryDelayMs: number = 1000;
+
     // Pre check
 
     const requiredFeatures = [window.fetch, window.sessionStorage];
@@ -126,7 +128,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             {
                 "returnUrl": returnUrl,
                 "uiOptions": protectedUiOptions
-            })
+            }, 3)
             .then(data => {
                 if (data.isAutoLaunch) {
                     if (!data.checkStatus) {
@@ -181,7 +183,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 "returnUrl": returnUrl,
                 "uiOptions": protectedUiOptions,
                 "autoStartAttempts": autoStartAttempts
-            })
+            }, 3)
             .then(data => {
                 if (data.retryLogin) {
                     autoStartAttempts++;
@@ -231,7 +233,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             requestVerificationToken,
             {
                 "qrStartState": qrStartState
-            })
+            }, 3)
             .then(data => {
                 if (!!data.qrCodeAsBase64) {
                     qrLastRefreshTimestamp = new Date();
@@ -283,7 +285,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // Helpers
 
-    function postJson(url: string, requestVerificationToken: string, data: any) {
+    function postJson(url: string, requestVerificationToken: string, data: any, retryCount: number = 0): Promise<any> {
         return fetch(url,
             {
                 method: "POST",
@@ -294,6 +296,24 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 },
                 credentials: 'include',
                 body: JSON.stringify(data)
+            })
+            .catch(error => {
+                if (retryCount > 0) {
+                    return delay(fetchRetryRetryDelayMs).then(() => {
+                        return postJson(url, requestVerificationToken, data, retryCount - 1);
+                    });
+                }
+
+                throw error;
+            })
+            .then(response => {
+                if (!response.ok && retryCount > 0) {
+                    return delay(fetchRetryRetryDelayMs).then(() => {
+                        return postJson(url, requestVerificationToken, data, retryCount - 1)
+                    });
+                }
+
+                return response;
             })
             .then(response => {
                 const contentType = response.headers.get("content-type");
@@ -348,5 +368,9 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         }
 
         element.style.display = "none";
+    }
+
+    function delay(timeout: number) {
+        return new Promise(resolve => setTimeout(resolve, timeout));
     }
 }

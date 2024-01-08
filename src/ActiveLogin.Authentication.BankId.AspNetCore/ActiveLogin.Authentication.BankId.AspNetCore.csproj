@@ -73,7 +73,7 @@
         <TypeScriptNoImplicitAny>true</TypeScriptNoImplicitAny>
         <TypeScriptNoEmitOnError>true</TypeScriptNoEmitOnError>
         <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
-        <TypeScriptSourceMap>true</TypeScriptSourceMap>
+        <TypeScriptSourceMap>false</TypeScriptSourceMap>
         <TypeScriptTarget>es2018</TypeScriptTarget>
         <TypeScriptLib>dom,es2018</TypeScriptLib>
         <TypeScriptModuleKind>None</TypeScriptModuleKind>
