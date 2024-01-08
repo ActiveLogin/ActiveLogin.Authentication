@@ -22,7 +22,8 @@ interface IBankIdUiScriptInitState {
 }
 
 function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState: IBankIdUiScriptInitState) {
-    const fetchRetryRetryDelayMs: number = 1000;
+    const fetchRetryCountDefault: number = 3;
+    const fetchRetryDelayMs: number = 1000;
 
     // Pre check
 
@@ -128,7 +129,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             {
                 "returnUrl": returnUrl,
                 "uiOptions": protectedUiOptions
-            }, 3)
+            }, fetchRetryCountDefault)
             .then(data => {
                 if (data.isAutoLaunch) {
                     if (!data.checkStatus) {
@@ -183,7 +184,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 "returnUrl": returnUrl,
                 "uiOptions": protectedUiOptions,
                 "autoStartAttempts": autoStartAttempts
-            }, 3)
+            }, fetchRetryCountDefault)
             .then(data => {
                 if (data.retryLogin) {
                     autoStartAttempts++;
@@ -233,7 +234,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             requestVerificationToken,
             {
                 "qrStartState": qrStartState
-            }, 3)
+            }, fetchRetryCountDefault)
             .then(data => {
                 if (!!data.qrCodeAsBase64) {
                     qrLastRefreshTimestamp = new Date();
@@ -299,7 +300,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             })
             .catch(error => {
                 if (retryCount > 0) {
-                    return delay(fetchRetryRetryDelayMs).then(() => {
+                    return delay(fetchRetryDelayMs).then(() => {
                         return postJson(url, requestVerificationToken, data, retryCount - 1);
                     });
                 }
@@ -308,7 +309,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             })
             .then(response => {
                 if (!response.ok && retryCount > 0) {
-                    return delay(fetchRetryRetryDelayMs).then(() => {
+                    return delay(fetchRetryDelayMs).then(() => {
                         return postJson(url, requestVerificationToken, data, retryCount - 1)
                     });
                 }
