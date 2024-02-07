@@ -8,10 +8,12 @@
 [![Twitter Follow](https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter)](https://twitter.com/ActiveLoginSE)
 
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET. Built on NET Standard and packaged as NuGet-packages they are easy to install and use on multiple platforms. Active Login is not a product created by BankID. Rather, it is an unofficial project that was developed by Active Solution.
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET.
 
-Free to use, [commercial support and training](#support--training) is available if you need assistance or a quick start.
+[Active Login is licensed](LICENSE.md) is provided under the very permissive [MIT license](https://opensource.org/licenses/MIT) for you to be able to use it in commercial or non-commercial applications without many restrictions.
+Active Login is provided "as is", without any warrany of any kind. If you need support, [commercial support and training](#support--training) is available.
 
+Active Login is not a product created by BankID. It is an unofficial project that was developed by Active Solution. All trademarks are the property of their respective owners.
 
 ## Features
 
@@ -156,10 +158,10 @@ For commercial / business related questions, see the [FAQ at ActiveLogin.net](ht
 
 The API-wrapper (ActiveLogin.Authentication.BankId.Api) target .NET Standard 2.0, so it can be used from .NET >= 5.0, .NET Core >= 2.0 and .NET Framework >= 4.6.1, [see full reference here](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support). The package that target .NET Standard is strong named as it can be used from .NET Framework where strong naming can be relevant.
 
-The authentication module (*.AspNetCore), depend on ASP.NET 7 and therefore requires .NET 7.
-The core module (*.Core), and related packages, depend on and requires .NET 7.
+The authentication module (*.AspNetCore), depend on ASP.NET 8 and therefore requires .NET 8.
+The core module (*.Core), and related packages, depend on and requires .NET 8.
 
-Our samples target .NET 7 and follow the conventions used there.
+Our samples target .NET 8 and follow the conventions used there.
 
 
 ### How do I build the solution locally?
