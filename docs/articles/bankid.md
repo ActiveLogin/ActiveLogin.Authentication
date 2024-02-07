@@ -1081,9 +1081,9 @@ The default implementation provided in `ActiveLogin.Authentication.BankId.AspNet
 
 If you want to support your custom app, or a third party app (like the built in browsers in Instagram, Facebook etc.) we've made it simple to support those scenarios by allowing you to specify a custom browser config.
 
-The most common scenario is that you will set the schema for the app as return URL if you detect a specific User Agent, so for that scenario we've made an extension method.
+The most common scenario is that you will set the schema for the app as return URL if you detect a specific User Agent.
 
-Note: The return url will onlt by applied on iOS, as Android will return the user to the app automatically.
+The `AddCustomBrowserByUserAgent` extension method is a shorthand for adding a custom browser config for a specific user agent that overrides the return url regardless of device.
 
 In the sample below we add support for Instagram and Facebook:
 
