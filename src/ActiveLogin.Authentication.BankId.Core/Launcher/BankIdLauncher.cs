@@ -136,6 +136,12 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private static string GetRedirectUrl(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
+        // Allow for easy override of callback url
+        if (customBrowserConfig != null && customBrowserConfig.ReturnUrl != null)
+        {
+            return customBrowserConfig.ReturnUrl;
+        }
+
         // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2
         return device.DeviceOs == BankIdSupportedDeviceOs.Ios
             ? GetIOsBrowserSpecificRedirectUrl(device, request.RedirectUrl, customBrowserConfig)
@@ -144,12 +150,6 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private static string GetIOsBrowserSpecificRedirectUrl(BankIdSupportedDevice device, string redirectUrl, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
-        // Allow for easy override of callback url
-        if (customBrowserConfig != null && customBrowserConfig.IosReturnUrl != null)
-        {
-            return customBrowserConfig.IosReturnUrl;
-        }
-
         // If it is a third party browser, don't specify the return URL, just the browser scheme.
         // This will launch the browser with the last page used (the Active Login status page).
         // If a URL is specified these browsers will open that URL in a new tab and we will lose context.

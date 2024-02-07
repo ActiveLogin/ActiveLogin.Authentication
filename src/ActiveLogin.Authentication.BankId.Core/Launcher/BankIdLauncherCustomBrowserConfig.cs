@@ -2,9 +2,9 @@ namespace ActiveLogin.Authentication.BankId.Core.Launcher;
 
 public class BankIdLauncherCustomBrowserConfig
 {
-    public BankIdLauncherCustomBrowserConfig(string? iosReturnUrl, BrowserReloadBehaviourOnReturnFromBankIdApp browserReloadBehaviourOnReturnFromBankIdApp = BrowserReloadBehaviourOnReturnFromBankIdApp.Default, BrowserMightRequireUserInteractionToLaunch browserMightRequireUserInteractionToLaunch = BrowserMightRequireUserInteractionToLaunch.Default)
+    public BankIdLauncherCustomBrowserConfig(string? returnUrl, BrowserReloadBehaviourOnReturnFromBankIdApp browserReloadBehaviourOnReturnFromBankIdApp = BrowserReloadBehaviourOnReturnFromBankIdApp.Default, BrowserMightRequireUserInteractionToLaunch browserMightRequireUserInteractionToLaunch = BrowserMightRequireUserInteractionToLaunch.Default)
     {
-        IosReturnUrl = iosReturnUrl;
+        ReturnUrl = returnUrl;
         BrowserReloadBehaviourOnReturnFromBankIdApp = browserReloadBehaviourOnReturnFromBankIdApp;
         BrowserMightRequireUserInteractionToLaunch = browserMightRequireUserInteractionToLaunch;
     }
@@ -15,7 +15,7 @@ public class BankIdLauncherCustomBrowserConfig
     /// Set to empty string to not launch any URL, and instead the BanKID app will ask the user to open the last app.
     /// This will only be applied to iOS as Android automatically launches the previous app.
     /// </summary>
-    public string? IosReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 
     /// <summary>
     /// The reload behaviour of the browser when returning from the BankID app.
