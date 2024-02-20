@@ -25,7 +25,7 @@ Active Login is not a product created by BankID. It is an unofficial project tha
 - :checkered_flag: Supports BankID animated QR code (Secure start)
 - :cloud: Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)
 - :earth_americas: Multi language support with English and Swedish out of the box
-- :wrench: Customizable ánd extensible
+- :wrench: Customizable and extensible
 - :diamond_shape_with_a_dot_inside: Can be used as a [Custom Identity Provider for Azure AD B2C](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
 
 
