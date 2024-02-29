@@ -9,13 +9,13 @@ public class BankIdFlowOptions
         bool sameDevice,
         bool requirePinCode,
         bool requireMrtd,
-        PersonalIdentityNumber? requirePersonalNumber = null)
+        PersonalIdentityNumber? requiredPersonalIdentityNumber = null)
     {
         CertificatePolicies = certificatePolicies;
         SameDevice = sameDevice;
         RequirePinCode = requirePinCode;
         RequireMrtd = requireMrtd;
-        RequirePersonalNumber = requirePersonalNumber;
+        RequiredPersonalIdentityNumber = requiredPersonalIdentityNumber;
     }
 
     public List<string> CertificatePolicies { get; }
@@ -26,6 +26,6 @@ public class BankIdFlowOptions
 
     public bool RequireMrtd { get; }
 
-    public PersonalIdentityNumber? RequirePersonalNumber { get; }
+    public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; }
 
 }

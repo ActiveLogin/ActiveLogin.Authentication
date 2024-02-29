@@ -154,7 +154,7 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var certificatePolicies = flowOptions.CertificatePolicies.Any() ? flowOptions.CertificatePolicies : null;
-        var requestRequirement = new Requirement(certificatePolicies, flowOptions.RequirePinCode, flowOptions.RequireMrtd, flowOptions.RequirePersonalNumber?.To12DigitString());
+        var requestRequirement = new Requirement(certificatePolicies, flowOptions.RequirePinCode, flowOptions.RequireMrtd, flowOptions.RequiredPersonalIdentityNumber?.To12DigitString());
 
         return new SignRequest(
             endUserIp,
