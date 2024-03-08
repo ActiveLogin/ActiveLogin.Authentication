@@ -414,7 +414,7 @@ public class BankIdAppApiClient_Tests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("User", result.CallInitiator);
-        Assert.Equal(CollectCallInitiator.User, result.GetCollectCallInitiator());
+        Assert.Equal(CallInitiator.User, result.GetCollectCallInitiator());
     }
 
     [Fact]
