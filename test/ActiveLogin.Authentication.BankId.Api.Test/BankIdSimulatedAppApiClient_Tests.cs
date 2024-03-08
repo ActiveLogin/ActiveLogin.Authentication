@@ -54,6 +54,77 @@ public class BankIdSimulatedAppApiClient_Tests
     }
 
     [Fact]
+    public async Task PhoneAuthAsync_MultiplePhoneAuthAtTheSameTime__ShouldThrow()
+    {
+        // Arange
+        var personalNumber = "201801012392";
+
+        // Act
+        await _bankIdAppClient.PhoneAuthAsync(new PhoneAuthRequest(personalNumber, CallInitiator.User));
+
+        // Assert
+        await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdAppClient.PhoneAuthAsync(new PhoneAuthRequest(personalNumber, CallInitiator.User)));
+    }
+
+    [Fact]
+    public async Task PhoneAuthAsync_OneAuthAtTheTime__ShouldBeAllowed()
+    {
+        // Arange
+
+        // Act
+        var firstAuthResponse = await _bankIdAppClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User));
+        CollectResponse firstCollectResponse;
+        do
+        {
+            firstCollectResponse = await _bankIdAppClient.CollectAsync(new CollectRequest(firstAuthResponse.OrderRef));
+        } while (firstCollectResponse.GetCollectStatus() != CollectStatus.Complete);
+
+        var secondAuthResponse = await _bankIdAppClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User));
+        CollectResponse secondCollectResponse;
+        do
+        {
+            secondCollectResponse = await _bankIdAppClient.CollectAsync(new CollectRequest(secondAuthResponse.OrderRef));
+        } while (secondCollectResponse.GetCollectStatus() != CollectStatus.Complete);
+
+        // Assert
+    }
+
+    [Fact]
+    public async Task AuthAsync_PhoneAuthAsync_MultipleDifferentAuthAtTheSameTime__ShouldThrow()
+    {
+        // Arange
+
+        // Act
+        await _bankIdAppClient.AuthAsync(new AuthRequest("1.1.1.1"));
+
+        // Assert
+        await Assert.ThrowsAsync<BankIdApiException>(() => _bankIdAppClient.PhoneAuthAsync(new PhoneAuthRequest("199908072391", CallInitiator.User)));
+    }
+
+    [Fact]
+    public async Task AuthAsync_PhoneAuthAsync_OneAuthAtTheTime__ShouldBeAllowed()
+    {
+        // Arange
+
+        // Act
+        var firstAuthResponse = await _bankIdAppClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        CollectResponse firstCollectResponse;
+        do
+        {
+            firstCollectResponse = await _bankIdAppClient.CollectAsync(new CollectRequest(firstAuthResponse.OrderRef));
+        } while (firstCollectResponse.GetCollectStatus() != CollectStatus.Complete);
+
+        var secondAuthResponse = await _bankIdAppClient.PhoneAuthAsync(new PhoneAuthRequest("199908072391", CallInitiator.User));
+        CollectResponse secondCollectResponse;
+        do
+        {
+            secondCollectResponse = await _bankIdAppClient.CollectAsync(new CollectRequest(secondAuthResponse.OrderRef));
+        } while (secondCollectResponse.GetCollectStatus() != CollectStatus.Complete);
+
+        // Assert
+    }
+
+    [Fact]
     public async Task CollectAsync_WithDefaultValuesInConstructor__ShouldReturnPersonInfo()
     {
         // Arange

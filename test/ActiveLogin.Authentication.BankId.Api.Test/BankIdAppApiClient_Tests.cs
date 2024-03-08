@@ -333,6 +333,293 @@ public class BankIdAppApiClient_Tests
     }
 
     [Fact]
+    public async Task PhoneAuthAsync_WithPhoneAuthRequest__ShouldPostToBankIdPhoneAuth_WithJsonPayload()
+    {
+        // Arrange
+        
+        // Act
+        await _bankIdAppApiClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User));
+
+        // Assert
+        Assert.Single(_messageHandlerMock.Invocations);
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        Assert.NotNull(request);
+
+        Assert.Equal(HttpMethod.Post, request.Method);
+        Assert.Equal(new Uri("https://bankid/phone/auth"), request.RequestUri);
+        Assert.Equal(new MediaTypeHeaderValue("application/json"), request.Content.Headers.ContentType);
+    }
+
+    [Fact]
+    public async Task PhoneAuthAsync_WithPersonalNumberAndCallInitiator__ShouldPostJsonPayload_WithPeronalNumberAndCallInitiator_AndRequirementAsEmptyObject()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "personalNumber",
+            "callInitiator",
+            "requirement"
+        });
+    }
+
+    [Fact]
+    public async Task PhoneAuthAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User,
+            new PhoneRequirement(new List<string> { "req1", "req2" }, true)));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
+    }
+
+    [Fact]
+    public async Task PhoneAuthAsync_WithPhoneAuthRequest__ShouldParseAndReturnOrderRef()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\" }");
+        var bankIdClient = new BankIdAppApiClient(httpClient);
+
+        // Act
+        var result = await bankIdClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("abc123", result.OrderRef);
+    }
+
+    [Fact]
+    public async Task PhoneAuthAsync_WithPhoneAuthRequest__ShouldHaveUserData()
+    {
+        //Arrange
+        byte[] userNonVisibleData = Encoding.ASCII.GetBytes("Hello");
+        string asBase64 = Convert.ToBase64String(userNonVisibleData);
+
+        //Act
+        await _bankIdAppApiClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User, null, "Hello",
+            userNonVisibleData, "simpleMarkdownV1"));
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "userVisibleData", asBase64);
+        JsonTests.AssertProperty(contentString, "userNonVisibleData", asBase64);
+        JsonTests.AssertProperty(contentString, "userVisibleDataFormat", "simpleMarkdownV1");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "personalNumber",
+            "callInitiator",
+            "requirement",
+            "userVisibleData",
+            "userVisibleDataFormat",
+            "userNonVisibleData"
+        });
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithPhoneSignRequest__ShouldPostToBankIdPhoneSign_WithJsonPayload()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneSignAsync(new PhoneSignRequest("201801012392", CallInitiator.User,
+            "userVisibleData"));
+
+        // Assert
+        Assert.Single(_messageHandlerMock.Invocations);
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        Assert.NotNull(request);
+
+        Assert.Equal(HttpMethod.Post, request.Method);
+        Assert.Equal(new Uri("https://bankid/phone/sign"), request.RequestUri);
+        Assert.Equal(new MediaTypeHeaderValue("application/json"), request.Content.Headers.ContentType);
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithUserVisibleDataFormat__ShouldPostToBankIdPhoneSign_WithJsonPayload()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneSignAsync(new PhoneSignRequest(
+            "201801012392",
+            CallInitiator.User,
+            "userVisibleData",
+            userVisibleDataFormat: "userVisibleDataFormat",
+            userNonVisibleData: new byte[1]));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+        JsonTests.AssertProperty(contentString, "userVisibleDataFormat", "userVisibleDataFormat");
+        JsonTests.AssertProperty(contentString, "userNonVisibleData", "AA==");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "personalNumber",
+            "callInitiator",
+            "requirement",
+            "userVisibleData",
+            "userVisibleDataFormat",
+            "userNonVisibleData"
+        });
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithPersonalNumberAndCallInitiator__ShouldPostJsonPayload_WithPersonalNumberAndCallInitiator_AndUserVisibleData_AndRequirementAsEmptyObject()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneSignAsync(new PhoneSignRequest("201801012392", CallInitiator.User,
+            "userVisibleData"));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "personalNumber",
+            "callInitiator",
+            "requirement",
+            "userVisibleData"
+        });
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithPersonalNumberAndCallInitiator__ShouldPostJsonPayload_WithPersonalNumberAndCallInitiator_AndUserVisibleData_AndNoRequirements()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneSignAsync(new PhoneSignRequest("201801012392", CallInitiator.User,
+            "userVisibleData", null));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "personalNumber",
+            "callInitiator",
+            "requirement",
+            "userVisibleData"
+        });
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithUserNonVisibleData__ShouldPostJsonPayload_WithUserNonVisibleData()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneSignAsync(new PhoneSignRequest("201801012392", CallInitiator.User,
+            "userVisibleData", userNonVisibleData: new byte[1]));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+        JsonTests.AssertProperty(contentString, "userNonVisibleData", "AA==");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "personalNumber",
+            "callInitiator",
+            "requirement",
+            "userVisibleData",
+            "userNonVisibleData"
+        });
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PhoneSignAsync(new PhoneSignRequest("201801012392", CallInitiator.User,
+            "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"),
+            new PhoneRequirement(new List<string> { "req1", "req2" }, true)));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
+        JsonTests.AssertProperty(contentString, "callInitiator", "user");
+        JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
+        JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+        JsonTests.AssertProperty(contentString, "userNonVisibleData", "dXNlck5vblZpc2libGVEYXRh");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "personalNumber",
+            "callInitiator",
+            "requirement",
+            "userVisibleData",
+            "userNonVisibleData"
+        });
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithPhoneSignRequest__ShouldParseAndReturnOrderRef()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\" }");
+        var bankIdClient = new BankIdAppApiClient(httpClient);
+
+        // Act
+        var result =
+            await bankIdClient.PhoneSignAsync(new PhoneSignRequest("201801012392", CallInitiator.User,
+                "userVisibleData"));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("abc123", result.OrderRef);
+    }
+
+    [Fact]
     public async Task CollectAsync_WithCollectRequest__ShouldPostToBankIdCollect_WithJsonPayload()
     {
         // Arrange
