@@ -19,6 +19,8 @@ Active Login is not a product created by BankID. It is an unofficial project tha
 
 - :id: Supports BankID Auth (API, Flow and UI)
 - :pencil: Supports BankID Sign (API, Flow and UI)
+- :phone::id: Supports BankID Phone Auth (API)
+- :phone::pencil: Supports BankID Phone Sign (API)
 - :relaxed: Supports BankID Verify digital ID card (API)
 - :penguin: Cross platform: Targets .NET Standard 2.0 and .NET 8
 - :six: Built on V6.0 (the latest) BankID JSON API
