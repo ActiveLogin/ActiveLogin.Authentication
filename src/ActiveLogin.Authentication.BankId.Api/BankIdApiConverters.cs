@@ -53,11 +53,11 @@ public class BankIdApiConverters
     }
 
     /// <summary>
-    /// Parse collect call initiator from string.
+    /// Parse call initiator from string.
     /// </summary>
-    public static CollectCallInitiator ParseCollectCallInitiator(string? callInitiator)
+    public static CallInitiator ParseCallInitiator(string? callInitiator)
     {
-        return Enum.TryParse<CollectCallInitiator>(callInitiator, true, out var parsedStatus) ? parsedStatus : CollectCallInitiator.Unknown;
+        return Enum.TryParse<CallInitiator>(callInitiator, true, out var parsedStatus) ? parsedStatus : CallInitiator.Unknown;
     }
 
     /// <summary>

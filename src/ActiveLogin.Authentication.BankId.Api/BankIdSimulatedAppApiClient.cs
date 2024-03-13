@@ -137,6 +137,50 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         }
     }
 
+    public async Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
+    {
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
+
+        var response = await GetPhoneOrderResponseAsync(request.PersonalIdentityNumber, request.CallInitiator).ConfigureAwait(false);
+        return new PhoneAuthResponse(response.OrderRef);
+    }
+
+    public async Task<PhoneSignResponse> PhoneSignAsync(PhoneSignRequest request)
+    {
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
+
+        var response = await GetPhoneOrderResponseAsync(request.PersonalIdentityNumber, request.CallInitiator).ConfigureAwait(false);
+        return new PhoneSignResponse(response.OrderRef);
+    }
+
+    private async Task<PhoneOrderResponse> GetPhoneOrderResponseAsync(string personalIdentityNumber,
+        string callInitiator)
+    {
+        await SimulateResponseDelay().ConfigureAwait(false);
+
+        await EnsureNoExistingAuth(personalIdentityNumber).ConfigureAwait(false);
+
+        var orderRef = GetRandomToken();
+        var ip = GetRandomIp();
+
+        var session = new Session(ip, orderRef, personalIdentityNumber, false, callInitiator);
+        _sessions.Add(orderRef, session);
+        return new PhoneOrderResponse(orderRef);
+    }
+
+    private static string GetRandomIp()
+    {
+        var address = new byte[4];
+        new Random().NextBytes(address);
+        return new System.Net.IPAddress(address).ToString();
+    }
+
     public async Task<CollectResponse> CollectAsync(CollectRequest request)
     {
         await SimulateResponseDelay().ConfigureAwait(false);
@@ -163,7 +207,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 
         var completionData = GetCompletionData(session.EndUserIp, status, session.PersonalIdentityNumber, session.Mrtd);
 
-        return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString(), completionData, null);
+        return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString(), completionData, session.CallInitiator);
     }
 
     private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber, bool mrtd)
@@ -218,12 +262,13 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 
     private class Session
     {
-        public Session(string endUserIp, string orderRef, string personalIdentityNumber, bool mrtd)
+        public Session(string endUserIp, string orderRef, string personalIdentityNumber, bool mrtd, string? callInitiator = null)
         {
             EndUserIp = endUserIp;
             OrderRef = orderRef;
             PersonalIdentityNumber = personalIdentityNumber;
             Mrtd = mrtd;
+            CallInitiator = callInitiator;
         }
 
         public string EndUserIp { get; }
@@ -235,6 +280,8 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         public bool Mrtd { get; }
 
         public int CollectCalls { get; set; }
+
+        public string? CallInitiator { get; set; }
     }
 
     private class OrderResponse
@@ -254,6 +301,16 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         public string QrStartToken { get; }
 
         public string QrStartSecret { get; }
+    }
+
+    private class PhoneOrderResponse
+    {
+        public PhoneOrderResponse(string orderRef)
+        {
+            OrderRef = orderRef;
+        }
+
+        public string OrderRef { get; }
     }
 
     public class CollectState

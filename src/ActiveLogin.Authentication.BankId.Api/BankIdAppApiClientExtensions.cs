@@ -110,6 +110,100 @@ public static class BankIdAppApiClientExtensions
             userNonVisibleData: userNonVisibleData));
     }
 
+    /// <summary></summary>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
+    /// <param name="personalIdentityNumber">
+    /// The personal number of the user. String. 12 digits.
+    /// </param>
+    /// <param name="callInitiator">
+    /// Indicate if the user or the RP initiated the phone call. user: user called the RP. RP: RP called the user.
+    /// </param>
+    /// <param name="requirement">Requirements on how the phone auth or phone sign order must be performed.</param>
+    /// <param name="userVisibleData">
+    /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
+    /// </param>
+    /// <param name="userNonVisibleData">
+    /// Data not displayed to the user.
+    /// </param>
+    /// <param name="userVisibleDataFormat">
+    /// If present, and set to "simpleMarkdownV1", this parameter indicates that userVisibleData holds formatting characters which, if used correctly, will make the text displayed with the user nicer to look at.
+    /// For further information of formatting options, please study the document Guidelines for Formatted Text.
+    /// </param>
+    public static Task<PhoneAuthResponse> PhoneAuthAsync(
+        this IBankIdAppApiClient appApiClient,
+        string personalIdentityNumber,
+        CallInitiator callInitiator,
+        PhoneRequirement? requirement = null,
+        string? userVisibleData = null,
+        byte[]? userNonVisibleData = null,
+        string? userVisibleDataFormat = null)
+    {
+        return appApiClient.PhoneAuthAsync(new(
+            personalIdentityNumber,
+            callInitiator,
+            userVisibleData: userVisibleData,
+            userNonVisibleData: userNonVisibleData,
+            requirement: requirement,
+            userVisibleDataFormat: userVisibleDataFormat));
+    }
+
+    /// <summary></summary>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
+    /// <param name="personalIdentityNumber">
+    /// The personal number of the user. String. 12 digits.
+    /// </param>
+    /// <param name="callInitiator">
+    /// Indicate if the user or the RP initiated the phone call. user: user called the RP. RP: RP called the user.
+    /// </param>
+    /// <returns>If the request is successful, the OrderRef is returned.</returns>
+    public static Task<PhoneAuthResponse> PhoneAuthAsync(this IBankIdAppApiClient appApiClient,
+        string personalIdentityNumber, CallInitiator callInitiator)
+    {
+        return appApiClient.PhoneAuthAsync(new PhoneAuthRequest(personalIdentityNumber, callInitiator));
+    }
+
+    /// <summary></summary>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
+    /// <param name="personalIdentityNumber">
+    /// The personal number of the user. String. 12 digits.
+    /// </param>
+    /// <param name="callInitiator">
+    /// Indicate if the user or the RP initiated the phone call. user: user called the RP. RP: RP called the user.
+    /// </param>
+    /// <param name="userVisibleData">
+    /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
+    /// </param>
+    public static Task<PhoneSignResponse> PhoneSignAsync(this IBankIdAppApiClient appApiClient,
+        string personalIdentityNumber, CallInitiator callInitiator, string userVisibleData)
+    {
+        return appApiClient.PhoneSignAsync(new(
+            personalIdentityNumber,
+            callInitiator,
+            userVisibleData));
+    }
+
+    /// <summary></summary>
+    /// <param name="appApiClient">The <see cref="IBankIdAppApiClient"/> instance.</param>
+    /// <param name="personalIdentityNumber">
+    /// The personal number of the user. String. 12 digits.
+    /// </param>
+    /// <param name="callInitiator">
+    /// Indicate if the user or the RP initiated the phone call. user: user called the RP. RP: RP called the user.
+    /// </param>
+    /// <param name="userVisibleData">
+    /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
+    /// </param>
+    /// <param name="userNonVisibleData">
+    /// Data not displayed to the user.
+    /// </param>
+    /// <returns>If the request is successful, the OrderRef is returned.</returns>
+    public static Task<PhoneSignResponse> PhoneSignAsync(this IBankIdAppApiClient appApiClient,
+        string personalIdentityNumber, CallInitiator callInitiator, string userVisibleData, byte[] userNonVisibleData)
+    {
+        return appApiClient.PhoneSignAsync(new PhoneSignRequest(personalIdentityNumber, callInitiator, userVisibleData,
+            userNonVisibleData));
+    }
+
     /// <summary>
     /// Collects the result of a sign or auth order using the OrderRef as reference.
     /// RP should keep on calling collect every two seconds as long as status indicates pending.

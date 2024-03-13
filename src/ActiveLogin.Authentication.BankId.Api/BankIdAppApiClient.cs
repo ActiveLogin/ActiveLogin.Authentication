@@ -28,12 +28,30 @@ public class BankIdAppApiClient : IBankIdAppApiClient
     }
 
     /// <summary>
-    /// Initiates an signing order. Use the collect method to query the status of the order.
+    /// Initiates a signing order. Use the collect method to query the status of the order.
     /// </summary>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
     public Task<SignResponse> SignAsync(SignRequest request)
     {
         return _httpClient.PostAsync<SignRequest, SignResponse>("sign", request);
+    }
+
+    /// <summary>
+    /// Initiates a phone authentication order. Use the collect method to query the status of the order.
+    /// </summary>
+    /// <returns>If the request is successful, the OrderRef is returned.</returns>
+    public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
+    {
+        return _httpClient.PostAsync<PhoneAuthRequest, PhoneAuthResponse>("phone/auth", request);
+    }
+
+    /// <summary>
+    /// Initiates a phone signing order. Use the collect method to query the status of the order.
+    /// </summary>
+    /// <returns>If the request is successful, the OrderRef is returned.</returns>
+    public Task<PhoneSignResponse> PhoneSignAsync(PhoneSignRequest request)
+    {
+        return _httpClient.PostAsync<PhoneSignRequest, PhoneSignResponse>("phone/sign", request);
     }
 
     /// <summary>

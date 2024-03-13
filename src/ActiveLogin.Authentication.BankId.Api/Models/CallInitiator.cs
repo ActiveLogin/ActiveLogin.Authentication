@@ -3,7 +3,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 /// <summary>
 /// Possible values of call initiator for phone authentication.
 /// </summary>
-public enum CollectCallInitiator
+public enum CallInitiator
 {
     /// <summary>
     /// Unknown or new call initiator.

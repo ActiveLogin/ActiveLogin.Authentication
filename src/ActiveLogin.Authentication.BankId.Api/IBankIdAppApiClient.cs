@@ -14,10 +14,22 @@ public interface IBankIdAppApiClient
     Task<AuthResponse> AuthAsync(AuthRequest request);
 
     /// <summary>
-    /// Initiates an signing order. Use the collect method to query the status of the order.
+    /// Initiates a signing order. Use the collect method to query the status of the order.
     /// </summary>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
     Task<SignResponse> SignAsync(SignRequest request);
+
+    /// <summary>
+    /// Initiates a phone authentication order. Use the collect method to query the status of the order.
+    /// </summary>
+    /// <returns>If the request is successful, the OrderRef is returned.</returns>
+    Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request);
+
+    /// <summary>
+    /// Initiates a phone signing order. Use the collect method to query the status of the order.
+    /// </summary>
+    /// <returns>If the request is successful, the OrderRef is returned.</returns>
+    Task<PhoneSignResponse> PhoneSignAsync(PhoneSignRequest request);
 
     /// <summary>
     /// Collects the result of a sign or auth order using the OrderRef as reference.
