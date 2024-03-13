@@ -1,8 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
 
-using ActiveLogin.Identity.Swedish;
-
 namespace ActiveLogin.Authentication.BankId.Api.Models;
 public abstract class PhoneRequest
 {
@@ -105,12 +103,12 @@ public abstract class PhoneRequest
     public PhoneRequest(string personalIdentityNumber, CallInitiator callInitiator, string? userVisibleData,
         byte[]? userNonVisibleData, PhoneRequirement? requirement, string? userVisibleDataFormat)
     {
-        if(this is PhoneSignRequest && userVisibleData == null)
+        if (this is PhoneSignRequest && userVisibleData == null)
         {
             throw new ArgumentNullException(nameof(userVisibleData));
         }
 
-        PersonalIdentityNumber = ConvertToPin(personalIdentityNumber).ToString();
+        PersonalIdentityNumber = personalIdentityNumber ?? throw new ArgumentNullException(nameof(personalIdentityNumber));
         CallInitiator = ParseCallInitiator(callInitiator);
         UserVisibleData = ToBase64EncodedString(userVisibleData);
         UserNonVisibleData = ToBase64EncodedString(userNonVisibleData);
@@ -170,23 +168,9 @@ public abstract class PhoneRequest
             Models.CallInitiator.User => callInitiator.ToString().ToLower(),
             Models.CallInitiator.RP => callInitiator.ToString().ToUpper(),
             _ => throw new ArgumentException(
-                $"Call initiator must be {Models.CallInitiator.User} or {Models.CallInitiator.RP}")
+                $"Call initiator must be {Models.CallInitiator.User} or {Models.CallInitiator.RP}",
+                nameof(callInitiator))
         };
-    }
-
-    private static PersonalIdentityNumber ConvertToPin(string personalIdentityNumber)
-    {
-        if (string.IsNullOrWhiteSpace(personalIdentityNumber))
-        {
-            throw new ArgumentNullException(nameof(personalIdentityNumber));
-        }
-
-        if (!Identity.Swedish.PersonalIdentityNumber.TryParse(personalIdentityNumber, StrictMode.TwelveDigits, out var pin))
-        {
-            throw new ArgumentException("Wrong format", nameof(personalIdentityNumber));
-        }
-
-        return pin;
     }
 
     private static string? ToBase64EncodedString(string? value)

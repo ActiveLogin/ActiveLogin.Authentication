@@ -22,14 +22,11 @@ public class PhoneRequest_Tests
         Assert.Equal("personalIdentityNumber", exception.ParamName);
     }
 
-    [Theory]
-    [InlineData("1801012392")] // Missing century, only 10 digits
-    [InlineData("20180101-2392")] // Uses a dash between date and number
-    [InlineData("201801012393")] // Wrong control number, should be 2
-    public void Constructor_WhenAnyRequest_WhenInvalidPersonalIdentityNumber_ShouldThrow(string personalIdentityNumber)
+    [Fact]
+    public void Constructor_WhenAnyRequest_WhenUnknownCallInitiator_ShouldThrow()
     {
-        var exception = Assert.Throws<ArgumentException>(() => new AnyPhoneRequest(personalIdentityNumber, CallInitiator.User));
-        Assert.Equal("personalIdentityNumber", exception.ParamName);
+        var exception = Assert.Throws<ArgumentException>(() => new AnyPhoneRequest("", CallInitiator.Unknown));
+        Assert.Equal("callInitiator", exception.ParamName);
     }
 
     class AnyPhoneRequest(string personalIdentityNumber, CallInitiator callInitiator)
