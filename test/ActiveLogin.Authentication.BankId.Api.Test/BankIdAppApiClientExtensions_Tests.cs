@@ -61,6 +61,59 @@ public class BankIdAppApiClientExtensions_Tests
     }
 
     [Fact]
+    public async Task PhoneAuthAsync_WithPersonalNumberAndCallInitiator_ShouldMap_ToPhoneAuthRequest_WithPersonalNumberAndCallInitiator()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdAppApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.PhoneAuthAsync(It.IsAny<PhoneAuthRequest>()))
+            .ReturnsAsync(It.IsAny<PhoneAuthResponse>());
+
+        // Act
+        await BankIdAppApiClientExtensions.PhoneAuthAsync(bankIdApiClientMock.Object, "201801012392", CallInitiator.RP);
+
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdAppApiClient, PhoneAuthRequest>();
+        Assert.Equal("201801012392", request.PersonalIdentityNumber);
+        Assert.Equal("RP", request.CallInitiator);
+    }
+
+    [Fact]
+    public async Task PhoneAuthAsync_WithPersonalNumberAndCallInitiator_AndUserData_ShouldMap_ToPhoneAuthRequest_WithPersonalNumberAndCallInitiator_AndUserData_Base64Encoded()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdAppApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.PhoneAuthAsync(It.IsAny<PhoneAuthRequest>()))
+            .ReturnsAsync(It.IsAny<PhoneAuthResponse>());
+
+        // Act
+        await BankIdAppApiClientExtensions.PhoneAuthAsync(bankIdApiClientMock.Object, "201801012392", CallInitiator.RP, userVisibleData: "userVisibleData", userVisibleDataFormat: "userVisibleDataFormat");
+
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdAppApiClient, PhoneAuthRequest>();
+        Assert.Equal("201801012392", request.PersonalIdentityNumber);
+        Assert.Equal("RP", request.CallInitiator);
+        Assert.Equal("dXNlclZpc2libGVEYXRh", request.UserVisibleData);
+        Assert.Equal("userVisibleDataFormat", request.UserVisibleDataFormat);
+    }
+
+    [Fact]
+    public async Task PhoneSignAsync_WithPersonalNumberAndCallInitiator_ShouldMap_ToPhoneSignRequest_WithPersonalNumberAndCallInitiator()
+    {
+        // Arrange
+        var bankIdApiClientMock = new Mock<IBankIdAppApiClient>(MockBehavior.Strict);
+        bankIdApiClientMock.Setup(client => client.PhoneSignAsync(It.IsAny<PhoneSignRequest>()))
+            .ReturnsAsync(It.IsAny<PhoneSignResponse>());
+
+        // Act
+        await BankIdAppApiClientExtensions.PhoneSignAsync(bankIdApiClientMock.Object, "201801012392", CallInitiator.RP, "userVisibleData");
+
+        // Assert
+        var request = bankIdApiClientMock.GetFirstArgumentOfFirstInvocation<IBankIdAppApiClient, PhoneSignRequest>();
+        Assert.Equal("201801012392", request.PersonalIdentityNumber);
+        Assert.Equal("RP", request.CallInitiator);
+    }
+
+    [Fact]
     public async Task CollectAsync_WithOrderRef_ShouldMap_ToCollectRequest_WithOrderRef()
     {
         // Arrange

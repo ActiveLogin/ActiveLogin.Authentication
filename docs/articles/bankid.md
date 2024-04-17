@@ -1238,6 +1238,8 @@ public class BankIdAppApiClient : IBankIdAppApiClient
 {
     public Task<AuthResponse> AuthAsync(AuthRequest request) { ... }
     public Task<SignResponse> SignAsync(SignRequest request) { ... }
+    public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request) { ... }
+    public Task<PhoneSignResponse> PhoneSignAsync(PhoneSignRequest request) { ... }
     public Task<CollectResponse> CollectAsync(CollectRequest request) { ... }
     public Task<CancelResponse> CancelAsync(CancelRequest request) { ... }
 }

@@ -37,6 +37,16 @@ public abstract class BankId_Ui_Tests_Base
             return _bankIdAppApiClient.SignAsync(request);
         }
 
+        public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
+        {
+            return _bankIdAppApiClient.PhoneAuthAsync(request);
+        }
+
+        public Task<PhoneSignResponse> PhoneSignAsync(PhoneSignRequest request)
+        {
+            return _bankIdAppApiClient.PhoneSignAsync(request);
+        }
+
         public Task<CollectResponse> CollectAsync(CollectRequest request)
         {
             return _bankIdAppApiClient.CollectAsync(request);

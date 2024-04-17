@@ -25,8 +25,8 @@ public static class CollectResponseExtensions
     /// Indicates whether RP or user initiated a phone/auth, if phone authentication. 
     /// </summary>
     /// <remarks>Only present for phone authentication.</remarks>
-    public static CollectCallInitiator GetCollectCallInitiator(this CollectResponse collectResponse)
+    public static CallInitiator GetCollectCallInitiator(this CollectResponse collectResponse)
     {
-        return BankIdApiConverters.ParseCollectCallInitiator(collectResponse.CallInitiator);
+        return BankIdApiConverters.ParseCallInitiator(collectResponse.CallInitiator);
     }
 }
