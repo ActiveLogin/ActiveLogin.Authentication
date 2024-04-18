@@ -4,9 +4,19 @@ using ActiveLogin.Identity.Swedish;
 
 using Microsoft.Extensions.Hosting;
 
-using Phone.ConsoleSample;
-
 namespace Phone.ConsoleSample;
+
+//
+// DISCLAIMER - DO NOT USE FOR REAL
+//
+// This is samples to show how the BankID phone flow works.
+// You can't use BankID in this way in an application for real
+// as the client certificates would be exposed.
+//
+// Please see this as technical demo of how the flow works,
+// not something to use. In a production scenario you should
+// integrate this into a backoffice system.
+//
 
 internal sealed class BankIdDemoHostedService : IHostedService
 {
@@ -46,7 +56,7 @@ internal sealed class BankIdDemoHostedService : IHostedService
 
     private string GetPersonalIdentityNumber()
     {
-        ConsoleHelper.WriteHeader("Enter your personal identity number (YYYYMMDDXXXX):");
+        ConsoleHelper.WriteHeader("Enter the personal identity number (YYYYMMDDXXXX) of the one:");
         while (true)
         {
             var personalIdentityNumber = Console.ReadLine();

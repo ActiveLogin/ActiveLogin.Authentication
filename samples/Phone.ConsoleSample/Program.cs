@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ActiveLogin.Authentication.BankId.AzureKeyVault;
 using Phone.ConsoleSample;
+
 //
 // DISCLAIMER - DO NOT USE FOR REAL
 //
@@ -13,7 +14,8 @@ using Phone.ConsoleSample;
 // as the client certificates would be exposed.
 //
 // Please see this as technical demo of how the flow works,
-// not something to use.
+// not something to use. In a production scenario you should
+// integrate this into a backoffice system.
 //
 
 using var host = Host.CreateDefaultBuilder(args)
