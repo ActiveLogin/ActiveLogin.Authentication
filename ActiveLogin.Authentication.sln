@@ -111,6 +111,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".devcontainer", ".devcontai
 		.devcontainer\Dockerfile = .devcontainer\Dockerfile
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phone.ConsoleSample", "samples\Phone.ConsoleSample\Phone.ConsoleSample.csproj", "{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +183,10 @@ Global
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +213,7 @@ Global
 		{A66B2FFF-0CB6-4F48-83DA-6C1F7DC98EBF} = {4764448D-A014-403F-A956-3F4CFFA00AF2}
 		{61360399-F211-4B18-88EE-2A6F4D2C1FE6} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
+		{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}
