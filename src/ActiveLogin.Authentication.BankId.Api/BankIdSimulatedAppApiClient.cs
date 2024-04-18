@@ -207,7 +207,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 
         var completionData = GetCompletionData(session.EndUserIp, status, session.PersonalIdentityNumber, session.Mrtd);
 
-        return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString(), completionData, session.CallInitiator);
+        return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString(), completionData);
     }
 
     private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber, bool mrtd)
