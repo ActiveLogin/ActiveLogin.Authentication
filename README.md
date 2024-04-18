@@ -46,25 +46,29 @@ _Screenshot on monitoring dashboard._
 
 ___Note:___ This Readme reflects the state of our main branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our [CI builds](#projects--packages-overview).
 
-* [Features](#features)
-* [Screenshots](#screenshots)
-* [Projects & Packages overview](#projects--packages-overview)
-* [Usage & Docs](#usage--docs)
-* [Samples](#samples)
-* [Tests](#tests)
-* [FAQ](#faq)
-  + [What version of .NET is supported?](#what-version-of-net-is-supported)
-  + [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
-  + [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
-  + [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
-* [Active Login](#active-login)
-  + [Security](#security)
-  + [Contribute](#contribute)
-  + [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
-  + [License](#license)
-  + [Acknowledgements](#acknowledgements)
-  + [Sponsors](#sponsors)
-  + [Support & Training](#support--training)
+- [ActiveLogin.Authentication](#activeloginauthentication)
+  - [Features](#features)
+  - [Screenshots](#screenshots)
+  - [Table of contents](#table-of-contents)
+  - [Projects \& Packages overview](#projects--packages-overview)
+  - [Usage \& Docs](#usage--docs)
+  - [Samples](#samples)
+  - [Tests](#tests)
+  - [FAQ](#faq)
+    - [What version of .NET is supported?](#what-version-of-net-is-supported)
+    - [How do I build the solution locally?](#how-do-i-build-the-solution-locally)
+      - [Devcontainer and GitHub Codespaces](#devcontainer-and-github-codespaces)
+    - [How do I run the samples locally?](#how-do-i-run-the-samples-locally)
+    - [How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?](#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c)
+  - [Active Login](#active-login)
+    - [Security](#security)
+    - [Contribute](#contribute)
+      - [Contributors](#contributors)
+    - [Stay updated and join the discussion](#stay-updated-and-join-the-discussion)
+    - [License](#license)
+    - [Acknowledgements](#acknowledgements)
+    - [Sponsors](#sponsors)
+    - [Support \& Training](#support--training)
 
 
 ## Projects & Packages overview
@@ -130,6 +134,7 @@ _Note: These are samples on how to use Active Login in different situations and 
 | [IdentityServer.ServerSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ServerSample) | IdentityServer with Active Login as auth provider for BankID. |
 | [Standalone.MvcSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) | ASP.NET MVC with Active Login as auth provider for BankID. Also demo of Sign. |
 | [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample) | ARM template with Azure KeyVault, Azure App Service, Azure Monitor / Application Insights etc. |
+| [Phone.ConsoleSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Phone.ConsoleSample) | Console application with a simple Phone Auth/Sign example |
 
 _Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start._
 
