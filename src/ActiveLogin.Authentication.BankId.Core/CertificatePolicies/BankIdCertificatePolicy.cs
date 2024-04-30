@@ -1,4 +1,4 @@
-namespace ActiveLogin.Authentication.BankId.Api.CertificatePolicies;
+namespace ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 
 public enum BankIdCertificatePolicy
 {
@@ -16,11 +16,6 @@ public enum BankIdCertificatePolicy
     /// Mobile BankID.
     /// </summary>
     MobileBankId,
-
-    /// <summary>
-    /// Nordea e-id on file and on smart card.
-    /// </summary>
-    NordeaEidOnFileAndOnSmartCard,
 
     /// <summary>
     /// Test BankID for some BankID Banks.
