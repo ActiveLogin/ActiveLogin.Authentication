@@ -7,12 +7,23 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ## TOC
 
+* [Version 9.0.0](#version-800)
 * [Version 8.0.0](#version-800)
 * [Version 7.0.0](#version-700)
 * [Version 6.0.3](#version-603)
 * [Version 6.0.0](#version-600)
 * [Version 5.0.0](#version-500)
 * [Version 4.0.0](#version-400)
+
+---
+
+## Version 9.0.0
+
+Breaking changes between version 9.0.0 and 8.0.0
+
+* Remove `callInitiator` from CollectResponse as it's not documented anymore
+* Rename `CollectCallInitiator` into `CallInitiator`
+
 
 ---
 
@@ -33,6 +44,10 @@ We have renamed these things as a result of that:
 ### Upgrade to .NET 7
 
 We now require .NET 8 - so this requires you to upgrade your website that uses Active Login.
+
+
+---
+
 
 ## Version 7.0.0
 
@@ -66,11 +81,19 @@ Some API changes (as described above) propagates to the options you can customiz
 
 The method `GetLaunchInfo` on `IBankIdLauncher` is now renamed into `GetLaunchInfoAsync` and made async to allow for dynamic retreival.
 
+
+---
+
+
 ## Version 6.0.3
 
 Breaking changes in 6.0.3:
 
 - As stated in #384 we had mixed up the UseClientCertificate() and AddClientCertificate() extension methods. These have now been reversed. This would be a breaking change if you add multiple certificates but should affect the majority of consumers.
+
+
+---
+
 
 ## Version 6.0.0
 
