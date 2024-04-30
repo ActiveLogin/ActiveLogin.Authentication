@@ -217,6 +217,17 @@ public class BankIdFlowService : IBankIdFlowService
                     throw new InvalidOperationException("Missing CompletionData from BankID API");
                 }
 
+                // Verify that it is the same device that started the BankID flow
+                if (flowOptions.SameDevice)
+                {
+                    var deviceIp = collectResponse.CompletionData.Device.IpAddress;
+                    var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
+                    if (!deviceIp.Equals(endUserIp))
+                    {
+                        throw new InvalidOperationException("The device that completed the BankID flow is not the same as the device that started the flow");
+                    }
+                }
+                
                 await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedUserDevice, flowOptions));
                 return new BankIdFlowCollectResultComplete(collectResponse.CompletionData);
             }
