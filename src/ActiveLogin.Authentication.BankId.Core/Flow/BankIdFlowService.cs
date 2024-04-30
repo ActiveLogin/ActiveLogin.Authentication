@@ -199,7 +199,7 @@ public class BankIdFlowService : IBankIdFlowService
                 {
                     var deviceIp = collectResponse.CompletionData.Device.IpAddress;
                     var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-                    if (deviceIp != endUserIp)
+                    if (!deviceIp.Equals(endUserIp))
                     {
                         throw new InvalidOperationException("The device that completed the BankID flow is not the same as the device that started the flow");
                     }
