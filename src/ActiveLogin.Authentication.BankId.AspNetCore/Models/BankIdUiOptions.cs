@@ -1,9 +1,11 @@
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiOptions
 {
     public BankIdUiOptions(
-        List<string> certificatePolicies,
+        List<BankIdCertificatePolicy> certificatePolicies,
         bool sameDevice,
         bool requirePinCode,
         bool requireMrtd,
@@ -18,7 +20,7 @@ public class BankIdUiOptions
         StateCookieName = stateCookieName;
     }
 
-    public List<string> CertificatePolicies { get; }
+    public List<BankIdCertificatePolicy> CertificatePolicies { get; }
 
     public bool SameDevice { get; }
 
