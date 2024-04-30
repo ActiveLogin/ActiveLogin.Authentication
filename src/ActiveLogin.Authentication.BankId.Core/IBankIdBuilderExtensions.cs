@@ -1,6 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Cryptography;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
@@ -184,6 +185,7 @@ public static class IBankIdBuilderExtensions
     public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true, bool useBankIdClientCertificate = true)
     {
         builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdUrls.VerifyApiTestBaseUrl, BankIdEnvironments.Test);
+        builder.Services.AddTransient<IBankIdCertificatePolicyResolver, BankIdCertificatePolicyResolverForTest>();
 
         if (useBankIdRootCertificate)
         {
@@ -209,6 +211,7 @@ public static class IBankIdBuilderExtensions
     public static IBankIdBuilder UseProductionEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true)
     {
         builder.UseEnvironment(BankIdUrls.AppApiProductionBaseUrl, BankIdUrls.VerifyApiProductionBaseUrl, BankIdEnvironments.Production);
+        builder.Services.AddTransient<IBankIdCertificatePolicyResolver, BankIdCertificatePolicyResolverForProduction>();
 
         if (useBankIdRootCertificate)
         {
@@ -266,7 +269,8 @@ public static class IBankIdBuilderExtensions
     private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdAppApiClient> bankIdSimulatedAppApiClient, Func<IServiceProvider, IBankIdVerifyApiClient> bankIdSimulatedVerifyApiClient)
     {
         SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedAppApiClient.Version, BankIdSimulatedVerifyApiClient.Version);
-
+        builder.Services.AddTransient<IBankIdCertificatePolicyResolver, BankIdCertificatePolicyResolverForTest>();
+        
         builder.Services.AddSingleton(bankIdSimulatedAppApiClient);
         builder.Services.AddSingleton(bankIdSimulatedVerifyApiClient);
         builder.Services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();

@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.BankId.Core.Models;
@@ -5,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.Core.Models;
 public class BankIdFlowOptions
 {
     public BankIdFlowOptions(
-        List<string> certificatePolicies,
+        List<BankIdCertificatePolicy> certificatePolicies,
         bool sameDevice,
         bool requirePinCode,
         bool requireMrtd,
@@ -18,7 +19,7 @@ public class BankIdFlowOptions
         RequiredPersonalIdentityNumber = requiredPersonalIdentityNumber;
     }
 
-    public List<string> CertificatePolicies { get; }
+    public List<BankIdCertificatePolicy> CertificatePolicies { get; }
 
     public bool SameDevice { get; }
 

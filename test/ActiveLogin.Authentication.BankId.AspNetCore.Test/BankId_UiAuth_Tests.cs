@@ -12,6 +12,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
 using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
 
 using AngleSharp.Html.Dom;
@@ -45,7 +46,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         _bankIdUiOptionsProtector = new Mock<IBankIdUiOptionsProtector>();
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(new BankIdUiOptions(new List<string>(), false, false, false, "/", DefaultStateCookieName));
+            .Returns(new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, "/", DefaultStateCookieName));
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
@@ -219,7 +220,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task Init_Returns_Ui_With_Resolved_Cancel_Url()
     {
         // Arrange
-        var options = new BankIdUiOptions(new List<string>(), true, false, false, "~/cru", DefaultStateCookieName);
+        var options = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, "~/cru", DefaultStateCookieName);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(options);
@@ -367,7 +368,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<string>(), true, false, false, string.Empty, DefaultStateCookieName);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, string.Empty, DefaultStateCookieName);
         var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -423,7 +424,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<string>(), false, false, false, string.Empty, DefaultStateCookieName);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, string.Empty, DefaultStateCookieName);
         var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -479,7 +480,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<string>(), false, false, false, string.Empty, DefaultStateCookieName);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, string.Empty, DefaultStateCookieName);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
@@ -525,7 +526,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<string>(), false, false, false, string.Empty, DefaultStateCookieName);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, string.Empty, DefaultStateCookieName);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);

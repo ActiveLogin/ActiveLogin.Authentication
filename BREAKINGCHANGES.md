@@ -7,7 +7,8 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ## TOC
 
-* [Version 9.0.0](#version-800)
+* [Version 10.0.0](#version-1000)
+* [Version 9.0.0](#version-900)
 * [Version 8.0.0](#version-800)
 * [Version 7.0.0](#version-700)
 * [Version 6.0.3](#version-603)
@@ -16,6 +17,18 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 * [Version 4.0.0](#version-400)
 
 ---
+
+## Version 10.0.0
+
+Breaking changes between version 10.0.0 and 9.0.0
+
+* Remove policy handling from API library into Core
+* Fall back to mobile BankID policy for OtherDevice flow
+* Enum for setting policy instead of string
+
+
+---
+
 
 ## Version 9.0.0
 

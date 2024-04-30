@@ -32,7 +32,6 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
 * [Concepts](#concepts)
   + [Storing certificates in Azure](#storing-certificates-in-azure)
   + [Claims Issuing](#claims-issuing)
-  + [BankID Certificate Policies](#bankid-certificate-policies)
   + [Return URL for cancellation](#return-url-for-cancellation)
   + [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
   + [Multi tenant scenario](#multi-tenant-scenario)
@@ -449,7 +448,8 @@ BankId options allows you to set and override some options such as these.
     options.BankIdRequirePinCode = true;
 
     // Limit possible login methods to, for example, only allow BankID on smartcard.
-    options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(...);
+    // If no policy is set, it will fall back to require mobile BankID for OtherDevice flow
+    options.BankIdCertificatePolicies = [ BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.BankIdOnSmartCard ];
 });
 ```
 
@@ -458,7 +458,7 @@ If you want to apply some options for all BankID schemes, you can do so by using
 ```csharp
 .Configure(options =>
 {
-    options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(...);
+    options.BankIdRequireMrtd = true;
 });
 ```
 
@@ -640,37 +640,6 @@ public class BankIdPinHintClaimsTransformer : IBankIdClaimsTransformer
         return birthdate.Date.ToString("yyyy-MM-dd");
     }
 }
-```
-
-
-### BankID Certificate Policies
-
-BankId options allows you to set a list of certificate policies and there is a class available to help you out with this.
-
-```csharp
-.AddOtherDevice(options =>
-{
-	options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.MobileBankId);
-});
-```
-
-Because the policies have different values for test and production environment, you need to use either `.GetPoliciesForProductionEnvironment()` or `.GetPoliciesForTestEnvironment()` depending on what environment you are using.
-
-Example:
-
-```csharp
-.AddOtherDevice(options =>
-{
-	var policies = new[] {
-            BankIdCertificatePolicy.BankIdOnFile,
-            BankIdCertificatePolicy.MobileBankId
-        };
-	if(isProductionEnvironment) {
-		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForProductionEnvironment(policies);
-	} else {
-		options.BankIdCertificatePolicies = BankIdCertificatePolicies.GetPoliciesForTestEnvironment(policies);
-	}
-});
 ```
 
 
