@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
@@ -33,6 +34,7 @@ public class BankIdFlowService_Tests
     private readonly Mock<IBankIdAuthRequestUserDataResolver> _bankIdAuthUserDataResolver;
     private readonly Mock<IBankIdQrCodeGenerator> _bankIdQrCodeGenerator;
     private readonly Mock<IBankIdLauncher> _bankIdLauncher;
+    private readonly Mock<IBankIdCertificatePolicyResolver> _bankIdCertificatePolicyResolver;
 
     public BankIdFlowService_Tests()
     {
@@ -46,6 +48,7 @@ public class BankIdFlowService_Tests
         _bankIdAuthUserDataResolver = new Mock<IBankIdAuthRequestUserDataResolver>();
         _bankIdQrCodeGenerator = new Mock<IBankIdQrCodeGenerator>();
         _bankIdLauncher = new Mock<IBankIdLauncher>();
+        _bankIdCertificatePolicyResolver = new Mock<IBankIdCertificatePolicyResolver>();
 
         _bankIdSupportedDeviceDetector
             .Setup(x => x.Detect())
@@ -83,7 +86,8 @@ public class BankIdFlowService_Tests
             _bankIdEndUserIpResolver.Object,
             _bankIdAuthUserDataResolver.Object,
             _bankIdQrCodeGenerator.Object,
-            _bankIdLauncher.Object
+            _bankIdLauncher.Object,
+            _bankIdCertificatePolicyResolver.Object
         );
 
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -129,7 +133,8 @@ public class BankIdFlowService_Tests
             _bankIdEndUserIpResolver.Object,
             _bankIdAuthUserDataResolver.Object,
             _bankIdQrCodeGenerator.Object,
-            _bankIdLauncher.Object
+            _bankIdLauncher.Object,
+            _bankIdCertificatePolicyResolver.Object
         );
 
 
