@@ -1,3 +1,5 @@
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
@@ -16,7 +18,7 @@ public class BankIdAuthOptions : RemoteAuthenticationOptions
     /// <summary>
     /// The oid in certificate policies in the user certificate. List of String.
     /// </summary>
-    public List<string> BankIdCertificatePolicies { get; set; } = new();
+    public List<BankIdCertificatePolicy> BankIdCertificatePolicies { get; set; } = new();
 
     /// <summary>
     /// Users are required to sign the transaction with their PIN code, even if they have biometrics activated.

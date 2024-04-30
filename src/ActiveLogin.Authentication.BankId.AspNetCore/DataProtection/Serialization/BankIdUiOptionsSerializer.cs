@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
@@ -24,6 +25,7 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
                                     {
                                         CertificatePoliciesSeparator
                                     }, StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(Enum.Parse<BankIdCertificatePolicy>)
                                     .ToList();
 
         return new BankIdUiOptions(
