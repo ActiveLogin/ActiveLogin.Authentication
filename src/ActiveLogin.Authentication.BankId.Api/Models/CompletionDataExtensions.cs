@@ -13,7 +13,7 @@ public static class CompletionDataExtensions
     /// <summary>
     /// Collect risk level.
     /// </summary>
-    public static CollectRiskLevel GetCollectRiskLevel(this CompletionData completionData)
+    public static RiskLevel GetCollectRiskLevel(this CompletionData completionData)
     {
         return BankIdApiConverters.ParseCollectRiskLevel(completionData.Risk);
     }
