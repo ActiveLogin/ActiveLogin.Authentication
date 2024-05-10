@@ -3,7 +3,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models
     /// <summary>
     /// Represents the risk levels returned in the collect response.
     /// </summary>
-    public enum BankIdRiskLevels
+    public enum CollectRiskLevel
     {
         /// <summary>
         /// Low risk orders. No or low risk identified in the available order data.

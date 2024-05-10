@@ -8,18 +8,17 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 public class CollectResponse
 {
     public CollectResponse(string orderRef, string status, string hintCode)
-        : this(orderRef, status, hintCode, null, null)
+        : this(orderRef, status, hintCode, null)
     {
     }
 
     [JsonConstructor]
-    public CollectResponse(string orderRef, string status, string hintCode, CompletionData? completionData, string? risk)
+    public CollectResponse(string orderRef, string status, string hintCode, CompletionData? completionData)
     {
         OrderRef = orderRef;
         Status = status;
         HintCode = hintCode;
         CompletionData = completionData;
-        Risk = risk;
     }
 
     /// <summary>
@@ -50,10 +49,4 @@ public class CollectResponse
     /// <remarks>Only present for complete orders.</remarks>
     [JsonPropertyName("completionData")]
     public CompletionData? CompletionData { get; }
-
-    /// <summary>
-    /// Indicates the risk level of the order based on data available in the order. Only returned if requested in the order.
-    /// </summary>
-    [JsonPropertyName("risk")]
-    public string? Risk { get; }
 }

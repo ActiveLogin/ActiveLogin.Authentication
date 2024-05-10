@@ -45,6 +45,19 @@ public class BankIdApiConverters
     }
 
     /// <summary>
+    /// Parse collect hint code from string.
+    /// </summary>
+    public static CollectRiskLevel ParseCollectRiskLevel(string? riskLevel)
+    {
+        if (string.IsNullOrEmpty(riskLevel))
+        {
+            return CollectRiskLevel.Unknown;
+        }
+
+        return Enum.TryParse<CollectRiskLevel>(riskLevel, true, out var parsedRiskLevel) ? parsedRiskLevel : CollectRiskLevel.Unknown;
+    }
+
+    /// <summary>
     /// Parse error code from string.
     /// </summary>
     public static ErrorCode ParseErrorCode(string errorCode)
