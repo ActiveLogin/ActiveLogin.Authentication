@@ -28,12 +28,14 @@ public class Requirement
     /// <param name="personalNumber">
     /// A personal number to be used to complete the transaction. If a BankID with another personal number attempts to sign the transaction, it fails.
     /// </param>
-    public Requirement(List<string>? certificatePolicies = null, bool? pinCode = null, bool? mrtd = null, string? personalNumber = null)
+    /// <param name="risk">Set the acceptable risk level for the transaction.</param>
+    public Requirement(List<string>? certificatePolicies = null, bool? pinCode = null, bool? mrtd = null, string? personalNumber = null, string? risk = null)
     {
         CertificatePolicies = certificatePolicies;
         PinCode = pinCode;
         Mrtd = mrtd;
         PersonalNumber = personalNumber;
+        Risk = risk;
     }
 
     /// <summary>
@@ -67,4 +69,10 @@ public class Requirement
     /// </summary>
     [JsonPropertyName("personalNumber"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? PersonalNumber { get; }
+
+    /// <summary>
+    /// Set the acceptable risk level for the transaction.
+    /// </summary>
+    [JsonPropertyName("risk"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string? Risk { get; }
 }
