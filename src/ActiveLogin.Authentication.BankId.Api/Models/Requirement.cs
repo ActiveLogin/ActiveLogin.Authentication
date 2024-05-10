@@ -77,11 +77,11 @@ public class Requirement
     [JsonPropertyName("risk"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? Risk { get; }
 
-    private static string ParseRiskLevel(RiskLevel? risk)
+    private static string? ParseRiskLevel(RiskLevel? risk)
     {
         return risk switch
         {
-            null => string.Empty,
+            null => null,
             
             RiskLevel.Low => RiskLevel.Low.ToString().ToLower(),
             RiskLevel.Moderate => RiskLevel.Moderate.ToString().ToLower(),
