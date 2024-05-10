@@ -25,18 +25,25 @@ public class AuthRequest : Request
     /// If present, and set to "simpleMarkdownV1", this parameter indicates that userVisibleData holds formatting characters which, if used correctly, will make the text displayed with the user nicer to look at.
     /// For further information of formatting options, please study the document Guidelines for Formatted Text.
     /// </param>
+    /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
+    /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
     public AuthRequest(
         string endUserIp,
         Requirement? requirement = null,
         string? userVisibleData = null,
         byte[]? userNonVisibleData = null,
-        string? userVisibleDataFormat = null)
+        string? userVisibleDataFormat = null,
+        string? returnUrl = null,
+        bool? returnRisk = null)
         : base(
             endUserIp,
             userVisibleData: userVisibleData,
             userNonVisibleData: userNonVisibleData,
             requirement: requirement,
-            userVisibleDataFormat: userVisibleDataFormat)
+            userVisibleDataFormat: userVisibleDataFormat,
+            returnUrl: returnUrl,
+            returnRisk: returnRisk
+        )
     {
     }
 }

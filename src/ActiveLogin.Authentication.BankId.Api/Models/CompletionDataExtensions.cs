@@ -9,4 +9,12 @@ public static class CompletionDataExtensions
     {
         return BankIdApiConverters.GetXml(completionData.Signature);
     }
+
+    /// <summary>
+    /// Collect risk level.
+    /// </summary>
+    public static RiskLevel GetCollectRiskLevel(this CompletionData completionData)
+    {
+        return BankIdApiConverters.ParseCollectRiskLevel(completionData.Risk);
+    }
 }

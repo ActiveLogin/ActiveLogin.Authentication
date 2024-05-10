@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serializat
 
 internal abstract class BankIdDataSerializer<TModel> : IDataSerializer<TModel>
 {
-    private const int FormatVersion = 10;
+    private const int FormatVersion = 11;
 
     public byte[] Serialize(TModel model)
     {

@@ -108,7 +108,9 @@ public abstract class Request
     /// If present, and set to "simpleMarkdownV1", this parameter indicates that userVisibleData holds formatting characters which, if used correctly, will make the text displayed with the user nicer to look at.
     /// For further information of formatting options, please study the document Guidelines for Formatted Text.
     /// </param>
-    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat)
+    /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
+    /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
+    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null)
     {
         if(this is SignRequest && userVisibleData == null)
         {
@@ -120,6 +122,8 @@ public abstract class Request
         UserNonVisibleData = ToBase64EncodedString(userNonVisibleData);
         Requirement = requirement ?? new Requirement();
         UserVisibleDataFormat = userVisibleDataFormat;
+        ReturnUrl = returnUrl;
+        ReturnRisk = returnRisk;
     }
 
     /// <summary>
@@ -165,6 +169,18 @@ public abstract class Request
     /// </summary>
     [JsonPropertyName("userNonVisibleData"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? UserNonVisibleData { get; }
+
+    /// <summary>
+    /// Orders started on the same device (started with autostart token) will call this URL when the order is completed, ignoring any return URL provided in the start URL when the BankID app was launched.
+    /// </summary>
+    [JsonPropertyName("returnUrl"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string? ReturnUrl { get; set; }
+
+    /// <summary>
+    /// If this is set to true, a risk indication will be included in the collect response when the order completes.
+    /// </summary>
+    [JsonPropertyName("returnRisk"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool? ReturnRisk { get; set; }
 
     private static string? ToBase64EncodedString(string? value)
     {

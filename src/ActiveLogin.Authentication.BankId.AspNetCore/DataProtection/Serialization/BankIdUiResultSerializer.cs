@@ -25,6 +25,8 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
 
         writer.Write(model.DetectedIpAddress);
         writer.Write(model.DetectedUniqueHardwareId);
+
+        writer.Write(model.Risk ?? string.Empty);
     }
 
     protected override BankIdUiResult Read(BinaryReader reader)
@@ -48,6 +50,8 @@ internal class BankIdUiResultSerializer : BankIdDataSerializer<BankIdUiResult>
             reader.ReadString(),
 
             reader.ReadString(),
+            reader.ReadString(),
+
             reader.ReadString()
         );
     }

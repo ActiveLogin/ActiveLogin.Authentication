@@ -154,7 +154,9 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             completionData.Signature,
             completionData.OcspResponse,
             completionData.Device.IpAddress,
-            completionData.Device.Uhi);
+            completionData.Device.Uhi,
+            completionData.Risk
+        );
         return _uiAuthResultProtector.Protect(uiResult);
     }
 

@@ -4,7 +4,7 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 public class CompletionData
 {
-    public CompletionData(User user, Device device, string bankIdIssueDate, StepUp? stepUp, string signature, string ocspResponse)
+    public CompletionData(User user, Device device, string bankIdIssueDate, StepUp? stepUp, string signature, string ocspResponse, string? risk)
     {
         User = user;
         Device = device;
@@ -12,6 +12,7 @@ public class CompletionData
         StepUp = stepUp;
         Signature = signature;
         OcspResponse = ocspResponse;
+        Risk = risk;
     }
 
     /// <summary>
@@ -52,4 +53,10 @@ public class CompletionData
     /// </summary>
     [JsonPropertyName("ocspResponse")]
     public string OcspResponse { get; }
+
+    /// <summary>
+    /// Indicates the risk level of the order based on data available in the order. Only returned if requested in the order.
+    /// </summary>
+    [JsonPropertyName("risk")]
+    public string? Risk { get; }
 }

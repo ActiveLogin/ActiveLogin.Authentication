@@ -1,10 +1,12 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
 
+using Microsoft.Extensions.Primitives;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 public class BankIdUiResult
 {
-    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, bool mrtdVerified, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
+    public BankIdUiResult(bool isSuccessful, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, bool mrtdVerified, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId, string? risk)
     {
         IsSuccessful = isSuccessful;
 
@@ -25,11 +27,13 @@ public class BankIdUiResult
 
         DetectedIpAddress = detectedIpAddress;
         DetectedUniqueHardwareId = detectedUniqueHardwareId;
+
+        Risk = risk;
     }
 
-    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, bool mrtdVerified, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId)
+    public static BankIdUiResult Success(string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, string bankIdIssueDate, bool mrtdVerified, string signature, string ocspResponse, string detectedIpAddress, string detectedUniqueHardwareId, string? risk)
     {
-        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, bankIdIssueDate, mrtdVerified, signature, ocspResponse, detectedIpAddress, detectedUniqueHardwareId);
+        return new BankIdUiResult(true, bankIdOrderRef, personalIdentityNumber, name, givenName, surname, bankIdIssueDate, mrtdVerified, signature, ocspResponse, detectedIpAddress, detectedUniqueHardwareId, risk);
     }
 
     public bool IsSuccessful { get; }
@@ -51,6 +55,7 @@ public class BankIdUiResult
 
     public string DetectedIpAddress { get; }
     public string DetectedUniqueHardwareId { get; }
+    public string? Risk { get; }
 
     internal CompletionData GetCompletionData()
     {
@@ -60,7 +65,8 @@ public class BankIdUiResult
             BankIdIssueDate,
             ParseStepUp(this),
             Signature,
-            OcspResponse
+            OcspResponse,
+            Risk
         );
     }
 
