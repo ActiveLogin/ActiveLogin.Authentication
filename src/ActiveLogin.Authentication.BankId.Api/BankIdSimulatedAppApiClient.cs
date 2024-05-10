@@ -14,6 +14,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
     private const string DefaultPersonalIdentityNumber = "199908072391";
     private const string DefaultUniqueHardwareId = "OZvYM9VvyiAmG7NA5jU5zqGcVpo=";
     private const string DefaultBankIdIssueDate = "2023-01-01";
+    private const string DefaultRiskLevel = "low";
 
     private static readonly List<CollectState> DefaultCollectStates = new()
     {
@@ -90,7 +91,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false, request.ReturnRisk ?? false).ConfigureAwait(false);
         return new AuthResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
@@ -101,11 +102,11 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
             throw new ArgumentNullException(nameof(request));
         }
 
-        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false).ConfigureAwait(false);
+        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false, request.ReturnRisk ?? false).ConfigureAwait(false);
         return new SignResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
-    private async Task<OrderResponse> GetOrderResponseAsync(string endUserIp, bool mrtd)
+    private async Task<OrderResponse> GetOrderResponseAsync(string endUserIp, bool mrtd, bool returnRisk)
     {
         await SimulateResponseDelay().ConfigureAwait(false);
 
@@ -116,7 +117,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         var qrStartToken = GetRandomToken();
         var qrStartSecret = GetRandomToken();
 
-        var session = new Session(endUserIp, orderRef, _personalIdentityNumber, mrtd);
+        var session = new Session(endUserIp, orderRef, _personalIdentityNumber, mrtd, returnRisk);
         _sessions.Add(orderRef, session);
         return new OrderResponse(orderRef, autoStartToken, qrStartToken, qrStartSecret);
     }
@@ -169,7 +170,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         var orderRef = GetRandomToken();
         var ip = GetRandomIp();
 
-        var session = new Session(ip, orderRef, personalIdentityNumber, false, callInitiator);
+        var session = new Session(ip, orderRef, personalIdentityNumber, false, false, callInitiator);
         _sessions.Add(orderRef, session);
         return new PhoneOrderResponse(orderRef);
     }
@@ -205,12 +206,12 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
             _sessions.Remove(request.OrderRef);
         }
 
-        var completionData = GetCompletionData(session.EndUserIp, status, session.PersonalIdentityNumber, session.Mrtd);
+        var completionData = GetCompletionData(session.EndUserIp, status, session.PersonalIdentityNumber, session.Mrtd, session.ReturnRisk);
 
         return new CollectResponse(session.OrderRef, status.ToString(), hintCode.ToString(), completionData);
     }
 
-    private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber, bool mrtd)
+    private CompletionData? GetCompletionData(string endUserIp, CollectStatus status, string personalIdentityNumber, bool mrtd, bool returnRisk)
     {
         if (status != CollectStatus.Complete)
         {
@@ -222,8 +223,9 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         var stepUp = mrtd ? new StepUp(true) : null;
         var signature = string.Empty; // Not implemented in the simulated client
         var ocspResponse = string.Empty; // Not implemented in the simulated client
+        var risk = returnRisk ? DefaultRiskLevel : string.Empty;
 
-        return new CompletionData(user, device, _bankIdIssueDate, stepUp, signature, ocspResponse);
+        return new CompletionData(user, device, _bankIdIssueDate, stepUp, signature, ocspResponse, risk);
     }
 
     private CollectStatus GetStatus(int collectCalls)
@@ -262,12 +264,13 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 
     private class Session
     {
-        public Session(string endUserIp, string orderRef, string personalIdentityNumber, bool mrtd, string? callInitiator = null)
+        public Session(string endUserIp, string orderRef, string personalIdentityNumber, bool mrtd, bool returnRisk, string? callInitiator = null)
         {
             EndUserIp = endUserIp;
             OrderRef = orderRef;
             PersonalIdentityNumber = personalIdentityNumber;
             Mrtd = mrtd;
+            ReturnRisk = returnRisk;
             CallInitiator = callInitiator;
         }
 
@@ -278,6 +281,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         public string PersonalIdentityNumber { get; }
 
         public bool Mrtd { get; }
+        public bool ReturnRisk { get; }
 
         public int CollectCalls { get; set; }
 

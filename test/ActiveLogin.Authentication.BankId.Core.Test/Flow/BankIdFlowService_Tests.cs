@@ -69,6 +69,7 @@ public class BankIdFlowService_Tests
                 "",
                 new StepUp(false),
                 "",
+                "",
                 ""
             ));
 
@@ -115,6 +116,7 @@ public class BankIdFlowService_Tests
                 new Device("192.168.0.1", "uhi"),
                 "",
                 new StepUp(false),
+                "",
                 "",
                 ""
             ));
