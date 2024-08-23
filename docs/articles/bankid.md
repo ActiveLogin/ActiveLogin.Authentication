@@ -64,7 +64,7 @@ BankID requires you to use a client certificate and trust a specific root CA-cer
 
 Read through the [BankID Relying Party Guidelines](https://www.bankid.com/utvecklare/guider). This ensures you have a basic understanding of the terminology as well as how the flow and security works.
 
-_For test:_ We have (with the permission from BankID) embedded the SSL certificate ([FPTestcert3_20200618.pfx](https://www.bankid.com/utvecklare/guider)) in the library.
+_For test:_ We have (with the permission from BankID) embedded the SSL certificate ([FPTestcert5_20240610.p12](https://www.bankid.com/utvecklare/guider)) in the library.
 _For production:_ Contact a [reseller](https://www.bankid.com/foretag/anslut-foeretag) to get your very own client certificate for production. This will probably take a few business days to get sorted. Please ask for "Direktupphandlad BankID" as they otherwise might refer you to a broker/partner. If you haven't decided on using BankID, but want to try it out anyway there are test- and simulation possibilities. See Environments below.
 
 The root CA-certificates specified in _BankID Relying Party Guidelines_ (#7 for Production and #8 for Test environment) needs to be trusted at the computer where the app will run. We have (with the permission from BankID) embedded these in the library for easy verification.
@@ -450,6 +450,11 @@ BankId options allows you to set and override some options such as these.
     // Limit possible login methods to, for example, only allow BankID on smartcard.
     // If no policy is set, it will fall back to require mobile BankID for OtherDevice flow
     options.BankIdCertificatePolicies = [ BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.BankIdOnSmartCard ];
+
+    // Set the acceptable risk level for the transaction. If the risk is higher than the specified level,
+    // the transaction will be blocked. The risk indication requires that the endUserIp is correct.
+    // An incorrect IP-address will result in legitimate transactions being blocked.
+    options.BankIdAllowedRiskLevel = BankIdAllowedRiskLevel.Low;
 });
 ```
 

@@ -100,8 +100,9 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
+        var resolvedRiskLevel = flowOptions.AllowedRiskLevel.ToString().ToLower();
 
-        var authRequestRequirement = new Requirement(resolvedCertificatePolicies, flowOptions.RequirePinCode, flowOptions.RequireMrtd);
+        var authRequestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, flowOptions.RequirePinCode, flowOptions.RequireMrtd);
 
         var authRequestContext = new BankIdAuthRequestContext(endUserIp, authRequestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
@@ -158,7 +159,9 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
-        var requestRequirement = new Requirement(resolvedCertificatePolicies, flowOptions.RequirePinCode, flowOptions.RequireMrtd, flowOptions.RequiredPersonalIdentityNumber?.To12DigitString());
+        var resolvedRiskLevel = flowOptions.AllowedRiskLevel.ToString().ToLower();
+
+        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, flowOptions.RequirePinCode, flowOptions.RequireMrtd, flowOptions.RequiredPersonalIdentityNumber?.To12DigitString());
 
         return new SignRequest(
             endUserIp,
@@ -215,17 +218,6 @@ public class BankIdFlowService : IBankIdFlowService
                 if (collectResponse.CompletionData == null)
                 {
                     throw new InvalidOperationException("Missing CompletionData from BankID API");
-                }
-
-                // Verify that it is the same device that started the BankID flow
-                if (flowOptions.SameDevice)
-                {
-                    var deviceIp = collectResponse.CompletionData.Device.IpAddress;
-                    var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-                    if (!deviceIp.Equals(endUserIp))
-                    {
-                        throw new InvalidOperationException("The device that completed the BankID flow is not the same as the device that started the flow");
-                    }
                 }
                 
                 await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedUserDevice, flowOptions));

@@ -48,7 +48,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         _bankIdUiOptionsProtector = new Mock<IBankIdUiOptionsProtector>();
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, "/", DefaultStateCookieName));
+            .Returns(new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, "/", DefaultStateCookieName));
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
@@ -221,7 +221,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task SignInit_Returns_Ui_With_Resolved_Cancel_Url()
     {
         // Arrange
-        var options = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, "~/cru", DefaultStateCookieName);
+        var options = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, true, false, false, "~/cru", DefaultStateCookieName);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(options);
@@ -366,7 +366,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task AutoLaunch_Sets_Correct_RedirectUri()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, string.Empty, DefaultStateCookieName);
+        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, true, false, false, string.Empty, DefaultStateCookieName);
         var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -419,7 +419,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task Api_Always_Returns_CamelCase_Json_For_Http200Ok()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, string.Empty, DefaultStateCookieName);
+        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, string.Empty, DefaultStateCookieName);
         var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -481,7 +481,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task Api_Always_Returns_CamelCase_Json_For_Http400BadRequest()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, string.Empty, DefaultStateCookieName);
+        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, string.Empty, DefaultStateCookieName);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
@@ -526,7 +526,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task Cancel_Calls_CancelApi()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, string.Empty, DefaultStateCookieName);
+        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, string.Empty, DefaultStateCookieName);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
