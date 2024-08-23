@@ -25,7 +25,8 @@ Breaking changes between version 10.0.0 and 9.0.0
 * Remove policy handling from API library into Core
 * Fall back to mobile BankID policy for OtherDevice flow
 * Enum for setting policy instead of string
-
+* Allow only low risk level transactions by default.
+* Replaced expired embedded BankID certificate for test environment FPTestcert4_20220818.p12 with new certificate from BankID FPTestcert5_20240610.p12.
 
 ---
 
