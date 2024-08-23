@@ -1,5 +1,6 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
+using ActiveLogin.Authentication.BankId.Core.Risk;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
@@ -10,6 +11,7 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
     protected override void Write(BinaryWriter writer, BankIdUiOptions model)
     {
         writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies));
+        writer.Write(model.AllowedRiskLevel.ToString());
         writer.Write(model.SameDevice);
         writer.Write(model.RequirePinCode);
         writer.Write(model.RequireMrtd);
@@ -28,8 +30,11 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
                                     .Select(Enum.Parse<BankIdCertificatePolicy>)
                                     .ToList();
 
+        var riskLevel = Enum.TryParse<BankIdAllowedRiskLevel>(reader.ReadString(), out var allowedRiskLevel) ? allowedRiskLevel : BankIdAllowedRiskLevel.Low;
+
         return new BankIdUiOptions(
             certificatePolicies,
+            riskLevel,
             reader.ReadBoolean(),
             reader.ReadBoolean(),
             reader.ReadBoolean(),

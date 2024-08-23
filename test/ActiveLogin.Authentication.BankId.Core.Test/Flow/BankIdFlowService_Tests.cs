@@ -11,6 +11,7 @@ using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.Qr;
+using ActiveLogin.Authentication.BankId.Core.Risk;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserContext;
 using ActiveLogin.Authentication.BankId.Core.UserData;
@@ -98,6 +99,7 @@ public class BankIdFlowService_Tests
                 0,
                 new BankIdFlowOptions(
                     certificatePolicies: [],
+                    allowedRiskLevel: Risk.BankIdAllowedRiskLevel.Low,
                     sameDevice: true,
                     requirePinCode: false,
                     requireMrtd: false,
@@ -145,6 +147,7 @@ public class BankIdFlowService_Tests
             0,
             new BankIdFlowOptions(
                 certificatePolicies: [],
+                allowedRiskLevel: BankIdAllowedRiskLevel.Low,
                 sameDevice: true,
                 requirePinCode: false,
                 requireMrtd: false,

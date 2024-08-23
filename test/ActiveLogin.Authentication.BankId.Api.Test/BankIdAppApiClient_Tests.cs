@@ -106,7 +106,7 @@ public class BankIdAppApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
+        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1", new Requirement(new List<string> { "req1", "req2" }, "low", true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
@@ -292,7 +292,7 @@ public class BankIdAppApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdAppApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101")));
+        await _bankIdAppApiClient.SignAsync(new SignRequest("1.1.1.1", "userVisibleData", Encoding.UTF8.GetBytes("userNonVisibleData"), new Requirement(new List<string> { "req1", "req2" }, "low", true, true, "190001010101")));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();

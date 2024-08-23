@@ -29,14 +29,13 @@ public class Requirement
     /// A personal number to be used to complete the transaction. If a BankID with another personal number attempts to sign the transaction, it fails.
     /// </param>
     /// <param name="risk">Set the acceptable risk level for the transaction.</param>
-    public Requirement(List<string>? certificatePolicies = null, bool? pinCode = null, bool? mrtd = null, string? personalNumber = null, RiskLevel? risk = null)
+    public Requirement(List<string>? certificatePolicies = null, string? risk = null, bool? pinCode = null, bool? mrtd = null, string? personalNumber = null)
     {
         CertificatePolicies = certificatePolicies;
+        Risk = risk;
         PinCode = pinCode;
         Mrtd = mrtd;
         PersonalNumber = personalNumber;
-        
-        Risk = ParseRiskLevel(risk);
     }
 
     /// <summary>
@@ -77,19 +76,4 @@ public class Requirement
     [JsonPropertyName("risk"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? Risk { get; }
 
-    private static string? ParseRiskLevel(RiskLevel? risk)
-    {
-        return risk switch
-        {
-            null => null,
-            
-            RiskLevel.Low => RiskLevel.Low.ToString().ToLower(),
-            RiskLevel.Moderate => RiskLevel.Moderate.ToString().ToLower(),
-            RiskLevel.High => RiskLevel.High.ToString().ToLower(),
-            
-            _ => throw new ArgumentException(
-                $"Risk must be {RiskLevel.Low}, {RiskLevel.Moderate} or {RiskLevel.High}",
-                nameof(risk))
-        };
-    }
 }

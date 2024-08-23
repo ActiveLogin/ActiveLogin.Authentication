@@ -159,6 +159,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 
         var uiOptions = new BankIdUiOptions(
             Options.BankIdCertificatePolicies,
+            Options.BankIdAllowedRiskLevel,
             Options.BankIdSameDevice,
             Options.BankIdRequirePinCode,
             Options.BankIdRequireMrtd,
