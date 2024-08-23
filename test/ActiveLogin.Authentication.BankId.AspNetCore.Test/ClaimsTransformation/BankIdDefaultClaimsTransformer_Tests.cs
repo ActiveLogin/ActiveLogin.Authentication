@@ -174,6 +174,6 @@ public class BankIdDefaultClaimsTransformer_Tests
 
     private void AssertNoClaim(List<Claim> claims, string type)
     {
-        Assert.Empty(claims.Where(x => x.Type == type));
+        Assert.DoesNotContain(type, claims.Select(c => c.Type).ToArray());
     }
 }
