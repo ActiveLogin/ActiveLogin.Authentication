@@ -22,7 +22,7 @@ internal static class BankIdCertificates
     public static X509Certificate2 GetBankIdApiClientCertificateTest(TestCertificateFormat certificateFormat) => certificateFormat switch
     {
         TestCertificateFormat.P12 => GetCertFromResourceStream(BankIdApiClientCertificateTestP12),
-        TestCertificateFormat.PEM => GetCertFromResourceStream(BankIdApiClientCertificateTestPem),
+        TestCertificateFormat.PEM => GetPemCertFromResourceStream(BankIdApiClientCertificateTestPem),
         TestCertificateFormat.PFX => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx),
         _ => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx)
     };
@@ -43,6 +43,15 @@ internal static class BankIdCertificates
         }
 
         return new X509Certificate2(memory.ToArray(), password);
+    }
+
+    private static X509Certificate2 GetPemCertFromResourceStream(CertificateResource resource)
+    {
+        var certStream = GetBankIdResourceStream(resource.Filename);
+        using var streamReader = new StreamReader(certStream);
+        var certAndKeyString = streamReader.ReadToEnd();
+
+        return X509Certificate2.CreateFromEncryptedPem(certAndKeyString, certAndKeyString, resource.Password);
     }
 
     private static Stream GetBankIdResourceStream(string filename)
