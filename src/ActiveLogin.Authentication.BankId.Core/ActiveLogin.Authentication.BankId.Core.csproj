@@ -9,6 +9,8 @@
         <None Remove="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
         <None Remove="BankIdResources\BankIdApiRootCertificate-Test.crt" />
         <None Remove="BankIdResources\FPTestcert5_20240610.p12" />
+        <None Remove="BankIdResources\FPTestcert5_20240610.pem" />
+        <None Remove="BankIdResources\FPTestcert5_20240610-legacy.pfx" />
         <None Remove="Qr\qr-default.png" />
     </ItemGroup>
 
@@ -54,5 +56,7 @@
         <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
         <EmbeddedResource Include="BankIdResources\BankIdApiRootCertificate-Test.crt" />
         <EmbeddedResource Include="BankIdResources\FPTestcert5_20240610.p12" />
+        <EmbeddedResource Include="BankIdResources\FPTestcert5_20240610.pem" />
+        <EmbeddedResource Include="BankIdResources\FPTestcert5_20240610-legacy.pfx" />
     </ItemGroup>
 </Project>
