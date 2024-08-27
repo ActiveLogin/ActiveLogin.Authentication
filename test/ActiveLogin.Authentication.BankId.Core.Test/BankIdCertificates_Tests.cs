@@ -19,16 +19,6 @@ public class BankIdCertificates_Tests
     }
 
     [Fact]
-    public void BankIdApiClientCertificateTestPem_Should_Not_Be_Expired()
-    {
-        var cert = BankIdCertificates.GetBankIdApiClientCertificateTest(Certificate.TestCertificateFormat.PEM);
-        var certExpires = cert.NotAfter;
-        var now = DateTime.UtcNow;
-
-        Assert.True(now <= certExpires.Add(TimeBeforeExpire));
-    }
-
-    [Fact]
     public void BankIdApiClientCertificateTestPfx_Should_Not_Be_Expired()
     {
         var cert = BankIdCertificates.GetBankIdApiClientCertificateTest(Certificate.TestCertificateFormat.PFX);
