@@ -10,5 +10,10 @@ public enum BankIdAllowedRiskLevel
     /// <summary>
     /// Accept low and moderate risk orders
     /// </summary>
-    Moderate
+    Moderate,
+
+    /// <summary>
+    /// No risk level is set and the BankID service will not block any order regardless of the risk indication.
+    /// </summary>
+    NoRiskLevel
 }

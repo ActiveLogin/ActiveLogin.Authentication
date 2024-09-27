@@ -30,7 +30,7 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
                                     .Select(Enum.Parse<BankIdCertificatePolicy>)
                                     .ToList();
 
-        var riskLevel = Enum.TryParse<BankIdAllowedRiskLevel>(reader.ReadString(), out var allowedRiskLevel) ? allowedRiskLevel : BankIdAllowedRiskLevel.Low;
+        var riskLevel = Enum.TryParse<BankIdAllowedRiskLevel>(reader.ReadString(), out var allowedRiskLevel) ? allowedRiskLevel : BankIdAllowedRiskLevel.NoRiskLevel;
 
         return new BankIdUiOptions(
             certificatePolicies,
