@@ -100,7 +100,7 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
-        var resolvedRiskLevel = flowOptions.AllowedRiskLevel.ToString().ToLower();
+        var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
 
         var authRequestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, flowOptions.RequirePinCode, flowOptions.RequireMrtd);
 

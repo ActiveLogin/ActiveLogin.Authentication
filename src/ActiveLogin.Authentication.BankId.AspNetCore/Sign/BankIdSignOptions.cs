@@ -28,7 +28,7 @@ public class BankIdSignOptions
     /// the transaction will be blocked. The risk indication requires that the endUserIp is correct.
     /// An incorrect IP-address will result in legitimate transactions being blocked.
     /// </summary>
-    public BankIdAllowedRiskLevel BankIdAllowedRiskLevel { get; set; } = BankIdAllowedRiskLevel.Low;
+    public BankIdAllowedRiskLevel BankIdAllowedRiskLevel { get; set; } = BankIdAllowedRiskLevel.NoRiskLevel;
 
     /// <summary>
     /// Auto launch the BankID app on the current device.
