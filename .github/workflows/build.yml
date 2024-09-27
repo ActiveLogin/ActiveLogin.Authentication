@@ -72,7 +72,7 @@ jobs:
         shell: pwsh
 
       - name: Upload packages
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with: 
             name: ${{ matrix.artifactName }}
             path: |
@@ -141,7 +141,7 @@ jobs:
         shell: pwsh
 
       - name: Upload samples
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with: 
           name: ${{ matrix.artifactName }}
           path: ${{ runner.temp }}/zip
