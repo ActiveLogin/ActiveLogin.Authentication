@@ -25,7 +25,6 @@ Breaking changes between version 10.0.0 and 9.0.0
 * Remove policy handling from API library into Core
 * Fall back to mobile BankID policy for OtherDevice flow
 * Enum for setting policy instead of string
-* Allow only low risk level transactions by default.
 * Replace embedded BankID certificate for the test environment FPTestcert4_20220818.p12, with the three new versions of the client certificate FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Make it configurable which version to use. For compatibility reasons use FPTestcert5_20240610-legacy.pfx by default.
 
 ---
