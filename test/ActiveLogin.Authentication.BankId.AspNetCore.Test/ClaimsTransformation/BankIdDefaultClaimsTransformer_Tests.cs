@@ -169,7 +169,7 @@ public class BankIdDefaultClaimsTransformer_Tests
 
     private void AssertClaim(List<Claim> claims, string type, string value)
     {
-        Assert.NotEmpty(claims.Where(x => x.Type == type && x.Value == value));
+        Assert.Contains(claims, x => x.Type == type && x.Value == value);
     }
 
     private void AssertNoClaim(List<Claim> claims, string type)
