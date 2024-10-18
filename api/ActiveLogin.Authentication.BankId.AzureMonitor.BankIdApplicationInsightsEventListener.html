@@ -1,0 +1,835 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class BankIdApplicationInsightsEventListener
+   | Active Login </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class BankIdApplicationInsightsEventListener
+   | Active Login ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="..//images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener">
+  
+  
+  <h1 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener" class="text-break">Class BankIdApplicationInsightsEventListener
+  </h1>
+  <div class="markdown level0 summary"><p>Listen for all events and write them to Application Insights</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html">BankIdTypedEventListener</a></div>
+    <div class="level2"><span class="xref">BankIdApplicationInsightsEventListener</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.IBankIdEventListener.html">IBankIdEventListener</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleAsync_ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdEvent_">BankIdTypedEventListener.HandleAsync(BankIdEvent)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="ActiveLogin.Authentication.BankId.AzureMonitor.html">ActiveLogin.Authentication.BankId.AzureMonitor</a></h6>
+  <h6><strong>Assembly</strong>: ActiveLogin.Authentication.BankId.AzureMonitor.dll</h6>
+  <h5 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener, IBankIdEventListener</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener__ctor_TelemetryClient_ActiveLogin_Authentication_BankId_AzureMonitor_ApplicationInsightsBankIdEventListenerOptions_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.%23ctor(TelemetryClient%2CActiveLogin.Authentication.BankId.AzureMonitor.ApplicationInsightsBankIdEventListenerOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L58">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener__ctor_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.#ctor*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener__ctor_TelemetryClient_ActiveLogin_Authentication_BankId_AzureMonitor_ApplicationInsightsBankIdEventListenerOptions_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.#ctor(TelemetryClient,ActiveLogin.Authentication.BankId.AzureMonitor.ApplicationInsightsBankIdEventListenerOptions)">BankIdApplicationInsightsEventListener(TelemetryClient, ApplicationInsightsBankIdEventListenerOptions)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BankIdApplicationInsightsEventListener(TelemetryClient telemetryClient, ApplicationInsightsBankIdEventListenerOptions options)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TelemetryClient</span></td>
+        <td><span class="parametername">telemetryClient</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.AzureMonitor.ApplicationInsightsBankIdEventListenerOptions.html">ApplicationInsightsBankIdEventListenerOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetAuthenticateErrorEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetAuthenticateFailureEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetAuthenticateErrorEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetAuthenticateFailureEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L84">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetAuthenticateErrorEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetAuthenticateErrorEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetAuthenticateErrorEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetAuthenticateFailureEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetAuthenticateErrorEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetAuthenticateFailureEvent)">HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetAuthenticateFailureEvent.html">BankIdAspNetAuthenticateFailureEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleAspNetAuthenticateErrorEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetAuthenticateFailureEvent_">BankIdTypedEventListener.HandleAspNetAuthenticateErrorEvent(BankIdAspNetAuthenticateFailureEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetAuthenticateSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetAuthenticateSuccessEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetAuthenticateSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetAuthenticateSuccessEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L75">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetAuthenticateSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetAuthenticateSuccessEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetAuthenticateSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetAuthenticateSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetAuthenticateSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetAuthenticateSuccessEvent)">HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetAuthenticateSuccessEvent.html">BankIdAspNetAuthenticateSuccessEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleAspNetAuthenticateSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetAuthenticateSuccessEvent_">BankIdTypedEventListener.HandleAspNetAuthenticateSuccessEvent(BankIdAspNetAuthenticateSuccessEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetChallengeSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetChallengeSuccessEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetChallengeSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetChallengeSuccessEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L66">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetChallengeSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetChallengeSuccessEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleAspNetChallengeSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetChallengeSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleAspNetChallengeSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetChallengeSuccessEvent)">HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdAspNetChallengeSuccessEvent.html">BankIdAspNetChallengeSuccessEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleAspNetChallengeSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdAspNetChallengeSuccessEvent_">BankIdTypedEventListener.HandleAspNetChallengeSuccessEvent(BankIdAspNetChallengeSuccessEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCancelFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCancelErrorEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCancelFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCancelErrorEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L244">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCancelFailureEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCancelFailureEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCancelFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCancelErrorEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCancelFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCancelErrorEvent)">HandleCancelFailureEvent(BankIdCancelErrorEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleCancelFailureEvent(BankIdCancelErrorEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdCancelErrorEvent.html">BankIdCancelErrorEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleCancelFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCancelErrorEvent_">BankIdTypedEventListener.HandleCancelFailureEvent(BankIdCancelErrorEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCancelSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCancelSuccessEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCancelSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCancelSuccessEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L231">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCancelSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCancelSuccessEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCancelSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCancelSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCancelSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCancelSuccessEvent)">HandleCancelSuccessEvent(BankIdCancelSuccessEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleCancelSuccessEvent(BankIdCancelSuccessEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdCancelSuccessEvent.html">BankIdCancelSuccessEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleCancelSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCancelSuccessEvent_">BankIdTypedEventListener.HandleCancelSuccessEvent(BankIdCancelSuccessEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectCompletedEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectCompletedEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectCompletedEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectCompletedEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L140">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectCompletedEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectCompletedEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectCompletedEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectCompletedEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectCompletedEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectCompletedEvent)">HandleCollectCompletedEvent(BankIdCollectCompletedEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleCollectCompletedEvent(BankIdCollectCompletedEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectCompletedEvent.html">BankIdCollectCompletedEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleCollectCompletedEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectCompletedEvent_">BankIdTypedEventListener.HandleCollectCompletedEvent(BankIdCollectCompletedEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectErrorEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectErrorEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectErrorEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectErrorEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L193">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectErrorEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectErrorEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectErrorEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectErrorEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectErrorEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectErrorEvent)">HandleCollectErrorEvent(BankIdCollectErrorEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleCollectErrorEvent(BankIdCollectErrorEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectErrorEvent.html">BankIdCollectErrorEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleCollectErrorEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectErrorEvent_">BankIdTypedEventListener.HandleCollectErrorEvent(BankIdCollectErrorEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectFailureEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectFailureEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L179">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectFailureEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectFailureEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectFailureEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectFailureEvent)">HandleCollectFailureEvent(BankIdCollectFailureEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleCollectFailureEvent(BankIdCollectFailureEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectFailureEvent.html">BankIdCollectFailureEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleCollectFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectFailureEvent_">BankIdTypedEventListener.HandleCollectFailureEvent(BankIdCollectFailureEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectPendingEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectPendingEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectPendingEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectPendingEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L126">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectPendingEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectPendingEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleCollectPendingEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectPendingEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleCollectPendingEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectPendingEvent)">HandleCollectPendingEvent(BankIdCollectPendingEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleCollectPendingEvent(BankIdCollectPendingEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdCollectPendingEvent.html">BankIdCollectPendingEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleCollectPendingEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdCollectPendingEvent_">BankIdTypedEventListener.HandleCollectPendingEvent(BankIdCollectPendingEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdInitializeErrorEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdInitializeErrorEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L113">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleFailureEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleFailureEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdInitializeErrorEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdInitializeErrorEvent)">HandleFailureEvent(BankIdInitializeErrorEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleFailureEvent(BankIdInitializeErrorEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdInitializeErrorEvent.html">BankIdInitializeErrorEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdInitializeErrorEvent_">BankIdTypedEventListener.HandleFailureEvent(BankIdInitializeErrorEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSignFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdSignFailureEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSignFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdSignFailureEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L208">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSignFailureEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSignFailureEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSignFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdSignFailureEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSignFailureEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdSignFailureEvent)">HandleSignFailureEvent(BankIdSignFailureEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleSignFailureEvent(BankIdSignFailureEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdSignFailureEvent.html">BankIdSignFailureEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleSignFailureEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdSignFailureEvent_">BankIdTypedEventListener.HandleSignFailureEvent(BankIdSignFailureEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSignSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdSignSuccessEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSignSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdSignSuccessEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L220">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSignSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSignSuccessEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSignSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdSignSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSignSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdSignSuccessEvent)">HandleSignSuccessEvent(BankIdSignSuccessEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleSignSuccessEvent(BankIdSignSuccessEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdSignSuccessEvent.html">BankIdSignSuccessEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleSignSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdSignSuccessEvent_">BankIdTypedEventListener.HandleSignSuccessEvent(BankIdSignSuccessEvent)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdInitializeSuccessEvent_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdInitializeSuccessEvent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L99">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSuccessEvent*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener_HandleSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdInitializeSuccessEvent_" data-uid="ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener.HandleSuccessEvent(ActiveLogin.Authentication.BankId.Core.Events.BankIdInitializeSuccessEvent)">HandleSuccessEvent(BankIdInitializeSuccessEvent)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task HandleSuccessEvent(BankIdInitializeSuccessEvent e)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.BankIdInitializeSuccessEvent.html">BankIdInitializeSuccessEvent</a></td>
+        <td><span class="parametername">e</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.BankIdTypedEventListener.html#ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_BankIdTypedEventListener_HandleSuccessEvent_ActiveLogin_Authentication_BankId_Core_Events_BankIdInitializeSuccessEvent_">BankIdTypedEventListener.HandleSuccessEvent(BankIdInitializeSuccessEvent)</a></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.IBankIdEventListener.html">IBankIdEventListener</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AzureMonitor_BankIdApplicationInsightsEventListener.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AzureMonitor.BankIdApplicationInsightsEventListener%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AzureMonitor/BankIdApplicationInsightsEventListener.cs/#L16" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            © Active Solution
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
