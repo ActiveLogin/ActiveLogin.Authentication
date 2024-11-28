@@ -1,6 +1,7 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
+using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Authentication;
 
@@ -37,6 +38,9 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
                 writer.Write(item.Key ?? string.Empty);
                 writer.Write(item.Value ?? string.Empty);
             }
+
+            writer.Write(signState.BankIdSignProperties.RequiredPersonalIdentityNumber == null);
+            writer.Write(signState.BankIdSignProperties.RequiredPersonalIdentityNumber?.To12DigitString() ?? string.Empty);
         }
         else
         {
@@ -85,10 +89,18 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
                 items.Add(key, value);
             }
 
+            var requiredPersonalIdentityNumberIsNull = reader.ReadBoolean();
+            var requiredPersonalIdentityNumber = reader.ReadString();
+            if (requiredPersonalIdentityNumberIsNull)
+            {
+                requiredPersonalIdentityNumber = null;
+            }
+
             var bankIdSignProperties = new BankIdSignProperties(userVisibleData)
             {
                 UserVisibleDataFormat = userVisibleDataFormat,
                 UserNonVisibleData = userNonVisibleData,
+                RequiredPersonalIdentityNumber = PersonalIdentityNumber.Parse(requiredPersonalIdentityNumber),
 
                 Items = items
             };

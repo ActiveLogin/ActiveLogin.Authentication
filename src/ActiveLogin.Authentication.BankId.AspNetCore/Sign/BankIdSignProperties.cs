@@ -1,3 +1,5 @@
+using ActiveLogin.Identity.Swedish;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
 public class BankIdSignProperties
@@ -43,6 +45,14 @@ public class BankIdSignProperties
     /// Data not displayed to the user.
     /// </summary>
     public byte[]? UserNonVisibleData { get; set; }
+
+    /// <summary>
+    /// The personal identity number allowed to confirm the sign request.
+    /// If a BankID with another personal identity number attempts to confirm the sign request, it will fail.
+    /// If left empty any personal identity number will be allowed.
+    /// </summary>
+    public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; set; }
+
 
     /// <summary>
     /// A collection of items where you can store state that will be provided once the sign flow is done.

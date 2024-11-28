@@ -107,7 +107,10 @@ public class BankIdFlowService : IBankIdFlowService
         var authRequestContext = new BankIdAuthRequestContext(endUserIp, authRequestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
 
-        authRequestRequirement.PersonalNumber = userData.RequiredPersonalIdentityNumber?.To12DigitString();
+        if (userData.RequiredPersonalIdentityNumber != null)
+        {
+            authRequestRequirement.PersonalNumber = userData.RequiredPersonalIdentityNumber.To12DigitString();
+        }
 
         return new AuthRequest(
             endUserIp,
@@ -163,7 +166,8 @@ public class BankIdFlowService : IBankIdFlowService
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
         var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
 
-        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, flowOptions.RequirePinCode, flowOptions.RequireMrtd, flowOptions.RequiredPersonalIdentityNumber?.To12DigitString());
+        var personalIdentityNumber = bankIdSignData.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
+        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, flowOptions.RequirePinCode, flowOptions.RequireMrtd, personalIdentityNumber?.To12DigitString());
 
         return new SignRequest(
             endUserIp,

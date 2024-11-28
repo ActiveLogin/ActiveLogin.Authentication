@@ -1,3 +1,5 @@
+using ActiveLogin.Identity.Swedish;
+
 namespace ActiveLogin.Authentication.BankId.Core.Models;
 
 public class BankIdSignData
@@ -11,6 +13,8 @@ public class BankIdSignData
     public string? UserVisibleDataFormat { get; set; }
 
     public byte[]? UserNonVisibleData { get; set; }
+
+    public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; set; }
 
     public IDictionary<string, string?> Items { get; set; } = new Dictionary<string, string?>();
 }
