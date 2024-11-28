@@ -1,3 +1,5 @@
+using ActiveLogin.Identity.Swedish;
+
 namespace ActiveLogin.Authentication.BankId.Core.UserData;
 
 public class BankIdAuthUserData
@@ -5,4 +7,6 @@ public class BankIdAuthUserData
     public string? UserVisibleData { get; set; }
     public byte[]? UserNonVisibleData { get; set; }
     public string? UserVisibleDataFormat { get; set; }
+
+    public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; set; }
 }

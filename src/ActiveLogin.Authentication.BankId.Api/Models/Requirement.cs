@@ -68,7 +68,7 @@ public class Requirement
     /// A personal number to be used to complete the transaction. If a BankID with another personal number attempts to sign the transaction, it fails.
     /// </summary>
     [JsonPropertyName("personalNumber"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public string? PersonalNumber { get; }
+    public string? PersonalNumber { get; set; }
 
     /// <summary>
     /// Set the acceptable risk level for the transaction.
