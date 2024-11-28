@@ -100,7 +100,7 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             {
                 UserVisibleDataFormat = userVisibleDataFormat,
                 UserNonVisibleData = userNonVisibleData,
-                RequiredPersonalIdentityNumber = PersonalIdentityNumber.Parse(requiredPersonalIdentityNumber),
+                RequiredPersonalIdentityNumber = requiredPersonalIdentityNumber != null ? PersonalIdentityNumber.Parse(requiredPersonalIdentityNumber) : null,
 
                 Items = items
             };
