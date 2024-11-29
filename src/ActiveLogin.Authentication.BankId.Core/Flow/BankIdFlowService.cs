@@ -7,6 +7,7 @@ using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.Qr;
+using ActiveLogin.Authentication.BankId.Core.Requirements;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserContext;
 using ActiveLogin.Authentication.BankId.Core.UserData;
@@ -26,6 +27,7 @@ public class BankIdFlowService : IBankIdFlowService
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly IBankIdEndUserIpResolver _bankIdEndUserIpResolver;
     private readonly IBankIdAuthRequestUserDataResolver _bankIdAuthUserDataResolver;
+    private readonly IBankIdAuthRequestRequirementsResolver _bankIdAuthRequestRequirementsResolver;
     private readonly IBankIdQrCodeGenerator _bankIdQrCodeGenerator;
     private readonly IBankIdLauncher _bankIdLauncher;
     private readonly IBankIdCertificatePolicyResolver _bankIdCertificatePolicyResolver;
@@ -39,6 +41,7 @@ public class BankIdFlowService : IBankIdFlowService
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
         IBankIdEndUserIpResolver bankIdEndUserIpResolver,
         IBankIdAuthRequestUserDataResolver bankIdAuthUserDataResolver,
+        IBankIdAuthRequestRequirementsResolver bankIdAuthRequestRequirementsResolver,
         IBankIdQrCodeGenerator bankIdQrCodeGenerator,
         IBankIdLauncher bankIdLauncher,
         IBankIdCertificatePolicyResolver bankIdCertificatePolicyResolver
@@ -52,6 +55,7 @@ public class BankIdFlowService : IBankIdFlowService
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         _bankIdEndUserIpResolver = bankIdEndUserIpResolver;
         _bankIdAuthUserDataResolver = bankIdAuthUserDataResolver;
+        _bankIdAuthRequestRequirementsResolver = bankIdAuthRequestRequirementsResolver;
         _bankIdQrCodeGenerator = bankIdQrCodeGenerator;
         _bankIdLauncher = bankIdLauncher;
         _bankIdCertificatePolicyResolver = bankIdCertificatePolicyResolver;
@@ -102,19 +106,18 @@ public class BankIdFlowService : IBankIdFlowService
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
         var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
 
-        var authRequestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, flowOptions.RequirePinCode, flowOptions.RequireMrtd, flowOptions.RequiredPersonalIdentityNumber?.To12DigitString());
+        var resolvedRequirements = await _bankIdAuthRequestRequirementsResolver.GetRequirementsAsync();
+        var requiredPersonalIdentityNumber = resolvedRequirements.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
+        var requireMrtd = resolvedRequirements.RequireMrtd ?? flowOptions.RequireMrtd;
+        var requirePinCode = resolvedRequirements.RequirePinCode ?? flowOptions.RequirePinCode;
+        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
 
-        var authRequestContext = new BankIdAuthRequestContext(endUserIp, authRequestRequirement);
+        var authRequestContext = new BankIdAuthRequestContext(endUserIp, requestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
-
-        if (userData.RequiredPersonalIdentityNumber != null)
-        {
-            authRequestRequirement.PersonalNumber = userData.RequiredPersonalIdentityNumber.To12DigitString();
-        }
 
         return new AuthRequest(
             endUserIp,
-            authRequestRequirement,
+            requestRequirement,
             userData.UserVisibleData,
             userData.UserNonVisibleData,
             userData.UserVisibleDataFormat
