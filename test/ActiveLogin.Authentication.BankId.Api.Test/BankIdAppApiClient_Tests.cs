@@ -167,6 +167,56 @@ public class BankIdAppApiClient_Tests
     }
 
     [Fact]
+    public async Task AuthAsync_WithAuthRequest__ShouldHaveReturnRisk()
+    {
+        //Arrange
+        byte[] userNonVisibleData = Encoding.ASCII.GetBytes("Hello");
+        string asBase64 = Convert.ToBase64String(userNonVisibleData);
+
+        //Act
+        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1", null, null, null, null, null, true));
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "returnRisk", true);
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "endUserIp",
+            "requirement",
+            "returnRisk",
+        });
+    }
+
+    [Fact]
+    public async Task AuthAsync_WithAuthRequest__ShouldHaveReturnUrl()
+    {
+        //Arrange
+        byte[] userNonVisibleData = Encoding.ASCII.GetBytes("Hello");
+        string asBase64 = Convert.ToBase64String(userNonVisibleData);
+
+        //Act
+        await _bankIdAppApiClient.AuthAsync(new AuthRequest("1.1.1.1", null, null, null, null, "http://mywebpage.com", null));
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "returnUrl", "http://mywebpage.com");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "endUserIp",
+            "requirement",
+            "returnUrl",
+        });
+    }
+
+    [Fact]
     public async Task SignAsync_WithSignRequest__ShouldPostToBankIdSign_WithJsonPayload()
     {
         // Arrange
