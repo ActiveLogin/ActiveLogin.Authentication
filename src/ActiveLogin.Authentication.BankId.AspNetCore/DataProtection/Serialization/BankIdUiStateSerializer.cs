@@ -32,15 +32,21 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             writer.Write(signState.BankIdSignProperties.UserNonVisibleData?.Length ?? -1);
             writer.Write(signState.BankIdSignProperties.UserNonVisibleData ?? Array.Empty<byte>());
 
+            writer.Write(signState.BankIdSignProperties.RequiredPersonalIdentityNumber == null);
+            writer.Write(signState.BankIdSignProperties.RequiredPersonalIdentityNumber?.To12DigitString() ?? string.Empty);
+
+            writer.Write(signState.BankIdSignProperties.RequireMrtd == null);
+            writer.Write(signState.BankIdSignProperties.RequireMrtd.GetValueOrDefault());
+
+            writer.Write(signState.BankIdSignProperties.RequirePinCode == null);
+            writer.Write(signState.BankIdSignProperties.RequirePinCode.GetValueOrDefault());
+
             writer.Write(signState.BankIdSignProperties.Items.Count);
             foreach (var item in signState.BankIdSignProperties.Items)
             {
                 writer.Write(item.Key ?? string.Empty);
                 writer.Write(item.Value ?? string.Empty);
             }
-
-            writer.Write(signState.BankIdSignProperties.RequiredPersonalIdentityNumber == null);
-            writer.Write(signState.BankIdSignProperties.RequiredPersonalIdentityNumber?.To12DigitString() ?? string.Empty);
         }
         else
         {
@@ -79,6 +85,20 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             {
                 userNonVisibleData = null;
             }
+
+            var requiredPersonalIdentityNumberIsNull = reader.ReadBoolean();
+            var requiredPersonalIdentityNumber = reader.ReadString();
+            if (requiredPersonalIdentityNumberIsNull)
+            {
+                requiredPersonalIdentityNumber = null;
+            }
+
+            var requireMrtdIsNull = reader.ReadBoolean();
+            var requireMrtd = reader.ReadBoolean();
+
+            var requirePinCodeIsNull = reader.ReadBoolean();
+            var requirePinCode = reader.ReadBoolean();
+
             var count = reader.ReadInt32();
             var items = new Dictionary<string, string?>(count);
 
@@ -89,19 +109,13 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
                 items.Add(key, value);
             }
 
-            var requiredPersonalIdentityNumberIsNull = reader.ReadBoolean();
-            var requiredPersonalIdentityNumber = reader.ReadString();
-            if (requiredPersonalIdentityNumberIsNull)
-            {
-                requiredPersonalIdentityNumber = null;
-            }
-
             var bankIdSignProperties = new BankIdSignProperties(userVisibleData)
             {
                 UserVisibleDataFormat = userVisibleDataFormat,
                 UserNonVisibleData = userNonVisibleData,
                 RequiredPersonalIdentityNumber = requiredPersonalIdentityNumber != null ? PersonalIdentityNumber.Parse(requiredPersonalIdentityNumber) : null,
-
+                RequireMrtd = requireMrtdIsNull ? null : requireMrtd,
+                RequirePinCode = requirePinCodeIsNull ? null : requirePinCode,
                 Items = items
             };
             return new BankIdUiSignState(configKey, bankIdSignProperties);

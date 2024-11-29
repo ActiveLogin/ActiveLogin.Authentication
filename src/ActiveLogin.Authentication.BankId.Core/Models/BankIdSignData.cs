@@ -15,6 +15,8 @@ public class BankIdSignData
     public byte[]? UserNonVisibleData { get; set; }
 
     public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; set; }
+    public bool? RequireMrtd { get; set; }
+    public bool? RequirePinCode { get; set; }
 
     public IDictionary<string, string?> Items { get; set; } = new Dictionary<string, string?>();
 }
