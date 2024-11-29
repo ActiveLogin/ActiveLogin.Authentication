@@ -1,3 +1,5 @@
+using ActiveLogin.Identity.Swedish;
+
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
 public class BankIdSignProperties
@@ -33,6 +35,7 @@ public class BankIdSignProperties
     /// there is something wrong about the identification and avoid attempted frauds.
     /// </summary>
     public string UserVisibleData { get; set; }
+
     /// <summary>
     /// If present, and set to "simpleMarkdownV1", this parameter indicates that userVisibleData holds formatting characters which, if used correctly, will make the text displayed with the user nicer to look at.
     /// For further information of formatting options, please study the document Guidelines for Formatted Text.
@@ -43,6 +46,24 @@ public class BankIdSignProperties
     /// Data not displayed to the user.
     /// </summary>
     public byte[]? UserNonVisibleData { get; set; }
+
+    /// <summary>
+    /// The personal identity number allowed to confirm the sign request.
+    /// If a BankID with another personal identity number attempts to confirm the sign request, it will fail.
+    /// If left empty any personal identity number will be allowed.
+    /// </summary>
+    public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; set; }
+
+    /// <summary>
+    /// Whether the user needs to confirm their identity with a valid Swedish passport or national ID card to complete the order.
+    /// No identity confirmation is required by default.
+    /// </summary>
+    public bool? RequireMrtd { get; set; }
+
+    /// <summary>
+    /// Users are required to confirm the order with their security code even if they have biometrics activated.
+    /// </summary>
+    public bool? RequirePinCode { get; set; }
 
     /// <summary>
     /// A collection of items where you can store state that will be provided once the sign flow is done.

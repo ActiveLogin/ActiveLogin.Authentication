@@ -1,3 +1,5 @@
+using ActiveLogin.Identity.Swedish;
+
 namespace ActiveLogin.Authentication.BankId.Core.UserData;
 
 public class BankIdAuthUserData

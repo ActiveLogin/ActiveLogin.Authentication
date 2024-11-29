@@ -39,6 +39,7 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
   + [Event listeners](#event-listeners)
   + [Store data on auth completion](#store-data-on-auth-completion)
   + [Resolve the end user ip](#resolve-the-end-user-ip)
+  + [Resolve requirements on Auth request](#resolve-requirements-on-auth-request)
   + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
   + [Custom QR code generation](#custom-qr-code-generation)
   + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
@@ -359,6 +360,10 @@ public class SignController : Controller
                 {"returnUrl", "~/"},
                 {"scheme", provider}
             }
+
+            RequirePinCode = true,
+            RequireMrtd = true
+            RequiredPersonalIdentityNumber = new PersonalIdentityNumber(1999, 8, 7, 239, 1)
         };
         var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
         return this.BankIdInitiateSign(props, returnPath, provider);
@@ -446,7 +451,7 @@ services
 
 ### Customizing BankID options
 
-BankId options allows you to set and override some options such as these.
+BankId options allows you to set and override some options such as the below requirements on how the authentication or signature order must be performed.
 
 ```csharp
 .AddOtherDevice(options =>
@@ -478,6 +483,7 @@ If you want to apply some options for all BankID schemes, you can do so by using
 });
 ```
 
+Requirements can also be set dynamically for each authentication, see section [Resolve requirements on Auth request](#resolve-requirements-on-auth-request). To use dynamic requirements with signatures provide the requirements as part the `BankIdSignProperties`, see section [Sign](#sign).
 
 ---
 
@@ -968,6 +974,29 @@ Either register a class implementing `IBankIdEndUserIpResolver`:
 
 ```csharp
 services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
+```
+
+### Resolve requirements on Auth request
+
+If you want to set the requirements on how the authentication order must be performed dynamically for each order instead of statically during startup in `Program.cs`, it can be done by overriding the default implementation of the `IBankIdAuthRequestRequirementsResolver`.
+
+```csharp
+public class BankIdAuthRequestDynamicRequirementsResolver : IBankIdAuthRequestRequirementsResolver
+{
+    public Task<BankIdAuthRequirements> GetRequirementsAsync()
+    {
+        return Task.FromResult(new BankIdAuthRequirements()
+        {
+            RequireMrtd = true,
+            RequirePinCode = true,
+            RequiredPersonalIdentityNumber = new PersonalIdentityNumber(1999, 8, 7, 239, 1)
+        });
+    }
+}
+```
+
+```csharp
+services.AddTransient<IBankIdAuthRequestRequirementsResolver, BankIdAuthRequestDynamicRequirementsResolver>();
 ```
 
 ### Resolve user data on Auth request

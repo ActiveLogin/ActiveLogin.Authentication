@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+using ActiveLogin.Authentication.BankId.Core.Requirements;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +58,19 @@ public static class IBankIdAuthBuilderExtensions
     public static IBankIdAuthBuilder UseAuthRequestUserDataResolver<TBankIdAuthRequestUserDataResolverImplementation>(this IBankIdAuthBuilder builder) where TBankIdAuthRequestUserDataResolverImplementation : class, IBankIdAuthRequestUserDataResolver
     {
         builder.Services.AddTransient<IBankIdAuthRequestUserDataResolver, TBankIdAuthRequestUserDataResolverImplementation>();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Use a custom requirements resolver.
+    /// </summary>
+    /// <typeparam name="TBankIdAuthRequestRequirementsResolverImplementation"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IBankIdAuthBuilder UseAuthRequestRequirementsResolver<TBankIdAuthRequestRequirementsResolverImplementation>(this IBankIdAuthBuilder builder) where TBankIdAuthRequestRequirementsResolverImplementation : class, IBankIdAuthRequestRequirementsResolver
+    {
+        builder.Services.AddTransient<IBankIdAuthRequestRequirementsResolver, TBankIdAuthRequestRequirementsResolverImplementation>();
 
         return builder;
     }

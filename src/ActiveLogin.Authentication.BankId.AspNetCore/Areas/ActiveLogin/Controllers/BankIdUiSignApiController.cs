@@ -67,7 +67,10 @@ public class BankIdUiSignApiController : BankIdUiApiControllerBase
                 {
                     Items = state.BankIdSignProperties.Items,
                     UserNonVisibleData = state.BankIdSignProperties.UserNonVisibleData,
-                    UserVisibleDataFormat = state.BankIdSignProperties.UserVisibleDataFormat
+                    UserVisibleDataFormat = state.BankIdSignProperties.UserVisibleDataFormat,
+                    RequiredPersonalIdentityNumber = state.BankIdSignProperties.RequiredPersonalIdentityNumber,
+                    RequireMrtd = state.BankIdSignProperties.RequireMrtd,
+                    RequirePinCode = state.BankIdSignProperties.RequirePinCode,
                 },
                 returnRedirectUrl);
         }
