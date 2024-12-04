@@ -27,6 +27,7 @@ public class AuthRequest : Request
     /// </param>
     /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
+    /// <param name="deviceParameters">Information about the device the end user is using.</param>
     public AuthRequest(
         string endUserIp,
         Requirement? requirement = null,
@@ -34,7 +35,8 @@ public class AuthRequest : Request
         byte[]? userNonVisibleData = null,
         string? userVisibleDataFormat = null,
         string? returnUrl = null,
-        bool? returnRisk = null)
+        bool? returnRisk = null,
+        DeviceParameters? deviceParameters = null)
         : base(
             endUserIp,
             userVisibleData: userVisibleData,
@@ -42,7 +44,8 @@ public class AuthRequest : Request
             requirement: requirement,
             userVisibleDataFormat: userVisibleDataFormat,
             returnUrl: returnUrl,
-            returnRisk: returnRisk
+            returnRisk: returnRisk,
+            deviceParameters: deviceParameters
         )
     {
     }

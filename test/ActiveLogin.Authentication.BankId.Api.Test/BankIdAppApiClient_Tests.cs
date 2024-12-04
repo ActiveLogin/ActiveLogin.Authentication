@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -167,6 +168,85 @@ public class BankIdAppApiClient_Tests
     }
 
     [Fact]
+    public async Task AuthAsync_WithAuthRequest__ShouldHaveAppDeviceParametersPayload()
+    {
+        // Arrange
+
+        var authRequest = new AuthRequest(endUserIp: "1.1.1.1",
+            requirement: null,
+            userVisibleData: null,
+            userNonVisibleData: null,
+            userVisibleDataFormat: null,
+            returnUrl: null,
+            returnRisk: null,
+            deviceParameters: new AppDeviceParameters(
+                "appIdentifier",
+                "deviceOs",
+                "deviceModelName",
+                "deviceIdentifier"));
+
+        //Act
+        await _bankIdAppApiClient.AuthAsync(authRequest);
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertPropertyIsNull(contentString, "web");
+        JsonTests.AssertPropertyIsNotNull(contentString, "app");
+
+        JsonTests.AssertProperties(contentString,
+            new Dictionary<string, string>
+            {
+                { "app.appIdentifier", "appIdentifier" },
+                
+                // note the casing from JsonPropertyName attribute in the <see cref="AppDeviceParameters"/> class.
+                { "app.deviceOS", "deviceOs" },
+
+                { "app.deviceModelName", "deviceModelName" },
+                { "app.deviceIdentifier", "deviceIdentifier" }
+            });
+
+    }
+
+    [Fact]
+    public async Task AuthAsync_WithAuthRequest__ShouldHaveWebDeviceParametersPayload()
+    {
+        // Arrange
+
+        var authRequest = new AuthRequest(endUserIp: "1.1.1.1",
+            requirement: null,
+            userVisibleData: null,
+            userNonVisibleData: null,
+            userVisibleDataFormat: null,
+            returnUrl: null,
+            returnRisk: null,
+            deviceParameters: new WebDeviceParameters(
+                "referringDomain",
+                "userAgent",
+                "deviceIdentifier"));
+
+        //Act
+        await _bankIdAppApiClient.AuthAsync(authRequest);
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertPropertyIsNull(contentString, "app");
+        JsonTests.AssertPropertyIsNotNull(contentString, "web");
+
+        JsonTests.AssertProperties(contentString,
+            new Dictionary<string, string>
+            {
+                { "web.referringDomain", "referringDomain" },
+                { "web.userAgent", "userAgent" },
+                { "web.deviceIdentifier", "deviceIdentifier" }
+            });
+
+    }
+
+    [Fact]
     public async Task SignAsync_WithSignRequest__ShouldPostToBankIdSign_WithJsonPayload()
     {
         // Arrange
@@ -330,6 +410,85 @@ public class BankIdAppApiClient_Tests
         Assert.Equal("def456", result.AutoStartToken);
         Assert.Equal("ghi790", result.QrStartSecret);
         Assert.Equal("jkl123", result.QrStartToken);
+    }
+
+    [Fact]
+    public async Task SignAsync_WithAuthRequest__ShouldHaveAppDeviceParametersPayload()
+    {
+        // Arrange
+
+        var signRequest = new SignRequest(endUserIp: "1.1.1.1",
+            requirement: null,
+            userVisibleData: "userVisibleData",
+            userNonVisibleData: null,
+            userVisibleDataFormat: null,
+            returnUrl: null,
+            returnRisk: null,
+            deviceParameters: new AppDeviceParameters(
+                "appIdentifier",
+                "deviceOs",
+                "deviceModelName",
+                "deviceIdentifier"));
+
+        //Act
+        await _bankIdAppApiClient.SignAsync(signRequest);
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertPropertyIsNull(contentString, "web");
+        JsonTests.AssertPropertyIsNotNull(contentString, "app");
+
+        JsonTests.AssertProperties(contentString,
+            new Dictionary<string, string>
+            {
+                { "app.appIdentifier", "appIdentifier" },
+                
+                // note the casing from JsonPropertyName attribute in the <see cref="AppDeviceParameters"/> class.
+                { "app.deviceOS", "deviceOs" },
+
+                { "app.deviceModelName", "deviceModelName" },
+                { "app.deviceIdentifier", "deviceIdentifier" }
+            });
+
+    }
+
+    [Fact]
+    public async Task SignAsync_WithAuthRequest__ShouldHaveWebDeviceParametersPayload()
+    {
+        // Arrange
+
+        var authRequest = new SignRequest(endUserIp: "1.1.1.1",
+            requirement: null,
+            userVisibleData: "userVisibleData",
+            userNonVisibleData: null,
+            userVisibleDataFormat: null,
+            returnUrl: null,
+            returnRisk: null,
+            deviceParameters: new WebDeviceParameters(
+                "referringDomain",
+                "userAgent",
+                "deviceIdentifier"));
+
+        //Act
+        await _bankIdAppApiClient.SignAsync(authRequest);
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertPropertyIsNull(contentString, "app");
+        JsonTests.AssertPropertyIsNotNull(contentString, "web");
+
+        JsonTests.AssertProperties(contentString,
+            new Dictionary<string, string>
+            {
+                { "web.referringDomain", "referringDomain" },
+                { "web.userAgent", "userAgent" },
+                { "web.deviceIdentifier", "deviceIdentifier" }
+            });
+
     }
 
     [Fact]
