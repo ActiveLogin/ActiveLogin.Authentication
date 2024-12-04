@@ -5,6 +5,7 @@ using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.Qr;
+using ActiveLogin.Authentication.BankId.Core.Requirements;
 using ActiveLogin.Authentication.BankId.Core.ResultStore;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserData;
@@ -68,6 +69,7 @@ public static class ServiceCollectionBankIdExtensions
 
         services.AddTransient<IBankIdUserMessageLocalizer, BankIdUserMessageLocalizer>();
         services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestEmptyUserDataResolver>();
+        services.AddTransient<IBankIdAuthRequestRequirementsResolver, BankIdAuthRequestEmptyRequirementsResolver>();
 
         builder.AddEventListener<BankIdLoggerEventListener>();
         builder.AddEventListener<BankIdResultStoreEventListener>();
