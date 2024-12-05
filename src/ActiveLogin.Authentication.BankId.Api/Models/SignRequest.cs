@@ -37,7 +37,7 @@ public class SignRequest : Request
         string? returnUrl = null,
         bool? returnRisk = null,
         DeviceParameters? deviceParameters = null)
-        : base(endUserIp, userVisibleData, userNonVisibleData, requirement, userVisibleDataFormat, returnUrl, returnRisk.HasValue, deviceParameters)
+        : base(endUserIp, userVisibleData, userNonVisibleData, requirement, userVisibleDataFormat, returnUrl, returnRisk, deviceParameters)
     {
     }
 }
