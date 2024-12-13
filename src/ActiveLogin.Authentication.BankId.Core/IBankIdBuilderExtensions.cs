@@ -267,7 +267,7 @@ public static class IBankIdBuilderExtensions
             x => new BankIdSimulatedVerifyApiClient(givenName, surname, personalIdentityNumber)
         );
     }
-
+    
     private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdAppApiClient> bankIdSimulatedAppApiClient, Func<IServiceProvider, IBankIdVerifyApiClient> bankIdSimulatedVerifyApiClient)
     {
         SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedAppApiClient.Version, BankIdSimulatedVerifyApiClient.Version);
