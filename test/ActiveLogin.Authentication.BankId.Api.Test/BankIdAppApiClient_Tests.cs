@@ -178,7 +178,7 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new AppDeviceParameters(
+            deviceParameters: new DeviceDataApp(
                 "appIdentifier",
                 "deviceOs",
                 "deviceModelName",
@@ -199,7 +199,7 @@ public class BankIdAppApiClient_Tests
             {
                 { "app.appIdentifier", "appIdentifier" },
                 
-                // note the casing from JsonPropertyName attribute in the <see cref="AppDeviceParameters"/> class.
+                // note the casing from JsonPropertyName attribute in the <see cref="BankIdEndUserAppDeviceParameters"/> class.
                 { "app.deviceOS", "deviceOs" },
 
                 { "app.deviceModelName", "deviceModelName" },
@@ -220,7 +220,7 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new WebDeviceParameters(
+            deviceParameters: new DeviceDataWeb(
                 "referringDomain",
                 "userAgent",
                 "deviceIdentifier"));
@@ -473,7 +473,7 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new AppDeviceParameters(
+            deviceParameters: new DeviceDataApp(
                 "appIdentifier",
                 "deviceOs",
                 "deviceModelName",
@@ -494,7 +494,7 @@ public class BankIdAppApiClient_Tests
             {
                 { "app.appIdentifier", "appIdentifier" },
                 
-                // note the casing from JsonPropertyName attribute in the <see cref="AppDeviceParameters"/> class.
+                // note the casing from JsonPropertyName attribute in the <see cref="BankIdEndUserAppDeviceParameters"/> class.
                 { "app.deviceOS", "deviceOs" },
 
                 { "app.deviceModelName", "deviceModelName" },
@@ -515,7 +515,7 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new WebDeviceParameters(
+            deviceParameters: new DeviceDataWeb(
                 "referringDomain",
                 "userAgent",
                 "deviceIdentifier"));

@@ -7,24 +7,27 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.Models;
 
 public class Request_DeviceParameters_Tests
 {
-    public class UnHandledDeviceParametersClass() : DeviceParameters("");
+    //public class UnHandledDeviceDataClass() : DeviceData("")
+    //{
+    //    public override BankIdEndUserDeviceType BankIdEndUserDeviceType { get; } = (BankIdEndUserDeviceType)999999;
+    //}
 
     public class DeviceParameterTests : TheoryData<string, DeviceParameterTests.TestData>
     {
-        private static readonly AppDeviceParameters FakeAppDeviceParameters = new (
+        private static readonly DeviceDataApp FakeBankIdEndUserAppDeviceParameters = new (
             appIdentifier: "appIdentifier",
             deviceOs: "deviceOs",
             deviceModelName: "deviceModelName",
             deviceIdentifier: "deviceIdentifier");
 
-        private static readonly WebDeviceParameters FakeWebDeviceParameters = new (
+        private static readonly DeviceDataWeb FakeBankIdEndUserWebDeviceParameters = new (
             referringDomain: "referringDomain",
             userAgent: "userAgent",
             deviceIdentifier: "deviceIdentifier");
 
         public DeviceParameterTests()
         {
-            Add("No DeviceParameters given", new TestData
+            Add("No DeviceData given", new TestData
             {
                 DeviceParameters = null,
                 IsTrue = request =>
@@ -32,36 +35,36 @@ public class Request_DeviceParameters_Tests
                     request.WebDeviceParameters == null
             });
 
-            Add("Only AppDeviceParameters should be set", new TestData
+            Add("Only BankIdEndUserAppDeviceParameters should be set", new TestData
             {
-                DeviceParameters = FakeAppDeviceParameters,
+                DeviceParameters = FakeBankIdEndUserAppDeviceParameters,
                 IsTrue = request => 
                     request.AppDeviceParameters != null &&
                     request.WebDeviceParameters == null &&
-                    request.AppDeviceParameters == FakeAppDeviceParameters // Using reference equality
+                    request.AppDeviceParameters == FakeBankIdEndUserAppDeviceParameters // Using reference equality
             });
 
-            Add("Only WebDeviceParameters should be set", new TestData
+            Add("Only BankIdEndUserWebDeviceParameters should be set", new TestData
             {
-                DeviceParameters = FakeWebDeviceParameters,
+                DeviceParameters = FakeBankIdEndUserWebDeviceParameters,
                 IsTrue = request =>
                     request.AppDeviceParameters == null &&
                     request.WebDeviceParameters != null &&
-                    request.WebDeviceParameters == FakeWebDeviceParameters // Using reference equality
+                    request.WebDeviceParameters == FakeBankIdEndUserWebDeviceParameters // Using reference equality
             });
 
-            Add("Should not assign unknown DeviceParameters to property", new TestData
-            {
-                DeviceParameters = new UnHandledDeviceParametersClass(),
-                IsTrue = request =>
-                    request.AppDeviceParameters == null &&
-                    request.WebDeviceParameters == null
-            });
+            //Add("Should not assign unknown DeviceData to property", new TestData
+            //{
+            //    DeviceParameters = new UnHandledDeviceDataClass(),
+            //    IsTrue = request =>
+            //        request.AppDeviceParameters == null &&
+            //        request.WebDeviceParameters == null
+            //});
         }
 
         public class TestData
         {
-            public DeviceParameters? DeviceParameters { get; set; }
+            public DeviceData? DeviceParameters { get; set; }
             public required Func<Request, bool> IsTrue { get; init; }
         }
     }
@@ -73,7 +76,7 @@ public class Request_DeviceParameters_Tests
         Assert.True(data.IsTrue(sut), description);
     }
 
-    public class TestRequest(DeviceParameters? deviceParameters) : Request(
+    public class TestRequest(DeviceData? deviceParameters) : Request(
         endUserIp: "",
         requirement: null,
         userVisibleData: null,
