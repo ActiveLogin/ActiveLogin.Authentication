@@ -19,17 +19,14 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 /// E.g. "Apple iPhone14,3"
 /// </param>
 /// <param name="deviceIdentifier">
-/// The identifier of the device your client is running on.
-/// This is used to uniquely identify the device and should be a value
-/// that is not tied to a single user of the device.
-/// Preferably, it should remain the same even if your app is reinstalled.
+/// <inheritdoc cref="DeviceData(string)" path="/param[@name='deviceIdentifier']"/>
 /// </param>
-public sealed class AppDeviceParameters(
-string appIdentifier,
-string deviceOs,
-string deviceModelName,
+public sealed class DeviceDataApp(
+    string appIdentifier,
+    string deviceOs,
+    string deviceModelName,
     string deviceIdentifier)
-    : DeviceParameters(deviceIdentifier)
+    : DeviceData(deviceIdentifier)
 {
     /// <summary>
     /// Application Identifier, e.g. package name on Android and the bundle identifier on iOS.
@@ -48,4 +45,6 @@ string deviceModelName,
     /// </summary>
     [JsonPropertyName("deviceModelName")]
     public string? DeviceModelName { get; set; } = deviceModelName;
+
 }
+

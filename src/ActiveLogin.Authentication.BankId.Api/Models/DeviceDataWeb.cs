@@ -16,15 +16,13 @@ namespace ActiveLogin.Authentication.BankId.Api.Models;
 /// E.g. "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0"
 /// </param>
 /// <param name="deviceIdentifier">
-/// The identifier of the device running your client.
-/// Do not use a session cookie.Use a separate cookie or the hash of one.
-/// This value should be unique to the user's browser and persist across sessions.
+/// <inheritdoc cref="DeviceData(string)" path="/param[@name='deviceIdentifier']"/>
 /// </param>
-public sealed class WebDeviceParameters(
+public sealed class DeviceDataWeb(
     string referringDomain,
     string userAgent,
     string deviceIdentifier)
-    : DeviceParameters(deviceIdentifier)
+    : DeviceData(deviceIdentifier)
 {
     /// <summary>
     /// The domain that starts the BankID app.

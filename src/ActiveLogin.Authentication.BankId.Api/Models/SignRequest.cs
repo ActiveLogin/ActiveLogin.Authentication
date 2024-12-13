@@ -36,7 +36,7 @@ public class SignRequest : Request
         string? userVisibleDataFormat = null,
         string? returnUrl = null,
         bool? returnRisk = null,
-        DeviceParameters? deviceParameters = null)
+        IBankIdEndUserDeviceData? deviceParameters = null)
         : base(endUserIp, userVisibleData, userNonVisibleData, requirement, userVisibleDataFormat, returnUrl, returnRisk, deviceParameters)
     {
     }
