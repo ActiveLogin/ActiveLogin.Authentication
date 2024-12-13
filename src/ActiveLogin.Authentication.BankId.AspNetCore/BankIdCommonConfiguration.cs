@@ -4,10 +4,12 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolvers;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserContext;
-using ActiveLogin.Authentication.BankId.Core.UserMessage;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +30,11 @@ internal static class BankIdCommonConfiguration
         services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
         services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+
+        services.AddTransient<IBankIdEndUserDeviceDataResolverFactory, BankIdDefaultEndUserDeviceDataResolverFactory>();
+        services.AddSingleton<IBankIdEndUserDeviceDataConfiguration>(new DefaultBankIdEndUserDeviceDataConfiguration());
+        services.AddTransient<IBankIdEndUserDeviceDataResolver, BankIdDefaultEndUserWebDeviceDataResolver>();
+        services.AddTransient<IBankIdDeviceDataProtector, BankIdDeviceDataProtector>();
     }
 
     public static (string name, string version) GetActiveLoginInfo()
