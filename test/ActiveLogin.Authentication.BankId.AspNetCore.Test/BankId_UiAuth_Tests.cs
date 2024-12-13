@@ -621,6 +621,8 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         return app =>
         {
             app.UseMiddleware<FakeRemoteIpAddressMiddleware>(IPAddress.Parse("192.0.2.1"));
+            app.UseMiddleware<FakeUserAgentMiddleware>(FakeUserAgentMiddleware.DefaultUserAgent);
+            app.UseMiddleware<FakeReferrerMiddleware>("https://localhost:3000");
             app.UseRouting();
 
             app.UseAuthentication();
