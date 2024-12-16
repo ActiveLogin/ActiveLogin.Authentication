@@ -10,6 +10,7 @@ using ActiveLogin.Authentication.BankId.Core.Qr;
 using ActiveLogin.Authentication.BankId.Core.Requirements;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserContext;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
@@ -31,6 +32,7 @@ public class BankIdFlowService : IBankIdFlowService
     private readonly IBankIdQrCodeGenerator _bankIdQrCodeGenerator;
     private readonly IBankIdLauncher _bankIdLauncher;
     private readonly IBankIdCertificatePolicyResolver _bankIdCertificatePolicyResolver;
+    private readonly IBankIdEndUserDeviceDataResolverFactory _bankIdEndUserDeviceDataResolverFactory;
 
     public BankIdFlowService(
         IBankIdAppApiClient bankIdAppApiClient,
@@ -44,7 +46,8 @@ public class BankIdFlowService : IBankIdFlowService
         IBankIdAuthRequestRequirementsResolver bankIdAuthRequestRequirementsResolver,
         IBankIdQrCodeGenerator bankIdQrCodeGenerator,
         IBankIdLauncher bankIdLauncher,
-        IBankIdCertificatePolicyResolver bankIdCertificatePolicyResolver
+        IBankIdCertificatePolicyResolver bankIdCertificatePolicyResolver,
+        IBankIdEndUserDeviceDataResolverFactory bankIdEndUserDeviceDataResolverFactory
     )
     {
         _bankIdAppApiClient = bankIdAppApiClient;
@@ -59,6 +62,7 @@ public class BankIdFlowService : IBankIdFlowService
         _bankIdQrCodeGenerator = bankIdQrCodeGenerator;
         _bankIdLauncher = bankIdLauncher;
         _bankIdCertificatePolicyResolver = bankIdCertificatePolicyResolver;
+        _bankIdEndUserDeviceDataResolverFactory = bankIdEndUserDeviceDataResolverFactory;
     }
 
     public async Task<BankIdFlowInitializeResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl)
@@ -103,9 +107,9 @@ public class BankIdFlowService : IBankIdFlowService
     private async Task<AuthRequest> GetAuthRequest(BankIdFlowOptions flowOptions)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
+        var deviceData = await _bankIdEndUserDeviceDataResolverFactory.GetResolver().GetDeviceDataAsync();
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
         var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
-
         var resolvedRequirements = await _bankIdAuthRequestRequirementsResolver.GetRequirementsAsync();
         var requiredPersonalIdentityNumber = resolvedRequirements.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
         var requireMrtd = resolvedRequirements.RequireMrtd ?? flowOptions.RequireMrtd;
@@ -120,7 +124,10 @@ public class BankIdFlowService : IBankIdFlowService
             requestRequirement,
             userData.UserVisibleData,
             userData.UserNonVisibleData,
-            userData.UserVisibleDataFormat
+            userData.UserVisibleDataFormat,
+            null,
+            null,
+            deviceData
         );
     }
     
@@ -166,6 +173,7 @@ public class BankIdFlowService : IBankIdFlowService
     private SignRequest GetSignRequest(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
+        var deviceData = _bankIdEndUserDeviceDataResolverFactory.GetResolver().GetDeviceData();
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
         var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
 
@@ -173,13 +181,17 @@ public class BankIdFlowService : IBankIdFlowService
         var requireMrtd = bankIdSignData.RequireMrtd ?? flowOptions.RequireMrtd;
         var requirePinCode = bankIdSignData.RequirePinCode ?? flowOptions.RequirePinCode;
         var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
+        
 
         return new SignRequest(
             endUserIp,
             bankIdSignData.UserVisibleData,
             userNonVisibleData: bankIdSignData.UserNonVisibleData,
             userVisibleDataFormat: bankIdSignData.UserVisibleDataFormat,
-            requirement: requestRequirement
+            requirement: requestRequirement,
+            returnUrl: null,
+            returnRisk: null,
+            deviceParameters: deviceData
         );
     }
 

@@ -3,10 +3,13 @@ using System.Globalization;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolvers;
 using ActiveLogin.Authentication.BankId.AzureKeyVault;
 using ActiveLogin.Authentication.BankId.AzureMonitor;
 using ActiveLogin.Authentication.BankId.Core;
-using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device.ResolverFactory;
 using ActiveLogin.Authentication.BankId.QrCoder;
 using ActiveLogin.Authentication.BankId.UaParser;
 
@@ -60,6 +63,13 @@ services
 
             options.LogDeviceIpAddress = false;
             options.LogDeviceUniqueHardwareId = false;
+        });
+
+        bankId.UseDeviceData(config =>
+        {
+            config.DeviceType = BankIdEndUserDeviceType.Web;
+            config.UseResolverFactory<BankIdDefaultEndUserDeviceDataResolverFactory>();
+            config.UseDeviceResolver<BankIdDefaultEndUserWebDeviceDataResolver>();
         });
 
         bankId.UseQrCoderQrCodeGenerator();
