@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
 
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.Core.Test.UserContext.Device;
+namespace ActiveLogin.Authentication.BankId.Core.Test.UserContext.Device.Configuration;
 public class DefaultBankIdEndUserDeviceDataConfiguration_Tests
 {
     [Fact]

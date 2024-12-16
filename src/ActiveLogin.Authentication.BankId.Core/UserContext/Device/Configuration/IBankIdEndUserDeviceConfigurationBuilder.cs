@@ -1,5 +1,3 @@
-using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
@@ -25,13 +23,21 @@ public interface IBankIdEndUserDeviceConfigurationBuilder
     void AddDeviceResolver<T>() where T : IBankIdEndUserDeviceDataResolver;
 
     /// <summary>
+    /// Add a custom resolver for resolving the device data for a specific device type,
+    /// using a factory method.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="factory"></param>
+    void AddDeviceResolver<T>(Func<IServiceProvider, T> factory) where T : IBankIdEndUserDeviceDataResolver;
+
+    /// <summary>
     /// The resolver factory to use for resolving the device data.
     /// </summary>
-    Type? ResolverFactory { get; }
+    ServiceDescriptor? ResolverFactory { get; }
 
     /// <summary>
     /// The resolvers to use for resolving the device data.
     /// </summary>
-    List<Type> Resolvers { get; }
+    IReadOnlyList<ServiceDescriptor> Resolvers { get; }
 
 }

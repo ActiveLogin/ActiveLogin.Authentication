@@ -91,7 +91,7 @@ public static class ServiceCollectionBankIdExtensions
         httpClient.DefaultRequestHeaders.UserAgent.Clear();
         httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
     }
-
+    
     private static (string name, string version) GetActiveLoginInfo()
     {
         var productName = BankIdConstants.ProductName;

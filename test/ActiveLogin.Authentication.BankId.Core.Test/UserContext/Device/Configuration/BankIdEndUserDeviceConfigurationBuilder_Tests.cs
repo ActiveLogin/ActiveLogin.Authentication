@@ -4,21 +4,15 @@ using System.Linq;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
 
-using Microsoft.Extensions.DependencyInjection;
-
-using Moq;
-
 using Xunit;
 
-namespace ActiveLogin.Authentication.BankId.Core.Test.UserContext.Device;
+namespace ActiveLogin.Authentication.BankId.Core.Test.UserContext.Device.Configuration;
 
 public class BankIdEndUserDeviceConfigurationBuilder_Tests
 {
-    private readonly IServiceCollection _serviceCollectionMock = new Mock<IServiceCollection>().Object;
-
     private IBankIdEndUserDeviceConfigurationBuilder CreateSut()
     {
-        return new BankIdEndUserDeviceConfigurationBuilder(_serviceCollectionMock);
+        return new BankIdEndUserDeviceConfigurationBuilder();
     }
 
     [Fact]
@@ -40,7 +34,7 @@ public class BankIdEndUserDeviceConfigurationBuilder_Tests
         // Act
         configurationBuilder.UseResolverFactory<FakeResolverFactory>();
         // Assert
-        Assert.Equal(typeof(FakeResolverFactory), configurationBuilder.ResolverFactory);
+        Assert.Equal(typeof(FakeResolverFactory), configurationBuilder.ResolverFactory?.ImplementationType);
     }
 
     [Fact]
@@ -62,7 +56,7 @@ public class BankIdEndUserDeviceConfigurationBuilder_Tests
         // Act
         configurationBuilder.AddDeviceResolver<FakeResolver>();
         // Assert
-        Assert.Equal(typeof(FakeResolver), configurationBuilder.Resolvers.First());
+        Assert.Equal(typeof(FakeResolver), configurationBuilder.Resolvers.First().ImplementationType);
     }
 
     [Fact]
@@ -75,5 +69,6 @@ public class BankIdEndUserDeviceConfigurationBuilder_Tests
         // Assert
         Assert.Equal("T must be a class implementing IBankIdEndUserDeviceDataResolver", exception.Message);
     }
+
 
 }

@@ -8,6 +8,12 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolv
 /// <inheritdoc cref="IBankIdEndUserDeviceDataResolver"/>
 public sealed class BankIdDefaultEndUserAppDeviceDataResolver : BankIdDefaultEndUserDeviceDataResolverBase
 {
+    public string AppIdentifier { get; init; } = string.Empty;
+    public string DeviceOs { get; init; } = string.Empty;
+    public string DeviceModelName { get; init; } = string.Empty;
+    public string DeviceIdentifier { get; init; } = string.Empty;
+
+
     public override BankIdEndUserDeviceType DeviceType => BankIdEndUserDeviceType.App;
 
     public override Task<IBankIdEndUserDeviceData> GetDeviceDataAsync()
@@ -18,14 +24,13 @@ public sealed class BankIdDefaultEndUserAppDeviceDataResolver : BankIdDefaultEnd
     public override IBankIdEndUserDeviceData GetDeviceData()
     {
         TryGetAppDeviceParameters(out var appDeviceParameters);
-        return appDeviceParameters ?? throw new DeviceDataException("Could not resolve device parameters for web device");
+        return appDeviceParameters ?? throw new DeviceDataException("Could not resolve device parameters for app device");
     }
 
     private bool TryGetAppDeviceParameters(out DeviceDataApp? parameters)
     {
-        parameters = null;
-
-        return false;
+        parameters = new DeviceDataApp(AppIdentifier, DeviceOs, DeviceModelName, DeviceIdentifier);
+        return true;
     }
 
 }

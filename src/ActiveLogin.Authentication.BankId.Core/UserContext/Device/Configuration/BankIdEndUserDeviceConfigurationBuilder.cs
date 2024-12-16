@@ -1,11 +1,9 @@
-using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
 
 /// <inheritdoc cref="IBankIdEndUserDeviceConfigurationBuilder"/>
-public class BankIdEndUserDeviceConfigurationBuilder(IServiceCollection services) : IBankIdEndUserDeviceConfigurationBuilder
+public class BankIdEndUserDeviceConfigurationBuilder : IBankIdEndUserDeviceConfigurationBuilder
 {
     public BankIdEndUserDeviceType DeviceType { get; set; } = BankIdEndUserDeviceType.Web;
 
@@ -16,7 +14,8 @@ public class BankIdEndUserDeviceConfigurationBuilder(IServiceCollection services
             throw new ArgumentException("T must be a class implementing IBankIdEndUserDeviceDataResolverFactory");
         }
 
-        ResolverFactory = typeof(T);
+        ResolverFactory = new ServiceDescriptor(typeof(IBankIdEndUserDeviceDataResolverFactory), typeof(T),
+            ServiceLifetime.Singleton);
     }
 
     public void AddDeviceResolver<T>() where T : IBankIdEndUserDeviceDataResolver
@@ -26,15 +25,22 @@ public class BankIdEndUserDeviceConfigurationBuilder(IServiceCollection services
             throw new ArgumentException("T must be a class implementing IBankIdEndUserDeviceDataResolver");
         }
 
-        Resolvers.Add(typeof(T));
+        _resolvers.Add(new ServiceDescriptor(typeof(IBankIdEndUserDeviceDataResolver), typeof(T),
+            ServiceLifetime.Scoped));
     }
 
-    public Type? ResolverFactory { get; private set; }
-
-    public List<Type> Resolvers { get; } = new();
-
-    public IServiceCollection Build()
+    public void AddDeviceResolver<T>(Func<IServiceProvider, T> factory) where T : IBankIdEndUserDeviceDataResolver
     {
-        return services;
+        _resolvers.Add(new ServiceDescriptor(
+            serviceType: typeof(IBankIdEndUserDeviceDataResolver),
+            factory: provider => factory(provider),
+            lifetime: ServiceLifetime.Scoped));
     }
+
+    public ServiceDescriptor? ResolverFactory { get; private set; }
+
+    private readonly List<ServiceDescriptor> _resolvers = new();
+
+    public IReadOnlyList<ServiceDescriptor> Resolvers => _resolvers.AsReadOnly();
+
 }
