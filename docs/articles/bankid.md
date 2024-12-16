@@ -39,6 +39,7 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
   + [Event listeners](#event-listeners)
   + [Store data on auth completion](#store-data-on-auth-completion)
   + [Resolve the end user ip](#resolve-the-end-user-ip)
+  + [Resolve the end user device data](#resolve-the-end-user-device-data)
   + [Resolve requirements on Auth request](#resolve-requirements-on-auth-request)
   + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
   + [Custom QR code generation](#custom-qr-code-generation)
@@ -968,7 +969,7 @@ services.RemoveAll(typeof(IBankIdResultStore));
 
 ### Resolve the end user ip
 
-In some scenarios, like running behind a proxy, you might want to resolve the end user IP yourself and override the default implementaion.
+In some scenarios, like running behind a proxy, you might want to resolve the end user IP yourself and override the default implementation.
 
 Either register a class implementing `IBankIdEndUserIpResolver`:
 
@@ -976,6 +977,103 @@ Either register a class implementing `IBankIdEndUserIpResolver`:
 services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
+---
+### Resolve the end user device data
+
+The User Device feature allows you to include detailed information about the end user's device in BankID authentication and signing requests. This feature improves risk evaluation and aligns with BankID's recommended implementation for risk indication.
+
+When using BankID, device information provides valuable metadata that enhances security and ensures a smoother user experience. Including the **device type** (e.g., `APP` or `WEB`) helps BankID:
+- **Evaluate risk** for each request.
+- **Take automated actions** based on high-risk scenarios (if enabled).
+- Provide **better insights** into the context of the request.
+
+#### Configuring User Device
+
+To customize the User Device feature, use the `UseDeviceData` extension in the BankID client builder. This allows you to specify the device type and any relevant metadata using resolvers.
+
+Active Login has a default implementation of the User Device feature that uses a web browser as the device type. You can customize the default implementation or create your own.
+
+The following implementation is necessary to use the User Device feature:
+- IBankIdEndUserDeviceDataResolverFactory: A factory that provides the resolvers for the device type.
+- IBankIdEndUserDeviceDataResolver: A resolver that provides the device data for the device type.
+- IBankIdEndUserDeviceDataConfiguration: A configuration that specifies the device type to use.
+
+The BankIdFlowService will automatically include the device data in the BankID request.
+
+##### Configuration examples with the default implementation
+
+*For requests initiated by av web browser:*
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseDeviceData(config =>
+        {
+            // Set the device type for the request
+            config.DeviceType = BankIdEndUserDeviceType.Web;
+
+            // Use the default resolver factory
+            config.UseResolverFactory<BankIdDefaultEndUserDeviceDataResolverFactory>();
+
+            // Add the default resolver for Web
+            config.AddDeviceResolver<BankIdDefaultEndUserWebDeviceDataResolver>();
+        });
+    });
+```
+The BankIdDefaultEndUserWebDeviceDataResolver will set a protected cookie with a
+unique identifier (DeviceIdentifier) to ensure that the identifier is persistant
+across requests.
+
+
+*For requests initiated by a mobile app:*
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseDeviceData(config =>
+        {
+            // Set the device type starting the request
+            config.DeviceType = BankIdEndUserDeviceType.App;
+
+            // Use the default resolver factory to find what device data resolvers to use
+            config.UseResolverFactory<BankIdDefaultEndUserDeviceDataResolverFactory>();
+
+            // Use the default data resolver for the device type app
+            config.AddDeviceResolver(s => new BankIdDefaultEndUserAppDeviceDataResolver()
+            {
+                // App ID or package name
+                AppIdentifier = "com.example.app",
+
+                // Device operating system
+                DeviceOs = "iOS 16.7.7",
+
+                // Device model
+                DeviceModelName = "Apple iPhone14,3",
+
+                // Unique hardware ID
+                DeviceIdentifier = "1234567890"
+            });
+
+        });
+    });
+```
+The information for the BankIdDefaultEndUserAppDeviceDataResolver has to be set during startup.
+
+#### What is included in the requests?
+
+| Device Type   | Default Resolver Implementation           | Metadata Included                           |
+|---------------|-------------------------------------------|--------------------------------------------|
+| **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | IP Address, User-Agent, Cookies, DeviceIdentifier            |
+| **App**       | `BankIdDefaultEndUserAppDeviceDataResolver` | App Identifier, Device OS, Model, DeviceIdentifier |
+
+More information is available at:
+ - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
+ - [BankID Api - Auth](https://developers.bankid.com/api-references/auth--sign/auth)
+ - [BankID Api - Sign](https://developers.bankid.com/api-references/auth--sign/sign)
+
+---
 ### Resolve requirements on Auth request
 
 If you want to set the requirements on how the authentication order must be performed dynamically for each order instead of statically during startup in `Program.cs`, it can be done by overriding the default implementation of the `IBankIdAuthRequestRequirementsResolver`.

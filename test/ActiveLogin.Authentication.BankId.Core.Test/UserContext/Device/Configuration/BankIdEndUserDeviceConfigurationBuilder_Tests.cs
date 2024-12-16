@@ -1,8 +1,9 @@
 using System;
-using System.Linq;
 
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using Xunit;
 
@@ -10,9 +11,11 @@ namespace ActiveLogin.Authentication.BankId.Core.Test.UserContext.Device.Configu
 
 public class BankIdEndUserDeviceConfigurationBuilder_Tests
 {
+    private readonly IServiceCollection _services = new ServiceCollection();
+
     private IBankIdEndUserDeviceConfigurationBuilder CreateSut()
     {
-        return new BankIdEndUserDeviceConfigurationBuilder();
+        return new BankIdEndUserDeviceConfigurationBuilder(new BankIdBuilder(_services));
     }
 
     [Fact]
@@ -34,7 +37,8 @@ public class BankIdEndUserDeviceConfigurationBuilder_Tests
         // Act
         configurationBuilder.UseResolverFactory<FakeResolverFactory>();
         // Assert
-        Assert.Equal(typeof(FakeResolverFactory), configurationBuilder.ResolverFactory?.ImplementationType);
+        var service = _services.BuildServiceProvider().GetService<IBankIdEndUserDeviceDataResolverFactory>();
+        Assert.NotNull(service);
     }
 
     [Fact]
@@ -54,9 +58,10 @@ public class BankIdEndUserDeviceConfigurationBuilder_Tests
         // Arrange
         var configurationBuilder = CreateSut();
         // Act
-        configurationBuilder.AddDeviceResolver<FakeResolver>();
+        configurationBuilder.UseDeviceResolver<FakeResolver>();
         // Assert
-        Assert.Equal(typeof(FakeResolver), configurationBuilder.Resolvers.First().ImplementationType);
+        var service = _services.BuildServiceProvider().GetService<IBankIdEndUserDeviceDataResolver>();
+        Assert.NotNull(service);
     }
 
     [Fact]
@@ -65,7 +70,7 @@ public class BankIdEndUserDeviceConfigurationBuilder_Tests
         // Arrange
         var configurationBuilder = CreateSut();
         // Act
-        var exception = Assert.Throws<ArgumentException>(() => configurationBuilder.AddDeviceResolver<IBankIdEndUserDeviceDataResolver>());
+        var exception = Assert.Throws<ArgumentException>(() => configurationBuilder.UseDeviceResolver<IBankIdEndUserDeviceDataResolver>());
         // Assert
         Assert.Equal("T must be a class implementing IBankIdEndUserDeviceDataResolver", exception.Message);
     }

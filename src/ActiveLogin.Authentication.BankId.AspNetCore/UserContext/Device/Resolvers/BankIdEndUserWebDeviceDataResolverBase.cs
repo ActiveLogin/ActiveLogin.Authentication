@@ -1,6 +1,7 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.State;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Resolvers;
 
 using Microsoft.AspNetCore.Http;
 
@@ -8,7 +9,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolv
 
 public abstract class BankIdEndUserWebDeviceDataResolverBase(
     IHttpContextAccessor httpContextAccessor,
-    IBankIdDeviceDataProtector deviceDataProtector) : BankIdDefaultEndUserDeviceDataResolverBase
+    IBankIdDeviceDataProtector deviceDataProtector) : BankIdDeviceDataResolverBase
 {
     protected HttpContext Context => httpContextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
     private const string DeviceDataCookieNameParameterName = "DeviceDataCookie.Name";

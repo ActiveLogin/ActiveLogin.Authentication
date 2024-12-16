@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolvers;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
+using ActiveLogin.Authentication.BankId.Core.UserContext.Device.ResolverFactory;
 
 using Xunit;
 

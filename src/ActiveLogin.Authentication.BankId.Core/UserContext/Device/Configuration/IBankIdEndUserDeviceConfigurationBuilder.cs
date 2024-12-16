@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
 
 public interface IBankIdEndUserDeviceConfigurationBuilder
@@ -14,13 +12,13 @@ public interface IBankIdEndUserDeviceConfigurationBuilder
     /// for the device types.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    void UseResolverFactory<T>() where T : IBankIdEndUserDeviceDataResolverFactory;
+    void UseResolverFactory<T>() where T : class, IBankIdEndUserDeviceDataResolverFactory;
 
     /// <summary>
     /// Add a custom resolver for resolving the device data for a specific device type.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    void AddDeviceResolver<T>() where T : IBankIdEndUserDeviceDataResolver;
+    void UseDeviceResolver<T>() where T : class, IBankIdEndUserDeviceDataResolver;
 
     /// <summary>
     /// Add a custom resolver for resolving the device data for a specific device type,
@@ -28,16 +26,6 @@ public interface IBankIdEndUserDeviceConfigurationBuilder
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="factory"></param>
-    void AddDeviceResolver<T>(Func<IServiceProvider, T> factory) where T : IBankIdEndUserDeviceDataResolver;
-
-    /// <summary>
-    /// The resolver factory to use for resolving the device data.
-    /// </summary>
-    ServiceDescriptor? ResolverFactory { get; }
-
-    /// <summary>
-    /// The resolvers to use for resolving the device data.
-    /// </summary>
-    IReadOnlyList<ServiceDescriptor> Resolvers { get; }
-
+    void UseDeviceResolver<T>(Func<IServiceProvider, T> factory) where T : class, IBankIdEndUserDeviceDataResolver;
+    
 }

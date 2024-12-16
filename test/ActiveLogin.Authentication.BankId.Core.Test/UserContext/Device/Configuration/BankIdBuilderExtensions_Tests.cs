@@ -68,7 +68,7 @@ public class BankIdBuilderExtensions_Tests
     }
 
     [Fact]
-    public void Builder_With_Resolvers_Set_Replaces_Old_Resolvers()
+    public void Builder_With_Resolver_Set_Replaces_Old_Resolvers()
     {
         // Arrange
         var bankIdBuilder = CreateSut(typeof(FakeResolverFactory), typeof(FakeResolver));
@@ -76,16 +76,15 @@ public class BankIdBuilderExtensions_Tests
         // Act
         var services = bankIdBuilder.UseDeviceData(config =>
         {
-            config.AddDeviceResolver<FakeResolverOne>();
-            config.AddDeviceResolver<FakeResolverTwo>();
+            config.UseDeviceResolver<FakeResolverOne>();
+            config.UseDeviceResolver<FakeResolverTwo>();
         }).Services.BuildServiceProvider();
 
         // Assert
         var resolvers = services.GetServices<IBankIdEndUserDeviceDataResolver>().ToList();
 
-        Assert.Equal(2, resolvers.Count);
-        Assert.IsType<FakeResolverOne>(resolvers[0]);
-        Assert.IsType<FakeResolverTwo>(resolvers[1]);
+        Assert.Single(resolvers);
+        Assert.IsType<FakeResolverTwo>(resolvers[0]);
     }
 
     [Fact]
@@ -98,7 +97,7 @@ public class BankIdBuilderExtensions_Tests
         bankIdBuilder.UseDeviceData(config =>
         {
             config.DeviceType = BankIdEndUserDeviceType.App;
-            config.AddDeviceResolver(_ => new FakeResolverTwo()
+            config.UseDeviceResolver(_ => new FakeResolverTwo()
             {
                 DeviceType = BankIdEndUserDeviceType.App, Data = "TestData"
             });

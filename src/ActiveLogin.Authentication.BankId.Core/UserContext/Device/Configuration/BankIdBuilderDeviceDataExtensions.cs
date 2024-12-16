@@ -12,7 +12,7 @@ public static class BankIdBuilderDeviceDataExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseDeviceData(this IBankIdBuilder bankIdBuilder, Action<IBankIdEndUserDeviceConfigurationBuilder> builder)
     {
-        var configBuilder = new BankIdEndUserDeviceConfigurationBuilder();
+        var configBuilder = new BankIdEndUserDeviceConfigurationBuilder(bankIdBuilder);
         builder(configBuilder);
 
         // Create the DeviceDataConfiguration and add it to the services
@@ -23,23 +23,7 @@ public static class BankIdBuilderDeviceDataExtensions
                 DeviceType = configBuilder.DeviceType
             },
             lifetime: ServiceLifetime.Singleton));
-
-        // ResolverFactory set, remove default resolver factory and add custom resolver factory
-        if (configBuilder.ResolverFactory != null)
-        {
-            bankIdBuilder.Services.Replace(configBuilder.ResolverFactory);
-        }
-
-        // Resolvers set, remove default resolvers and add custom resolvers
-        if (configBuilder.Resolvers.Count > 0)
-        {
-            bankIdBuilder.Services.RemoveAll<IBankIdEndUserDeviceDataResolver>();
-            foreach (var resolver in configBuilder.Resolvers)
-            {
-                bankIdBuilder.Services.Add(resolver);
-            }
-        }
-
+        
         return bankIdBuilder;
     }
 }

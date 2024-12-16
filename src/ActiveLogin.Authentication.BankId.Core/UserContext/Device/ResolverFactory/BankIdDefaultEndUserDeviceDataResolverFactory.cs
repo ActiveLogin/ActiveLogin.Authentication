@@ -1,7 +1,6 @@
-using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Exceptions;
 
-namespace ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolvers;
+namespace ActiveLogin.Authentication.BankId.Core.UserContext.Device.ResolverFactory;
 
 public sealed class BankIdDefaultEndUserDeviceDataResolverFactory(
     IBankIdEndUserDeviceDataConfiguration deviceDataConfiguration,
