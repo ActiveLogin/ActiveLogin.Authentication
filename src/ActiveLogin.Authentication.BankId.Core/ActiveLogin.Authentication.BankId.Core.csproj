@@ -6,11 +6,6 @@
         <PackageTags>bankid;swedish;sweden;aspnetcore;authentication;netstandard</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-      <Compile Remove="UserContext\Device\NewFolder\**" />
-      <EmbeddedResource Remove="UserContext\Device\NewFolder\**" />
-      <None Remove="UserContext\Device\NewFolder\**" />
-    </ItemGroup>
-    <ItemGroup>
         <None Remove="BankIdResources\BankIdApiRootCertificate-Prod.crt" />
         <None Remove="BankIdResources\BankIdApiRootCertificate-Test.crt" />
         <None Remove="BankIdResources\FPTestcert5_20240610.p12" />

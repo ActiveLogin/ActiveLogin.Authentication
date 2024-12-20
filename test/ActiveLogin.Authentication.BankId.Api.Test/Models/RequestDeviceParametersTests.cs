@@ -7,11 +7,6 @@ namespace ActiveLogin.Authentication.BankId.Api.Test.Models;
 
 public class Request_DeviceParameters_Tests
 {
-    //public class UnHandledDeviceDataClass() : DeviceData("")
-    //{
-    //    public override BankIdEndUserDeviceType BankIdEndUserDeviceType { get; } = (BankIdEndUserDeviceType)999999;
-    //}
-
     public class DeviceParameterTests : TheoryData<string, DeviceParameterTests.TestData>
     {
         private static readonly DeviceDataApp FakeBankIdEndUserAppDeviceParameters = new (
@@ -53,13 +48,6 @@ public class Request_DeviceParameters_Tests
                     request.WebDeviceParameters == FakeBankIdEndUserWebDeviceParameters // Using reference equality
             });
 
-            //Add("Should not assign unknown DeviceData to property", new TestData
-            //{
-            //    DeviceParameters = new UnHandledDeviceDataClass(),
-            //    IsTrue = request =>
-            //        request.AppDeviceParameters == null &&
-            //        request.WebDeviceParameters == null
-            //});
         }
 
         public class TestData

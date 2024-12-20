@@ -978,32 +978,55 @@ services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
 ---
-### Resolve the end user device data
+### Device data
 
-The User Device feature allows you to include detailed information about the end user's device in BankID authentication and signing requests. This feature improves risk evaluation and aligns with BankID's recommended implementation for risk indication.
+When initiating a flow with BankID, the objects "app" or "web" can be included in the request.
+The information in these two objects differs, but including either of them allows BankID to
+provide a better risk indication.
 
-When using BankID, device information provides valuable metadata that enhances security and ensures a smoother user experience. Including the **device type** (e.g., `APP` or `WEB`) helps BankID:
+When using BankID, device information provides valuable metadata that enhances security and ensures a smoother user experience.
+Including the **device type** (e.g., `APP` or `WEB`) helps BankID:
 - **Evaluate risk** for each request.
 - **Take automated actions** based on high-risk scenarios (if enabled).
 - Provide **better insights** into the context of the request.
 
-#### Configuring User Device
+#### Configuring Device Data
 
-To customize the User Device feature, use the `UseDeviceData` extension in the BankID client builder. This allows you to specify the device type and any relevant metadata using resolvers.
+Active Login has a default implementation of the User Device feature that uses a
+web browser as the device type. You can customize the default implementation or create your own.
 
-Active Login has a default implementation of the User Device feature that uses a web browser as the device type. You can customize the default implementation or create your own.
+The following service interface must be implemented to use the User Device feature:
+- `IBankIdEndUserDeviceDataResolverFactory`: Factory that provides the resolvers for the device type.
+- `IBankIdEndUserDeviceDataResolver`: Resolver that provides the device data for a given device type.
+- `IBankIdEndUserDeviceDataConfiguration`: Configuration that specifies the device type to use.
 
-The following implementation is necessary to use the User Device feature:
-- IBankIdEndUserDeviceDataResolverFactory: A factory that provides the resolvers for the device type.
-- IBankIdEndUserDeviceDataResolver: A resolver that provides the device data for the device type.
-- IBankIdEndUserDeviceDataConfiguration: A configuration that specifies the device type to use.
+#### What is included in the requests?
 
-The BankIdFlowService will automatically include the device data in the BankID request.
+| Device Type   | Default Resolver Implementation           | Metadata Included                           |
+|---------------|-------------------------------------------|--------------------------------------------|
+| **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | Referring domain, User-Agent, DeviceIdentifier            |
+| **App**       | `BankIdDefaultEndUserAppDeviceDataResolver` | App Identifier, Device OS, Model, DeviceIdentifier |
 
-##### Configuration examples with the default implementation
+The Device identifier must be identical between requests.
 
-*For requests initiated by av web browser:*
+The `BankIdDefaultEndUserWebDeviceDataResolver` will set a protected cookie named `__ActiveLogin.BankIdDeviceData` that contains
+unique identifier (DeviceIdentifier) to ensure that the identifier is persistent across requests.
 
+#### Customizing the User Device feature
+To customize the User Device feature, use the `UseDeviceData` extension in the BankID client builder.
+This allows you to specify the device type and any relevant metadata using resolvers.
+
+The BankIdFlowService will automatically include the device data in the BankID request,
+since it is dependent of the `IBankIdEndUserDeviceDataResolverFactory` service.
+
+##### Configuration examples
+
+If no configuration of the UseDeviceData has been set, the default implementation will be used.
+This implementation will set the device type to `BankIdEndUserDeviceType.Web` and use
+the `BankIdDefaultEndUserDeviceDataResolverFactory` to find the correct resolver for the device type.
+The `BankIdDefaultEndUserWebDeviceDataResolver` is used to fetch the web browser information.
+
+*If no custom implementation is made the device data defaults to this:*
 ```csharp
 services
     .AddBankId(bankId =>
@@ -1021,12 +1044,30 @@ services
         });
     });
 ```
-The BankIdDefaultEndUserWebDeviceDataResolver will set a protected cookie with a
-unique identifier (DeviceIdentifier) to ensure that the identifier is persistant
-across requests.
+
+*Custom implementation requests initiated by av web browser:*
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseDeviceData(config =>
+        {
+            // Set the device type for the request
+            config.DeviceType = BankIdEndUserDeviceType.Web;
+
+            // Use a custom resolver factory
+            // that implements IBankIdEndUserDeviceDataResolverFactory
+            config.UseResolverFactory<MyCustomResolverFactory>();
+
+            // Add a custom resolver for the device type Web
+            // that implements IBankIdEndUserDeviceDataResolver
+            config.AddDeviceResolver<MyCustomWebDeviceDataResolver>();
+        });
+    });
+```
 
 
-*For requests initiated by a mobile app:*
+*Custom implementation requests initiated by a mobile app:*
 
 ```csharp
 services
@@ -1041,6 +1082,8 @@ services
             config.UseResolverFactory<BankIdDefaultEndUserDeviceDataResolverFactory>();
 
             // Use the default data resolver for the device type app
+            // On app devices (e.g. MAUI, Xamarin, etc.) we need to set the
+            // device data manually at start
             config.AddDeviceResolver(s => new BankIdDefaultEndUserAppDeviceDataResolver()
             {
                 // App ID or package name
@@ -1061,17 +1104,11 @@ services
 ```
 The information for the BankIdDefaultEndUserAppDeviceDataResolver has to be set during startup.
 
-#### What is included in the requests?
-
-| Device Type   | Default Resolver Implementation           | Metadata Included                           |
-|---------------|-------------------------------------------|--------------------------------------------|
-| **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | IP Address, User-Agent, Cookies, DeviceIdentifier            |
-| **App**       | `BankIdDefaultEndUserAppDeviceDataResolver` | App Identifier, Device OS, Model, DeviceIdentifier |
-
-More information is available at:
+#### More information available at:
  - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
  - [BankID Api - Auth](https://developers.bankid.com/api-references/auth--sign/auth)
  - [BankID Api - Sign](https://developers.bankid.com/api-references/auth--sign/sign)
+ - [BankID Api - Payment](https://developers.bankid.com/api-references/auth--sign/payment)
 
 ---
 ### Resolve requirements on Auth request
@@ -1388,15 +1425,19 @@ We have choosen not to normalize the capitalization of the names as it´s hard o
 
 The `*.AspNetCore` package will issue a cookie to make the auth flow work
 
-The cookie is called: `__ActiveLogin.BankIdUiState`
+- Cookie: `__ActiveLogin.BankIdUiState`
+  - This cookie is there to store state during the auth process, as the user will/might be redirected during the flow. The cookie is session based only and will be deleted once the auth process is finished and/or when the user closes the browser.
+   
+  - Because it is strictly related to temp storage during auth, you should not have to inform the user about these specific cookies (according to the [EU "cookie law"](https://www.cookielaw.org/the-cookie-law/)).
+   
+  - With the current implementation (following the convention from Microsoft ASP.NET) the usage of cookies is not optional.
+  
+  - A more technical deep dive of this cookie can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
 
-The cookie is there to store state during the auth process, as the user will/might be redirected during the flow. The cookie is session based only and will be deleted once the auth process is finished and/or when the user closes the browser.
-
-Because it is strictly related to temp storage during auth, you should not have to inform the user about these specific cookies (according to the [EU "cookie law"](https://www.cookielaw.org/the-cookie-law/)).
-
-With the current implementaiton (following the convention from Microsoft ASP.NET) the usage of cookies is not optional.
-
-A more technical deep dive of the cookies can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
+- Cookie: `__ActiveLogin.BankIdDeviceData`
+  - This cookie is used to store the device data for the user, in the default implementation,
+  It is used to ensure that the device data is persistent across requests.
+  
 
 
 ### Browser support
