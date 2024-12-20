@@ -12,6 +12,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.State;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
@@ -420,6 +421,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, string.Empty, DefaultStateCookieName);
+
         var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -598,6 +600,8 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         return app =>
         {
             app.UseMiddleware<FakeRemoteIpAddressMiddleware>(IPAddress.Parse("192.0.2.1"));
+            app.UseMiddleware<FakeUserAgentMiddleware>(FakeUserAgentMiddleware.DefaultUserAgent);
+            app.UseMiddleware<FakeReferrerMiddleware>("http://localhost");
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
