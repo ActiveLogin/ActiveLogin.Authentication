@@ -2,7 +2,7 @@ using IdentityServer.ServerSample.Models;
 using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Net;
 namespace IdentityServer.ServerSample.Controllers;
 
 public class AccountController : Controller
@@ -23,7 +23,8 @@ public class AccountController : Controller
         var providers = schemes
             .Where(x => x.DisplayName != null)
             .Select(x => new ExternalProvider(x.DisplayName ?? x.Name, x.Name));
-        var viewModel = new AccountLoginViewModel(providers, returnUrl);
+        var sanitizedReturnUrl = System.Net.WebUtility.HtmlEncode(returnUrl);
+        var viewModel = new AccountLoginViewModel(providers, sanitizedReturnUrl);
 
         return View(viewModel);
     }
