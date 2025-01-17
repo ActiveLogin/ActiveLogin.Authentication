@@ -27,6 +27,8 @@ public class SignRequest : Request
     /// </param>
     /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
+    /// <param name="web">Information about the app device the end user is using.</param>
+    /// <param name="app">Information about the web browser the end user is using.</param>
     public SignRequest(
         string endUserIp,
         string userVisibleData,
@@ -34,8 +36,18 @@ public class SignRequest : Request
         Requirement? requirement = null,
         string? userVisibleDataFormat = null,
         string? returnUrl = null,
-        bool? returnRisk = null)
-        : base(endUserIp, userVisibleData, userNonVisibleData, requirement, userVisibleDataFormat, returnUrl, returnRisk)
-    {
-    }
+        bool? returnRisk = null,
+        DeviceDataWeb? web = null,
+        DeviceDataApp? app = null)
+        : base(
+            endUserIp,
+            userVisibleData,
+            userNonVisibleData,
+            requirement,
+            userVisibleDataFormat,
+            returnUrl,
+            returnRisk,
+            web: web,
+            app: app)
+    { }
 }

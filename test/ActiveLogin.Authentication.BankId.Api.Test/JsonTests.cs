@@ -44,4 +44,28 @@ internal class JsonTests
         var jsonContentNode = JsonNode.Parse(jsonContent);
         Assert.Equal("{}", jsonContentNode[expectedProperty].ToJsonString());
     }
+
+    public static void AssertPropertyIsNull(string jsonContent, string expectedProperty)
+    {
+        var jsonContentNode = JsonNode.Parse(jsonContent);
+        Assert.Null(jsonContentNode[expectedProperty]);
+    }
+
+    public static void AssertPropertyIsNotNull(string jsonContent, string expectedProperty)
+    {
+        var jsonContentNode = JsonNode.Parse(jsonContent);
+        Assert.NotNull(jsonContentNode[expectedProperty]);
+    }
+    
+    public static void AssertProperties(string contentString, Dictionary<string, string> dictionary)
+    {
+        var contentObject = JsonUtils.DeserializeAndFlatten(contentString);
+
+        foreach (var (path, expectedValue) in dictionary)
+        {
+            contentObject.TryGetValue(path, out var actualValue);
+            Assert.Equal(expectedValue, actualValue);
+        }
+    }
+
 }
