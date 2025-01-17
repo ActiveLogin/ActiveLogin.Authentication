@@ -1,18 +1,16 @@
 namespace ActiveLogin.Authentication.BankId.Api.Models;
 
 /// <summary>
-/// Sign request parameters.
+/// Payment request parameters.
 /// </summary>
-public class SignRequest : Request
+public class PaymentRequest : Request
 {
     /// <summary></summary>
     /// <param name="endUserIp">
-    /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
-    /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
-    /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    /// 
-    /// In some use cases the IP address is not available, for instance for voice based services.
-    /// In this case, the internal representation of those systems IP address is ok to use.
+    /// The user IP address as it is seen by your service.
+    /// IPv4 and IPv6 are allowed.
+    /// Make sure that the IP address you include as endUserIp is the address of your end user's device, not the internal address of any reverse proxy between you and the end user.
+    /// In use cases where the IP address is not available, e. g. for voice-based services, the internal representation of those systems' IP address is ok to use.
     /// </param>
     /// <param name="userVisibleData">
     /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
@@ -27,21 +25,32 @@ public class SignRequest : Request
     /// </param>
     /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
-    public SignRequest(
+    /// <param name="riskFlags">
+    /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
+    /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
+    /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
+    /// </param>
+    /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
+    //TODO: Add device parameters. <param name="deviceParameters">Information about the device the end user is using.</param>
+    public PaymentRequest(
         string endUserIp,
         string userVisibleData,
         byte[]? userNonVisibleData = null,
         Requirement? requirement = null,
         string? userVisibleDataFormat = null,
         string? returnUrl = null,
-        bool? returnRisk = null)
+        bool? returnRisk = null,
+        List<string>? riskFlags = null,
+        UserVisibleTransaction? userVisibleTransaction = null)
         : base(endUserIp,
             userVisibleData,
             userNonVisibleData,
             requirement,
             userVisibleDataFormat,
             returnUrl,
-            returnRisk)
+            returnRisk,
+            riskFlags,
+            userVisibleTransaction)
     {
     }
 }

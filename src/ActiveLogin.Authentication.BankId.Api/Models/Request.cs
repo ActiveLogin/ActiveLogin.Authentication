@@ -110,7 +110,13 @@ public abstract class Request
     /// </param>
     /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
-    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null)
+    /// <param name="riskFlags">
+    /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
+    /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
+    /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
+    /// </param>
+    /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
+    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, List<string>? riskFlags = null, UserVisibleTransaction? userVisibleTransaction = null)
     {
         if(this is SignRequest && userVisibleData == null)
         {
@@ -124,6 +130,8 @@ public abstract class Request
         UserVisibleDataFormat = userVisibleDataFormat;
         ReturnUrl = returnUrl;
         ReturnRisk = returnRisk;
+        RiskFlags = riskFlags;
+        UserVisibleTransaction = userVisibleTransaction; 
     }
 
     /// <summary>
@@ -181,6 +189,20 @@ public abstract class Request
     /// </summary>
     [JsonPropertyName("returnRisk"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool? ReturnRisk { get; set; }
+
+    /// <summary>
+    /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
+    /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
+    /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
+    /// </summary>
+    [JsonPropertyName("riskFlags"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public List<string>? RiskFlags { get; set; }
+
+    /// <summary>
+    /// Information about the transaction being approved.
+    /// </summary>
+    [JsonPropertyName("userVisibleTransaction"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public UserVisibleTransaction? UserVisibleTransaction { get; set; }
 
     private static string? ToBase64EncodedString(string? value)
     {
