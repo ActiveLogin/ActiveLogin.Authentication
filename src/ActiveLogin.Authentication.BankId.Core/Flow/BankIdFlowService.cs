@@ -107,7 +107,6 @@ public class BankIdFlowService : IBankIdFlowService
     private async Task<AuthRequest> GetAuthRequest(BankIdFlowOptions flowOptions)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-        var deviceData = await _bankIdEndUserDeviceDataResolverFactory.GetResolver().GetDeviceDataAsync();
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
         var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
         var resolvedRequirements = await _bankIdAuthRequestRequirementsResolver.GetRequirementsAsync();
@@ -118,6 +117,7 @@ public class BankIdFlowService : IBankIdFlowService
 
         var authRequestContext = new BankIdAuthRequestContext(endUserIp, requestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
+        var (webDeviceData, appDeviceData) = GetDeviceData();
 
         return new AuthRequest(
             endUserIp,
@@ -125,12 +125,13 @@ public class BankIdFlowService : IBankIdFlowService
             userData.UserVisibleData,
             userData.UserNonVisibleData,
             userData.UserVisibleDataFormat,
-            null,
-            null,
-            deviceData
+            returnUrl: null,
+            returnRisk: null,
+            web: webDeviceData,
+            app: appDeviceData
         );
     }
-    
+
     public async Task<BankIdFlowInitializeResult> InitializeSign(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string returnRedirectUrl)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
@@ -181,7 +182,7 @@ public class BankIdFlowService : IBankIdFlowService
         var requireMrtd = bankIdSignData.RequireMrtd ?? flowOptions.RequireMrtd;
         var requirePinCode = bankIdSignData.RequirePinCode ?? flowOptions.RequirePinCode;
         var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
-        
+        var (webDeviceData, appDeviceData) = GetDeviceData();
 
         return new SignRequest(
             endUserIp,
@@ -191,8 +192,21 @@ public class BankIdFlowService : IBankIdFlowService
             requirement: requestRequirement,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: deviceData
+            web: webDeviceData,
+            app: appDeviceData
         );
+    }
+
+    private (DeviceDataWeb?, DeviceDataApp?) GetDeviceData()
+    {
+        var deviceDataResolver = _bankIdEndUserDeviceDataResolverFactory.GetResolver();
+        var deviceData = deviceDataResolver.GetDeviceData();
+        return deviceDataResolver.DeviceType switch
+        {
+            BankIdEndUserDeviceType.Web => (deviceData as DeviceDataWeb, null),
+            BankIdEndUserDeviceType.App => (null, deviceData as DeviceDataApp),
+            _ => throw new InvalidOperationException($"Unknown device type: {deviceDataResolver.DeviceType}")
+        };
     }
 
     private List<string>? GetResolvedCertificatePolicies(BankIdFlowOptions flowOptions)
@@ -242,7 +256,7 @@ public class BankIdFlowService : IBankIdFlowService
                 {
                     throw new InvalidOperationException("Missing CompletionData from BankID API");
                 }
-                
+
                 await _bankIdEventTrigger.TriggerAsync(new BankIdCollectCompletedEvent(collectResponse.OrderRef, collectResponse.CompletionData, detectedUserDevice, flowOptions));
                 return new BankIdFlowCollectResultComplete(collectResponse.CompletionData);
             }

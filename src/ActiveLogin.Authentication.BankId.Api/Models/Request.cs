@@ -110,8 +110,10 @@ public abstract class Request
     /// </param>
     /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
-    /// <param name="deviceParameters">Information about the device the end user is using.</param>
-    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, IBankIdEndUserDeviceData? deviceParameters = null)
+    /// <param name="web">Information about the web browser the end user is using.</param>
+    /// <param name="app">Information about the App device the end user is using.</param>
+    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null,
+        DeviceDataWeb? web = null, DeviceDataApp ? app = null)
     {
         if (this is SignRequest && userVisibleData == null)
         {
@@ -125,8 +127,8 @@ public abstract class Request
         UserVisibleDataFormat = userVisibleDataFormat;
         ReturnUrl = returnUrl;
         ReturnRisk = returnRisk;
-
-        SetDeviceParameters(deviceParameters);
+        Web = web;
+        App = app;
 
     }
 
@@ -187,10 +189,10 @@ public abstract class Request
     public bool? ReturnRisk { get; set; }
 
     [JsonPropertyName("app"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public DeviceDataApp? AppDeviceParameters { get; set; }
+    public DeviceDataApp? App { get; set; }
 
     [JsonPropertyName("web"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public DeviceDataWeb? WebDeviceParameters { get; set; }
+    public DeviceDataWeb? Web { get; set; }
 
     private static string? ToBase64EncodedString(string? value)
     {
@@ -210,25 +212,6 @@ public abstract class Request
         }
 
         return Convert.ToBase64String(value);
-    }
-
-    /// <summary>
-    /// Determines the type of device parameters and sets the correct DeviceData property.
-    /// </summary>
-    /// <param name="deviceParameters"></param>
-    private void SetDeviceParameters(IBankIdEndUserDeviceData? deviceParameters)
-    {
-        switch (deviceParameters)
-        {
-            case null:
-                return;
-            case DeviceDataApp appDeviceParameters:
-                AppDeviceParameters = appDeviceParameters;
-                break;
-            case DeviceDataWeb webDeviceParameters:
-                WebDeviceParameters = webDeviceParameters;
-                break;
-        }
     }
 
 }

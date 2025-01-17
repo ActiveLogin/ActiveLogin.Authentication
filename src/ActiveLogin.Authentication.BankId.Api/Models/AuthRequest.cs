@@ -10,7 +10,7 @@ public class AuthRequest : Request
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
     /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    ///
+    /// 
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
@@ -27,7 +27,8 @@ public class AuthRequest : Request
     /// </param>
     /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
-    /// <param name="deviceParameters">Information about the device the end user is using.</param>
+    /// <param name="web">Information about the app device the end user is using.</param>
+    /// <param name="app">Information about the web browser the end user is using.</param>
     public AuthRequest(
         string endUserIp,
         Requirement? requirement = null,
@@ -36,7 +37,8 @@ public class AuthRequest : Request
         string? userVisibleDataFormat = null,
         string? returnUrl = null,
         bool? returnRisk = null,
-        IBankIdEndUserDeviceData? deviceParameters = null)
+        DeviceDataWeb? web = null,
+        DeviceDataApp? app = null)
         : base(
             endUserIp,
             userVisibleData: userVisibleData,
@@ -45,8 +47,7 @@ public class AuthRequest : Request
             userVisibleDataFormat: userVisibleDataFormat,
             returnUrl: returnUrl,
             returnRisk: returnRisk,
-            deviceParameters: deviceParameters
-        )
-    {
-    }
+            web: web,
+            app: app)
+    { }
 }

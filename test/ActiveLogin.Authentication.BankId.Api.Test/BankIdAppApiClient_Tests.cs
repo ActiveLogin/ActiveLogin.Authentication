@@ -178,7 +178,8 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new DeviceDataApp(
+            web: null,
+            app: new DeviceDataApp(
                 "appIdentifier",
                 "deviceOs",
                 "deviceModelName",
@@ -220,10 +221,11 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new DeviceDataWeb(
+            web: new DeviceDataWeb(
                 "referringDomain",
                 "userAgent",
-                "deviceIdentifier"));
+                "deviceIdentifier"),
+            app: null);
 
         //Act
         await _bankIdAppApiClient.AuthAsync(authRequest);
@@ -473,7 +475,8 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new DeviceDataApp(
+            web: null,
+            app: new DeviceDataApp(
                 "appIdentifier",
                 "deviceOs",
                 "deviceModelName",
@@ -515,10 +518,11 @@ public class BankIdAppApiClient_Tests
             userVisibleDataFormat: null,
             returnUrl: null,
             returnRisk: null,
-            deviceParameters: new DeviceDataWeb(
+            web: new DeviceDataWeb(
                 "referringDomain",
                 "userAgent",
-                "deviceIdentifier"));
+                "deviceIdentifier"),
+            app: null);
 
         //Act
         await _bankIdAppApiClient.SignAsync(authRequest);
