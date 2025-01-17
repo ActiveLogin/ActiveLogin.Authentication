@@ -15,6 +15,7 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
         writer.Write(model.SameDevice);
         writer.Write(model.RequirePinCode);
         writer.Write(model.RequireMrtd);
+        writer.Write(model.ReturnRisk);
         writer.Write(model.CancelReturnUrl);
         writer.Write(model.StateCookieName);
     }
@@ -35,6 +36,7 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
         return new BankIdUiOptions(
             certificatePolicies,
             riskLevel,
+            reader.ReadBoolean(),
             reader.ReadBoolean(),
             reader.ReadBoolean(),
             reader.ReadBoolean(),
