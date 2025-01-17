@@ -17,7 +17,7 @@
                 <a class="btn btn-primary btn-lg"
                    asp-action="ExternalLogin"
                    asp-route-provider="@provider.AuthenticationScheme"
-                   asp-route-returnUrl="@Model.ReturnUrl">
+                   asp-route-returnUrl="@Html.Raw(Model.ReturnUrl)">
                     @provider.DisplayName
                 </a>
             }
