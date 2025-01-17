@@ -183,6 +183,78 @@ public class BankIdFlowService : IBankIdFlowService
         );
     }
 
+    public async Task<BankIdFlowInitializeResult> InitializePayment(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, string returnRedirectUrl)
+    {
+        var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
+        var response = await GetPaymentResponse(flowOptions, bankIdPaymentData, detectedUserDevice);
+
+        await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
+
+        if (flowOptions.SameDevice)
+        {
+            var launchInfo = await GetBankIdLaunchInfo(returnRedirectUrl, response.AutoStartToken);
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeSameDevice(launchInfo));
+        }
+        else
+        {
+            var qrStartState = new BankIdQrStartState(
+                _bankIdFlowSystemClock.UtcNow,
+                response.QrStartToken,
+                response.QrStartSecret
+            );
+
+            var qrCodeAsBase64 = GetQrCodeAsBase64(qrStartState);
+            return new BankIdFlowInitializeResult(response, detectedUserDevice, new BankIdFlowInitializeLaunchTypeOtherDevice(qrStartState, qrCodeAsBase64));
+        }
+    }
+
+    private async Task<PaymentResponse> GetPaymentResponse(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, BankIdSupportedDevice detectedUserDevice)
+    {
+        try
+        {
+            var request = GetPaymentRequest(flowOptions, bankIdPaymentData);
+            return await _bankIdAppApiClient.PaymentAsync(request);
+        }
+        catch (BankIdApiException bankIdApiException)
+        {
+            await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeErrorEvent(personalIdentityNumber: null, bankIdApiException, detectedUserDevice, flowOptions));
+            throw;
+        }
+    }
+
+    private PaymentRequest GetPaymentRequest(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData)
+    {
+        var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
+
+        var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
+        var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
+
+        var requiredPersonalIdentityNumber = bankIdPaymentData.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
+        var requireMrtd = bankIdPaymentData.RequireMrtd ?? flowOptions.RequireMrtd;
+        var requirePinCode = bankIdPaymentData.RequirePinCode ?? flowOptions.RequirePinCode;
+        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
+
+        var returnRisk = bankIdPaymentData.ReturnRisk;
+
+        var riskFlags = GetResolvedRiskFlags(bankIdPaymentData);
+
+        return new PaymentRequest(
+            endUserIp,
+            bankIdPaymentData.UserVisibleData,
+            userNonVisibleData: bankIdPaymentData.UserNonVisibleData,
+            userVisibleDataFormat: bankIdPaymentData.UserVisibleDataFormat,
+            requirement: requestRequirement,
+            returnRisk: returnRisk,
+            riskFlags: riskFlags
+           
+        );
+
+        //TODO: Add to payment request.
+        //userVisibleTransaction
+        //device parameters app / webb
+        
+    }
+
     private List<string>? GetResolvedCertificatePolicies(BankIdFlowOptions flowOptions)
     {
         var certificatePolicies = flowOptions.CertificatePolicies;
@@ -201,6 +273,14 @@ public class BankIdFlowService : IBankIdFlowService
 
         return certificatePolicies.Select(x => _bankIdCertificatePolicyResolver.Resolve(x)).ToList();
     }
+
+    private List<string>? GetResolvedRiskFlags(BankIdPaymentData bankIdPaymentData)
+    {
+        if (bankIdPaymentData == null || bankIdPaymentData.RiskFlags == null || !bankIdPaymentData.RiskFlags.Any()) return null;
+
+        return bankIdPaymentData.RiskFlags.Select(x => x.ToString()).ToList();
+    }
+
 
     private Task<BankIdLaunchInfo> GetBankIdLaunchInfo(string redirectUrl, string autoStartToken)
     {
