@@ -174,7 +174,6 @@ public class BankIdFlowService : IBankIdFlowService
     private SignRequest GetSignRequest(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-        var deviceData = _bankIdEndUserDeviceDataResolverFactory.GetResolver().GetDeviceData();
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
         var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
 
