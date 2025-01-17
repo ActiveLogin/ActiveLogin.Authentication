@@ -1,6 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Core.Certificate;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Cryptography;
@@ -9,6 +10,7 @@ using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.ResultStore;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 public static class IBankIdBuilderExtensions
@@ -267,7 +269,44 @@ public static class IBankIdBuilderExtensions
             x => new BankIdSimulatedVerifyApiClient(givenName, surname, personalIdentityNumber)
         );
     }
-    
+
+    /// <summary>
+    /// Add simulated API errors to the BankID API client.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="errorRate">Error percentage</param>
+    /// <param name="errors">Predefined dictionary of errors (ErrorCode, Error Message)</param>
+    /// <param name="varyErrorTypes">If true, the error type will vary between requests</param>
+    /// <returns></returns>
+    public static IBankIdBuilder AddSimulatedApiErrors(this IBankIdBuilder builder,
+        double? errorRate = null,
+        Dictionary<ErrorCode, string>? errors = null,
+        bool? varyErrorTypes = null)
+    {
+        // Make sure there is only one implementation of IBankIdAppApiClient
+        switch (builder.Services.Count(s => s.ServiceType == typeof(IBankIdAppApiClient)))
+        {
+            case 0:
+                throw new InvalidOperationException("No IBankIdAppApiClient implementation found in the service collection.");
+            case > 1:
+                throw new InvalidOperationException("Multiple IBankIdAppApiClient implementations found in the service collection. Only one implementation is allowed.");
+        }
+
+        // Decorate the original service with the simulated error decorator
+        var original = builder.Services.Single(x => x.ServiceType == typeof(IBankIdAppApiClient));
+        builder.Services.Remove(original);
+        builder.Services.Add(
+            new ServiceDescriptor(original.ServiceType, (x) =>
+                {
+                    var originalServiceFactory = original.ImplementationFactory?.Invoke(x) as IBankIdAppApiClient;
+                    return new BankIdErrorSimulatedApiClientDecorator(
+                        originalServiceFactory!, errorRate, errors, varyErrorTypes);
+            },
+            original.Lifetime));
+
+        return builder;
+    }
+
     private static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Func<IServiceProvider, IBankIdAppApiClient> bankIdSimulatedAppApiClient, Func<IServiceProvider, IBankIdVerifyApiClient> bankIdSimulatedVerifyApiClient)
     {
         SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedAppApiClient.Version, BankIdSimulatedVerifyApiClient.Version);

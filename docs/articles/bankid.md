@@ -36,6 +36,7 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
   + [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
   + [Multi tenant scenario](#multi-tenant-scenario)
   + [Customize the UI](#customize-the-ui)
+  + [Simulate BankID API errors](#simulate-bankid-api-errors)
   + [Event listeners](#event-listeners)
   + [Store data on auth completion](#store-data-on-auth-completion)
   + [Resolve the end user ip](#resolve-the-end-user-ip)
@@ -790,6 +791,35 @@ If you want, you can override the UI for Auth and Sign with different templates.
 
 See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample/Areas/ActiveLogin/Views/BankIdUiAuth/_Wrapper.cshtml).
 
+### Simulate BankID API errors
+
+When developing and testing your application, it can be useful to simulate various BankID API errors to ensure your application handles them gracefully. ActiveLogin provides a way to simulate these errors in any environment.
+
+The BankIdBuilder has an extension method `AddSimulatedBankIdApiError` that can be used to simulate errors.
+The method takes the parameters:
+- `errorRate`: The rate of errors to simulate, a value between 0 and 1. For example, 0.5 will simulate an error in 50% of the requests.
+- `errors`: The errors that will be used to simulate. The errors are defined in a Dictionary with the key being an `ErrorCod e` Enum and the value being the ErrorDescription.
+- `varyErrorTypes`: If true, the error type will be varied between the errors in the list. If false, the same random error type will be used for all API calls.
+
+#### Simulated API error usage
+
+The example below will fail 20% of the API calls to BankId with either a RequestTimeout or InternalError.
+The error type will be varied between the errors.
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseSimulatedEnvironment();
+        bankId.AddSimulatedApiErrors(
+            errorRate: 0.2,
+            errors: new Dictionary<ErrorCode, string>()
+            {
+                { ErrorCode.RequestTimeout, "Timeout in API" },
+                { ErrorCode.InternalError, "Internal error in API" }
+            },
+            varyErrorTypes: true);
+    });
+```
 
 ### Event listeners
 
