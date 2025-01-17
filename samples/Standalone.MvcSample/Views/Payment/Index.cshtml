@@ -1,0 +1,42 @@
+@model Standalone.MvcSample.Models.BankIdViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Demo (Payment)";
+}
+
+<style>
+    fieldset:invalid {
+      border: 2px solid red;
+    }
+
+    fieldset:valid {
+      border: 0;
+    }
+</style>
+
+@if (Model.ExternalProviders.Any())
+{
+    <div class="choose-provider">
+        <h1 class="mb-5 mt-2 font-weight-normal">Active Payment</h1>
+
+        <form enctype="multipart/form-data" method="post">
+            <div class="d-grid gap-2">
+
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                @foreach (var provider in Model.ExternalProviders)
+                {
+                    <input type="submit" class="btn btn-primary btn-block btn-lg" asp-route-provider="@provider.BankIdScheme" value="@provider.DisplayName" />
+                }
+            </div>
+        </form>
+    </div>
+}
+
+@if (!Model.ExternalProviders.Any())
+{
+    <div class="alert alert-warning">
+        <strong>Invalid payment request</strong>
+        There are no payment schemes configured for this client.
+    </div>
+}

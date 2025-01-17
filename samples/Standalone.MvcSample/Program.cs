@@ -3,6 +3,7 @@ using System.Globalization;
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
+using ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolvers;
 using ActiveLogin.Authentication.BankId.AzureKeyVault;
 using ActiveLogin.Authentication.BankId.AzureMonitor;
@@ -107,6 +108,13 @@ services.AddBankIdSign(bankId =>
 {
     bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
     bankId.AddOtherDevice(BankIdSignDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
+});
+
+// Add Active Login - Payment
+services.AddBankIdPayment(bankId =>
+{
+    bankId.AddSameDevice(BankIdPaymentDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
+    bankId.AddOtherDevice(BankIdPaymentDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
 });
 
 // Add Authorization
