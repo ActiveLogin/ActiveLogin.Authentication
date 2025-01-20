@@ -77,7 +77,7 @@ The root CA-certificates specified in _BankID Relying Party Guidelines_ (#7 for 
 It is expected that you have a basic understanding of how [ASP.NET](https://docs.microsoft.com/en-us/aspnet/core/), [ASP.NET MVC](https://docs.microsoft.com/en-us/aspnet/core/mvc/overview) and [ASP.NET Authentication](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) works before getting started.
 
 
-Active Login is designed to make it very easy to get started with BankID, but in the end you are responsible for making sure that you are complient with the technical guidelines and/or legal agreements.
+Active Login is designed to make it very easy to get started with BankID, but in the end you are responsible for making sure that you are compliant with the technical guidelines and/or legal agreements.
 
 Therefore, before you start using Active Login, please read the documentation relevant to your needs. This will also make sure you understand the concepts better.
 
