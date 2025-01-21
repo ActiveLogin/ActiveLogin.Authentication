@@ -14,8 +14,8 @@
 
         <PackageId>$(AssemblyName)</PackageId>
 
-        <VersionPrefix>10.0.1</VersionPrefix>
-        <!--<VersionSuffix>rc-2</VersionSuffix>-->
+        <VersionPrefix>10.1.0</VersionPrefix>
+        <VersionSuffix>rc-1</VersionSuffix>
         <AssemblyVersion>10.0.0.0</AssemblyVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' == ''">$(VersionPrefix).0</FileVersion>
         <FileVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(VersionPrefix).$(BUILD_BUILDNUMBER)</FileVersion>
