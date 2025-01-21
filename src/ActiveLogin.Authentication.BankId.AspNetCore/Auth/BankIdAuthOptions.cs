@@ -40,6 +40,15 @@ public class BankIdAuthOptions : RemoteAuthenticationOptions
     public BankIdAllowedRiskLevel BankIdAllowedRiskLevel { get; set; } = BankIdAllowedRiskLevel.NoRiskLevel;
 
     /// <summary>
+    /// If this is set to true a risk indicator will be included in the collect response when the order completes.
+    /// If a risk indicator is required for the order to complete, for example, if a risk requirement is applied,
+    /// the returnRisk property is ignored, and a risk indicator is always included; otherwise a default value of
+    /// false is used. The risk indication requires that the endUserIp is correct. Please note that the assessed
+    /// risk will not be returned if the order was blocked, which may happen if a risk requirement is set.
+    /// </summary>
+    public bool BankIdReturnRisk { get; set; } = false;
+
+    /// <summary>
     /// Auto launch the BankID app on the current device.
     /// </summary>
     internal bool BankIdSameDevice { get; set; } = false;

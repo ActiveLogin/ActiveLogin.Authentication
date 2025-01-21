@@ -115,6 +115,8 @@ public class BankIdFlowService : IBankIdFlowService
         var requirePinCode = resolvedRequirements.RequirePinCode ?? flowOptions.RequirePinCode;
         var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
 
+        var returnRisk = flowOptions.ReturnRisk;
+
         var authRequestContext = new BankIdAuthRequestContext(endUserIp, requestRequirement);
         var userData = await _bankIdAuthUserDataResolver.GetUserDataAsync(authRequestContext);
         var (webDeviceData, appDeviceData) = GetDeviceData();
@@ -126,7 +128,7 @@ public class BankIdFlowService : IBankIdFlowService
             userData.UserNonVisibleData,
             userData.UserVisibleDataFormat,
             returnUrl: null,
-            returnRisk: null,
+            returnRisk: returnRisk,
             web: webDeviceData,
             app: appDeviceData
         );
@@ -181,6 +183,9 @@ public class BankIdFlowService : IBankIdFlowService
         var requireMrtd = bankIdSignData.RequireMrtd ?? flowOptions.RequireMrtd;
         var requirePinCode = bankIdSignData.RequirePinCode ?? flowOptions.RequirePinCode;
         var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
+
+        var returnRisk = flowOptions.ReturnRisk;
+
         var (webDeviceData, appDeviceData) = GetDeviceData();
 
         return new SignRequest(
@@ -190,7 +195,7 @@ public class BankIdFlowService : IBankIdFlowService
             userVisibleDataFormat: bankIdSignData.UserVisibleDataFormat,
             requirement: requestRequirement,
             returnUrl: null,
-            returnRisk: null,
+            returnRisk: returnRisk,
             web: webDeviceData,
             app: appDeviceData
         );

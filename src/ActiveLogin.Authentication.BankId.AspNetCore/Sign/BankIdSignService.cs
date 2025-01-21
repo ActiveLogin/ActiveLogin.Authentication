@@ -67,6 +67,7 @@ public class BankIdSignService : IBankIdSignService
             options.BankIdSameDevice,
             options.BankIdRequirePinCode,
             options.BankIdRequireMrtd,
+            options.BankIdReturnRisk,
             BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
             options.StateCookie.Name ?? string.Empty
         );
