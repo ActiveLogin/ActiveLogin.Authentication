@@ -123,10 +123,10 @@ public class BankIdFlowService : IBankIdFlowService
 
         return new AuthRequest(
             endUserIp,
-            requestRequirement,
-            userData.UserVisibleData,
-            userData.UserNonVisibleData,
-            userData.UserVisibleDataFormat,
+            requirement: requestRequirement,
+            userVisibleData: userData.UserVisibleData,
+            userNonVisibleData: userData.UserNonVisibleData,
+            userVisibleDataFormat: userData.UserVisibleDataFormat,
             returnUrl: null,
             returnRisk: returnRisk,
             web: webDeviceData,
@@ -270,7 +270,7 @@ public class BankIdFlowService : IBankIdFlowService
 
         return new PaymentRequest(
             endUserIp,
-            bankIdPaymentData.UserVisibleData,
+            userVisibleData: bankIdPaymentData.UserVisibleData,
             userNonVisibleData: bankIdPaymentData.UserNonVisibleData,
             userVisibleDataFormat: bankIdPaymentData.UserVisibleDataFormat,
             requirement: requestRequirement,

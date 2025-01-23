@@ -118,7 +118,7 @@ public abstract class Request
     /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
     /// </param>
     /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
-    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, DeviceDataWeb ? web = null, DeviceDataApp? app = null, List<string>? riskFlags = null, UserVisibleTransaction? userVisibleTransaction = null)
+    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, List<string>? riskFlags = null, UserVisibleTransaction? userVisibleTransaction = null, DeviceDataWeb ? web = null, DeviceDataApp? app = null)
     {
         if (this is SignRequest && userVisibleData == null)
         {

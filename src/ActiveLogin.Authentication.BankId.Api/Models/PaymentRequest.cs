@@ -31,26 +31,31 @@ public class PaymentRequest : Request
     /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
     /// </param>
     /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
-    //TODO: Add device parameters. <param name="deviceParameters">Information about the device the end user is using.</param>
+    /// <param name="web">Information about the app device the end user is using.</param>
+    /// <param name="app">Information about the web browser the end user is using.</param>
     public PaymentRequest(
         string endUserIp,
-        string userVisibleData,
-        byte[]? userNonVisibleData = null,
         Requirement? requirement = null,
+        string? userVisibleData = null,
+        byte[]? userNonVisibleData = null,
         string? userVisibleDataFormat = null,
         string? returnUrl = null,
         bool? returnRisk = null,
         List<string>? riskFlags = null,
-        UserVisibleTransaction? userVisibleTransaction = null)
+        UserVisibleTransaction? userVisibleTransaction = null,
+        DeviceDataWeb? web = null,
+        DeviceDataApp? app = null)
         : base(endUserIp,
-            userVisibleData,
-            userNonVisibleData,
-            requirement,
-            userVisibleDataFormat,
-            returnUrl,
-            returnRisk,
-            riskFlags,
-            userVisibleTransaction)
+            userVisibleData: userVisibleData,
+            userNonVisibleData: userNonVisibleData,
+            requirement: requirement,
+            userVisibleDataFormat: userVisibleDataFormat,
+            returnUrl: returnUrl,
+            returnRisk: returnRisk,
+            riskFlags: riskFlags,
+            userVisibleTransaction: userVisibleTransaction,
+            web: web,
+            app: app)
     {
     }
 }
