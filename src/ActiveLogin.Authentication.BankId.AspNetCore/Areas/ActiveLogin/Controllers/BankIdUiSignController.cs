@@ -1,9 +1,14 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
@@ -12,26 +17,31 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [Area(BankIdConstants.Routes.ActiveLoginAreaName)]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiSignController : BankIdUiControllerBase
+public class BankIdUiSignController(
+    IAntiforgery antiforgery,
+    IStringLocalizer<ActiveLoginResources> localizer,
+    IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+    IBankIdUiOptionsProtector uiOptionsProtector,
+    IBankIdInvalidStateHandler bankIdInvalidStateHandler,
+    IStateStorage<BankIdUiSignState> stateStorage
+) : BankIdUiControllerBase<BankIdUiSignState>(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler)
 {
-    public BankIdUiSignController(
-        IAntiforgery antiforgery,
-        IStringLocalizer<ActiveLoginResources> localizer,
-        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdInvalidStateHandler bankIdInvalidStateHandler,
-        IBankIdUiStateProtector bankIdUiStateProtector
-    )
-        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, bankIdUiStateProtector)
-    {
-
-    }
-
     [HttpGet]
     [AllowAnonymous]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}")]
     public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
     {
         return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, protectedUiOptions, "Init");
+    }
+
+    protected override Task<BankIdUiSignState?> GetUIState(BankIdUiOptions uiOptions)
+    {
+        var cookie = HttpContext.Request.Cookies[uiOptions.StateKeyCookieName];
+        if (cookie is null)
+        {
+            return Task.FromResult<BankIdUiSignState?>(null);
+        }
+        var stateKey = new StateKey(cookie);
+        return stateStorage.RemoveAsync(stateKey);
     }
 }

@@ -3,41 +3,24 @@ using ActiveLogin.Authentication.BankId.Core.Risk;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
-public class BankIdUiOptions
+public class BankIdUiOptions(
+    List<BankIdCertificatePolicy> certificatePolicies,
+    BankIdAllowedRiskLevel allowedRiskLevel,
+    bool sameDevice,
+    bool requirePinCode,
+    bool requireMrtd,
+    bool returnRisk,
+    string cancelReturnUrl,
+    string stateCookieName
+)
 {
-    public BankIdUiOptions(
-        List<BankIdCertificatePolicy> certificatePolicies,
-        BankIdAllowedRiskLevel allowedRiskLevel,
-        bool sameDevice,
-        bool requirePinCode,
-        bool requireMrtd,
-        bool returnRisk,
-        string cancelReturnUrl,
-        string stateCookieName)
-    {
-        CertificatePolicies = certificatePolicies;
-        AllowedRiskLevel = allowedRiskLevel;
-        SameDevice = sameDevice;
-        RequirePinCode = requirePinCode;
-        RequireMrtd = requireMrtd;
-        ReturnRisk = returnRisk;
-        CancelReturnUrl = cancelReturnUrl;
-        StateCookieName = stateCookieName;
-    }
 
-    public List<BankIdCertificatePolicy> CertificatePolicies { get; }
-
-    public bool SameDevice { get; }
-
-    public bool RequirePinCode { get; }
-
-    public bool RequireMrtd { get; }
-
-    public bool ReturnRisk { get; }
-
-    public BankIdAllowedRiskLevel AllowedRiskLevel { get; }
-
-    public string CancelReturnUrl { get; }
-
-    public string StateCookieName { get; }
+    public List<BankIdCertificatePolicy> CertificatePolicies { get; } = certificatePolicies;
+    public BankIdAllowedRiskLevel AllowedRiskLevel { get; } = allowedRiskLevel;
+    public bool SameDevice { get; } = sameDevice;
+    public bool RequirePinCode { get; } = requirePinCode;
+    public bool RequireMrtd { get; } = requireMrtd;
+    public bool ReturnRisk { get; } = returnRisk;
+    public string CancelReturnUrl { get; } = cancelReturnUrl;
+    public string StateKeyCookieName { get; } = stateCookieName;
 }

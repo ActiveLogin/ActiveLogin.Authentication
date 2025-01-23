@@ -2,33 +2,42 @@ using System.Collections.Concurrent;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 
-public class InMemoryStateStorage : IStateStorage
+public interface IStateStorage<T>
+    where T : class
 {
-    private static readonly ConcurrentDictionary<Guid, object> _storage = new();
+    Task<StateKey> WriteAsync(T value);
+    Task<T?> ReadAsync(StateKey key);
+    Task<T?> RemoveAsync(StateKey key);
+}
 
-    public ValueTask<Guid> WriteAsync(object value)
+public record struct StateKey(string Key)
+{
+    public static implicit operator string(StateKey key) => key.Key;
+};
+
+
+public class InMemoryStateStorage<T> : IStateStorage<T>
+    where T : class
+{
+    private static readonly ConcurrentDictionary<string, T> _storage = new();
+
+    public Task<StateKey> WriteAsync(T value)
     {
-        var key = Guid.NewGuid();
+        var key = Guid.NewGuid().ToString();
         _ = _storage.TryAdd(key, value);
-        return new ValueTask<Guid>(key);
+        var stateKey = new StateKey(key);
+        return Task.FromResult(stateKey);
     }
 
-    public ValueTask<T?> RemoveAsync<T>(Guid key)
+    public Task<T?> RemoveAsync(StateKey key)
     {
-        return _storage.TryRemove(key, out var value)
-            ? new ValueTask<T?>((T)value)
-            : new ValueTask<T?>(default(T));
+        _ = _storage.TryRemove(key, out var value);
+        return Task.FromResult(value);
     }
 
-    public ValueTask<bool> TryReadAsync<T>(Guid key, out T? value)
+    public Task<T?> ReadAsync(StateKey key)
     {
-        if (_storage.TryGetValue(key, out var obj))
-        {
-            value = (T)obj;
-            return new ValueTask<bool>(true);
-        }
-
-        value = default;
-        return new ValueTask<bool>(false);
+        _ = _storage.TryGetValue(key, out var value);
+        return Task.FromResult(value);
     }
 }

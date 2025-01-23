@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.AspNetCore.TestHost;
 
@@ -14,53 +15,59 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test;
 
 public abstract class BankId_Ui_Tests_Base
 {
-    private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
+    protected const string AuthStateKeyCookieName = "__ActiveLogin.BankIdAuthStateKey";
+    protected const string SignStateKeyCookieName = "__ActiveLogin.BankIdUiSignStateKey";
 
-    protected class TestBankIdAppApi : IBankIdAppApiClient
+
+    protected class TestBankIdAppApi(IBankIdAppApiClient bankIdAppApiClient) : IBankIdAppApiClient
     {
-        private readonly IBankIdAppApiClient _bankIdAppApiClient;
-
         public bool CancelAsyncIsCalled { get; private set; }
-
-        public TestBankIdAppApi(IBankIdAppApiClient bankIdAppApiClient)
-        {
-            _bankIdAppApiClient = bankIdAppApiClient;
-        }
 
         public Task<AuthResponse> AuthAsync(AuthRequest request)
         {
-            return _bankIdAppApiClient.AuthAsync(request);
+            return bankIdAppApiClient.AuthAsync(request);
         }
 
         public Task<SignResponse> SignAsync(SignRequest request)
         {
-            return _bankIdAppApiClient.SignAsync(request);
+            return bankIdAppApiClient.SignAsync(request);
         }
 
         public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
         {
-            return _bankIdAppApiClient.PhoneAuthAsync(request);
+            return bankIdAppApiClient.PhoneAuthAsync(request);
         }
 
         public Task<PhoneSignResponse> PhoneSignAsync(PhoneSignRequest request)
         {
-            return _bankIdAppApiClient.PhoneSignAsync(request);
+            return bankIdAppApiClient.PhoneSignAsync(request);
         }
 
         public Task<CollectResponse> CollectAsync(CollectRequest request)
         {
-            return _bankIdAppApiClient.CollectAsync(request);
+            return bankIdAppApiClient.CollectAsync(request);
         }
 
         public Task<CancelResponse> CancelAsync(CancelRequest request)
         {
             CancelAsyncIsCalled = true;
-            return _bankIdAppApiClient.CancelAsync(request);
+            return bankIdAppApiClient.CancelAsync(request);
         }
     }
 
-    protected async Task<HttpResponseMessage> MakeRequestWithRequiredContext(string bankIdType, string path, TestServer server, HttpContent content)
+    protected async Task<HttpResponseMessage> GetInitializeResponse(string bankIdType, TestServer server, object initializeRequestBody, params (string key, string value)[] cookies)
     {
+        var initializeRequest = new JsonContent(initializeRequestBody);
+        return await MakeRequestWithRequiredContext(bankIdType, $"/ActiveLogin/BankId/{bankIdType}/Api/Initialize", server, initializeRequest, cookies);
+    }
+
+    protected async Task<HttpResponseMessage> MakeRequestWithRequiredContext(
+        string bankIdType,
+        string path,
+        TestServer server,
+        HttpContent content,
+        params (string key, string value)[] cookies
+    ){
         var client = server.CreateClient();
 
         // Arrange state cookie
@@ -69,7 +76,7 @@ public abstract class BankId_Ui_Tests_Base
         var stateCookies = stateResponse.Headers.GetValues("set-cookie");
 
         // Arrange csrf info
-        var loginRequest = CreateRequestWithFakeStateCookie(server, $"/ActiveLogin/BankId/{bankIdType}?returnUrl=%2F&uiOptions=X&orderRef=Y");
+        var loginRequest = CreateRequestWithCookies(server, $"/ActiveLogin/BankId/{bankIdType}?returnUrl=%2F&uiOptions=X&orderRef=Y", cookies);
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var loginContent = await loginResponse.Content.ReadAsStringAsync();
@@ -87,16 +94,13 @@ public abstract class BankId_Ui_Tests_Base
         return await client.PostAsync(path, request);
     }
 
-    protected async Task<HttpResponseMessage> GetInitializeResponse(string bankIdType, TestServer server, object initializeRequestBody)
-    {
-        var initializeRequest = new JsonContent(initializeRequestBody);
-        return await MakeRequestWithRequiredContext(bankIdType, $"/ActiveLogin/BankId/{bankIdType}/Api/Initialize", server, initializeRequest);
-    }
-
-    protected static RequestBuilder CreateRequestWithFakeStateCookie(TestServer server, string path)
+    protected static RequestBuilder CreateRequestWithCookies(TestServer server, string path, params (string key, string value)[] cookies)
     {
         var request = server.CreateRequest(path);
-        request.AddHeader("Cookie", $"{DefaultStateCookieName}=TEST");
+        foreach (var (key, value) in cookies)
+        {
+            request.AddHeader("Cookie", $"{key}={value}");
+        }
         return request;
     }
 
@@ -114,5 +118,13 @@ public abstract class BankId_Ui_Tests_Base
         }
 
         return string.Empty;
+    }
+
+    protected async Task<(IStateStorage<T>, StateKey)> SetupStateStorage<T>(T state)
+        where T : Models.BankIdUiState
+    {
+        var stateStorage = new InMemoryStateStorage<T>();
+        var stateKey = await stateStorage.WriteAsync(state);
+        return (stateStorage, stateKey);
     }
 }
