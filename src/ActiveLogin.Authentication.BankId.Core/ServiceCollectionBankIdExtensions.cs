@@ -50,7 +50,7 @@ public static class ServiceCollectionBankIdExtensions
         UseUserAgentFromContext(bankIdBuilder);
 
         bankId(bankIdBuilder);
-
+        
         return services;
     }
 
@@ -75,6 +75,7 @@ public static class ServiceCollectionBankIdExtensions
         builder.AddEventListener<BankIdResultStoreEventListener>();
 
         builder.AddResultStore<BankIdResultTraceLoggerStore>();
+        
     }
 
     private static void UseUserAgentFromContext(this IBankIdBuilder builder)
@@ -91,7 +92,7 @@ public static class ServiceCollectionBankIdExtensions
         httpClient.DefaultRequestHeaders.UserAgent.Clear();
         httpClient.DefaultRequestHeaders.UserAgent.Add(productInfoHeaderValue);
     }
-
+    
     private static (string name, string version) GetActiveLoginInfo()
     {
         var productName = BankIdConstants.ProductName;

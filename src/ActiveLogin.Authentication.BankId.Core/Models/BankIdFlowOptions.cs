@@ -12,6 +12,7 @@ public class BankIdFlowOptions
         bool sameDevice,
         bool requirePinCode,
         bool requireMrtd,
+        bool requireRisk,
         PersonalIdentityNumber? requiredPersonalIdentityNumber = null)
     {
         CertificatePolicies = certificatePolicies;
@@ -19,6 +20,7 @@ public class BankIdFlowOptions
         SameDevice = sameDevice;
         RequirePinCode = requirePinCode;
         RequireMrtd = requireMrtd;
+        ReturnRisk = requireRisk;
         RequiredPersonalIdentityNumber = requiredPersonalIdentityNumber;
     }
 
@@ -29,6 +31,8 @@ public class BankIdFlowOptions
     public bool RequirePinCode { get; }
 
     public bool RequireMrtd { get; }
+
+    public bool ReturnRisk {  get; }
 
     public BankIdAllowedRiskLevel AllowedRiskLevel { get; }
 

@@ -9,6 +9,7 @@ public static class BankIdUiOptionsExtensions
         options.AllowedRiskLevel,
         options.SameDevice,
         options.RequirePinCode,
-        options.RequireMrtd
+        options.RequireMrtd,
+        options.ReturnRisk
     );
 }

@@ -11,6 +11,7 @@ public class BankIdUiOptions
         bool sameDevice,
         bool requirePinCode,
         bool requireMrtd,
+        bool returnRisk,
         string cancelReturnUrl,
         string stateCookieName)
     {
@@ -19,6 +20,7 @@ public class BankIdUiOptions
         SameDevice = sameDevice;
         RequirePinCode = requirePinCode;
         RequireMrtd = requireMrtd;
+        ReturnRisk = returnRisk;
         CancelReturnUrl = cancelReturnUrl;
         StateCookieName = stateCookieName;
     }
@@ -30,6 +32,8 @@ public class BankIdUiOptions
     public bool RequirePinCode { get; }
 
     public bool RequireMrtd { get; }
+
+    public bool ReturnRisk { get; }
 
     public BankIdAllowedRiskLevel AllowedRiskLevel { get; }
 

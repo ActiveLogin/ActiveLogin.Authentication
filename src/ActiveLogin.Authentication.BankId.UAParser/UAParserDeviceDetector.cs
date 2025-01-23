@@ -14,10 +14,10 @@ namespace ActiveLogin.Authentication.BankId.UaParser;
 /// </remarks>
 public class UAParserDeviceDetector : IBankIdSupportedDeviceDetectorByUserAgent
 {
+    private static readonly Parser parser = Parser.GetDefault();
     public BankIdSupportedDevice Detect(string userAgent)
     {
-        var uaParser = Parser.GetDefault();
-        var clientInfo = uaParser.Parse(userAgent);
+        var clientInfo = parser.Parse(userAgent);
 
         var deviceType = GetDeviceType(clientInfo);
         var deviceOs = GetDeviceOs(clientInfo);

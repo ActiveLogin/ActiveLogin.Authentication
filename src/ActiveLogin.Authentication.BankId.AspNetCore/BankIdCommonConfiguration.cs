@@ -4,10 +4,10 @@ using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserContext;
-using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +28,9 @@ internal static class BankIdCommonConfiguration
         services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
         services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+
+        services.AddDefaultDeviceData();
+
     }
 
     public static (string name, string version) GetActiveLoginInfo()

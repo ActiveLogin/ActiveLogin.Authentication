@@ -110,15 +110,17 @@ public abstract class Request
     /// </param>
     /// <param name="returnUrl">The URL to return to when the authentication order is completed.</param>
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
+    /// <param name="web">Information about the web browser the end user is using.</param>
+    /// <param name="app">Information about the App device the end user is using.</param>
     /// <param name="riskFlags">
     /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
     /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
     /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
     /// </param>
     /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
-    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, List<string>? riskFlags = null, UserVisibleTransaction? userVisibleTransaction = null)
+    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, DeviceDataWeb ? web = null, DeviceDataApp? app = null, List<string>? riskFlags = null, UserVisibleTransaction? userVisibleTransaction = null)
     {
-        if(this is SignRequest && userVisibleData == null)
+        if (this is SignRequest && userVisibleData == null)
         {
             throw new ArgumentNullException(nameof(userVisibleData));
         }
@@ -130,6 +132,9 @@ public abstract class Request
         UserVisibleDataFormat = userVisibleDataFormat;
         ReturnUrl = returnUrl;
         ReturnRisk = returnRisk;
+        Web = web;
+        App = app;
+
         RiskFlags = riskFlags;
         UserVisibleTransaction = userVisibleTransaction; 
     }
@@ -190,6 +195,12 @@ public abstract class Request
     [JsonPropertyName("returnRisk"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public bool? ReturnRisk { get; set; }
 
+    [JsonPropertyName("app"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public DeviceDataApp? App { get; set; }
+
+    [JsonPropertyName("web"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public DeviceDataWeb? Web { get; set; }
+
     /// <summary>
     /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
     /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
@@ -223,4 +234,5 @@ public abstract class Request
 
         return Convert.ToBase64String(value);
     }
+
 }
