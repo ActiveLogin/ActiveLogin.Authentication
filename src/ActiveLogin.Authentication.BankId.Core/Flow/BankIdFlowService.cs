@@ -6,6 +6,7 @@ using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.Models;
+using ActiveLogin.Authentication.BankId.Core.Payment;
 using ActiveLogin.Authentication.BankId.Core.Qr;
 using ActiveLogin.Authentication.BankId.Core.Requirements;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
@@ -256,6 +257,13 @@ public class BankIdFlowService : IBankIdFlowService
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
 
+        var transactionType = bankIdPaymentData.TransactionType;
+        var recipientName = bankIdPaymentData.RecipientName;
+        var recipient = new Recipient(recipientName);
+        var money = bankIdPaymentData.Money;
+        var riskWarning = bankIdPaymentData.RiskWarning;
+        var userVisibleTransaction = new UserVisibleTransaction(transactionType.ToString(), recipient, money, riskWarning);
+
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
         var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
 
@@ -266,23 +274,23 @@ public class BankIdFlowService : IBankIdFlowService
 
         var returnRisk = bankIdPaymentData.ReturnRisk;
 
-        var riskFlags = GetResolvedRiskFlags(bankIdPaymentData);
+        var riskFlags = GetResolvedRiskFlags(bankIdPaymentData.RiskFlags);
+
+        var (webDeviceData, appDeviceData) = GetDeviceData();
 
         return new PaymentRequest(
             endUserIp,
+            userVisibleTransaction,
             userVisibleData: bankIdPaymentData.UserVisibleData,
             userNonVisibleData: bankIdPaymentData.UserNonVisibleData,
             userVisibleDataFormat: bankIdPaymentData.UserVisibleDataFormat,
             requirement: requestRequirement,
             returnRisk: returnRisk,
-            riskFlags: riskFlags
-           
+            returnUrl: null,
+            riskFlags: riskFlags,
+            app: appDeviceData,
+            web: webDeviceData
         );
-
-        //TODO: Add to payment request.
-        //userVisibleTransaction
-        //device parameters app / webb
-        
     }
 
     private List<string>? GetResolvedCertificatePolicies(BankIdFlowOptions flowOptions)
@@ -304,11 +312,11 @@ public class BankIdFlowService : IBankIdFlowService
         return certificatePolicies.Select(x => _bankIdCertificatePolicyResolver.Resolve(x)).ToList();
     }
 
-    private List<string>? GetResolvedRiskFlags(BankIdPaymentData bankIdPaymentData)
+    private List<string>? GetResolvedRiskFlags(IEnumerable<RiskFlags>? riskFlags)
     {
-        if (bankIdPaymentData == null || bankIdPaymentData.RiskFlags == null || !bankIdPaymentData.RiskFlags.Any()) return null;
+        if (riskFlags == null || !riskFlags.Any()) return null;
 
-        return bankIdPaymentData.RiskFlags.Select(x => x.ToString()).ToList();
+        return riskFlags.Select(x => x.ToString()).ToList();
     }
 
 

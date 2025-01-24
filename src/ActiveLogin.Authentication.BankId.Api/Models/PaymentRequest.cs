@@ -12,6 +12,7 @@ public class PaymentRequest : Request
     /// Make sure that the IP address you include as endUserIp is the address of your end user's device, not the internal address of any reverse proxy between you and the end user.
     /// In use cases where the IP address is not available, e. g. for voice-based services, the internal representation of those systems' IP address is ok to use.
     /// </param>
+    /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
     /// <param name="userVisibleData">
     /// The text to be displayed and signed. The text can be formatted using CR, LF and CRLF for new lines.
     /// </param>
@@ -30,11 +31,11 @@ public class PaymentRequest : Request
     /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
     /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
     /// </param>
-    /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
     /// <param name="web">Information about the app device the end user is using.</param>
     /// <param name="app">Information about the web browser the end user is using.</param>
     public PaymentRequest(
         string endUserIp,
+        UserVisibleTransaction userVisibleTransaction,
         Requirement? requirement = null,
         string? userVisibleData = null,
         byte[]? userNonVisibleData = null,
@@ -42,7 +43,6 @@ public class PaymentRequest : Request
         string? returnUrl = null,
         bool? returnRisk = null,
         List<string>? riskFlags = null,
-        UserVisibleTransaction? userVisibleTransaction = null,
         DeviceDataWeb? web = null,
         DeviceDataApp? app = null)
         : base(endUserIp,
