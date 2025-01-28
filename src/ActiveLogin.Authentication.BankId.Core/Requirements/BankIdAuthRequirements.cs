@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.BankId.Core.Requirements;
@@ -21,4 +22,6 @@ public class BankIdAuthRequirements
     /// Users are required to confirm the order with their security code even if they have biometrics activated.
     /// </summary>
     public bool? RequirePinCode { get; set; }
+
+    public CardReader? CardReader { get; set; }
 }

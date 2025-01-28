@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.BankId.Core.Models;
@@ -17,6 +18,7 @@ public class BankIdSignData
     public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; set; }
     public bool? RequireMrtd { get; set; }
     public bool? RequirePinCode { get; set; }
+    public CardReader? CardReader { get; set; }
 
     public IDictionary<string, string?> Items { get; set; } = new Dictionary<string, string?>();
 }

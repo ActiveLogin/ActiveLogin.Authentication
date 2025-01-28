@@ -69,7 +69,8 @@ public class BankIdSignService : IBankIdSignService
             options.BankIdRequireMrtd,
             options.BankIdReturnRisk,
             BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
-            options.StateCookie.Name ?? string.Empty
+            options.StateCookie.Name ?? string.Empty,
+            options.CardReader
         );
 
         var signUrl = GetUiInitUrl(httpContext, callbackPath, uiOptions);

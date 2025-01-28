@@ -165,7 +165,8 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             Options.BankIdRequireMrtd,
             Options.BankIdReturnRisk,
             BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
-            Options.StateCookie.Name ?? string.Empty
+            Options.StateCookie.Name ?? string.Empty,
+            Options.CardReader
         );
 
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
