@@ -33,24 +33,16 @@ public class BankIdAuthHandler(
     IBankIdEventTrigger bankIdEventTrigger,
     IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
     IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers,
-    IStateStorage<BankIdUiAuthState> stateStorage
+    IStateStorage stateStorage
 ) : RemoteAuthenticationHandler<BankIdAuthOptions>(options, loggerFactory, encoder)
 {
     private const string StateCookieNameParameterName = "StateCookie.Name";
     private readonly PathString _authPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
-
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly IAntiforgery _antiforgery = antiforgery;
-    private readonly IBankIdUiOptionsProtector _uiOptionsProtector = uiOptionsProtector;
-    private readonly IBankIdUiResultProtector _uiResultProtector = uiResultProtector;
-    private readonly IBankIdEventTrigger _bankIdEventTrigger = bankIdEventTrigger;
-    private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
-    private readonly IStateStorage<BankIdUiAuthState> _stateStorage = stateStorage;
-    private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers = bankIdClaimsTransformers.ToList();
+    private readonly List<IBankIdClaimsTransformer> bankIdClaimsTransformers = bankIdClaimsTransformers.ToList();
 
     protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
     {
-        var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
+        var detectedDevice = bankIdSupportedDeviceDetector.Detect();
 
         var state = await GetStateFromCookie();
         if (state == null)
@@ -66,8 +58,8 @@ public class BankIdAuthHandler(
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidUiResult);
         }
 
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
-        await _antiforgery.ValidateRequestAsync(httpContext);
+        var httpContext = httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
+        await antiforgery.ValidateRequestAsync(httpContext);
 
         var protectedUiResult = Request.Form[BankIdConstants.FormParameters.UiResult];
         if (StringValues.IsNullOrEmpty(protectedUiResult))
@@ -75,7 +67,7 @@ public class BankIdAuthHandler(
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
         }
 
-        var uiResult = _uiResultProtector.Unprotect(protectedUiResult.ToString());
+        var uiResult = uiResultProtector.Unprotect(protectedUiResult.ToString());
         if (!uiResult.IsSuccessful)
         {
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice);
@@ -84,7 +76,7 @@ public class BankIdAuthHandler(
         var properties = state.AuthenticationProperties;
         var ticket = await GetAuthenticationTicket(uiResult, properties);
 
-        await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
+        await bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateSuccessEvent(
             PersonalIdentityNumber.Parse(uiResult.PersonalIdentityNumber),
             detectedDevice
         ));
@@ -94,7 +86,7 @@ public class BankIdAuthHandler(
 
     private async Task<HandleRequestResult> HandleRemoteAuthenticateFail(string reason, BankIdSupportedDevice detectedDevice)
     {
-        await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateFailureEvent(reason, detectedDevice));
+        await bankIdEventTrigger.TriggerAsync(new BankIdAspNetAuthenticateFailureEvent(reason, detectedDevice));
 
         return HandleRequestResult.Fail(reason);
     }
@@ -134,7 +126,7 @@ public class BankIdAuthHandler(
             uiAuthResult.GetCompletionData()
         );
 
-        foreach (var transformer in _bankIdClaimsTransformers)
+        foreach (var transformer in bankIdClaimsTransformers)
         {
             await transformer.TransformClaims(context);
         }
@@ -157,8 +149,8 @@ public class BankIdAuthHandler(
             Options.StateCookie.Name ?? string.Empty
         );
 
-        var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
-        await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
+        var detectedDevice = bankIdSupportedDeviceDetector.Detect();
+        await bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
 
         var loginUrl = GetInitUiUrl(uiOptions);
         Response.Redirect(loginUrl);
@@ -169,7 +161,7 @@ public class BankIdAuthHandler(
         var pathBase = Context.Request.PathBase;
         var authUrl = pathBase.Add(_authPath);
         var returnUrl = pathBase.Add(Options.CallbackPath);
-        var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
+        var protectedUiOptions = uiOptionsProtector.Protect(uiOptions);
 
         var queryBuilder = new QueryBuilder(new Dictionary<string, string>
         {
@@ -190,7 +182,7 @@ public class BankIdAuthHandler(
         }
 
         var state = new BankIdUiAuthState(properties);
-        var stateKey = await _stateStorage.WriteAsync(state);
+        var stateKey = await stateStorage.WriteAsync(state);
 
         var cookieOptions = Options.StateCookie.Build(Context, Options.TimeProvider.GetUtcNow());
         Response.Cookies.Append(Options.StateCookie.Name, stateKey, cookieOptions);
@@ -206,7 +198,7 @@ public class BankIdAuthHandler(
             return Task.FromResult<BankIdUiAuthState?>(null);
         }
 
-        return _stateStorage.ReadAsync(new(stateKey));
+        return stateStorage.ReadAsync<BankIdUiAuthState>(new(stateKey));
     }
 
     private void DeleteStateCookie()

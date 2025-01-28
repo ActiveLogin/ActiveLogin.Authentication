@@ -23,7 +23,7 @@ public class BankIdSignService(
     IAntiforgery antiforgery,
     IOptionsSnapshot<BankIdSignOptions> optionsSnapshot,
     IBankIdFlowSystemClock systemClock,
-    IStateStorage<BankIdUiSignState> bankIdStateStorage,
+    IStateStorage bankIdStateStorage,
     IBankIdUiOptionsProtector uiOptionsProtector,
     IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
     IBankIdEventTrigger bankIdEventTrigger,
@@ -33,21 +33,10 @@ public class BankIdSignService(
     private const string StateCookieNameParameterName = "StateCookie.Name";
     private readonly PathString _signInitPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}");
 
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly IAntiforgery _antiforgery = antiforgery;
-
-    private readonly IOptionsSnapshot<BankIdSignOptions> _optionsSnapshot = optionsSnapshot;
-    private readonly IBankIdFlowSystemClock _systemClock = systemClock;
-    private readonly IStateStorage<BankIdUiSignState> _bankIdStateStorage = bankIdStateStorage;
-    private readonly IBankIdUiResultProtector _uiResultProtector = uiResultProtector;
-    private readonly IBankIdUiOptionsProtector _uiOptionsProtector = uiOptionsProtector;
-    private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
-    private readonly IBankIdEventTrigger _bankIdEventTrigger = bankIdEventTrigger;
-
     public async Task InitiateSignAsync(BankIdSignProperties properties, string callbackPath, string configKey)
     {
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
-        var options = _optionsSnapshot.Get(configKey);
+        var httpContext = httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
+        var options = optionsSnapshot.Get(configKey);
 
         var stateKey = await SaveState(properties, configKey);
         AppendCookie(httpContext, stateKey, options);
@@ -72,24 +61,24 @@ public class BankIdSignService(
     {
         Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
 
-        var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
+        var cookieOptions = options.StateCookie.Build(httpContext, systemClock.UtcNow);
         httpContext.Response.Cookies.Append(options.StateCookie.Name, key, cookieOptions);
     }
 
     public async Task<BankIdSignResult?> GetSignResultAsync(string configKey)
     {
         Validators.ThrowIfNullOrWhitespace(configKey, nameof(configKey));
-        var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
+        var detectedDevice = bankIdSupportedDeviceDetector.Detect();
 
-        var options = _optionsSnapshot.Get(configKey);
+        var options = optionsSnapshot.Get(configKey);
         Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
 
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
+        var httpContext = httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
         var signState = await GetState(httpContext, options.StateCookie.Name);
 
         if (signState == null)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice));
+            await bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice));
             throw new ArgumentException(BankIdConstants.ErrorMessages.StateNotFound);
         }
 
@@ -102,27 +91,27 @@ public class BankIdSignService(
 
         if (!httpContext.Request.HasFormContentType)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
+            await bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidUiResult);
         }
 
-        await _antiforgery.ValidateRequestAsync(httpContext);
+        await antiforgery.ValidateRequestAsync(httpContext);
 
         var protectedUiResult = httpContext.Request.Form[BankIdConstants.FormParameters.UiResult];
         if (StringValues.IsNullOrEmpty(protectedUiResult))
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
+            await bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
             return new BankIdSignResult(false, signState.BankIdSignProperties);
         }
 
-        var uiResult = _uiResultProtector.Unprotect(protectedUiResult.ToString());
+        var uiResult = uiResultProtector.Unprotect(protectedUiResult.ToString());
         if (!uiResult.IsSuccessful)
         {
-            await _bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
+            await bankIdEventTrigger.TriggerAsync(new BankIdSignFailureEvent(BankIdConstants.ErrorMessages.InvalidUiResult, detectedDevice));
             return new BankIdSignResult(false, signState.BankIdSignProperties);
         }
 
-        await _bankIdEventTrigger.TriggerAsync(new BankIdSignSuccessEvent(
+        await bankIdEventTrigger.TriggerAsync(new BankIdSignSuccessEvent(
             PersonalIdentityNumber.Parse(uiResult.PersonalIdentityNumber),
             detectedDevice
         ));
@@ -138,7 +127,7 @@ public class BankIdSignService(
         var pathBase = httpContext.Request.PathBase;
         var signUrl = pathBase.Add(_signInitPath);
 
-        var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
+        var protectedUiOptions = uiOptionsProtector.Protect(uiOptions);
 
         var queryBuilder = QueryStringGenerator.ToQueryString(
             new Dictionary<string, string>
@@ -159,20 +148,20 @@ public class BankIdSignService(
         }
 
         var stateKey = new StateKey(cookie);
-        return _bankIdStateStorage.RemoveAsync(stateKey);
+        return bankIdStateStorage.RemoveAsync<BankIdUiSignState>(stateKey);
     }
 
     private Task<StateKey> SaveState(BankIdSignProperties properties, string configKey)
     {
         var state = new BankIdUiSignState(configKey, properties);
-        return _bankIdStateStorage.WriteAsync(state);
+        return bankIdStateStorage.WriteAsync(state);
     }
 
     private void DeleteCookie(HttpContext httpContext, BankIdSignOptions options)
     {
         Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
 
-        var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
+        var cookieOptions = options.StateCookie.Build(httpContext, systemClock.UtcNow);
         httpContext.Response.Cookies.Delete(options.StateCookie.Name, cookieOptions);
     }
 }

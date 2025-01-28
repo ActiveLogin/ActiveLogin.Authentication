@@ -20,7 +20,8 @@ public abstract class BankIdUiControllerBase<T>(
     IStringLocalizer<ActiveLoginResources> localizer,
     IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
     IBankIdUiOptionsProtector uiOptionsProtector,
-    IBankIdInvalidStateHandler bankIdInvalidStateHandler
+    IBankIdInvalidStateHandler bankIdInvalidStateHandler,
+    IStateStorage stateStorage
 ) : Controller
     where T : BankIdUiState
 {
@@ -30,7 +31,16 @@ public abstract class BankIdUiControllerBase<T>(
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector = uiOptionsProtector;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
 
-    protected abstract Task<T?> GetUIState(BankIdUiOptions uiOptions);
+    protected async Task<T?> GetUIState(BankIdUiOptions uiOptions)
+    {
+        var cookie = HttpContext.Request.Cookies[uiOptions.StateKeyCookieName];
+        if (cookie is null)
+        {
+            return default;
+        }
+        var stateKey = new StateKey(cookie);
+        return await stateStorage.RemoveAsync(stateKey) as T;
+    }
 
     protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string protectedUiOptions, string viewName)
     {

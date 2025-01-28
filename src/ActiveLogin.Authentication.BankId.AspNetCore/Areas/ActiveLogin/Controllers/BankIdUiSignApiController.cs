@@ -28,7 +28,7 @@ public class BankIdUiSignApiController(
     IBankIdUserMessage bankIdUserMessage,
     IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
     IBankIdUiResultProtector uiAuthResultProtector,
-    IStateStorage<BankIdUiSignState> stateStorage
+    IStateStorage stateStorage
 ) : BankIdUiApiControllerBase(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
 {
     [ValidateAntiForgeryToken]
@@ -106,6 +106,6 @@ public class BankIdUiSignApiController(
         }
 
         var stateKey = new StateKey(cookie);
-        return stateStorage.ReadAsync(stateKey);
+        return stateStorage.ReadAsync<BankIdUiSignState>(stateKey);
     }
 }

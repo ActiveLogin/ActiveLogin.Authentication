@@ -2,16 +2,10 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
-public class BankIdUiSignState : BankIdUiState
+public class BankIdUiSignState(string configKey, BankIdSignProperties bankIdSignProperties) : BankIdUiState
 {
     public override BankIdStateType Type => BankIdStateType.Sign;
 
-    public BankIdUiSignState(string configKey, BankIdSignProperties bankIdSignProperties)
-    {
-        ConfigKey = configKey;
-        BankIdSignProperties = bankIdSignProperties;
-    }
-
-    public string ConfigKey { get; set; }
-    public BankIdSignProperties BankIdSignProperties { get; set; }
+    public string ConfigKey { get; set; } = configKey;
+    public BankIdSignProperties BankIdSignProperties { get; set; } = bankIdSignProperties;
 }

@@ -22,24 +22,13 @@ public class BankIdUiAuthController(
     IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
     IBankIdUiOptionsProtector uiOptionsProtector,
     IBankIdInvalidStateHandler bankIdInvalidStateHandler,
-    IStateStorage<BankIdUiAuthState> stateStorage
-) : BankIdUiControllerBase<BankIdUiAuthState>(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler)
+    IStateStorage stateStorage
+) : BankIdUiControllerBase<BankIdUiAuthState>(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, stateStorage)
 {
     [HttpGet]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}")]
     public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
     {
         return Initialize(returnUrl, BankIdConstants.Routes.BankIdAuthApiControllerName, protectedUiOptions, "Init");
-    }
-
-    protected override Task<BankIdUiAuthState?> GetUIState(BankIdUiOptions uiOptions)
-    {
-        var cookie = HttpContext.Request.Cookies[uiOptions.StateKeyCookieName];
-        if (cookie is null)
-        {
-            return Task.FromResult<BankIdUiAuthState?>(null);
-        }
-        var stateKey = new StateKey(cookie);
-        return stateStorage.RemoveAsync(stateKey);
     }
 }

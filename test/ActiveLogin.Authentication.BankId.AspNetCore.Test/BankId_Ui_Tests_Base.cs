@@ -120,10 +120,10 @@ public abstract class BankId_Ui_Tests_Base
         return string.Empty;
     }
 
-    protected async Task<(IStateStorage<T>, StateKey)> SetupStateStorage<T>(T state)
+    protected async Task<(IStateStorage, StateKey)> SetupStateStorage<T>(T state)
         where T : Models.BankIdUiState
     {
-        var stateStorage = new InMemoryStateStorage<T>();
+        var stateStorage = new InMemoryStateStorage();
         var stateKey = await stateStorage.WriteAsync(state);
         return (stateStorage, stateKey);
     }

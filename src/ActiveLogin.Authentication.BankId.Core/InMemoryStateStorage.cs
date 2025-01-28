@@ -2,26 +2,11 @@ using System.Collections.Concurrent;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 
-public interface IStateStorage<T>
-    where T : class
+public class InMemoryStateStorage : IStateStorage
 {
-    Task<StateKey> WriteAsync(T value);
-    Task<T?> ReadAsync(StateKey key);
-    Task<T?> RemoveAsync(StateKey key);
-}
+    private static readonly ConcurrentDictionary<string, object> _storage = new();
 
-public record struct StateKey(string Key)
-{
-    public static implicit operator string(StateKey key) => key.Key;
-};
-
-
-public class InMemoryStateStorage<T> : IStateStorage<T>
-    where T : class
-{
-    private static readonly ConcurrentDictionary<string, T> _storage = new();
-
-    public Task<StateKey> WriteAsync(T value)
+    public Task<StateKey> WriteAsync(object value)
     {
         var key = Guid.NewGuid().ToString();
         _ = _storage.TryAdd(key, value);
@@ -29,13 +14,13 @@ public class InMemoryStateStorage<T> : IStateStorage<T>
         return Task.FromResult(stateKey);
     }
 
-    public Task<T?> RemoveAsync(StateKey key)
+    public Task<object?> RemoveAsync(StateKey key)
     {
         _ = _storage.TryRemove(key, out var value);
         return Task.FromResult(value);
     }
 
-    public Task<T?> ReadAsync(StateKey key)
+    public Task<object?> ReadAsync(StateKey key)
     {
         _ = _storage.TryGetValue(key, out var value);
         return Task.FromResult(value);
