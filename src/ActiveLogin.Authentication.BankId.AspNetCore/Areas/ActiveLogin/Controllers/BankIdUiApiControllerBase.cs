@@ -76,7 +76,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
         catch (BankIdApiException bankIdApiException)
         {
             var errorStatusMessage = GetBankIdApiExceptionStatusMessage(bankIdApiException);
-            return BadRequestJsonResult(new BankIdUiApiErrorResponse(errorStatusMessage));
+            return OkJsonResult(BankIdUiApiStatusResponse.Retry(errorStatusMessage));
         }
 
         switch(result)
@@ -127,7 +127,15 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
         var orderRef = OrderRefProtector.Unprotect(request.OrderRef);
         var uiOptions = UiOptionsProtector.Unprotect(request.UiOptions);
 
-        await BankIdFlowService.Cancel(orderRef.OrderRef, uiOptions.ToBankIdFlowOptions());
+        try
+        {
+            await BankIdFlowService.Cancel(orderRef.OrderRef, uiOptions.ToBankIdFlowOptions());
+        }
+        catch (BankIdApiException bankIdApiException)
+        {
+            var errorStatusMessage = GetBankIdApiExceptionStatusMessage(bankIdApiException);
+            return OkJsonResult(BankIdUiApiStatusResponse.Retry(errorStatusMessage));
+        }
 
         return OkJsonResult(BankIdUiCancelResponse.Cancelled());
     }

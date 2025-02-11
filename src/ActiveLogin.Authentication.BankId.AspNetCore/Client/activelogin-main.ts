@@ -210,6 +210,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 if (!flowIsCancelledByUser) {
                     showErrorStatus(error.message);
                     hide(startBankIdAppButtonElement);
+                    showRetryLink();
                 }
                 hide(qrCodeElement);
             });
@@ -252,6 +253,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 if (!flowIsCancelledByUser) {
                     showErrorStatus(error.message);
                     hide(startBankIdAppButtonElement);
+                    showRetryLink();
                 }
                 hide(qrCodeElement);
             })
@@ -282,6 +284,19 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             .finally(() => {
                 window.location.href = cancelReturnUrl;
             });
+    }
+
+    function showRetryLink() {
+        const retryLink = document.createElement("a");
+        retryLink.href = "javascript:void(0)";
+        retryLink.innerText = "Try again";
+        retryLink.addEventListener("click", () => {
+            resetUi();
+            login();
+        });
+
+        statusMessageElement.appendChild(document.createElement("br"));
+        statusMessageElement.appendChild(retryLink);
     }
 
     // Helpers
