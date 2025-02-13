@@ -3,6 +3,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
@@ -133,6 +134,19 @@ public abstract class BankIdUiControllerBase : Controller
             {
                 LocalizedPageHeader = _localizer["Sign_Header"],
                 LocalizedPageTitle = _localizer["Sign_Title"],
+
+                LocalizedStartAppButtonText = localizedStartAppButtonText,
+                LocalizedCancelButtonText = localizedCancelButtonText,
+                LocalizedQrCodeImageAltText = localizedQrCodeImageAltText
+            };
+        }
+
+        if (uiState is BankIdUiPaymentState paymentState)
+        {
+            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState)
+            {
+                LocalizedPageHeader = _localizer["Payment_Header"],
+                LocalizedPageTitle = _localizer["Payment_Title"],
 
                 LocalizedStartAppButtonText = localizedStartAppButtonText,
                 LocalizedCancelButtonText = localizedCancelButtonText,
