@@ -48,7 +48,20 @@ public class PaymentController : Controller
         ArgumentNullException.ThrowIfNull(model, nameof(model));
 
         var recipientName = "Demo Merchant Name";
-        var props = new BankIdPaymentProperties(TransactionType.card, recipientName) { };
+        var amount = "100,00";
+        var currency = "SEK";
+        var props = new BankIdPaymentProperties(TransactionType.card, recipientName)
+        {
+            Money = new(amount, currency),
+            Items =
+            {
+                {"scheme", provider},
+                {"transactionType", nameof(TransactionType.card)},
+                {"recipientName", recipientName},
+                {"amount", amount},
+                {"currency", currency}
+            },
+        };
 
         var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
         return this.BankIdInitiatePayment(props, returnPath, provider);
@@ -69,7 +82,9 @@ public class PaymentController : Controller
             result.BankIdCompletionData.User.Name,
             result.BankIdCompletionData.Device.IpAddress,
             result.Properties.Items["transactionType"] ?? string.Empty,
-            result.Properties.Items["recipientName"] ?? string.Empty
+            result.Properties.Items["recipientName"] ?? string.Empty,
+            result.Properties.Items["amount"] ?? null,
+            result.Properties.Items["currency"] ?? null
             )
         );
     }

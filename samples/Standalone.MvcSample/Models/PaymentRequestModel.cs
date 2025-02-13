@@ -5,7 +5,4 @@ public class PaymentRequestModel
 {
     public string ReturnUrl { get; set; }
 
-    public string TransactionType { get; set; }
-
-    public string RecipientName { get; set; }
 }

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Result (Payment)";
 }
 
-<h2 class="h4 m2-1 mt-5 text-center">Document signed!</h2>
+<h2 class="h4 m2-1 mt-5 text-center">Payment Complete</h2>
 <div class="card">
     <div class="card-body">
         <dl>
@@ -14,7 +14,16 @@
             <dt>Recipient</dt>
             <dd>@Model.RecipientName</dd>
 
-            <dt>Name of signee</dt>
+            @if (Model.Amount != null && Model.Currency != null)
+            {
+                <dt>Amount</dt>
+                <dd>@Model.Amount</dd>
+
+                <dt>Currency</dt>
+                <dd>@Model.Currency</dd>
+            }
+
+            <dt>Name of payer</dt>
             <dd>@Model.Name</dd>
 
             <dt>Personal identity number</dt>
