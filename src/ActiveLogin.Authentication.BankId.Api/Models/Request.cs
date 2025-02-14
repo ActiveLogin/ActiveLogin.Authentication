@@ -125,6 +125,11 @@ public abstract class Request
             throw new ArgumentNullException(nameof(userVisibleData));
         }
 
+        if (this is PaymentRequest && userVisibleTransaction == null)
+        {
+            throw new ArgumentNullException(nameof(userVisibleTransaction));
+        }
+
         EndUserIp = endUserIp ?? throw new ArgumentNullException(nameof(endUserIp));
         UserVisibleData = ToBase64EncodedString(userVisibleData);
         UserNonVisibleData = ToBase64EncodedString(userNonVisibleData);
