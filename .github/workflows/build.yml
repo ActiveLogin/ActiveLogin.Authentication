@@ -32,11 +32,11 @@ jobs:
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
-      
+
       - name: Dotnet restore
         run: dotnet restore --verbosity ${{ env.dotnetVerbosity }}
         shell: pwsh
-      
+
       - name: Dotnet build
         run: dotnet build --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }}
         shell: pwsh
@@ -53,7 +53,7 @@ jobs:
         shell: pwsh
         env:
           ciOutputFolder: ${{ runner.temp }}/ci
-     
+
       - name: 'Dotnet pack: release'
         run: |
           dotnet pack ./src/ActiveLogin.Authentication.BankId.Api/ActiveLogin.Authentication.BankId.Api.csproj --output ${{ env.releaseOutputFolder }} --configuration ${{ env.dotnetBuildConfiguration }} --verbosity ${{ env.dotnetVerbosity }} /p:Configuration=${{ env.dotnetBuildConfiguration }} /p:RepositoryBranch=${{ env.sourceRepositoryBranch }} /p:RepositoryCommit=${{ env.sourceRepositoryCommit }}
@@ -72,8 +72,8 @@ jobs:
         shell: pwsh
 
       - name: Upload packages
-        uses: actions/upload-artifact@v3
-        with: 
+        uses: actions/upload-artifact@v4
+        with:
             name: ${{ matrix.artifactName }}
             path: |
               ${{ runner.temp }}/ci
@@ -134,14 +134,14 @@ jobs:
       - name: Create Zip-files
         run : |
           New-Item -Path $env:RUNNER_TEMP/ -Name "zip" -ItemType "directory"
-          Compress-Archive -Path $env:RUNNER_TEMP"/publish/AzureProvisioningSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/AzureProvisioningSample.zip" 
-          Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ClientSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ClientSample.zip" 
-          Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ServerSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ServerSample.zip" 
-          Compress-Archive -Path $env:RUNNER_TEMP"/publish/Standalone.MvcSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/Standalone.MvcSample.zip" 
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/AzureProvisioningSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/AzureProvisioningSample.zip"
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ClientSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ClientSample.zip"
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/IdentityServer.ServerSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/IdentityServer.ServerSample.zip"
+          Compress-Archive -Path $env:RUNNER_TEMP"/publish/Standalone.MvcSample/*" -DestinationPath $env:RUNNER_TEMP"/zip/Standalone.MvcSample.zip"
         shell: pwsh
 
       - name: Upload samples
-        uses: actions/upload-artifact@v3
-        with: 
+        uses: actions/upload-artifact@v4
+        with:
           name: ${{ matrix.artifactName }}
           path: ${{ runner.temp }}/zip
