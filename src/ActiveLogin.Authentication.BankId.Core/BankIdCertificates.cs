@@ -22,7 +22,7 @@ internal static class BankIdCertificates
         TestCertificateFormat.P12 => GetCertFromResourceStream(BankIdApiClientCertificateTestP12),
         TestCertificateFormat.PEM => GetPemCertFromResourceStream(BankIdApiClientCertificateTestPem),
         TestCertificateFormat.PFX => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx),
-        _ => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx)
+        _ => GetCertFromResourceStream(BankIdApiClientCertificateTestP12)
     };
 
     private static X509Certificate2 GetCertFromResourceStream(CertificateResource resource)
