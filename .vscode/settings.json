@@ -1,7 +1,7 @@
 {
     "markdownlint.config": {
       "MD033": {
-        "allowed_elements": ["nobr", "sup", "a", "img"]
+        "allowed_elements": ["a", "img"]
       }
     }
   }
