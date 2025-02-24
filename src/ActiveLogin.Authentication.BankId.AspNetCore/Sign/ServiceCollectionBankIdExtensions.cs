@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.Core;
 
@@ -69,7 +70,7 @@ public static class ServiceCollectionBankIdSignExtensions
 
         BankIdCommonConfiguration.AddDefaultServices(services);
 
-        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
+        services.AddSingleton<IStateStorage, InMemoryStateStorage>();
         services.AddTransient<IBankIdUiResultProtector, BankIdUiResultProtector>();
 
         services.AddTransient<IBankIdSignService, BankIdSignService>();

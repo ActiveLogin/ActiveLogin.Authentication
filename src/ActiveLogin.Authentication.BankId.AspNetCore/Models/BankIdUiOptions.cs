@@ -22,7 +22,7 @@ public class BankIdUiOptions
         RequireMrtd = requireMrtd;
         ReturnRisk = returnRisk;
         CancelReturnUrl = cancelReturnUrl;
-        StateCookieName = stateCookieName;
+        StateKeyCookieName = stateCookieName;
     }
 
     public List<BankIdCertificatePolicy> CertificatePolicies { get; }
@@ -39,5 +39,5 @@ public class BankIdUiOptions
 
     public string CancelReturnUrl { get; }
 
-    public string StateCookieName { get; }
+    public string StateKeyCookieName { get; }
 }
