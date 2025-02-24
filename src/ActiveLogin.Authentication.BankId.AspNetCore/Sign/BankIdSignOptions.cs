@@ -39,7 +39,7 @@ public class BankIdSignOptions
 
     private CookieBuilder _stateCookieBuilder = new()
     {
-        Name = BankIdConstants.DefaultStateCookieName,
+        Name = BankIdConstants.SignStateKey,
         SecurePolicy = CookieSecurePolicy.SameAsRequest,
         HttpOnly = true,
         SameSite = SameSiteMode.Lax,

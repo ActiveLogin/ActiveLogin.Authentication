@@ -1,7 +1,9 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.Core;
 
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
@@ -69,8 +71,9 @@ public static class ServiceCollectionBankIdSignExtensions
 
         BankIdCommonConfiguration.AddDefaultServices(services);
 
-        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
-        services.AddTransient<IBankIdUiResultProtector, BankIdUiResultProtector>();
+        services.AddSingleton<IMemoryCache, MemoryCache>();
+        services.AddSingleton<IStateStorage, InMemoryStateStorage>();
+        services.AddTransient<IBankIdDataStateProtector<Models.BankIdUiResult>, BankIdUiResultProtector>();
 
         services.AddTransient<IBankIdSignService, BankIdSignService>();
     }

@@ -19,15 +19,34 @@ internal static class BankIdCommonConfiguration
 
     public static void AddDefaultServices(IServiceCollection services)
     {
-        services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
-        services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-        services.AddTransient<IBankIdUiOptionsProtector, BankIdUiOptionsProtector>();
-
         services.AddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
 
         services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
         services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+
+        services.AddSingleton<IStateStorage, CookieStateStorage>();
+
+        services.AddTransient<IBankIdDataStateProtector<Auth.BankIdUiAuthState>, BankIdUiAuthProtector>();
+        services.AddTransient<BankIdDataStateProtector<Auth.BankIdUiAuthState>, BankIdUiAuthProtector>();
+
+        services.AddTransient<IBankIdDataStateProtector<Sign.BankIdUiSignState>, BankIdUiSignProtector>();
+        services.AddTransient<BankIdDataStateProtector<Sign.BankIdUiSignState>, BankIdUiSignProtector>();
+
+        services.AddTransient<IBankIdDataStateProtector<Payment.BankIdUiPaymentState>, BankIdUiPaymentProtector>();
+        services.AddTransient<BankIdDataStateProtector<Payment.BankIdUiPaymentState>, BankIdUiPaymentProtector>();
+
+        services.AddTransient<IBankIdDataStateProtector<Models.BankIdUiOptions>, BankIdUiOptionsProtector>();
+        services.AddTransient<BankIdDataStateProtector<Models.BankIdUiOptions>, BankIdUiOptionsProtector>();
+
+        services.AddTransient<IBankIdDataStateProtector<Models.BankIdUiResult>, BankIdUiResultProtector>();
+        services.AddTransient<BankIdDataStateProtector<Models.BankIdUiResult>, BankIdUiResultProtector>();
+
+        services.AddTransient<IBankIdDataStateProtector<Core.Models.BankIdQrStartState>, BankIdQrStartStateProtector>();
+        services.AddTransient<BankIdDataStateProtector<Core.Models.BankIdQrStartState>, BankIdQrStartStateProtector>();
+
+        services.AddTransient<IBankIdDataStateProtector<Areas.ActiveLogin.Models.BankIdUiOrderRef>, BankIdUiOrderRefProtector>();
+        services.AddTransient<BankIdDataStateProtector<Areas.ActiveLogin.Models.BankIdUiOrderRef>, BankIdUiOrderRefProtector>();
 
         services.AddDefaultDeviceData();
 

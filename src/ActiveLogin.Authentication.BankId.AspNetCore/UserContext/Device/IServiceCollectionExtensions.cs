@@ -1,5 +1,6 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolvers;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.State;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device.Configuration;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device.ResolverFactory;
@@ -14,7 +15,7 @@ public static class IServiceCollectionExtensions
         services.AddTransient<IBankIdEndUserDeviceDataResolverFactory, BankIdDefaultEndUserDeviceDataResolverFactory>();
         services.AddSingleton<IBankIdEndUserDeviceDataConfiguration>(new DefaultBankIdEndUserDeviceDataConfiguration());
         services.AddTransient<IBankIdEndUserDeviceDataResolver, BankIdDefaultEndUserWebDeviceDataResolver>();
-        services.AddTransient<IBankIdDeviceDataProtector, BankIdDeviceDataProtector>();
+        services.AddTransient<IBankIdDataStateProtector<DeviceDataState>, BankIdDeviceDataProtector>();
         return services;
     }
 

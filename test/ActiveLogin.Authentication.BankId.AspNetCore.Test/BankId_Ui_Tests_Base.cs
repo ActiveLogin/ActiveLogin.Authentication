@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -7,14 +8,20 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
+using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test;
 
 public abstract class BankId_Ui_Tests_Base
 {
-    private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
+    protected const string AuthStateKeyCookieName = "__ActiveLogin.BankIdAuthStateKey";
+    protected const string SignStateKeyCookieName = "__ActiveLogin.BankIdUiSignStateKey";
+    protected const string PaymentStateKeyCookieName = "__ActiveLogin.BankIdUiPaymentStateKey";
+
 
     protected class TestBankIdAppApi : IBankIdAppApiClient
     {
@@ -64,7 +71,7 @@ public abstract class BankId_Ui_Tests_Base
         }
     }
 
-    protected async Task<HttpResponseMessage> MakeRequestWithRequiredContext(string bankIdType, string path, TestServer server, HttpContent content)
+    protected async Task<HttpResponseMessage> MakeRequestWithRequiredContext(string bankIdType, string path, TestServer server, HttpContent content, params (string key, string value)[] cookies)
     {
         var client = server.CreateClient();
 
@@ -74,7 +81,9 @@ public abstract class BankId_Ui_Tests_Base
         var stateCookies = stateResponse.Headers.GetValues("set-cookie");
 
         // Arrange csrf info
-        var loginRequest = CreateRequestWithFakeStateCookie(server, $"/ActiveLogin/BankId/{bankIdType}?returnUrl=%2F&uiOptions=X&orderRef=Y");
+
+        var loginRequestPath = $"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{bankIdType}?returnUrl=%2F&uiOptions=X&orderRef=Y";
+        var loginRequest = CreateRequestWithCookies(server, loginRequestPath, cookies);
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var loginContent = await loginResponse.Content.ReadAsStringAsync();
@@ -92,16 +101,26 @@ public abstract class BankId_Ui_Tests_Base
         return await client.PostAsync(path, request);
     }
 
-    protected async Task<HttpResponseMessage> GetInitializeResponse(string bankIdType, TestServer server, object initializeRequestBody)
+    protected async Task<HttpResponseMessage> GetInitializeResponse(string bankIdType, TestServer server, object initializeRequestBody, params (string key, string value)[] cookies)
     {
         var initializeRequest = new JsonContent(initializeRequestBody);
-        return await MakeRequestWithRequiredContext(bankIdType, $"/ActiveLogin/BankId/{bankIdType}/Api/Initialize", server, initializeRequest);
+
+        var path = string.Format("/{0}/{1}/{2}/{3}/{4}",
+            BankIdConstants.Routes.ActiveLoginAreaName,
+            BankIdConstants.Routes.BankIdPathName,
+            bankIdType,
+            BankIdConstants.Routes.BankIdApiControllerPath,
+            BankIdConstants.Routes.BankIdApiInitializeActionName);
+        return await MakeRequestWithRequiredContext(bankIdType, path, server, initializeRequest, cookies);
     }
 
-    protected static RequestBuilder CreateRequestWithFakeStateCookie(TestServer server, string path)
+    protected static RequestBuilder CreateRequestWithCookies(TestServer server, string path, params (string key, string value)[] cookies)
     {
         var request = server.CreateRequest(path);
-        request.AddHeader("Cookie", $"{DefaultStateCookieName}=TEST");
+        foreach (var (key, value) in cookies)
+        {
+            request.AddHeader("Cookie", $"{key}={value}");
+        }
         return request;
     }
 
@@ -119,5 +138,15 @@ public abstract class BankId_Ui_Tests_Base
         }
 
         return string.Empty;
+    }
+
+    protected async Task<(IStateStorage, StateKey)> SetupStateStorage<T>(T state)
+        where T : Models.BankIdUiState
+    {
+        var options = Options.Create(new MemoryCacheOptions());
+        var memoryCache = new MemoryCache(options);
+        var stateStorage = new InMemoryStateStorage(memoryCache, TimeSpan.FromMinutes(1));
+        var stateKey = await stateStorage.SetAsync(state);
+        return (stateStorage, stateKey);
     }
 }

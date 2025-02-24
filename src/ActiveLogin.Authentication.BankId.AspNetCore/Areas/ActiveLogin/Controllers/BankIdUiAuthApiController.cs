@@ -6,7 +6,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
-
+using ActiveLogin.Authentication.BankId.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,20 +17,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [ApiController]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiAuthApiController : BankIdUiApiControllerBase
+public class BankIdUiAuthApiController(
+    IBankIdFlowService bankIdFlowService,
+    IBankIdDataStateProtector<BankIdUiOrderRef> orderRefProtector,
+    IBankIdDataStateProtector<Core.Models.BankIdQrStartState> qrStartStateProtector,
+    IBankIdDataStateProtector<BankIdUiOptions> uiOptionsProtector,
+    IBankIdUserMessage bankIdUserMessage,
+    IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+    IBankIdDataStateProtector<BankIdUiResult> uiAuthResultProtector,
+    IStateStorage stateStorage
+) : BankIdUiApiControllerBase(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector, stateStorage)
 {
-    public BankIdUiAuthApiController(
-        IBankIdFlowService bankIdFlowService,
-        IBankIdUiOrderRefProtector orderRefProtector,
-        IBankIdQrStartStateProtector qrStartStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdUserMessage bankIdUserMessage,
-        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiResultProtector uiAuthResultProtector)
-        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
-    {
-    }
-
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiInitializeActionName)]
     public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)

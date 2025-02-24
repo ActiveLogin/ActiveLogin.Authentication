@@ -2,6 +2,7 @@ using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
@@ -16,50 +17,39 @@ using Microsoft.Extensions.Primitives;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 
-public class BankIdPaymentService : IBankIdPaymentService
+public class BankIdPaymentService(
+    IHttpContextAccessor httpContextAccessor,
+    IAntiforgery antiforgery,
+    IOptionsSnapshot<BankIdPaymentOptions> optionsSnapshot,
+    IBankIdFlowSystemClock systemClock,
+    IStateStorage bankIdStateStorage,
+    IBankIdDataStateProtector<BankIdUiOptions> uiOptionsProtector,
+    IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
+    IBankIdEventTrigger bankIdEventTrigger,
+    IBankIdDataStateProtector<BankIdUiResult> uiResultProtector
+) : IBankIdPaymentService
 {
     private const string StateCookieNameParameterName = "StateCookie.Name";
     private readonly PathString _paymentInitPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdPaymentControllerPath}");
 
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IAntiforgery _antiforgery;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IAntiforgery _antiforgery = antiforgery;
 
-    private readonly IOptionsSnapshot<BankIdPaymentOptions> _optionsSnapshot;
-    private readonly IBankIdFlowSystemClock _systemClock;
-    private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
-    private readonly IBankIdUiResultProtector _uiResultProtector;
-    private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
-    private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
-    private readonly IBankIdEventTrigger _bankIdEventTrigger;
+    private readonly IOptionsSnapshot<BankIdPaymentOptions> _optionsSnapshot = optionsSnapshot;
+    private readonly IBankIdFlowSystemClock _systemClock = systemClock;
+    private readonly IStateStorage _bankIdStateStorage = bankIdStateStorage;
+    private readonly IBankIdDataStateProtector<BankIdUiResult> _uiResultProtector = uiResultProtector;
+    private readonly IBankIdDataStateProtector<BankIdUiOptions> _uiOptionsProtector = uiOptionsProtector;
+    private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+    private readonly IBankIdEventTrigger _bankIdEventTrigger = bankIdEventTrigger;
 
-    public BankIdPaymentService(
-        IHttpContextAccessor httpContextAccessor,
-        IAntiforgery antiforgery,
-        IOptionsSnapshot<BankIdPaymentOptions> optionsSnapshot,
-        IBankIdFlowSystemClock systemClock,
-        IBankIdUiStateProtector bankIdUiStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
-        IBankIdEventTrigger bankIdEventTrigger,
-        IBankIdUiResultProtector uiResultProtector)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _antiforgery = antiforgery;
-        _optionsSnapshot = optionsSnapshot;
-        _systemClock = systemClock;
-        _bankIdUiStateProtector = bankIdUiStateProtector;
-        _uiOptionsProtector = uiOptionsProtector;
-        _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
-        _bankIdEventTrigger = bankIdEventTrigger;
-        _uiResultProtector = uiResultProtector;
-    }
-
-    public Task InitiatePaymentAsync(BankIdPaymentProperties properties, string callbackPath, string configKey)
+    public async Task InitiatePaymentAsync(BankIdPaymentProperties properties, string callbackPath, string configKey)
     {
         var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
         var options = _optionsSnapshot.Get(configKey);
 
-        AppendStateCookie(httpContext, properties, options, configKey);
+        var stateKey = await SaveState(properties, configKey);
+        AppendCookie(httpContext, stateKey, options);
 
         var uiOptions = new BankIdUiOptions(
             options.BankIdCertificatePolicies,
@@ -75,19 +65,27 @@ public class BankIdPaymentService : IBankIdPaymentService
         var paymentUrl = GetUiInitUrl(httpContext, callbackPath, uiOptions);
 
         httpContext.Response.Redirect(paymentUrl);
+    }
 
-        return Task.CompletedTask;
+    private void AppendCookie(HttpContext httpContext, StateKey key, BankIdPaymentOptions options)
+    {
+        Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
+
+        var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
+        httpContext.Response.Cookies.Append(options.StateCookie.Name, key, cookieOptions);
     }
 
     public async Task<BankIdPaymentResult?> GetPaymentResultAsync(string configKey)
     {
         Validators.ThrowIfNullOrWhitespace(configKey, nameof(configKey));
+        var options = _optionsSnapshot.Get(configKey);
 
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
-        var options = _optionsSnapshot.Get(configKey);
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
+        Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
 
-        var state = GetStateCookie(httpContext, options);
+        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.CouldNotAccessHttpContext);
+        var state = await GetState(httpContext, options.StateCookie.Name);
+
         if (state == null)
         {
             await _bankIdEventTrigger.TriggerAsync(new BankIdPaymentFailureEvent(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice));
@@ -134,27 +132,22 @@ public class BankIdPaymentService : IBankIdPaymentService
         );
     }
 
-    private BankIdUiPaymentState? GetStateCookie(HttpContext httpContext, BankIdPaymentOptions options)
+    private async Task<BankIdUiPaymentState?> GetState(HttpContext httpContext, string stateCookieName)
     {
-        Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
-
-        var protectedState = httpContext.Request.Cookies[options.StateCookie.Name];
-        if (string.IsNullOrEmpty(protectedState))
+        var cookie = httpContext.Request.Cookies[stateCookieName];
+        if (cookie is null)
         {
             return null;
         }
-        return _bankIdUiStateProtector.Unprotect(protectedState) as BankIdUiPaymentState;
+
+        var stateKey = new StateKey(cookie);
+        return await _bankIdStateStorage.GetAsync<BankIdUiPaymentState>(stateKey);
     }
 
-    private void AppendStateCookie(HttpContext httpContext, BankIdPaymentProperties properties, BankIdPaymentOptions options, string configKey)
+    private Task<StateKey> SaveState(BankIdPaymentProperties properties, string configKey)
     {
-        Validators.ThrowIfNullOrWhitespace(options.StateCookie.Name, StateCookieNameParameterName);
-
         var state = new BankIdUiPaymentState(configKey, properties);
-        var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
-        var cookieValue = _bankIdUiStateProtector.Protect(state);
-
-        httpContext.Response.Cookies.Append(options.StateCookie.Name, cookieValue, cookieOptions);
+        return _bankIdStateStorage.SetAsync(state);
     }
 
     private string GetUiInitUrl(HttpContext httpContext, string callbackPath, BankIdUiOptions uiOptions)

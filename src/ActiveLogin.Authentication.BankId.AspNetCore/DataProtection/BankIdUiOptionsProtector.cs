@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 
-internal class BankIdUiOptionsProtector : BankIdDataStateProtector<BankIdUiOptions>, IBankIdUiOptionsProtector
+internal class BankIdUiOptionsProtector(
+    IDataProtectionProvider dataProtectionProvider
+) : BankIdDataStateProtector<BankIdUiOptions>(dataProtectionProvider, new BankIdUiOptionsSerializer()),
+    IBankIdDataStateProtector<BankIdUiOptions>
 {
-    public BankIdUiOptionsProtector(IDataProtectionProvider dataProtectionProvider)
-        : base(dataProtectionProvider, new BankIdUiOptionsSerializer())
-    {
-    }
 }
