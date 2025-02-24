@@ -114,6 +114,7 @@ The most common scenario is to use Active Login for BankID auth/login, so most o
     - [Return URL for cancellation](#return-url-for-cancellation)
     - [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
     - [Multi tenant scenario](#multi-tenant-scenario)
+    - [Customizing StateStorage](#customizing-statestorage)
     - [Customize the UI](#customize-the-ui)
     - [Simulate BankID API errors](#simulate-bankid-api-errors)
       - [Simulated API error usage](#simulated-api-error-usage)
@@ -961,6 +962,51 @@ public class Startup
             }
     }
 }
+```
+
+### Customizing StateStorage
+
+ActiveLogin.Authentication uses an implementation of IStateStorage to persist temporary state during the BankID authentication flow. By default an in-memory implementation is used, which works great for development and testing. However, for production you might want to persist state using a different storage mechanism (for example, in a database or through a distributed cache).
+
+To do so, implement the IStateStorage interface in your own class:
+
+```csharp
+using ActiveLogin.Authentication.BankId.Core;
+
+public class CustomStateStorage : IStateStorage
+{
+    public async Task<StateKey> WriteAsync(object value)
+    {
+        // Implement your custom logic to store the state,
+        // for example, saving data into a database.
+        var key = Guid.NewGuid().ToString();
+        // ...custom persistence logic here...
+        return await Task.FromResult(new StateKey(key));
+    }
+
+    public async Task<object?> ReadAsync(StateKey key)
+    {
+        // Retrieve the state associated with the key.
+        return await Task.FromResult<object?>(null);
+    }
+
+    public async Task<object?> RemoveAsync(StateKey key)
+    {
+        // Remove the stored state.
+        return await Task.FromResult<object?>(null);
+    }
+}
+```
+
+Register your custom implementation during startup:
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.AddStateStorage<CustomStateStorage>();
+        // ...other configuration...
+    });
 ```
 
 ### Customize the UI
