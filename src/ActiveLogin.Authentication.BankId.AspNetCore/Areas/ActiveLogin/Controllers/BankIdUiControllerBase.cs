@@ -50,7 +50,7 @@ public abstract class BankIdUiControllerBase<T> : Controller
             return default;
         }
         var stateKey = new StateKey(cookie);
-        return await stateStorage.ReadAsync(stateKey) as T;
+        return await stateStorage.GetAsync<T>(stateKey);
     }
 
     protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string protectedUiOptions, string viewName)

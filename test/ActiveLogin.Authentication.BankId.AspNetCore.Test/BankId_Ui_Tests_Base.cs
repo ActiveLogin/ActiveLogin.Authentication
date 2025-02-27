@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -10,6 +11,8 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
 using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Test;
 
@@ -134,8 +137,10 @@ public abstract class BankId_Ui_Tests_Base
     protected async Task<(IStateStorage, StateKey)> SetupStateStorage<T>(T state)
         where T : Models.BankIdUiState
     {
-        var stateStorage = new InMemoryStateStorage();
-        var stateKey = await stateStorage.WriteAsync(state);
+        var options = Options.Create(new MemoryCacheOptions());
+        var memoryCache = new MemoryCache(options);
+        var stateStorage = new InMemoryStateStorage(memoryCache, TimeSpan.FromMinutes(5));
+        var stateKey = await stateStorage.SetAsync(state);
         return (stateStorage, stateKey);
     }
 }

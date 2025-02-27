@@ -113,6 +113,6 @@ public class BankIdUiSignApiController : BankIdUiApiControllerBase
         }
 
         var stateKey = new StateKey(cookie);
-        return stateStorage.ReadAsync<BankIdUiSignState>(stateKey);
+        return stateStorage.GetAsync<BankIdUiSignState>(stateKey);
     }
 }

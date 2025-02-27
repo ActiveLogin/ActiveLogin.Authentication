@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.Core;
@@ -9,9 +11,9 @@ public readonly record struct StateKey(string Key)
 
 public interface IStateStorage
 {
-    Task<StateKey> WriteAsync(object value);
-    Task<object?> ReadAsync(StateKey key);
-    Task<object?> RemoveAsync(StateKey key);
+    Task<T?> GetAsync<T>(StateKey key);
+    Task<bool> TryGetAsync<T>(StateKey key, [NotNullWhen(true)] out T? value);
+    Task<StateKey> SetAsync<T>(T value);
 }
 
 public static class BankIdBuilderStateStorageExtensions

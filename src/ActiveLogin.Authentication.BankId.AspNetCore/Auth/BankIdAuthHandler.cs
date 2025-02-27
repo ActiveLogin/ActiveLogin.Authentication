@@ -67,7 +67,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice);
         }
 
-        await DeleteStateCookie();
+        DeleteStateCookie();
 
         if (!Request.HasFormContentType)
         {
@@ -199,7 +199,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         }
 
         var state = new BankIdUiAuthState(properties);
-        var stateKey = await _stateStorage.WriteAsync(state);
+        var stateKey = await _stateStorage.SetAsync(state);
 
         var cookieOptions = Options.StateCookie.Build(Context, Options.TimeProvider.GetUtcNow());
         Response.Cookies.Append(Options.StateCookie.Name, stateKey, cookieOptions);
@@ -215,10 +215,10 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
             return Task.FromResult<BankIdUiAuthState?>(null);
         }
 
-        return _stateStorage.ReadAsync<BankIdUiAuthState>(new(stateKey));
+        return _stateStorage.GetAsync<BankIdUiAuthState>(new(stateKey));
     }
 
-    private async Task DeleteStateCookie()
+    private void DeleteStateCookie()
     {
         Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, BankIdConstants.AuthStateKey);
 
@@ -226,9 +226,6 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         {
             throw new InvalidOperationException(BankIdConstants.ErrorMessages.TimeProviderNotSet);
         }
-
-        var stateKey = Request.Cookies[Options.StateCookie.Name]!;
-        _ = await _stateStorage.RemoveAsync(new(stateKey));
 
         var cookieOptions = Options.StateCookie.Build(Context, Options.TimeProvider.GetUtcNow());
         Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);

@@ -169,13 +169,13 @@ public class BankIdSignService : IBankIdSignService
         }
 
         var stateKey = new StateKey(cookie);
-        return _bankIdStateStorage.RemoveAsync<BankIdUiSignState>(stateKey);
+        return _bankIdStateStorage.GetAsync<BankIdUiSignState>(stateKey);
     }
 
     private Task<StateKey> SaveState(BankIdSignProperties properties, string configKey)
     {
         var state = new BankIdUiSignState(configKey, properties);
-        return _bankIdStateStorage.WriteAsync(state);
+        return _bankIdStateStorage.SetAsync(state);
     }
 
     private void DeleteCookie(HttpContext httpContext, BankIdSignOptions options)

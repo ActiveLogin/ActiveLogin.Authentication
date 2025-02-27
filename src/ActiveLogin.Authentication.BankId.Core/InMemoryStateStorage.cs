@@ -1,28 +1,37 @@
-using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 
-public class InMemoryStateStorage : IStateStorage
+public class InMemoryStateStorage(IMemoryCache cache, TimeSpan slidingExpiration) : IStateStorage
 {
-    private static readonly ConcurrentDictionary<string, object> _storage = new();
+    public InMemoryStateStorage(IMemoryCache cache) : this(cache, TimeSpan.FromMinutes(5)) { }
 
-    public Task<StateKey> WriteAsync(object value)
+    private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions = new()
+    {
+        SlidingExpiration = slidingExpiration
+    };
+
+    public Task<T?> GetAsync<T>(StateKey key)
+    {
+        return cache.TryGetValue(key, out T? value)
+            ? Task.FromResult(value)
+            : Task.FromResult<T?>(default);
+    }
+
+    public Task<bool> TryGetAsync<T>(StateKey key, [NotNullWhen(true)] out T? value)
+    {
+        return cache.TryGetValue(key, out value)
+            ? Task.FromResult(true)
+            : Task.FromResult(false);
+    }
+
+    public Task<StateKey> SetAsync<T>(T value)
     {
         var key = Guid.NewGuid().ToString();
-        _ = _storage.TryAdd(key, value);
         var stateKey = new StateKey(key);
+        cache.Set(stateKey, value, _memoryCacheEntryOptions);
         return Task.FromResult(stateKey);
-    }
-
-    public Task<object?> RemoveAsync(StateKey key)
-    {
-        _ = _storage.TryRemove(key, out var value);
-        return Task.FromResult(value);
-    }
-
-    public Task<object?> ReadAsync(StateKey key)
-    {
-        _ = _storage.TryGetValue(key, out var value);
-        return Task.FromResult(value);
     }
 }
