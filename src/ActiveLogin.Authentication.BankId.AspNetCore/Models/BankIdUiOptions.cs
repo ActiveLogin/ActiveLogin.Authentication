@@ -1,5 +1,5 @@
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
-using ActiveLogin.Authentication.BankId.Core.Risk;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Models;
 
@@ -7,22 +7,23 @@ public class BankIdUiOptions
 {
     public BankIdUiOptions(
         List<BankIdCertificatePolicy> certificatePolicies,
-        BankIdAllowedRiskLevel allowedRiskLevel,
         bool sameDevice,
         bool requirePinCode,
         bool requireMrtd,
         bool returnRisk,
         string cancelReturnUrl,
-        string stateCookieName)
+        string stateCookieName,
+        CardReader? cardReader
+    )
     {
         CertificatePolicies = certificatePolicies;
-        AllowedRiskLevel = allowedRiskLevel;
         SameDevice = sameDevice;
         RequirePinCode = requirePinCode;
         RequireMrtd = requireMrtd;
         ReturnRisk = returnRisk;
         CancelReturnUrl = cancelReturnUrl;
         StateCookieName = stateCookieName;
+        CardReader = cardReader;
     }
 
     public List<BankIdCertificatePolicy> CertificatePolicies { get; }
@@ -35,9 +36,9 @@ public class BankIdUiOptions
 
     public bool ReturnRisk { get; }
 
-    public BankIdAllowedRiskLevel AllowedRiskLevel { get; }
-
     public string CancelReturnUrl { get; }
 
     public string StateCookieName { get; }
+
+    public CardReader? CardReader { get; }
 }

@@ -107,13 +107,15 @@ public class BankIdFlowService : IBankIdFlowService
     private async Task<AuthRequest> GetAuthRequest(BankIdFlowOptions flowOptions)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-        var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
-        var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
         var resolvedRequirements = await _bankIdAuthRequestRequirementsResolver.GetRequirementsAsync();
         var requiredPersonalIdentityNumber = resolvedRequirements.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
         var requireMrtd = resolvedRequirements.RequireMrtd ?? flowOptions.RequireMrtd;
         var requirePinCode = resolvedRequirements.RequirePinCode ?? flowOptions.RequirePinCode;
-        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
+        var certificatePolicies = resolvedRequirements.CertificatePolicies.Any() ? resolvedRequirements.CertificatePolicies : flowOptions.CertificatePolicies;
+        var resolvedCertificatePolicies = GetResolvedCertificatePolicies(certificatePolicies, flowOptions.SameDevice);
+
+        var cardReader = resolvedRequirements.CardReader ?? flowOptions.CardReader;
+        var requestRequirement = new Requirement(resolvedCertificatePolicies, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString(), cardReader);
 
         var returnRisk = flowOptions.ReturnRisk;
 
@@ -176,13 +178,15 @@ public class BankIdFlowService : IBankIdFlowService
     private SignRequest GetSignRequest(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
-        var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
-        var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
+
+        var certificatePolicies = bankIdSignData.CertificatePolicies.Any() ? bankIdSignData.CertificatePolicies: flowOptions.CertificatePolicies;
+        var resolvedCertificatePolicies = GetResolvedCertificatePolicies(certificatePolicies, flowOptions.SameDevice);
 
         var requiredPersonalIdentityNumber = bankIdSignData.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
         var requireMrtd = bankIdSignData.RequireMrtd ?? flowOptions.RequireMrtd;
         var requirePinCode = bankIdSignData.RequirePinCode ?? flowOptions.RequirePinCode;
-        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
+        var cardReader = bankIdSignData.CardReader ?? flowOptions.CardReader;
+        var requestRequirement = new Requirement(resolvedCertificatePolicies, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString(), cardReader);
 
         var returnRisk = flowOptions.ReturnRisk;
 
@@ -213,12 +217,11 @@ public class BankIdFlowService : IBankIdFlowService
         };
     }
 
-    private List<string>? GetResolvedCertificatePolicies(BankIdFlowOptions flowOptions)
+    private List<string>? GetResolvedCertificatePolicies(List<BankIdCertificatePolicy> certificatePolicies, bool sameDevice)
     {
-        var certificatePolicies = flowOptions.CertificatePolicies;
-        if (!certificatePolicies.Any())
+        if (certificatePolicies == null || !certificatePolicies.Any())
         {
-            if (!flowOptions.SameDevice)
+            if (!sameDevice)
             {
                 // Enforce mobile bank id for other device if no other policy is set
                 certificatePolicies = [BankIdCertificatePolicy.MobileBankId];

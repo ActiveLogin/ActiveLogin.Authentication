@@ -63,13 +63,13 @@ public class BankIdSignService : IBankIdSignService
 
         var uiOptions = new BankIdUiOptions(
             options.BankIdCertificatePolicies,
-            options.BankIdAllowedRiskLevel,
             options.BankIdSameDevice,
             options.BankIdRequirePinCode,
             options.BankIdRequireMrtd,
             options.BankIdReturnRisk,
             BankIdHandlerHelper.GetCancelReturnUrl(properties.Items),
-            options.StateCookie.Name ?? string.Empty
+            options.StateCookie.Name ?? string.Empty,
+            options.CardReader
         );
 
         var signUrl = GetUiInitUrl(httpContext, callbackPath, uiOptions);
