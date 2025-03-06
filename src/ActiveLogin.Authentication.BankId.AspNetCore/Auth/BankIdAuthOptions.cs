@@ -1,7 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
-using ActiveLogin.Authentication.BankId.Core.Risk;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
@@ -32,13 +30,6 @@ public class BankIdAuthOptions : RemoteAuthenticationOptions
     /// information to complete the order. Only Swedish passports and national ID cards are supported.
     /// </summary>
     public bool BankIdRequireMrtd { get; set; } = false;
-
-    /// <summary>
-    /// Set the acceptable risk level for the transaction. If the risk is higher than the specified level,
-    /// the transaction will be blocked. The risk indication requires that the endUserIp is correct.
-    /// An incorrect IP-address will result in legitimate transactions being blocked.
-    /// </summary>
-    public BankIdAllowedRiskLevel BankIdAllowedRiskLevel { get; set; } = BankIdAllowedRiskLevel.NoRiskLevel;
 
     /// <summary>
     /// If this is set to true a risk indicator will be included in the collect response when the order completes.

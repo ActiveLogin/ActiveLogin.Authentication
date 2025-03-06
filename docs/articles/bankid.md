@@ -469,11 +469,6 @@ BankId options allows you to set and override some options such as the below req
     // If no policy is set, it will fall back to require mobile BankID for OtherDevice flow
     options.BankIdCertificatePolicies = [ BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.BankIdOnSmartCard ];
 
-    // Set the acceptable risk level for the transaction. If the risk is higher than the specified level,
-    // the transaction will be blocked. The risk indication requires that the endUserIp is correct.
-    // An incorrect IP-address will result in legitimate transactions being blocked.
-    options.BankIdAllowedRiskLevel = BankIdAllowedRiskLevel.Low;
-
     // If this is set to true a risk indicator will be included in the collect response when the order completes.
     // If a risk indicator is required for the order to complete, for example, if a risk requirement is applied,
     // the returnRisk property is ignored, and a risk indicator is always included; otherwise a default value of

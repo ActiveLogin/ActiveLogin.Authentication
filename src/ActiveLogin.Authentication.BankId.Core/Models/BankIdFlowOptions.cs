@@ -1,6 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
-using ActiveLogin.Authentication.BankId.Core.Risk;
 using ActiveLogin.Identity.Swedish;
 
 namespace ActiveLogin.Authentication.BankId.Core.Models;
@@ -9,7 +8,6 @@ public class BankIdFlowOptions
 {
     public BankIdFlowOptions(
         List<BankIdCertificatePolicy> certificatePolicies,
-        BankIdAllowedRiskLevel allowedRiskLevel,
         bool sameDevice,
         bool requirePinCode,
         bool requireMrtd,
@@ -19,7 +17,6 @@ public class BankIdFlowOptions
     )
     {
         CertificatePolicies = certificatePolicies;
-        AllowedRiskLevel = allowedRiskLevel;
         SameDevice = sameDevice;
         RequirePinCode = requirePinCode;
         RequireMrtd = requireMrtd;
@@ -37,8 +34,6 @@ public class BankIdFlowOptions
     public bool RequireMrtd { get; }
 
     public bool ReturnRisk {  get; }
-
-    public BankIdAllowedRiskLevel AllowedRiskLevel { get; }
 
     public PersonalIdentityNumber? RequiredPersonalIdentityNumber { get; }
 

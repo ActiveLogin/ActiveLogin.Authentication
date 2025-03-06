@@ -41,7 +41,6 @@ public enum CardReader {
 /// <param name="personalNumber">
 /// A personal number to be used to complete the transaction. If a BankID with another personal number attempts to sign the transaction, it fails.
 /// </param>
-/// <param name="risk">Set the acceptable risk level for the transaction.</param>
 /// <param name="cardReader">
 /// <para>Whether the user needs to complete the order using a card reader for the signature.</para>
 /// <para>This condition should always be combined with a certificatePolicies for a smart card to avoid undefined behaviour.</para>
@@ -49,7 +48,6 @@ public enum CardReader {
 /// </param>
 public class Requirement(
     List<string>? certificatePolicies = null,
-    string? risk = null,
     bool? pinCode = null,
     bool? mrtd = null,
     string? personalNumber = null,
@@ -86,12 +84,6 @@ public class Requirement(
     /// </summary>
     [JsonPropertyName("personalNumber"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? PersonalNumber { get; } = personalNumber;
-
-    /// <summary>
-    /// Set the acceptable risk level for the transaction.
-    /// </summary>
-    [JsonPropertyName("risk"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public string? Risk { get; } = risk;
 
     /// <summary>
     /// The card reader to use for the transaction.
