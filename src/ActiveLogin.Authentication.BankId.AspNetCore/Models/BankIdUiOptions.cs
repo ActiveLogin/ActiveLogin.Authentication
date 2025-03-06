@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Risk;
 
@@ -13,7 +14,9 @@ public class BankIdUiOptions
         bool requireMrtd,
         bool returnRisk,
         string cancelReturnUrl,
-        string stateCookieName)
+        string stateCookieName,
+        CardReader? cardReader
+    )
     {
         CertificatePolicies = certificatePolicies;
         AllowedRiskLevel = allowedRiskLevel;
@@ -23,6 +26,7 @@ public class BankIdUiOptions
         ReturnRisk = returnRisk;
         CancelReturnUrl = cancelReturnUrl;
         StateCookieName = stateCookieName;
+        CardReader = cardReader;
     }
 
     public List<BankIdCertificatePolicy> CertificatePolicies { get; }
@@ -40,4 +44,6 @@ public class BankIdUiOptions
     public string CancelReturnUrl { get; }
 
     public string StateCookieName { get; }
+
+    public CardReader? CardReader { get; }
 }

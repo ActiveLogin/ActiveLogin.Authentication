@@ -10,6 +10,7 @@ public static class BankIdUiOptionsExtensions
         options.SameDevice,
         options.RequirePinCode,
         options.RequireMrtd,
-        options.ReturnRisk
+        options.ReturnRisk,
+        cardReader: options.CardReader
     );
 }
