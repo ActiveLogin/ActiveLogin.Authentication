@@ -1,6 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
-using ActiveLogin.Authentication.BankId.Core.Risk;
 
 using Microsoft.AspNetCore.Http;
 
@@ -32,13 +31,6 @@ public class BankIdSignOptions
     /// risk will not be returned if the order was blocked, which may happen if a risk requirement is set.
     /// </summary>
     public bool BankIdReturnRisk { get; set; } = false;
-
-    /// <summary>
-    /// Set the acceptable risk level for the transaction. If the risk is higher than the specified level,
-    /// the transaction will be blocked. The risk indication requires that the endUserIp is correct.
-    /// An incorrect IP-address will result in legitimate transactions being blocked.
-    /// </summary>
-    public BankIdAllowedRiskLevel BankIdAllowedRiskLevel { get; set; } = BankIdAllowedRiskLevel.NoRiskLevel;
 
     /// <summary>
     /// Auto launch the BankID app on the current device.

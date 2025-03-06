@@ -63,7 +63,6 @@ public class BankIdSignService : IBankIdSignService
 
         var uiOptions = new BankIdUiOptions(
             options.BankIdCertificatePolicies,
-            options.BankIdAllowedRiskLevel,
             options.BankIdSameDevice,
             options.BankIdRequirePinCode,
             options.BankIdRequireMrtd,
