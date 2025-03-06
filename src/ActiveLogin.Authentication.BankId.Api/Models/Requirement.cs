@@ -9,14 +9,12 @@ public enum CardReader {
     /// <summary>
     /// Requires confirmation with a card reader where the PIN is entered on a computer keyboard or a higher class card reader.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    Class1,
+    class1,
 
     /// <summary>
     /// Requires confirmation with a card reader where the PIN is entered on the reader itself. Should be combined with certificatePolicies for a smart card to avoid undefined behavior.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    Class2,
+    class2,
 }
 
 /// <summary>
@@ -99,5 +97,6 @@ public class Requirement(
     /// The card reader to use for the transaction.
     /// </summary>
     [JsonPropertyName("cardReader"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public CardReader? CardReader { get; } = cardReader;
 }

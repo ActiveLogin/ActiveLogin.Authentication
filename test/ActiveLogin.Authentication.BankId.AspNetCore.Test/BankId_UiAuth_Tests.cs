@@ -46,7 +46,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         _bankIdUiOptionsProtector = new Mock<IBankIdUiOptionsProtector>();
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, "/", DefaultStateCookieName, Api.Models.CardReader.Class1));
+            .Returns(new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, "/", DefaultStateCookieName, Api.Models.CardReader.class1));
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
@@ -220,7 +220,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task Init_Returns_Ui_With_Resolved_Cancel_Url()
     {
         // Arrange
-        var options = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, true, false, false, false, "~/cru", DefaultStateCookieName, Api.Models.CardReader.Class1);
+        var options = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, true, false, false, false, "~/cru", DefaultStateCookieName, Api.Models.CardReader.class1);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(options);
@@ -368,7 +368,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, true, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.Class1);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, true, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.class1);
         var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -424,7 +424,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.Class1);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.class1);
         var mockProtector = new Mock<IBankIdUiOptionsProtector>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
@@ -480,7 +480,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.Class1);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.class1);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
@@ -526,7 +526,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         // Arrange mocks
         var autoLaunchOptions =
-            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.Class1);
+            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), Core.Risk.BankIdAllowedRiskLevel.Low, false, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.class1);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);

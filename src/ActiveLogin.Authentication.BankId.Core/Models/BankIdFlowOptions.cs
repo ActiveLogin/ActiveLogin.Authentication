@@ -28,7 +28,7 @@ public class BankIdFlowOptions
         CardReader = cardReader;
     }
 
-    public List<BankIdCertificatePolicy> CertificatePolicies { get; }
+    public List<BankIdCertificatePolicy> CertificatePolicies { get; } = new();
 
     public bool SameDevice { get; }
 
