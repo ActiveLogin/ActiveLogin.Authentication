@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>ActiveLogin.Authentication.BankId Architechture | Active Login </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="ActiveLogin.Authentication.BankId Architechture | Active Login ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="..//images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="activeloginauthenticationbankid-architechture">ActiveLogin.Authentication.BankId Architechture</h1>
+
+<p>This document is aimed towards you who want to understand how ActiveLogin.Authentication.BankId works internally. This might be relevant if you want to contribute or review our code.</p>
+<p>The document isn't complete, but we try to write a note on the most important concepts.</p>
+<h2 id="auth">Auth</h2>
+<p>The BanKID authentication implementation follows the standardized way of implementing an authentication provider in ASP.NET. As BankID requires us to display UI, we provide a built in one using the technique available throug Razor Class Libraries. Even though this UI is hosted as part of the application, from the authentication point of view, we treat it as a <code>RemoteAuthenticationProvider</code> as we need to redirect the user to such this UI and wait for the user to complete the auth flow. During the flow state is protected and stored in the quesy string and in a cookie.</p>
+<h3 id="auth-flow">Auth Flow</h3>
+<ul>
+<li><p><code>AuthenticationBuilderBankIdAuthExtensions</code></p>
+<ul>
+<li><code>AddBankIdAuth()</code>
+<ul>
+<li>Adds default implementations to IoC</li>
+<li>Adds ASP.NET Core authentication configuration</li>
+<li>Runs the <code>IBankIdAuthBuilder</code> pipeline</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>BankIdAuthBuilderExtensions</code></p>
+<ul>
+<li><code>Add*</code>
+<ul>
+<li>Allows for adding schemes with relevant configuration for Same or Other device</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>BankIdAuthHandler</code></p>
+<ul>
+<li>Inherits the <code>RemoteAuthenticationHandler</code> and therefore implements the <code>IAuthenticationHandler</code></li>
+</ul>
+</li>
+<li><p><code>BankIdUiAuthController</code></p>
+<ul>
+<li>Handles the UI for auth using MVC</li>
+</ul>
+</li>
+<li><p><code>BankIdUiAuthApiController</code></p>
+<ul>
+<li>Handles the backend calls from the UI for init/statusd/cancel etc.</li>
+</ul>
+<pre><code class="lang-mermaid">graph TD
+  App--&gt;A
+  A[AccountController.Login] --&gt;B
+
+  B[AccountController.ExternalLogin] --&gt;|Challange|C
+  C[BankIdUiAuthController.Init] --&gt; D
+  D([BankIdUiAuth/Init.cshtml])
+  E[BankIdUiAuthApiController.Initialize]
+  F[BankIdUiAuthApiController.QrCode]--&gt;D
+  G[BankIdUiAuthApiController.Status]--&gt;D
+  D--&gt;E
+  D--&gt;F
+  D--&gt;G
+  D--&gt;H
+  H[AccountController.ExternalLoginCallback] --&gt;|HttpContext.AuthenticateAsync|App
+</code></pre>
+</li>
+</ul>
+<h2 id="sign">Sign</h2>
+<p>When we implemented BankId Auth we simply follow the concept and conventions Microsoft have when implementing a custom authentication provider. Scheme configuration, AuthenticationHandler, Challange, Claims etc.</p>
+<p>Sign is not such a common concept the therefore the underlying infrastructure is not there. We've tried to use the same basic concepts, but simplified (as we only need to support our own scenario).</p>
+<h3 id="sign-flow">Sign Flow</h3>
+<ul>
+<li><p><code>ServiceCollectionBankIdSignExtensions</code></p>
+<ul>
+<li><code>AddBankIdSign()</code>
+<ul>
+<li>Adds default implementations to IoC</li>
+<li>Adds ASP.NET Core configuration</li>
+<li>Runs the <code>IBankIdSignBuilder</code> pipeline</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>BankIdSignBuilder</code></p>
+<ul>
+<li><code>AddConfig</code>
+<ul>
+<li>Similar to <code>AddScheme</code> with the difference that it does not register a callback URL, this is instead specified on the call to <code>InitiateSign</code> on <code>BankIdSignService</code></li>
+<li>Will register the config in the <code>IBankIdSignConfigurationProvider</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>IBankIdSignConfigurationProvider</code></p>
+<ul>
+<li>Keeps a list of the registered <code>BankIdSignConfiguration</code></li>
+</ul>
+</li>
+<li><p><code>BankIdSignService</code></p>
+<ul>
+<li>Allows for inittiating the Sign flow and redirecting the user to the correct page</li>
+<li>Handles the callback when sign is done</li>
+<li>Get state from cookie, return to the url specified by consumer</li>
+</ul>
+</li>
+<li><p><code>BankIdUiSignController</code></p>
+<ul>
+<li>Handles the UI for sign using MVC</li>
+</ul>
+</li>
+<li><p><code>BankIdUiSignApiController</code></p>
+<ul>
+<li>Handles the backend calls from the UI for init/statusd/cancel etc.</li>
+</ul>
+<pre><code class="lang-mermaid">graph TD
+  App--&gt;A
+  A[SignController.Index] --&gt;B
+
+  B[SignController.Sign] --&gt;|IBankIdSignService.InitiateSignAsync|C
+  C[BankIdUiSignController.Init] --&gt; D
+  D([BankIdUiSign/Init.cshtml])
+  E[BankIdUiSignApiController.Initialize]
+  F[BankIdUiSignApiController.QrCode]--&gt;D
+  G[BankIdUiSignApiController.Status]--&gt;D
+  D--&gt;E
+  D--&gt;F
+  D--&gt;G
+  D--&gt;H
+  H[SignController.Callback] --&gt;|IBankIdSignService.GetSignResultAsync|App
+</code></pre>
+</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/docs/articles/bankid-architechture.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            © Active Solution
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Enum TestCertificateFormat
+   | Active Login </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Enum TestCertificateFormat
+   | Active Login ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="..//images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="ActiveLogin.Authentication.BankId.Core.Certificate.TestCertificateFormat">
+  
+  
+  <h1 id="ActiveLogin_Authentication_BankId_Core_Certificate_TestCertificateFormat" data-uid="ActiveLogin.Authentication.BankId.Core.Certificate.TestCertificateFormat" class="text-break">Enum TestCertificateFormat
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="ActiveLogin.Authentication.BankId.Core.Certificate.html">ActiveLogin.Authentication.BankId.Core.Certificate</a></h6>
+  <h6><strong>Assembly</strong>: ActiveLogin.Authentication.BankId.Core.dll</h6>
+  <h5 id="ActiveLogin_Authentication_BankId_Core_Certificate_TestCertificateFormat_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum TestCertificateFormat : int</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    <thead>
+    <tbody>
+      <tr>
+        <td id="ActiveLogin_Authentication_BankId_Core_Certificate_TestCertificateFormat_P12">P12</td>
+        <td><p>This file stores the certificate and the private key in a PKCS#12 format.
+It is encrypted using the AES-256-CBC-algorithm, which has a higher security level than older methods.
+When you create your certificate for production with the BankID Keygen it will be created in this format.
+We recommend that you select this format if possible.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="ActiveLogin_Authentication_BankId_Core_Certificate_TestCertificateFormat_PEM">PEM</td>
+        <td><p>This file contains the certificate and the encrypted private key in a PEM format.
+The certificate is placed in the beginning of the file, followed by the private key.
+Use this if your application requires PEM format.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="ActiveLogin_Authentication_BankId_Core_Certificate_TestCertificateFormat_PFX">PFX</td>
+        <td><p>This file stores the certificate and the private key in a PKCS#12 format.
+For compatibility reasons it’s encrypted using the older algorithm ”pbeWithSHA1And40BitRC2-CBC”.
+This encryption method is considered weak and should only be used for older applications that don’t support modern algorithms,
+such as Windows Server earlier versions than 2022.</p>
+</td>
+      </tr>
+    </tbody>
+  </thead></thead></table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_Core_Certificate_TestCertificateFormat.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.Core.Certificate.TestCertificateFormat%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.Core/Certificate/TestCertificateFormat.cs/#L3" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            © Active Solution
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
