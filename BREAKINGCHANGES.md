@@ -7,6 +7,7 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ## TOC
 
+* [Version 11.0.0](#version-1100)
 * [Version 10.0.0](#version-1000)
 * [Version 9.0.0](#version-900)
 * [Version 8.0.0](#version-800)
@@ -18,6 +19,37 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ---
 
+
+## Version 11.0.0
+
+Breaking changes between version 11.0.0 and 10.0.0
+
+### Upgrade to .NET 9
+We now require .NET 9 - so this requires you to upgrade your website that uses Active Login.
+
+### Remove allowed risk Level
+Removed support for blocking auth and sign transactions based on risk level, since no longer supported by BankID. Use return risk instead and handle risk level in your application.
+```csharp
+    services.Configure<BankIdAuthOptions>(options =>
+    {
+        options.BankIdReturnRisk = true;
+    });
+```
+BankID provides futher information more about [Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication).
+
+### Change default client certificate in test environment
+We now use FPTestcert5_20240610.p12 as the default client certificate for the test environment instead of FPTestcert5_20240610-legacy.pfx. Use the code below to switch to an alternative certificate format.
+```csharp
+    .AddBankId(bankId =>
+    {
+        bankId.UseTestEnvironment(clientCertificateFormat: TestCertificateFormat.PFX);
+    });
+```
+
+
+---
+
+
 ## Version 10.0.0
 
 Breaking changes between version 10.0.0 and 9.0.0
@@ -26,6 +58,7 @@ Breaking changes between version 10.0.0 and 9.0.0
 * Fall back to mobile BankID policy for OtherDevice flow
 * Enum for setting policy instead of string
 * Replace embedded BankID certificate for the test environment FPTestcert4_20220818.p12, with the three new versions of the client certificate FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Make it configurable which version to use. For compatibility reasons use FPTestcert5_20240610-legacy.pfx by default.
+
 
 ---
 

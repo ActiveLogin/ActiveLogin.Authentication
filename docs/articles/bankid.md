@@ -478,10 +478,10 @@ BankId options allows you to set and override some options such as the below req
 });
 ```
 
-If you want to apply some options for all BankID schemes, you can do so by using `.Configure(...)`.
+If you want to apply some options for all BankID schemes, you can do so by using `.Configure<BankIdAuthOptions>(...)`.
 
 ```csharp
-.Configure(options =>
+.Configure<BankIdAuthOptions>(options =>
 {
     options.BankIdRequireMrtd = true;
     options.BankIdReturnRisk = true;
