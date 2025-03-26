@@ -114,7 +114,9 @@ public class BankIdFlowService : IBankIdFlowService
         var requiredPersonalIdentityNumber = resolvedRequirements.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
         var requireMrtd = resolvedRequirements.RequireMrtd ?? flowOptions.RequireMrtd;
         var requirePinCode = resolvedRequirements.RequirePinCode ?? flowOptions.RequirePinCode;
-        var certificatePolicies = resolvedRequirements.CertificatePolicies.Any() ? resolvedRequirements.CertificatePolicies : flowOptions.CertificatePolicies;
+        var certificatePolicies = resolvedRequirements.CertificatePolicies.Any()
+            ? resolvedRequirements.CertificatePolicies
+            : flowOptions.CertificatePolicies;
         var resolvedCertificatePolicies = GetResolvedCertificatePolicies(certificatePolicies, flowOptions.SameDevice);
 
         var cardReader = resolvedRequirements.CardReader ?? flowOptions.CardReader;
