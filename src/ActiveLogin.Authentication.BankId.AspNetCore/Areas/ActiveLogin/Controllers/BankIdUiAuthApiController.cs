@@ -6,7 +6,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
-
+using ActiveLogin.Authentication.BankId.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,8 +26,10 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiResultProtector uiAuthResultProtector)
-        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
+        IBankIdUiResultProtector uiAuthResultProtector,
+        IStateStorage stateStorage
+        )
+        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector, stateStorage)
     {
     }
 

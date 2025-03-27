@@ -8,6 +8,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
@@ -25,6 +26,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     protected readonly IBankIdUiOrderRefProtector OrderRefProtector;
     protected readonly IBankIdQrStartStateProtector QrStartStateProtector;
     protected readonly IBankIdUiOptionsProtector UiOptionsProtector;
+    protected readonly IStateStorage _stateStorage;
 
     private readonly IBankIdUserMessage _bankIdUserMessage;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
@@ -38,7 +40,8 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
 
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiResultProtector uiAuthResultProtector
+        IBankIdUiResultProtector uiAuthResultProtector,
+        IStateStorage stateStorage
 
     )
     {
@@ -50,6 +53,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
         _bankIdUserMessage = bankIdUserMessage;
         _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
         _uiAuthResultProtector = uiAuthResultProtector;
+        _stateStorage = stateStorage;
     }
 
     [ValidateAntiForgeryToken]

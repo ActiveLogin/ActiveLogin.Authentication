@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Requirements;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
@@ -180,6 +181,26 @@ public static class IBankIdAuthBuilderExtensions
             configureOptions
         );
 
+        return builder;
+    }
+
+    public static IBankIdAuthBuilder AddStateStorage<T>(this IBankIdAuthBuilder builder, T storage)
+        where T : class, IStateStorage
+    {
+        builder.Services.AddSingleton(storage);
+        return builder;
+    }
+
+    public static IBankIdAuthBuilder AddStateStorage<T>(this IBankIdAuthBuilder builder)
+        where T : class, IStateStorage
+    {
+        builder.Services.AddSingleton<IStateStorage, T>();
+        return builder;
+    }
+
+    public static IBankIdAuthBuilder AddStateStorage(this IBankIdAuthBuilder builder, Func<IServiceProvider, IStateStorage> factory)
+    {
+        builder.Services.AddSingleton(factory);
         return builder;
     }
 }
