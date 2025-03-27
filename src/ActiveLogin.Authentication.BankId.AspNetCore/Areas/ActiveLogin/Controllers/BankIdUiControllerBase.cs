@@ -53,7 +53,7 @@ public abstract class BankIdUiControllerBase<T> : Controller
         return await stateStorage.GetAsync<T>(stateKey);
     }
 
-    protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string protectedUiOptions, string viewName)
+    protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string protectedUiOptions, string nonce, string viewName)
     {
         Validators.ThrowIfNullOrWhitespace(returnUrl);
         Validators.ThrowIfNullOrWhitespace(protectedUiOptions, BankIdConstants.QueryStringParameters.UiOptions);
@@ -61,6 +61,16 @@ public abstract class BankIdUiControllerBase<T> : Controller
         if (!Url.IsLocalUrl(returnUrl))
         {
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
+        }
+
+        if (await stateStorage.TryGetAsync(new StateKey(nonce), out string? rru))
+        {
+            // Check if the returnUrl is valid and contains the protectedUiOptions and nonce
+            // This is to prevent open redirect attacks and ensure that the returnUrl is valid
+            if (rru is null || !rru.Contains(returnUrl) || !rru.Contains(protectedUiOptions) || !rru.Contains(nonce))
+            {
+                throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
+            }
         }
 
         var uiOptions = _uiOptionsProtector.Unprotect(protectedUiOptions);

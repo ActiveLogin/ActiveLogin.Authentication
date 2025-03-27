@@ -47,4 +47,10 @@ public class InMemoryStateStorage(IMemoryCache cache, TimeSpan slidingExpiration
 
         return Set(value, options);
     }
+
+    public Task<StateKey> SetAsync<T>(StateKey key, T value)
+    {
+        cache.Set(key, value, _memoryCacheEntryOptions);
+        return Task.FromResult(key);
+    }
 }
