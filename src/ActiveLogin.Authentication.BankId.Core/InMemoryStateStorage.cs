@@ -37,4 +37,10 @@ public class InMemoryStateStorage(
         cache.Set(stateKey, value, _memoryCacheEntryOptions);
         return Task.FromResult(stateKey);
     }
+
+    public Task<StateKey> SetAsync<T>(StateKey key, T value)
+    {
+        cache.Set(key, value, _memoryCacheEntryOptions);
+        return Task.FromResult(key);
+    }
 }

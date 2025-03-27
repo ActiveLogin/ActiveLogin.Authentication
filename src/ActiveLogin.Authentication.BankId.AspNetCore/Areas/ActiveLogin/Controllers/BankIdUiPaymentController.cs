@@ -26,8 +26,8 @@ public class BankIdUiPaymentController(
     [HttpGet]
     [AllowAnonymous]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdPaymentControllerPath}")]
-    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
+    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions, [FromQuery(Name = "nonce")] string nonce)
     {
-        return Initialize(returnUrl, BankIdConstants.Routes.BankIdPaymentApiControllerName, protectedUiOptions, "Init");
+        return Initialize(returnUrl, BankIdConstants.Routes.BankIdPaymentApiControllerName, protectedUiOptions, nonce, "Init");
     }
 }

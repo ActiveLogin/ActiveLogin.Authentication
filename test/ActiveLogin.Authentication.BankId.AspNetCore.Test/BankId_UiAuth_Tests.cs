@@ -400,13 +400,21 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
 
         var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
-        var responseObject = JsonConvert.DeserializeAnonymousType(responseContent,
-            new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
+        var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
         Assert.True(responseObject.IsAutoLaunch);
 
+        var (redirectUri, nonce) = responseObject.RedirectUri.Split("&nonce=") switch
+        {
+            [var l, var r] => (l, Guid.Parse(r)),
+            _ => default
+        };
+
+        Assert.NotEqual(Guid.Empty, nonce);
+
         var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
-        var expectedUrl = $"http://localhost/ActiveLogin/BankId/Auth?returnUrl={encodedReturnParam}&uiOptions={testOptions}";
-        Assert.Equal(expectedUrl, responseObject.RedirectUri);
+        var expectedUri = new Uri($"http://localhost/ActiveLogin/BankId/Auth?returnUrl={encodedReturnParam}&uiOptions={testOptions}");
+        var actualUri = new Uri(redirectUri);
+        Assert.Equal(expectedUri, actualUri);
     }
 
     [Fact]

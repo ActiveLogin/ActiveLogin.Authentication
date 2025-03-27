@@ -66,6 +66,7 @@ public class CookieStateStorage(
         return Task.FromResult(key);
     }
 
+    public Task<StateKey> SetAsync<T>(StateKey key, T value) => Set(key, value);
     public Task<StateKey> SetAsync<T>(T value)
     {
         var stateKey = StateKey.New();
