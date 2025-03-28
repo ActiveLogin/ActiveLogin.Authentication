@@ -75,10 +75,7 @@ public class InMemoryStateStorageTests
         // Arrange
         var value = "testState";
         var start = DateTime.Now;
-        var key = await storage.SetAsync(value, (_, evictedValue) =>
-        {
-            Assert.Equal(value, evictedValue);
-        });
+        var key = await storage.SetAsync(value);
         if (!await storage.TryGetAsync<string>(key, out _))
         {
             Assert.Fail("Could not get value");

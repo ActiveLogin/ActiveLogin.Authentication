@@ -14,7 +14,6 @@ public interface IStateStorage
     Task<T?> GetAsync<T>(StateKey key);
     Task<bool> TryGetAsync<T>(StateKey key, [NotNullWhen(true)] out T? value);
     Task<StateKey> SetAsync<T>(T value);
-    Task<StateKey> SetAsync<T>(T value, Action<StateKey, T> callback);
 }
 
 public static class BankIdBuilderStateStorageExtensions

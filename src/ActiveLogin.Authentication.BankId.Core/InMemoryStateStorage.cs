@@ -4,7 +4,10 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 
-public class InMemoryStateStorage(IMemoryCache cache, TimeSpan slidingExpiration) : IStateStorage
+public class InMemoryStateStorage(
+    IMemoryCache cache,
+    TimeSpan slidingExpiration
+) : IStateStorage
 {
     public InMemoryStateStorage(IMemoryCache cache) : this(cache, TimeSpan.FromMinutes(5)) { }
 
@@ -26,25 +29,12 @@ public class InMemoryStateStorage(IMemoryCache cache, TimeSpan slidingExpiration
             ? Task.FromResult(true)
             : Task.FromResult(false);
     }
-    private Task<StateKey> Set<T>(T value, MemoryCacheEntryOptions options)
+
+    public Task<StateKey> SetAsync<T>(T value)
     {
         var key = Guid.NewGuid().ToString();
         var stateKey = new StateKey(key);
-        cache.Set(stateKey, value, options);
+        cache.Set(stateKey, value, _memoryCacheEntryOptions);
         return Task.FromResult(stateKey);
-    }
-    public Task<StateKey> SetAsync<T>(T value) => Set(value, _memoryCacheEntryOptions);
-    public Task<StateKey> SetAsync<T>(T value, Action<StateKey, T> evictionCallback)
-    {
-        var options = new MemoryCacheEntryOptions()
-        {
-            SlidingExpiration = _memoryCacheEntryOptions.SlidingExpiration
-        };
-        options.RegisterPostEvictionCallback((key, value, reason, state) =>
-        {
-            evictionCallback((StateKey)key, (T)value!);
-        });
-
-        return Set(value, options);
     }
 }
