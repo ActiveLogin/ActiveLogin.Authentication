@@ -130,7 +130,7 @@ public abstract class BankIdUiControllerBase : Controller
                 UserVisibleData = signState.BankIdSignProperties.UserVisibleData,
                 UserVisibleDataFormat = signState.BankIdSignProperties.UserVisibleDataFormat
             };
-            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, uiSignData)
+            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, signData:uiSignData)
             {
                 LocalizedPageHeader = _localizer["Sign_Header"],
                 LocalizedPageTitle = _localizer["Sign_Title"],
@@ -143,7 +143,12 @@ public abstract class BankIdUiControllerBase : Controller
 
         if (uiState is BankIdUiPaymentState paymentState)
         {
-            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState)
+            var uiPaymentData = new BankIdUiPaymentData
+            {
+                UserVisibleData = paymentState.BankIdPaymentProperties.UserVisibleData,
+                UserVisibleDataFormat = paymentState.BankIdPaymentProperties.UserVisibleDataFormat
+            };
+            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, paymentData: uiPaymentData)
             {
                 LocalizedPageHeader = _localizer["Payment_Header"],
                 LocalizedPageTitle = _localizer["Payment_Title"],
