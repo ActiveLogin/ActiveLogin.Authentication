@@ -14,6 +14,8 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+        <PackageReference Include="ActiveLogin.Identity.Swedish" Version="3.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -52,7 +54,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.7.3">
+        <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.6.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

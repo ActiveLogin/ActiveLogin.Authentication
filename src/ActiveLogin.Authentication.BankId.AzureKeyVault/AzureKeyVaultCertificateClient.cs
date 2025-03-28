@@ -62,7 +62,9 @@ internal class AzureKeyVaultCertificateClient(SecretClient secretClient)
 
     private static X509Certificate2 GetX509Certificate2(byte[] certificate)
     {
-        return X509CertificateLoader.LoadPkcs12Collection(certificate, null, X509KeyStorageFlags.MachineKeySet)
-            .First(x => x.HasPrivateKey);
+        var exportedCertCollection = new X509Certificate2Collection();
+        exportedCertCollection.Import(certificate, null, X509KeyStorageFlags.MachineKeySet);
+
+        return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
     }
 }
