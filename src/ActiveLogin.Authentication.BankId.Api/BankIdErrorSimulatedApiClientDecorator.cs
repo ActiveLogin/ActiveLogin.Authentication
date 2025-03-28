@@ -51,6 +51,11 @@ public class BankIdErrorSimulatedApiClientDecorator(
         return CallImplementation(x => x.SignAsync(request));
     }
 
+    public Task<PaymentResponse> PaymentAsync(PaymentRequest request)
+    {
+        return CallImplementation(x => x.PaymentAsync(request));
+    }
+
     public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request)
     {
         return CallImplementation(x => x.PhoneAuthAsync(request));

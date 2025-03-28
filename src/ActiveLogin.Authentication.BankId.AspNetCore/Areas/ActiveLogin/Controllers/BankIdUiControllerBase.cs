@@ -3,6 +3,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
@@ -129,10 +130,28 @@ public abstract class BankIdUiControllerBase : Controller
                 UserVisibleData = signState.BankIdSignProperties.UserVisibleData,
                 UserVisibleDataFormat = signState.BankIdSignProperties.UserVisibleDataFormat
             };
-            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, uiSignData)
+            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, signData:uiSignData)
             {
                 LocalizedPageHeader = _localizer["Sign_Header"],
                 LocalizedPageTitle = _localizer["Sign_Title"],
+
+                LocalizedStartAppButtonText = localizedStartAppButtonText,
+                LocalizedCancelButtonText = localizedCancelButtonText,
+                LocalizedQrCodeImageAltText = localizedQrCodeImageAltText
+            };
+        }
+
+        if (uiState is BankIdUiPaymentState paymentState)
+        {
+            var uiPaymentData = new BankIdUiPaymentData
+            {
+                UserVisibleData = paymentState.BankIdPaymentProperties.UserVisibleData,
+                UserVisibleDataFormat = paymentState.BankIdPaymentProperties.UserVisibleDataFormat
+            };
+            return new BankIdUiViewModel(uiScriptConfiguration, uiScriptInitState, paymentData: uiPaymentData)
+            {
+                LocalizedPageHeader = _localizer["Payment_Header"],
+                LocalizedPageTitle = _localizer["Payment_Title"],
 
                 LocalizedStartAppButtonText = localizedStartAppButtonText,
                 LocalizedCancelButtonText = localizedCancelButtonText,

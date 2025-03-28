@@ -545,10 +545,222 @@ public class BankIdAppApiClient_Tests
     }
 
     [Fact]
+    public async Task PaymentAsync_WithPaymentnRequest__ShouldPostToBankIdPayment_WithJsonPayload()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant"))));
+
+        // Assert
+        Assert.Single(_messageHandlerMock.Invocations);
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        Assert.NotNull(request);
+
+        Assert.Equal(HttpMethod.Post, request.Method);
+        Assert.Equal(new Uri("https://bankid/payment"), request.RequestUri);
+        Assert.Equal(new MediaTypeHeaderValue("application/json"), request.Content.Headers.ContentType);
+    }
+
+
+
+    [Fact]
+    public async Task PaymentAsync_WithUserVisibleDataFormat__ShouldPostToBankIdPayment_WithJsonPayload()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest(
+            "1.1.1.1",
+            new UserVisibleTransaction("npa", new Recipient("merchant")),
+            userVisibleData: "userVisibleData",
+            userVisibleDataFormat: "userVisibleDataFormat"));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertProperty(contentString, "userVisibleData", "dXNlclZpc2libGVEYXRh");
+        JsonTests.AssertProperty(contentString, "userVisibleDataFormat", "userVisibleDataFormat");
+        JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
+        JsonTests.AssertPropertyHierarchy(contentString, "merchant", "userVisibleTransaction", "recipient", "name");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+            "endUserIp",
+            "requirement",
+            "userVisibleData",
+            "userVisibleDataFormat",
+            "userVisibleTransaction"
+        });
+    }
+
+    [Fact]
+    public async Task PaymentAsync_WithEndUserIp__ShouldPostJsonPayload_WithEndUserIp_AndUserVisibleTransaction_AndRequirementAsEmptyObject()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant"))));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+        JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
+        JsonTests.AssertPropertyHierarchy(contentString, "merchant", "userVisibleTransaction", "recipient", "name");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+        "endUserIp",
+        "requirement",
+        "userVisibleTransaction"
+        });
+    }
+
+    [Fact]
+    public async Task PaymentAsync_WithEndUserIp__ShouldPostJsonPayload_WithEndUserIp_AndUserVisibleTransaction_AndNoRequirements()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant")), null));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+        JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
+        JsonTests.AssertPropertyHierarchy(contentString, "merchant", "userVisibleTransaction", "recipient", "name");
+
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+        "endUserIp",
+        "requirement",
+        "userVisibleTransaction"
+        });
+    }
+
+    [Fact]
+    public async Task PaymentAsync_WithUserNonVisibleData__ShouldPostJsonPayload_WithUserNonVisibleData()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant")), userNonVisibleData: new byte[1]));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+        JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
+        JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
+        JsonTests.AssertPropertyHierarchy(contentString, "merchant", "userVisibleTransaction", "recipient", "name");
+        JsonTests.AssertProperty(contentString, "userNonVisibleData", "AA==");
+
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+        "endUserIp",
+        "requirement",
+        "userNonVisibleData",
+        "userVisibleTransaction",
+        });
+    }
+
+    [Fact]
+    public async Task PaymentAsync_WithRequirements__ShouldPostJsonPayload_WithRequirements()
+    {
+        // Arrange
+
+        // Act
+        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant")), new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101", CardReader.class1)));
+
+        // Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
+        JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
+        JsonTests.AssertPropertyHierarchy(contentString, "merchant", "userVisibleTransaction", "recipient", "name");
+        JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
+        JsonTests.AssertSubProperty(contentString, "requirement", "pinCode", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "mrtd", true);
+        JsonTests.AssertSubProperty(contentString, "requirement", "personalNumber", "190001010101");
+        JsonTests.AssertOnlyProperties(contentString, new[]
+        {
+        "endUserIp",
+        "requirement",
+        "userVisibleTransaction",
+        });
+    }
+
+    [Fact]
+    public async Task PaymentAsync_WithPaymentRequest__ShouldParseAndReturnOrderRef_AndTokens()
+    {
+        // Arrange
+        var httpClient = GetHttpClientMockWithOkResponse("{ \"orderRef\": \"abc123\", \"autoStartToken\": \"def456\", \"qrStartSecret\": \"ghi790\", \"qrStartToken\": \"jkl123\" }");
+        var bankIdClient = new BankIdAppApiClient(httpClient);
+
+        // Act
+        var result = await bankIdClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant"))));
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("abc123", result.OrderRef);
+        Assert.Equal("def456", result.AutoStartToken);
+        Assert.Equal("ghi790", result.QrStartSecret);
+        Assert.Equal("jkl123", result.QrStartToken);
+    }
+
+    [Fact]
+    public async Task PaymentAsync_WithPaymentRequest__ShouldHaveWebDeviceParametersPayload()
+    {
+        // Arrange
+
+        var paymentRequest = new PaymentRequest(endUserIp: "1.1.1.1",
+            userVisibleTransaction: new UserVisibleTransaction("npa", new Recipient("merchant")),
+            requirement: null,
+            userVisibleData: "userVisibleData",
+            userNonVisibleData: null,
+            userVisibleDataFormat: null,
+            returnUrl: null,
+            returnRisk: null,
+            web: new DeviceDataWeb(
+                "referringDomain",
+                "userAgent",
+                "deviceIdentifier"),
+            app: null);
+
+        //Act
+        await _bankIdAppApiClient.PaymentAsync(paymentRequest);
+
+        //Assert
+        var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
+        var contentString = await request.Content.ReadAsStringAsync();
+
+        JsonTests.AssertPropertyIsNull(contentString, "app");
+        JsonTests.AssertPropertyIsNotNull(contentString, "web");
+
+        JsonTests.AssertProperties(contentString,
+            new Dictionary<string, string>
+            {
+            { "web.referringDomain", "referringDomain" },
+            { "web.userAgent", "userAgent" },
+            { "web.deviceIdentifier", "deviceIdentifier" }
+            });
+
+    }
+
+    [Fact]
     public async Task PhoneAuthAsync_WithPhoneAuthRequest__ShouldPostToBankIdPhoneAuth_WithJsonPayload()
     {
         // Arrange
-        
+
         // Act
         await _bankIdAppApiClient.PhoneAuthAsync(new PhoneAuthRequest("201801012392", CallInitiator.User));
 
@@ -865,7 +1077,7 @@ public class BankIdAppApiClient_Tests
         JsonTests.AssertOnlyProperties(contentString, new[]
         {
             "orderRef"
-        });    
+        });
     }
 
     [Fact]
