@@ -1,9 +1,14 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
@@ -12,7 +17,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [Area(BankIdConstants.Routes.ActiveLoginAreaName)]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiSignController : BankIdUiControllerBase
+public class BankIdUiSignController : BankIdUiControllerBase<BankIdUiSignState>
 {
     public BankIdUiSignController(
         IAntiforgery antiforgery,
@@ -20,18 +25,16 @@ public class BankIdUiSignController : BankIdUiControllerBase
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,
-        IBankIdUiStateProtector bankIdUiStateProtector
-    )
-        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, bankIdUiStateProtector)
+        IStateStorage stateStorage
+    ) : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, stateStorage)
     {
-
     }
 
     [HttpGet]
     [AllowAnonymous]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}")]
-    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
+    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions, [FromQuery(Name = "nonce")] string nonce)
     {
-        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, protectedUiOptions, "Init");
+        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, protectedUiOptions, nonce, "Init");
     }
 }

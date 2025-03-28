@@ -48,7 +48,7 @@ public class BankIdAuthOptions : RemoteAuthenticationOptions
 
     private CookieBuilder _stateCookieBuilder = new()
     {
-        Name = BankIdConstants.DefaultStateCookieName,
+        Name = BankIdConstants.AuthStateKey,
         SecurePolicy = CookieSecurePolicy.SameAsRequest,
         HttpOnly = true,
         SameSite = SameSiteMode.Lax,

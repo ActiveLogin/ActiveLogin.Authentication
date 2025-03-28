@@ -22,7 +22,7 @@ public class BankIdUiOptions
         RequireMrtd = requireMrtd;
         ReturnRisk = returnRisk;
         CancelReturnUrl = cancelReturnUrl;
-        StateCookieName = stateCookieName;
+        StateKeyCookieName = stateCookieName;
         CardReader = cardReader;
     }
 
@@ -38,7 +38,7 @@ public class BankIdUiOptions
 
     public string CancelReturnUrl { get; }
 
-    public string StateCookieName { get; }
+    public string StateKeyCookieName { get; }
 
     public CardReader? CardReader { get; }
 }
