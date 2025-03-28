@@ -84,7 +84,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
     {
-        builder.UseRootCaCertificate(() => X509CertificateLoader.LoadCertificateFromFile(certificateFilePath));
+        builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
 
         return builder;
     }
@@ -186,7 +186,7 @@ public static class IBankIdBuilderExtensions
     /// <param name="useBankIdClientCertificate">Use the BankID client certificate (for test) from the BankID documentation.</param>
     /// <param name="clientCertificateFormat">If using the BankID client certificate (for test). Select the preferred format p12, pem or pfx.</param>
     /// <returns></returns>
-    public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true, bool useBankIdClientCertificate = true, TestCertificateFormat clientCertificateFormat = TestCertificateFormat.P12)
+    public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true, bool useBankIdClientCertificate = true, TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX)
     {
         builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdUrls.VerifyApiTestBaseUrl, BankIdEnvironments.Test);
         builder.Services.AddTransient<IBankIdCertificatePolicyResolver, BankIdCertificatePolicyResolverForTest>();
