@@ -102,6 +102,18 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             writer.Write(paymentState.BankIdPaymentProperties.RequirePinCode == null);
             writer.Write(paymentState.BankIdPaymentProperties.RequirePinCode.GetValueOrDefault());
 
+            writer.Write(paymentState.BankIdPaymentProperties.BankIdCertificatePolicies?.Count ?? 0);
+            if (paymentState.BankIdPaymentProperties.BankIdCertificatePolicies?.Count > 0)
+            {
+                foreach (var policy in paymentState.BankIdPaymentProperties.BankIdCertificatePolicies)
+                {
+                    writer.Write(Convert.ToInt32(policy));
+                }
+            }
+
+            writer.Write(paymentState.BankIdPaymentProperties.CardReader == null);
+            writer.Write(paymentState.BankIdPaymentProperties.CardReader.HasValue ? Convert.ToInt32(paymentState.BankIdPaymentProperties.CardReader) : -1);
+
             writer.Write(paymentState.BankIdPaymentProperties.Items.Count);
             foreach (var item in paymentState.BankIdPaymentProperties.Items)
             {
@@ -251,6 +263,17 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             var requirePinCodeIsNull = reader.ReadBoolean();
             var requirePinCode = reader.ReadBoolean();
 
+            var bankIdCertificatePoliciesCount = reader.ReadInt32();
+            var bankIdCertificatePolicies = new List<BankIdCertificatePolicy>();
+            for (var index = 0; index < bankIdCertificatePoliciesCount; index++)
+            {
+                bankIdCertificatePolicies.Add((BankIdCertificatePolicy)reader.ReadInt32());
+            }
+
+            var cardReaderIsNull = reader.ReadBoolean();
+            var cardReaderValue = reader.ReadInt32();
+            CardReader? cardReader = cardReaderIsNull ? null : (CardReader)cardReaderValue;
+
             var count = reader.ReadInt32();
             var items = new Dictionary<string, string?>(count);
 
@@ -271,6 +294,8 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
                 RequiredPersonalIdentityNumber = requiredPersonalIdentityNumber != null ? PersonalIdentityNumber.Parse(requiredPersonalIdentityNumber) : null,
                 RequireMrtd = requireMrtdIsNull ? null : requireMrtd,
                 RequirePinCode = requirePinCodeIsNull ? null : requirePinCode,
+                BankIdCertificatePolicies = bankIdCertificatePolicies,
+                CardReader = cardReader,
                 Items = items
             };
             return new BankIdUiPaymentState(configKey, bankIdPaymentProperties);

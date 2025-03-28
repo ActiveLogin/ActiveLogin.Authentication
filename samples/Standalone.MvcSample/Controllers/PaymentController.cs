@@ -53,6 +53,7 @@ public class PaymentController : Controller
         var props = new BankIdPaymentProperties(TransactionType.card, recipientName)
         {
             Money = new(amount, currency),
+            UserVisibleData = "Demo of Payment with Active Login.",
             Items =
             {
                 {"scheme", provider},

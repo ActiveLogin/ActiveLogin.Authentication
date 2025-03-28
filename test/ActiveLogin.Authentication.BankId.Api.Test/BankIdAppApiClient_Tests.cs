@@ -678,7 +678,7 @@ public class BankIdAppApiClient_Tests
         // Arrange
 
         // Act
-        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant")), new Requirement(new List<string> { "req1", "req2" }, "low", true, true, "190001010101")));
+        await _bankIdAppApiClient.PaymentAsync(new PaymentRequest("1.1.1.1", new UserVisibleTransaction("npa", new Recipient("merchant")), new Requirement(new List<string> { "req1", "req2" }, true, true, "190001010101", CardReader.class1)));
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();

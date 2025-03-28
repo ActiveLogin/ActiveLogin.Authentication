@@ -268,13 +268,14 @@ public class BankIdFlowService : IBankIdFlowService
         var riskWarning = bankIdPaymentData.RiskWarning;
         var userVisibleTransaction = new UserVisibleTransaction(transactionType.ToString(), recipient, money, riskWarning);
 
-        var resolvedCertificatePolicies = GetResolvedCertificatePolicies(flowOptions);
-        var resolvedRiskLevel = flowOptions.AllowedRiskLevel == Risk.BankIdAllowedRiskLevel.NoRiskLevel ? null : flowOptions.AllowedRiskLevel.ToString().ToLower();
+        var certificatePolicies = bankIdPaymentData.CertificatePolicies.Any() ? bankIdPaymentData.CertificatePolicies : flowOptions.CertificatePolicies;
+        var resolvedCertificatePolicies = GetResolvedCertificatePolicies(certificatePolicies, flowOptions.SameDevice);
+        var cardReader = bankIdPaymentData.CardReader ?? flowOptions.CardReader;
 
         var requiredPersonalIdentityNumber = bankIdPaymentData.RequiredPersonalIdentityNumber ?? flowOptions.RequiredPersonalIdentityNumber;
         var requireMrtd = bankIdPaymentData.RequireMrtd ?? flowOptions.RequireMrtd;
         var requirePinCode = bankIdPaymentData.RequirePinCode ?? flowOptions.RequirePinCode;
-        var requestRequirement = new Requirement(resolvedCertificatePolicies, resolvedRiskLevel, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString());
+        var requestRequirement = new Requirement(resolvedCertificatePolicies, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString(), cardReader);
 
         var returnRisk = bankIdPaymentData.ReturnRisk;
 

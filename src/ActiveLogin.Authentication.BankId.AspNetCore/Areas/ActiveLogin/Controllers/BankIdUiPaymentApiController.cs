@@ -75,6 +75,8 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
                     RequiredPersonalIdentityNumber = state.BankIdPaymentProperties.RequiredPersonalIdentityNumber,
                     RequireMrtd = state.BankIdPaymentProperties.RequireMrtd,
                     RequirePinCode = state.BankIdPaymentProperties.RequirePinCode,
+                    CertificatePolicies = state.BankIdPaymentProperties.BankIdCertificatePolicies,
+                    CardReader = state.BankIdPaymentProperties.CardReader,
                 },
                 returnRedirectUrl);
         }

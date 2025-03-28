@@ -1,6 +1,7 @@
 using ActiveLogin.Identity.Swedish;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Core.Payment;
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 
@@ -97,6 +98,22 @@ public class BankIdPaymentProperties
     /// Users are required to confirm the order with their security code even if they have biometrics activated.
     /// </summary>
     public bool? RequirePinCode { get; set; }
+
+    /// <summary>
+    /// The oid in certificate policies in the user certificate. List of String.
+    /// </summary>
+    public List<BankIdCertificatePolicy> BankIdCertificatePolicies { get; set; } = new();
+
+    /// <summary>
+    /// Whether the user needs to complete the order using a card reader for the signature.
+    /// <para>The possible values have the following meaning:</para>
+    /// <para>class1: The order must be confirmed with a card reader where the PIN code is entered on a computer keyboard, or a card reader of higher class.</para>
+    /// <para>class2: The order must be confirmed with a card reader where the PIN code is entered on the reader.</para>
+    /// <para>This condition should always be combined with a certificatePolicies for a smart card to avoid undefined behaviour.</para>
+    /// <para>No card reader is required by default.</para>
+    /// </summary>
+    public CardReader? CardReader { get; set; }
+
 
     /// <summary>
     /// A collection of items where you can store state that will be provided once the sign flow is done.

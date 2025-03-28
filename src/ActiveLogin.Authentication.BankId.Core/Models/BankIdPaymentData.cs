@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Payment;
 using ActiveLogin.Identity.Swedish;
 
@@ -28,6 +29,9 @@ public class BankIdPaymentData
     public bool? RequirePinCode { get; set; }
 
     public bool? ReturnRisk { get; set; }
+
+    public List<BankIdCertificatePolicy> CertificatePolicies { get; set; } = new();
+    public CardReader? CardReader { get; set; }
 
     public IDictionary<string, string?> Items { get; set; } = new Dictionary<string, string?>();
 }
