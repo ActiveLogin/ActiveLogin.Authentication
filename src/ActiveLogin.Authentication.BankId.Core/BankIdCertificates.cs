@@ -16,9 +16,7 @@ internal static class BankIdCertificates
     private static readonly CertificateResource BankIdApiClientCertificateTestPfx = new() { Filename = "FPTestcert5_20240610-legacy.pfx", Password = "qwerty123" };
 
     public static X509Certificate2 GetBankIdApiRootCertificateProd() => GetCertFromResourceStream(BankIdApiRootCertificateProd);
-
     public static X509Certificate2 GetBankIdApiRootCertificateTest() => GetCertFromResourceStream(BankIdApiRootCertificateTest);
-
     public static X509Certificate2 GetBankIdApiClientCertificateTest(TestCertificateFormat certificateFormat) => certificateFormat switch
     {
         TestCertificateFormat.P12 => GetCertFromResourceStream(BankIdApiClientCertificateTestP12),

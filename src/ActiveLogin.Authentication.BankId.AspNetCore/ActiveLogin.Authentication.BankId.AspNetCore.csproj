@@ -15,7 +15,6 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
-
         <PackageReference Include="ActiveLogin.Identity.Swedish" Version="3.0.0" />
     </ItemGroup>
 

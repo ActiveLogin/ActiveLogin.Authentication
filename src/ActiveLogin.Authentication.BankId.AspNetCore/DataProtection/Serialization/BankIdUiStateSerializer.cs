@@ -5,6 +5,7 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
+using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Payment;
 using ActiveLogin.Identity.Swedish;
 
@@ -21,11 +22,11 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
     protected override void Write(BinaryWriter writer, BankIdUiState model)
     {
         writer.Write((int)model.Type);
-        if(model is BankIdUiAuthState authState)
+        if (model is BankIdUiAuthState authState)
         {
             PropertiesSerializer.Default.Write(writer, authState.AuthenticationProperties);
         }
-        else if(model is BankIdUiSignState signState)
+        else if (model is BankIdUiSignState signState)
         {
             writer.Write(signState.ConfigKey);
 
@@ -45,6 +46,18 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
 
             writer.Write(signState.BankIdSignProperties.RequirePinCode == null);
             writer.Write(signState.BankIdSignProperties.RequirePinCode.GetValueOrDefault());
+
+            writer.Write(signState.BankIdSignProperties.BankIdCertificatePolicies?.Count ?? 0);
+            if (signState.BankIdSignProperties.BankIdCertificatePolicies?.Count > 0)
+            {
+                foreach (var policy in signState.BankIdSignProperties.BankIdCertificatePolicies)
+                {
+                    writer.Write(Convert.ToInt32(policy));
+                }
+            }
+
+            writer.Write(signState.BankIdSignProperties.CardReader == null);
+            writer.Write(signState.BankIdSignProperties.CardReader.HasValue ? Convert.ToInt32(signState.BankIdSignProperties.CardReader) : -1);
 
             writer.Write(signState.BankIdSignProperties.Items.Count);
             foreach (var item in signState.BankIdSignProperties.Items)
@@ -147,6 +160,17 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             var requirePinCodeIsNull = reader.ReadBoolean();
             var requirePinCode = reader.ReadBoolean();
 
+            var bankIdCertificatePoliciesCount = reader.ReadInt32();
+            var bankIdCertificatePolicies = new List<BankIdCertificatePolicy>();
+            for(var index = 0; index < bankIdCertificatePoliciesCount; index++)
+            {
+                bankIdCertificatePolicies.Add((BankIdCertificatePolicy)reader.ReadInt32());
+            }
+
+            var cardReaderIsNull = reader.ReadBoolean();
+            var cardReaderValue = reader.ReadInt32();
+            CardReader? cardReader = cardReaderIsNull ? null : (CardReader)cardReaderValue;
+
             var count = reader.ReadInt32();
             var items = new Dictionary<string, string?>(count);
 
@@ -164,6 +188,8 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
                 RequiredPersonalIdentityNumber = requiredPersonalIdentityNumber != null ? PersonalIdentityNumber.Parse(requiredPersonalIdentityNumber) : null,
                 RequireMrtd = requireMrtdIsNull ? null : requireMrtd,
                 RequirePinCode = requirePinCodeIsNull ? null : requirePinCode,
+                BankIdCertificatePolicies = bankIdCertificatePolicies,
+                CardReader = cardReader,
                 Items = items
             };
             return new BankIdUiSignState(configKey, bankIdSignProperties);

@@ -6,7 +6,7 @@ using Azure.Security.KeyVault.Secrets;
 
 namespace ActiveLogin.Authentication.BankId.AzureKeyVault;
 
-internal class AzureKeyVaultCertificateClient
+internal class AzureKeyVaultCertificateClient(SecretClient secretClient)
 {
     public static AzureKeyVaultCertificateClient Create(ClientCertificateFromAzureKeyVaultOptions options)
     {
@@ -46,16 +46,10 @@ internal class AzureKeyVaultCertificateClient
     }
 
     private const string CertificateContentType = "application/x-pkcs12";
-    private readonly SecretClient _secretClient;
-
-    private AzureKeyVaultCertificateClient(SecretClient secretClient)
-    {
-        _secretClient = secretClient;
-    }
 
     public X509Certificate2 GetX509Certificate2(string keyVaultSecretKey)
     {
-        var secret = _secretClient.GetSecret(keyVaultSecretKey).Value;
+        var secret = secretClient.GetSecret(keyVaultSecretKey).Value;
         if (secret.Properties.ContentType != CertificateContentType)
         {
             throw new ArgumentException($"This certificate must be of type {CertificateContentType}");
@@ -66,7 +60,7 @@ internal class AzureKeyVaultCertificateClient
         return GetX509Certificate2(certificateBytes);
     }
 
-    private X509Certificate2 GetX509Certificate2(byte[] certificate)
+    private static X509Certificate2 GetX509Certificate2(byte[] certificate)
     {
         var exportedCertCollection = new X509Certificate2Collection();
         exportedCertCollection.Import(certificate, null, X509KeyStorageFlags.MachineKeySet);

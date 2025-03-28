@@ -1,6 +1,6 @@
+using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
-using ActiveLogin.Authentication.BankId.Core.Risk;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
 
@@ -11,13 +11,13 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
     protected override void Write(BinaryWriter writer, BankIdUiOptions model)
     {
         writer.Write(string.Join(CertificatePoliciesSeparator.ToString(), model.CertificatePolicies));
-        writer.Write(model.AllowedRiskLevel.ToString());
         writer.Write(model.SameDevice);
         writer.Write(model.RequirePinCode);
         writer.Write(model.RequireMrtd);
         writer.Write(model.ReturnRisk);
         writer.Write(model.CancelReturnUrl);
         writer.Write(model.StateCookieName);
+        writer.Write(model.CardReader?.ToString() ?? string.Empty);
     }
 
     protected override BankIdUiOptions Read(BinaryReader reader)
@@ -31,17 +31,31 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
                                     .Select(Enum.Parse<BankIdCertificatePolicy>)
                                     .ToList();
 
-        var riskLevel = Enum.TryParse<BankIdAllowedRiskLevel>(reader.ReadString(), out var allowedRiskLevel) ? allowedRiskLevel : BankIdAllowedRiskLevel.NoRiskLevel;
-
         return new BankIdUiOptions(
             certificatePolicies,
-            riskLevel,
             reader.ReadBoolean(),
             reader.ReadBoolean(),
             reader.ReadBoolean(),
             reader.ReadBoolean(),
             reader.ReadString(),
-            reader.ReadString()
+            reader.ReadString(),
+            ReadEnum<CardReader>(reader)
         );
+    }
+
+    private static TEnum? ReadEnum<TEnum>(BinaryReader reader)
+        where TEnum : struct, Enum
+    {
+        return Enum.TryParse<TEnum>(reader.ReadString(), out var value)
+            ? value
+            : null;
+    }
+
+    private static TEnum ReadEnum<TEnum>(BinaryReader reader, TEnum defaultValue)
+        where TEnum : struct, Enum
+    {
+        return Enum.TryParse<TEnum>(reader.ReadString(), out var value)
+            ? value
+            : defaultValue;
     }
 }

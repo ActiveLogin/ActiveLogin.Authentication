@@ -311,7 +311,7 @@ public static class IBankIdBuilderExtensions
     {
         SetActiveLoginContext(builder.Services, BankIdEnvironments.Simulated, BankIdSimulatedAppApiClient.Version, BankIdSimulatedVerifyApiClient.Version);
         builder.Services.AddTransient<IBankIdCertificatePolicyResolver, BankIdCertificatePolicyResolverForTest>();
-        
+
         builder.Services.AddSingleton(bankIdSimulatedAppApiClient);
         builder.Services.AddSingleton(bankIdSimulatedVerifyApiClient);
         builder.Services.AddSingleton<IBankIdLauncher, BankIdDevelopmentLauncher>();
