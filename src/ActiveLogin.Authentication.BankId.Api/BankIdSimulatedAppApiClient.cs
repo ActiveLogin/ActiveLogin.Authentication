@@ -106,6 +106,17 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         return new SignResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
     }
 
+    public async Task<PaymentResponse> PaymentAsync(PaymentRequest request)
+    {
+        if (request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
+
+        var response = await GetOrderResponseAsync(request.EndUserIp, request.Requirement.Mrtd ?? false, request.ReturnRisk ?? false).ConfigureAwait(false);
+        return new PaymentResponse(response.OrderRef, response.AutoStartToken, response.QrStartToken, response.QrStartSecret);
+    }
+
     private async Task<OrderResponse> GetOrderResponseAsync(string endUserIp, bool mrtd, bool returnRisk)
     {
         await SimulateResponseDelay().ConfigureAwait(false);
@@ -281,6 +292,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         public string PersonalIdentityNumber { get; }
 
         public bool Mrtd { get; }
+
         public bool ReturnRisk { get; }
 
         public int CollectCalls { get; set; }

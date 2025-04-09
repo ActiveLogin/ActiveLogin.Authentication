@@ -1,12 +1,12 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.ApplicationFeatureProviders;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
-using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Requirements;
 using ActiveLogin.Authentication.BankId.Core.UserData;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
@@ -71,9 +71,6 @@ public static class AuthenticationBuilderBankIdAuthExtensions
         var services = builder.Services;
 
         BankIdCommonConfiguration.AddDefaultServices(services);
-
-        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
-        services.AddTransient<IBankIdUiResultProtector, BankIdUiResultProtector>();
 
         builder.AddClaimsTransformer<BankIdDefaultClaimsTransformer>();
 

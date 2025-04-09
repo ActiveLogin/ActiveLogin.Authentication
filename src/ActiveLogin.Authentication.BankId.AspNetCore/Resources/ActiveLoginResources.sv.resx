@@ -117,14 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="StartApp_Button" xml:space="preserve">
-    <value>Starta BankID-appen</value>
-  </data>
-  <data name="Auth_Header" xml:space="preserve">
+  <data name="Sign_Header" xml:space="preserve">
     <value>BankID</value>
   </data>
-  <data name="Auth_Title" xml:space="preserve">
-    <value>Logga in med BankID</value>
+  <data name="Sign_Title" xml:space="preserve">
+    <value>Signera med BankID</value>
   </data>
   <data name="Qr_Code_Image" xml:space="preserve">
     <value>QR-kod för BankID</value>
@@ -135,10 +132,19 @@
   <data name="UnsupportedBrowser_ErrorMessage" xml:space="preserve">
     <value>Din webbläsare saknar funktioner som krävs för att använda denna loginsida.</value>
   </data>
-  <data name="Sign_Header" xml:space="preserve">
+  <data name="Auth_Header" xml:space="preserve">
     <value>BankID</value>
   </data>
-  <data name="Sign_Title" xml:space="preserve">
-    <value>Signera med BankID</value>
+  <data name="Auth_Title" xml:space="preserve">
+    <value>Logga in med BankID</value>
+  </data>
+  <data name="StartApp_Button" xml:space="preserve">
+    <value>Starta BankID-appen</value>
+  </data>
+  <data name="Payment_Header" xml:space="preserve">
+    <value>BankID</value>
+  </data>
+  <data name="Payment_Title" xml:space="preserve">
+    <value>Betalning med BankID</value>
   </data>
 </root>

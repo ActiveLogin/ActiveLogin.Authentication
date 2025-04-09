@@ -9,7 +9,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolv
 
 public abstract class BankIdEndUserWebDeviceDataResolverBase(
     IHttpContextAccessor httpContextAccessor,
-    IBankIdDeviceDataProtector deviceDataProtector) : BankIdDeviceDataResolverBase
+    IBankIdDataStateProtector<DeviceDataState> deviceDataProtector
+) : BankIdDeviceDataResolverBase
 {
     protected HttpContext Context => httpContextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
     private const string DeviceDataCookieNameParameterName = "DeviceDataCookie.Name";

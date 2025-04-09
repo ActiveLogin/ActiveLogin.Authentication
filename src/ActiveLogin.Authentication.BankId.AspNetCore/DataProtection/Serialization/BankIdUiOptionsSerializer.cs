@@ -16,7 +16,7 @@ internal class BankIdUiOptionsSerializer : BankIdDataSerializer<BankIdUiOptions>
         writer.Write(model.RequireMrtd);
         writer.Write(model.ReturnRisk);
         writer.Write(model.CancelReturnUrl);
-        writer.Write(model.StateCookieName);
+        writer.Write(model.StateKeyCookieName);
         writer.Write(model.CardReader?.ToString() ?? string.Empty);
     }
 

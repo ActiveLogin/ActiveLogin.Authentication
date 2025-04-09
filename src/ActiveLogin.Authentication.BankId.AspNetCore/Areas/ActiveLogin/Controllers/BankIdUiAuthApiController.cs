@@ -4,9 +4,9 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Flow;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,20 +17,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [ApiController]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiAuthApiController : BankIdUiApiControllerBase
+public class BankIdUiAuthApiController(
+    IBankIdFlowService bankIdFlowService,
+    IBankIdDataStateProtector<BankIdUiOrderRef> orderRefProtector,
+    IBankIdDataStateProtector<Core.Models.BankIdQrStartState> qrStartStateProtector,
+    IBankIdDataStateProtector<BankIdUiOptions> uiOptionsProtector,
+    IBankIdUserMessage bankIdUserMessage,
+    IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+    IBankIdDataStateProtector<BankIdUiResult> uiAuthResultProtector,
+    IStateStorage stateStorage
+) : BankIdUiApiControllerBase(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector, stateStorage)
 {
-    public BankIdUiAuthApiController(
-        IBankIdFlowService bankIdFlowService,
-        IBankIdUiOrderRefProtector orderRefProtector,
-        IBankIdQrStartStateProtector qrStartStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdUserMessage bankIdUserMessage,
-        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiResultProtector uiAuthResultProtector)
-        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
-    {
-    }
-
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiInitializeActionName)]
     public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)
@@ -43,13 +40,17 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
         BankIdFlowInitializeResult bankIdFlowInitializeResult;
         try
         {
+            var nonce = Guid.NewGuid().ToString();
             var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdAuthInitActionName, BankIdConstants.Routes.BankIdAuthControllerName, new
             {
                 returnUrl = request.ReturnUrl,
-                uiOptions = request.UiOptions
+                uiOptions = request.UiOptions,
+                nonce
             }, protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdAuthControllerName, BankIdConstants.Routes.BankIdAuthInitActionName));
 
             bankIdFlowInitializeResult = await BankIdFlowService.InitializeAuth(uiOptions.ToBankIdFlowOptions(), returnRedirectUrl);
+
+            await _stateStorage.SetAsync(new(nonce), returnRedirectUrl);
         }
         catch (BankIdApiException bankIdApiException)
         {
