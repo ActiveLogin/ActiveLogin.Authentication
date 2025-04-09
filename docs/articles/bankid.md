@@ -1,8 +1,8 @@
 # ActiveLogin.Authentication.BankId
 
-ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication and signing in .NET.
+ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication, signing, payments, phone authentication, phone signing and digital ID card verification in .NET.
 
-The most common scenbario is to use Active Login for BankID auth/login, so most of the concepts will be described from that perspective. We've designed sign to follow the same patterns and amke sure we can share things like certificate handling etc.
+The most common scenario is to use Active Login for BankID auth/login, so most of the concepts will be described from that perspective. We've designed the other features to follow the same patterns and make sure we can share things like certificate handling etc.
 
 ## Table of contents
 
@@ -22,6 +22,7 @@ The most common scenbario is to use Active Login for BankID auth/login, so most 
   + [Production environment](#production-environment)
   + [Full sample for production](#full-sample-for-production)
 * [Sign](#sign)
+* [Payment](#payment)
 * [Basic configuration samples](#basic-configuration-samples)
   + [Using client certificate from Azure KeyVault](#using-client-certificate-from-azure-keyvault)
   + [Using client certificate from custom source](#using-client-certificate-from-custom-source)
@@ -323,7 +324,7 @@ services
 Once that is done you will be able to use these services in your application, for example in your controller:
 
 * `IBankIdSignConfigurationProvider` : List the registered configuraitons (SameDevice / Other Device)
-* `IBankIdSignService` : Initiate and resulve the result of sign flow
+* `IBankIdSignService` : Initiate and resolve the result of sign flow
 
 Here is a minimal sample. See `Standalone.MvcSample` for more details.
 
@@ -391,6 +392,113 @@ public class SignController : Controller
 
 ---
 
+# Payment
+
+Payment works very similar to sign and auth. You need to register both the common BankID logic (environment, cert etc) as well as the payment specific configration (devices).
+
+```csharp
+// Add Active Login - BankID
+services
+    .AddBankId(bankId =>
+    {
+        bankId.AddDebugEventListener();
+        bankId.UseQrCoderQrCodeGenerator();
+        bankId.UseUaParserDeviceDetection();
+        bankId.UseSimulatedEnvironment();
+    });
+
+// Add Active Login - Payment
+services.AddBankIdPayment(bankId =>
+{
+    bankId.AddSameDevice(BankIdPaymentDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
+    bankId.AddOtherDevice(BankIdPaymentDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
+});
+```
+
+Once that is done you will be able to use these services in your application, for example in your controller:
+
+* `IBankIdPaymentConfigurationProvider` : List the registered configuraitons (Same Device / Other Device)
+* `IBankIdPaymentService` : Initiate and resolve the result of payment flow
+
+Here is a minimal sample. See `Standalone.MvcSample` for more details.
+
+```csharp
+[AllowAnonymous]
+public class PaymentController : Controller
+{
+    private readonly IBankIdPaymentConfigurationProvider _bankIdPaymentConfigurationProvider;
+    private readonly IBankIdPaymentService _bankIdPaymentService;
+
+    public PaymentController(IBankIdPaymentConfigurationProvider bankIdPaymentConfigurationProvider, IBankIdPaymentService bankIdPaymentService)
+    {
+        _bankIdPaymentConfigurationProvider = bankIdPaymentConfigurationProvider;
+        _bankIdPaymentService = bankIdPaymentService;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var configurations = await _bankIdPaymentConfigurationProvider.GetAllConfigurationsAsync();
+        var providers = configurations
+            .Where(x => x.DisplayName != null)
+            .Select(x => new ExternalProvider(x.DisplayName ?? x.Key, x.Key));
+        var viewModel = new BankIdViewModel(providers, $"{Url.Action(nameof(Index))}");
+
+        return View(viewModel);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("Payment")]
+    public IActionResult Payment([FromQuery] string provider, [FromForm] PaymentRequestModel model)
+    {
+        ArgumentNullException.ThrowIfNull(model, nameof(model));
+
+        var recipientName = "Demo Merchant Name";
+        var amount = "100,00";
+        var currency = "SEK";
+        var props = new BankIdPaymentProperties(TransactionType.card, recipientName)
+        {
+            Money = new(amount, currency),
+            UserVisibleData = "Demo of Payment with Active Login.",
+            Items =
+            {
+                {"scheme", provider},
+                {"transactionType", nameof(TransactionType.card)},
+                {"recipientName", recipientName},
+                {"amount", amount},
+                {"currency", currency}
+            },
+        };
+
+        var returnPath = $"{Url.Action(nameof(Callback))}?provider={provider}";
+        return this.BankIdInitiatePayment(props, returnPath, provider);
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Callback(string provider)
+    {
+        var result = await _bankIdPaymentService.GetPaymentResultAsync(provider);
+        if (result?.Succeeded != true || result.BankIdCompletionData == null)
+        {
+            throw new Exception("Payment error");
+        }
+
+        return View("Result", new PaymentResultViewModel(
+            result.BankIdCompletionData.User.PersonalIdentityNumber,
+            result.BankIdCompletionData.User.Name,
+            result.BankIdCompletionData.Device.IpAddress,
+            result.Properties.Items["transactionType"] ?? string.Empty,
+            result.Properties.Items["recipientName"] ?? string.Empty,
+            result.Properties.Items["amount"] ?? null,
+            result.Properties.Items["currency"] ?? null
+            )
+        );
+    }
+}
+
+```
+
+---
 
 ## Basic configuration samples
 
@@ -489,6 +597,7 @@ If you want to apply some options for all BankID schemes, you can do so by using
 ```
 
 Requirements can also be set dynamically for each authentication, see section [Resolve requirements on Auth request](#resolve-requirements-on-auth-request). To use dynamic requirements with signatures provide the requirements as part the `BankIdSignProperties`, see section [Sign](#sign).
+To use dynamic requirements with payments provide the requirements as part the `BankIdPaymentProperties`, see section [Payment](#payment).
 
 ---
 
@@ -803,10 +912,11 @@ In this folder, you can then create any of the partials and MVC will then discov
 - `_Style.cshtml`
 - `_Spinner.cshtml`
 
-If you want, you can override the UI for Auth and Sign with different templates. Do so by placing the files in one of these folders:
+If you want, you can override the UI for Auth, Sign and Payment with different templates. Do so by placing the files in one of these folders:
 
 * `Areas/ActiveLogin/Views/BankIdUiAuth`
 * `Areas/ActiveLogin/Views/BankIdUiSign`
+* `Areas/ActiveLogin/Views/BankIdUiPayment`
 
 See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample/Areas/ActiveLogin/Views/BankIdUiAuth/_Wrapper.cshtml).
 
@@ -854,12 +964,15 @@ At the moment, we trigger the events listed below. They all have unique event pr
     - `BankIdAspNetChallengeSuccessEvent`
     - `BankIdAspNetAuthenticateSuccessEvent`
     - `BankIdAspNetAuthenticateFailureEvent`
-- Auth
-    - `BankIdAuthSuccessEvent`
-    - `BankIdAuthErrorEvent`
+- Initialize
+    - `BankIdInitializeSuccessEvent`
+    - `BankIdInitializeErrorEvent`
 - Sign
     - `BankIdSignSuccessEvent`
-    - `BankIdSignErrorEvent`
+    - `BankIdSignFailureEvent`
+- Payment
+    - `BankIdPaymentSuccessEvent`
+    - `BankIdPaymentFailureEvent`
 - Collect
     - `BankIdCollectPendingEvent`
     - `BankIdCollectCompletedEvent`
@@ -1436,6 +1549,7 @@ public class BankIdAppApiClient : IBankIdAppApiClient
 {
     public Task<AuthResponse> AuthAsync(AuthRequest request) { ... }
     public Task<SignResponse> SignAsync(SignRequest request) { ... }
+    public Task<PaymentResponse> PaymentAsync(PaymentRequest request) { ... }
     public Task<PhoneAuthResponse> PhoneAuthAsync(PhoneAuthRequest request) { ... }
     public Task<PhoneSignResponse> PhoneSignAsync(PhoneSignRequest request) { ... }
     public Task<CollectResponse> CollectAsync(CollectRequest request) { ... }

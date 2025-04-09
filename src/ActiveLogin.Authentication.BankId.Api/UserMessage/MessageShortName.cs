@@ -23,7 +23,6 @@ public enum MessageShortName
     RFA17A,
     RFA17B,
 
-    RFA18,
     RFA19,
     RFA20,
     RFA21,

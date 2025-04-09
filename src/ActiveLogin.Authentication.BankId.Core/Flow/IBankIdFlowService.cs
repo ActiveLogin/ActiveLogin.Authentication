@@ -8,6 +8,8 @@ public interface IBankIdFlowService
 
     Task<BankIdFlowInitializeResult> InitializeSign(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string returnRedirectUrl);
 
+    Task<BankIdFlowInitializeResult> InitializePayment(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, string returnRedirectUrl);
+
     Task<BankIdFlowCollectResult> Collect(string orderRef, int autoStartAttempts, BankIdFlowOptions flowOptions);
 
     Task Cancel(string orderRef, BankIdFlowOptions flowOptions);

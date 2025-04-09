@@ -28,20 +28,25 @@ public static class BankIdAppApiClientExtensions
     /// If present, and set to "simpleMarkdownV1", this parameter indicates that userVisibleData holds formatting characters which, if used correctly, will make the text displayed with the user nicer to look at.
     /// For further information of formatting options, please study the document Guidelines for Formatted Text.
     /// </param>
+    /// <param name="returnUrl">
+    /// If present the user will be redirected to this URL when the order is completed. Any return URL provided in the start URL when the BankID app was launched will be ignored.
+    /// </param>
     public static Task<AuthResponse> AuthAsync(
         this IBankIdAppApiClient appApiClient,
         string endUserIp,
         Requirement? requirement = null,
         string? userVisibleData = null,
         byte[]? userNonVisibleData = null,
-        string? userVisibleDataFormat = null)
+        string? userVisibleDataFormat = null,
+        string? returnUrl = null)
     {
         return appApiClient.AuthAsync(new(
             endUserIp,
             userVisibleData: userVisibleData,
             userNonVisibleData: userNonVisibleData,
             requirement: requirement,
-            userVisibleDataFormat: userVisibleDataFormat));
+            userVisibleDataFormat: userVisibleDataFormat,
+            returnUrl: returnUrl));
     }
 
     /// <summary>
@@ -101,13 +106,17 @@ public static class BankIdAppApiClientExtensions
     /// <param name="userNonVisibleData">
     /// Data not displayed to the user.
     /// </param>
+    /// <param name="returnUrl">
+    /// If present the user will be redirected to this URL when the order is completed. Any return URL provided in the start URL when the BankID app was launched will be ignored.
+    /// </param>
     /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
-    public static Task<SignResponse> SignAsync(this IBankIdAppApiClient appApiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData)
+    public static Task<SignResponse> SignAsync(this IBankIdAppApiClient appApiClient, string endUserIp, string userVisibleData, byte[] userNonVisibleData, string? returnUrl = null)
     {
         return appApiClient.SignAsync(new SignRequest(
             endUserIp,
             userVisibleData,
-            userNonVisibleData: userNonVisibleData));
+            userNonVisibleData: userNonVisibleData,
+            returnUrl: returnUrl));
     }
 
     /// <summary></summary>
