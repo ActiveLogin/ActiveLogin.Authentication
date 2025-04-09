@@ -7,7 +7,7 @@ internal abstract class BankIdDataStateProtector<TModel>
 {
     private const string ProtectorVersion = "v2";
 
-    private readonly ISecureDataFormat<TModel> _secureDataFormat;
+    private readonly SecureDataFormat<TModel> _secureDataFormat;
 
     protected BankIdDataStateProtector(
         IDataProtectionProvider dataProtectionProvider,

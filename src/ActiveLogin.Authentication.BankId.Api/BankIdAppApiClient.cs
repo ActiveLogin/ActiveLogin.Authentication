@@ -37,6 +37,15 @@ public class BankIdAppApiClient : IBankIdAppApiClient
     }
 
     /// <summary>
+    /// Initiates a payment order. Use the collect method to query the status of the order.
+    /// </summary>
+    /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
+    public Task<PaymentResponse> PaymentAsync(PaymentRequest request)
+    {
+        return _httpClient.PostAsync<PaymentRequest, PaymentResponse>("payment", request);
+    }
+
+    /// <summary>
     /// Initiates a phone authentication order. Use the collect method to query the status of the order.
     /// </summary>
     /// <returns>If the request is successful, the OrderRef is returned.</returns>

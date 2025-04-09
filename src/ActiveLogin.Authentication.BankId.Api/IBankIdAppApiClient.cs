@@ -20,6 +20,12 @@ public interface IBankIdAppApiClient
     Task<SignResponse> SignAsync(SignRequest request);
 
     /// <summary>
+    /// Initiates a payment order. Use the collect method to query the status of the order.
+    /// </summary>
+    /// <returns>If the request is successful, the OrderRef and AutoStartToken is returned.</returns>
+    Task<PaymentResponse> PaymentAsync(PaymentRequest request);
+
+    /// <summary>
     /// Initiates a phone authentication order. Use the collect method to query the status of the order.
     /// </summary>
     /// <returns>If the request is successful, the OrderRef is returned.</returns>

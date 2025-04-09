@@ -8,7 +8,9 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Flow;
+using ActiveLogin.Authentication.BankId.Core.Models;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Http;
@@ -17,40 +19,29 @@ using Microsoft.AspNetCore.Mvc;
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Controllers;
 
 [NonController]
-public abstract class BankIdUiApiControllerBase : ControllerBase
+public abstract class BankIdUiApiControllerBase(
+    IBankIdFlowService bankIdFlowService,
+    IBankIdDataStateProtector<BankIdUiOrderRef> orderRefProtector,
+    IBankIdDataStateProtector<BankIdQrStartState> qrStartStateProtector,
+    IBankIdDataStateProtector<BankIdUiOptions> uiOptionsProtector,
+
+    IBankIdUserMessage bankIdUserMessage,
+    IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+    IBankIdDataStateProtector<BankIdUiResult> uiAuthResultProtector,
+    IStateStorage stateStorage
+) : ControllerBase
 {
     private static JsonSerializerOptions JsonSerializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-    protected readonly IBankIdFlowService BankIdFlowService;
-    protected readonly IBankIdUiOrderRefProtector OrderRefProtector;
-    protected readonly IBankIdQrStartStateProtector QrStartStateProtector;
-    protected readonly IBankIdUiOptionsProtector UiOptionsProtector;
+    protected readonly IBankIdFlowService BankIdFlowService = bankIdFlowService;
+    protected readonly IBankIdDataStateProtector<BankIdUiOrderRef> OrderRefProtector = orderRefProtector;
+    protected readonly IBankIdDataStateProtector<BankIdQrStartState> QrStartStateProtector = qrStartStateProtector;
+    protected readonly IBankIdDataStateProtector<BankIdUiOptions> UiOptionsProtector = uiOptionsProtector;
+    protected readonly IStateStorage _stateStorage = stateStorage;
 
-    private readonly IBankIdUserMessage _bankIdUserMessage;
-    private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
-    private readonly IBankIdUiResultProtector _uiAuthResultProtector;
-
-    protected BankIdUiApiControllerBase(
-        IBankIdFlowService bankIdFlowService,
-        IBankIdUiOrderRefProtector orderRefProtector,
-        IBankIdQrStartStateProtector qrStartStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-
-        IBankIdUserMessage bankIdUserMessage,
-        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiResultProtector uiAuthResultProtector
-
-    )
-    {
-        BankIdFlowService = bankIdFlowService;
-        OrderRefProtector = orderRefProtector;
-        QrStartStateProtector = qrStartStateProtector;
-        UiOptionsProtector = uiOptionsProtector;
-
-        _bankIdUserMessage = bankIdUserMessage;
-        _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
-        _uiAuthResultProtector = uiAuthResultProtector;
-    }
+    private readonly IBankIdUserMessage _bankIdUserMessage = bankIdUserMessage;
+    private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
+    private readonly IBankIdDataStateProtector<BankIdUiResult> _uiAuthResultProtector = uiAuthResultProtector;
 
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiStatusActionName)]

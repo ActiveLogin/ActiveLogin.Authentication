@@ -16,6 +16,13 @@ public class Request_Tests
     }
 
     [Fact]
+    public void Constructor_WhenPaymentRequest_WhenNoUserVisibleTransaction_ShouldThrow()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => new PaymentRequest("", null));
+        Assert.Equal("userVisibleTransaction", exception.ParamName);
+    }
+
+    [Fact]
     public void Constructor_WhenAnyRequest_WhenNoEndUserIp_ShouldThrow()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new AnyRequest(null));
