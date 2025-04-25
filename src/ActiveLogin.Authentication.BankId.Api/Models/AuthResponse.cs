@@ -1,9 +1,5 @@
 namespace ActiveLogin.Authentication.BankId.Api.Models;
 
-public class AuthResponse : Response
+public class AuthResponse(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret) : Response(orderRef, autoStartToken, qrStartToken, qrStartSecret)
 {
-    public AuthResponse(string orderRef, string autoStartToken, string qrStartToken, string qrStartSecret)
-        : base(orderRef, autoStartToken, qrStartToken, qrStartSecret)
-    {
-    }
 }
