@@ -24,9 +24,6 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 Breaking changes between version 11.0.0 and 10.0.0
 
-### Upgrade to .NET 9
-We now require .NET 9 - so this requires you to upgrade your website that uses Active Login.
-
 ### Remove allowed risk Level
 Removed support for blocking auth and sign transactions based on risk level, since no longer supported by BankID. Use return risk instead and handle risk level in your application.
 ```csharp
@@ -36,15 +33,6 @@ Removed support for blocking auth and sign transactions based on risk level, sin
     });
 ```
 BankID provides futher information more about [Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication).
-
-### Change default client certificate in test environment
-We now use FPTestcert5_20240610.p12 as the default client certificate for the test environment instead of FPTestcert5_20240610-legacy.pfx. Use the code below to switch to an alternative certificate format.
-```csharp
-    .AddBankId(bankId =>
-    {
-        bankId.UseTestEnvironment(clientCertificateFormat: TestCertificateFormat.PFX);
-    });
-```
 
 
 ---
