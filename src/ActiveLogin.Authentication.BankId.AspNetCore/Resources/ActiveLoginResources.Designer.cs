@@ -88,6 +88,24 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BankID.
+        /// </summary>
+        internal static string Payment_Header {
+            get {
+                return ResourceManager.GetString("Payment_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment with BankID.
+        /// </summary>
+        internal static string Payment_Title {
+            get {
+                return ResourceManager.GetString("Payment_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to QR Code for BankID.
         /// </summary>
         internal static string Qr_Code_Image {

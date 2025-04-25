@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -31,12 +32,23 @@ internal class JsonTests
         var jsonContentNode = JsonNode.Parse(jsonContent);
         Assert.Equal(expectedValue, jsonContentNode[expectedParentProperty][expectedProperty].GetValue<TValue>());
     }
+
     public static void AssertSubProperty<TValue>(string jsonContent, string expectedParentProperty, string expectedProperty, List<TValue> expectedValue)
     {
         var jsonContentNode = JsonNode.Parse(jsonContent);
         var expectedAsString = JsonSerializer.Serialize(expectedValue);
 
         Assert.Equal(expectedAsString, jsonContentNode[expectedParentProperty][expectedProperty].ToJsonString());
+    }
+
+    public static void AssertPropertyHierarchy<TValue>(string jsonContent, TValue expectedValue, params string[] properties)
+    {
+        var jsonContentNode = JsonNode.Parse(jsonContent);
+        var expectedAsString = JsonSerializer.Serialize(expectedValue);
+
+        var value = GetSubPropertyValue(jsonContentNode, properties);
+
+        Assert.Equal(expectedAsString, value);
     }
 
     public static void AssertPropertyIsEmptyObject(string jsonContent, string expectedProperty)
@@ -66,6 +78,11 @@ internal class JsonTests
             contentObject.TryGetValue(path, out var actualValue);
             Assert.Equal(expectedValue, actualValue);
         }
+    }
+
+    private static string GetSubPropertyValue(JsonNode jsonNode, IEnumerable<string> properties)
+    {
+        return properties.Any() ?  GetSubPropertyValue(jsonNode[properties.First()], properties.Skip(1)) : jsonNode.ToJsonString();
     }
 
 }

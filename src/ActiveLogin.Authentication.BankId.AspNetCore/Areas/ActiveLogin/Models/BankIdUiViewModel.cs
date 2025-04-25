@@ -2,12 +2,13 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
 
 public class BankIdUiViewModel
 {
-    internal BankIdUiViewModel(BankIdUiScriptConfiguration bankUiScriptConfiguration, BankIdUiScriptInitState bankIdUiScriptInitState, BankIdUiSignData? signData = null)
+    internal BankIdUiViewModel(BankIdUiScriptConfiguration bankUiScriptConfiguration, BankIdUiScriptInitState bankIdUiScriptInitState, BankIdUiSignData? signData = null, BankIdUiPaymentData? paymentData = null)
     {
         BankUiScriptConfiguration = bankUiScriptConfiguration;
         BankIdUiScriptInitState = bankIdUiScriptInitState;
 
         BankIdUiSignData = signData;
+        BankIdUiPaymentData = paymentData;
     }
 
     public string? LocalizedPageHeader { get; init; }
@@ -21,4 +22,5 @@ public class BankIdUiViewModel
     public BankIdUiScriptInitState BankIdUiScriptInitState { get; }
 
     public BankIdUiSignData? BankIdUiSignData { get; }
+    public BankIdUiPaymentData? BankIdUiPaymentData { get; }
 }

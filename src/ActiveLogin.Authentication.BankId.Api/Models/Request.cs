@@ -112,12 +112,22 @@ public abstract class Request
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
     /// <param name="web">Information about the web browser the end user is using.</param>
     /// <param name="app">Information about the App device the end user is using.</param>
-    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null,
-        DeviceDataWeb? web = null, DeviceDataApp ? app = null)
+    /// <param name="riskFlags">
+    /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
+    /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
+    /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
+    /// </param>
+    /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
+    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, List<string>? riskFlags = null, UserVisibleTransaction? userVisibleTransaction = null, DeviceDataWeb ? web = null, DeviceDataApp? app = null)
     {
         if (this is SignRequest && userVisibleData == null)
         {
             throw new ArgumentNullException(nameof(userVisibleData));
+        }
+
+        if (this is PaymentRequest && userVisibleTransaction == null)
+        {
+            throw new ArgumentNullException(nameof(userVisibleTransaction));
         }
 
         EndUserIp = endUserIp ?? throw new ArgumentNullException(nameof(endUserIp));
@@ -130,6 +140,8 @@ public abstract class Request
         Web = web;
         App = app;
 
+        RiskFlags = riskFlags;
+        UserVisibleTransaction = userVisibleTransaction; 
     }
 
     /// <summary>
@@ -193,6 +205,20 @@ public abstract class Request
 
     [JsonPropertyName("web"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public DeviceDataWeb? Web { get; set; }
+
+    /// <summary>
+    /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
+    /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
+    /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
+    /// </summary>
+    [JsonPropertyName("riskFlags"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public List<string>? RiskFlags { get; set; }
+
+    /// <summary>
+    /// Information about the transaction being approved.
+    /// </summary>
+    [JsonPropertyName("userVisibleTransaction"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public UserVisibleTransaction? UserVisibleTransaction { get; set; }
 
     private static string? ToBase64EncodedString(string? value)
     {
