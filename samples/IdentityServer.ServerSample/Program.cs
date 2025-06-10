@@ -67,7 +67,7 @@ services.AddIdentityServer(options =>
 //    {
 //        bankId
 //            .UseSimulatedEnvironment()
-//            
+//
 //    });
 
 // # Sample: Using BankID with production environment
@@ -118,8 +118,8 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddBankIdAuth(bankId =>
     {
-        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
-        bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID", options => { });
+        bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID med QR kod", options => { });
         bankId.UseAuthRequestUserData(authUserData =>
         {
             var message = new StringBuilder();

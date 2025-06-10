@@ -3,6 +3,7 @@ using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Web;
 namespace IdentityServer.ServerSample.Controllers;
 
 public class AccountController : Controller
@@ -17,13 +18,13 @@ public class AccountController : Controller
         _authenticationSchemeProvider = authenticationSchemeProvider;
     }
 
-    public async Task<IActionResult> Login(string returnUrl)
+       public async Task<IActionResult> Login(string returnUrl)
     {
         var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync();
         var providers = schemes
             .Where(x => x.DisplayName != null)
             .Select(x => new ExternalProvider(x.DisplayName ?? x.Name, x.Name));
-        var sanitizedReturnUrl = System.Net.WebUtility.HtmlEncode(returnUrl);
+        var sanitizedReturnUrl = HttpUtility.UrlEncode(returnUrl);
         var viewModel = new AccountLoginViewModel(providers, sanitizedReturnUrl);
 
         return View(viewModel);
