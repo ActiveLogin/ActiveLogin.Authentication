@@ -46,6 +46,7 @@ The most common scenario is to use Active Login for BankID auth/login, so most o
   + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
   + [Custom QR code generation](#custom-qr-code-generation)
   + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
+  + [Risk indication](#risk-indication)
   + [Verify digital ID card](#verify-digital-id-card)
   + [Use api wrapper only](#use-api-wrapper-only)
   + [Running on Linux](#running-on-linux)
@@ -577,11 +578,7 @@ BankId options allows you to set and override some options such as the below req
     // If no policy is set, it will fall back to require mobile BankID for OtherDevice flow
     options.BankIdCertificatePolicies = [ BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.BankIdOnSmartCard ];
 
-    // If this is set to true a risk indicator will be included in the collect response when the order completes.
-    // If a risk indicator is required for the order to complete, for example, if a risk requirement is applied,
-    // the returnRisk property is ignored, and a risk indicator is always included; otherwise a default value of
-    // false is used. The risk indication requires that the endUserIp is correct. Please note that the assessed
-    // risk will not be returned if the order was blocked, which may happen if a risk requirement is set.
+    // If set to true a risk indication is requested from BankID and returned as part of the collect response.
     options.BankIdReturnRisk = true;
 });
 ```
@@ -774,23 +771,6 @@ public class BankIdPinHintClaimsTransformer : IBankIdClaimsTransformer
     {
         // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
         return birthdate.Date.ToString("yyyy-MM-dd");
-    }
-}
-```
-
-#### Example: Add risk claim
-
-If the application whats to act on the evaluated risk level for the transaction it could be extracted from the completion data returned by BankID.
-
-```csharp
-public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
-{
-    public Task TransformClaims(BankIdClaimsTransformationContext context)
-    {
-        if (context.BankIdCompletionData != null && context.BankIdCompletionData.Risk != null)
-            context.AddClaim("user_risk", context.BankIdCompletionData.Risk);
-
-        return Task.CompletedTask;
     }
 }
 ```
@@ -1140,16 +1120,15 @@ services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
 ---
-### Device data
+### Resolve the end user device data
 
 When initiating a flow with BankID, the objects "app" or "web" can be included in the request.
 The information in these two objects differs, but including either of them allows BankID to
-provide a better risk indication.
+provide a better [Risk indication](#risk-indication).
 
 When using BankID, device information provides valuable metadata that enhances security and ensures a smoother user experience.
 Including the **device type** (e.g., `APP` or `WEB`) helps BankID:
-- **Evaluate risk** for each request.
-- **Take automated actions** based on high-risk scenarios (if enabled).
+- **Evaluate risk** for each request. 
 - Provide **better insights** into the context of the request.
 
 #### Configuring Device Data
@@ -1169,10 +1148,13 @@ The following service interface must be implemented to use the User Device featu
 | **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | Referring domain, User-Agent, DeviceIdentifier            |
 | **App**       | `BankIdDefaultEndUserAppDeviceDataResolver` | App Identifier, Device OS, Model, DeviceIdentifier |
 
-The Device identifier must be identical between requests.
+The Device identifier must be identical between requests. The `BankIdDefaultEndUserWebDeviceDataResolver` will set a protected cookie named `__ActiveLogin.BankIdDeviceData` that contains
+a unique identifier (DeviceIdentifier) to ensure that the identifier is persistent across requests.
 
-The `BankIdDefaultEndUserWebDeviceDataResolver` will set a protected cookie named `__ActiveLogin.BankIdDeviceData` that contains
-unique identifier (DeviceIdentifier) to ensure that the identifier is persistent across requests.
+___Note:___
+
+Cookies are protected using ASP.NET Core Data Protection. For more information about the cookies used by the package, including how they are protected and considerations for persistent key storage, see the [Cookies issued](#cookies-issued) section above.
+
 
 #### Customizing the User Device feature
 To customize the User Device feature, use the `UseDeviceData` extension in the BankID client builder.
@@ -1471,6 +1453,43 @@ public class BankIdFacebookAppBrowserConfig : IBankIdLauncherCustomAppCallback
 
 ```
 
+### Risk indication
+
+You can choose to request a risk indication from BankID for both identifications and signatures. It can be used to increase security, protect your customers and reduce the risk of fraud. The indication is categorized as low, medium or high risk.
+You must implement your own logic to act on the assessed risk level from BankID.
+
+You need to provide information to BankID in the auth or sign request, to help them make the risk assessment e.g. the end users IP address and the app or web property (which is part of [Device Data](#resolve-the-end-user-device-data) in Active Login).
+
+Incorrect information in the call gives an incorrect risk indication.
+
+Use the BankID option below to turn on risk indication. Read more about [Customizing BankID options](#customizing-bankid-options).
+
+```csharp
+    services.Configure<BankIdAuthOptions>(options =>
+    {
+        options.BankIdReturnRisk = true;
+    });
+```
+
+To get risk indication extracted from the completion data returned by BankID and issued as a claim from Active Login [create your own claims transformer](#claims-issuing).
+
+```csharp
+public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
+{
+    public Task TransformClaims(BankIdClaimsTransformationContext context)
+    {
+        if (context.BankIdCompletionData != null && context.BankIdCompletionData.Risk != null)
+            context.AddClaim("user_risk", context.BankIdCompletionData.Risk);
+
+        return Task.CompletedTask;
+    }
+}
+```
+
+#### More information available at:
+ - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
+
+
 ### Verify digital ID card
 
 To use the API for "Verify digital ID card" you first need to register the BankID services, select an environment etc.
@@ -1598,9 +1617,16 @@ The `*.AspNetCore` package will issue a cookie to make the auth flow work
   - A more technical deep dive of this cookie can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
 
 - Cookie: `__ActiveLogin.BankIdDeviceData`
-  - This cookie is used to store the device data for the user, in the default implementation,
-  It is used to ensure that the device data is persistent across requests.
+  - This cookie is used to store the device data for the user, in the default implementation, it is used to ensure that the device data is persistent across requests.
+
   
+___Note:___
+
+All cookies issued by this package are **protected using ASP.NET Core Data Protection**. This means their contents are encrypted and tamper-proof.
+
+In certain environments (such as multi-instance deployments or containers) you may need to **configure Data Protection to use a persistent key store** (e.g., a shared file system, Azure Blob Storage, Redis, or SQL Server) so that cookies can be unprotected across app restarts or multiple instances.
+
+For guidance on configuring a persistent key store, see the official documentation: [Data Protection configuration overview](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-8.0).
 
 
 ### Browser support

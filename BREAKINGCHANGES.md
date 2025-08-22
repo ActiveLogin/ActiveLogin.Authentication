@@ -25,14 +25,41 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 Breaking changes between version 11.0.0 and 10.0.0
 
 ### Remove allowed risk Level
-Removed support for blocking auth and sign transactions based on risk level, since no longer supported by BankID. Use return risk instead and handle risk level in your application.
+Removed support for blocking auth and sign transactions based on risk level, since no longer supported by BankID.
+```csharp
+    services.Configure<BankIdAuthOptions>(options =>
+    {
+        options.BankIdAllowedRiskLevel = BankIdAllowedRiskLevel.Low;
+    });
+```
+
+Use return risk instead and handle risk level in your application.
 ```csharp
     services.Configure<BankIdAuthOptions>(options =>
     {
         options.BankIdReturnRisk = true;
     });
 ```
+
 BankID provides futher information more about [Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication).
+
+
+---
+
+
+## Version 10.1.0
+
+### Important Note
+Version 10.1.0 was released as a minor version and should not have introduced breaking changes. However, in practice, some users experienced issues related to the new cookie `__ActiveLogin.BankIdDeviceData`. If you encountered issues after upgrading, please review the guidance below.
+
+### Added New Cookie for Device Data
+A new Cookie `__ActiveLogin.BankIdDeviceData` was added to store information about the end user’s device. This information is sent to BankID and used for risk indication. 
+
+The cookie is long lived and persisted across sessions. Since all cookies issued by Active Login are protected using ASP.NET Core Data Protection. In certain environments (such as multi-instance deployments or containers) you may need to configure Data Protection to use a persistent key store (e.g. a shared file system, Azure Blob Storage, Redis, or SQL Server) so that cookies can be unprotected across app restarts or multiple instances. 
+
+This applies also to the existing UI State cookie in Active Login. However, since that cookie has a very short lifetime compared to the device data cookie, the risk of running in to issues related to data protection is significantly lower for that cookie.
+
+For guidance on configuring a persistent key store, see the official documentation: [Data Protection configuration overview](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-8.0).
 
 
 ---
@@ -42,10 +69,18 @@ BankID provides futher information more about [Risk Indication](https://www.bank
 
 Breaking changes between version 10.0.0 and 9.0.0
 
+### Policy handling
+
 * Remove policy handling from API library into Core
 * Fall back to mobile BankID policy for OtherDevice flow
 * Enum for setting policy instead of string
-* Replace embedded BankID certificate for the test environment FPTestcert4_20220818.p12, with the three new versions of the client certificate FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Make it configurable which version to use. For compatibility reasons use FPTestcert5_20240610-legacy.pfx by default.
+
+
+### Replaced Embedded BankID Certificate for Test Environment
+
+Replace embedded BankID certificate for the test environment FPTestcert4_20220818.p12, with the three new versions of the client certificate FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. 
+
+Make it configurable which version to use. For compatibility reasons use FPTestcert5_20240610-legacy.pfx by default.
 
 
 ---
