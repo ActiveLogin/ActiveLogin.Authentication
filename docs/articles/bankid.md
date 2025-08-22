@@ -1140,7 +1140,7 @@ services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
 ---
-### Device data
+### Resolve the end user device data
 
 When initiating a flow with BankID, the objects "app" or "web" can be included in the request.
 The information in these two objects differs, but including either of them allows BankID to
@@ -1149,7 +1149,6 @@ provide a better risk indication.
 When using BankID, device information provides valuable metadata that enhances security and ensures a smoother user experience.
 Including the **device type** (e.g., `APP` or `WEB`) helps BankID:
 - **Evaluate risk** for each request.
-- **Take automated actions** based on high-risk scenarios (if enabled).
 - Provide **better insights** into the context of the request.
 
 #### Configuring Device Data
@@ -1169,10 +1168,13 @@ The following service interface must be implemented to use the User Device featu
 | **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | Referring domain, User-Agent, DeviceIdentifier            |
 | **App**       | `BankIdDefaultEndUserAppDeviceDataResolver` | App Identifier, Device OS, Model, DeviceIdentifier |
 
-The Device identifier must be identical between requests.
+The Device identifier must be identical between requests. The `BankIdDefaultEndUserWebDeviceDataResolver` will set a protected cookie named `__ActiveLogin.BankIdDeviceData` that contains
+a unique identifier (DeviceIdentifier) to ensure that the identifier is persistent across requests.
 
-The `BankIdDefaultEndUserWebDeviceDataResolver` will set a protected cookie named `__ActiveLogin.BankIdDeviceData` that contains
-unique identifier (DeviceIdentifier) to ensure that the identifier is persistent across requests.
+___Note:___
+
+Cookies are protected using ASP.NET Core Data Protection. For more information about the cookies used by the package, including how they are protected and considerations for persistent key storage, see the [Cookies issued](#cookies-issued) section above.
+
 
 #### Customizing the User Device feature
 To customize the User Device feature, use the `UseDeviceData` extension in the BankID client builder.
@@ -1598,9 +1600,16 @@ The `*.AspNetCore` package will issue a cookie to make the auth flow work
   - A more technical deep dive of this cookie can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
 
 - Cookie: `__ActiveLogin.BankIdDeviceData`
-  - This cookie is used to store the device data for the user, in the default implementation,
-  It is used to ensure that the device data is persistent across requests.
+  - This cookie is used to store the device data for the user, in the default implementation, it is used to ensure that the device data is persistent across requests.
+
   
+___Note:___
+
+All cookies issued by this package are **protected using ASP.NET Core Data Protection**. This means their contents are encrypted and tamper-proof.
+
+In certain environments (such as multi-instance deployments or containers) you may need to **configure Data Protection to use a persistent key store** (e.g., a shared file system, Azure Blob Storage, Redis, or SQL Server) so that cookies can be unprotected across app restarts or multiple instances.
+
+For guidance on configuring a persistent key store, see the official documentation: [Data Protection configuration overview](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-8.0).
 
 
 ### Browser support
