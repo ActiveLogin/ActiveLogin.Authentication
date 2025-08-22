@@ -46,6 +46,7 @@ The most common scenario is to use Active Login for BankID auth/login, so most o
   + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
   + [Custom QR code generation](#custom-qr-code-generation)
   + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
+  + [Risk indication](#risk-indication)
   + [Verify digital ID card](#verify-digital-id-card)
   + [Use api wrapper only](#use-api-wrapper-only)
   + [Running on Linux](#running-on-linux)
@@ -774,23 +775,6 @@ public class BankIdPinHintClaimsTransformer : IBankIdClaimsTransformer
 }
 ```
 
-#### Example: Add risk claim
-
-If the application whats to act on the assessed risk level for the transaction it could be extracted from the completion data returned by BankID.
-
-```csharp
-public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
-{
-    public Task TransformClaims(BankIdClaimsTransformationContext context)
-    {
-        if (context.BankIdCompletionData != null && context.BankIdCompletionData.Risk != null)
-            context.AddClaim("user_risk", context.BankIdCompletionData.Risk);
-
-        return Task.CompletedTask;
-    }
-}
-```
-
 ### Return URL for cancellation
 
 If a user cancels the login, the user will be redirected to the `cancelReturnUrl`.
@@ -1140,11 +1124,11 @@ services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 
 When initiating a flow with BankID, the objects "app" or "web" can be included in the request.
 The information in these two objects differs, but including either of them allows BankID to
-provide a better risk indication.
+provide a better [Risk indication](#risk-indication).
 
 When using BankID, device information provides valuable metadata that enhances security and ensures a smoother user experience.
 Including the **device type** (e.g., `APP` or `WEB`) helps BankID:
-- **Evaluate risk** for each request.
+- **Evaluate risk** for each request. 
 - Provide **better insights** into the context of the request.
 
 #### Configuring Device Data
@@ -1468,6 +1452,43 @@ public class BankIdFacebookAppBrowserConfig : IBankIdLauncherCustomAppCallback
 }
 
 ```
+
+### Risk indication
+
+You can choose to request a risk indication from BankID for both identifications and signatures. It can be used to increase security, protect your customers and reduce the risk of fraud. The indication is categorized as low, medium or high risk.
+You must implement your own logic to act on the assessed risk level from BankID.
+
+You need to provide information to BankID in the auth or sign request, to help them make the risk assessment e.g. the end users IP address and the app or web property (which is part of [Device Data](#resolve-the-end-user-device-data) in Active Login).
+
+Incorrect information in the call gives an incorrect risk indication.
+
+Use the BankID option below to turn on risk indication. Read more about [Customizing BankID options](#customizing-bankid-options).
+
+```csharp
+    services.Configure<BankIdAuthOptions>(options =>
+    {
+        options.BankIdReturnRisk = true;
+    });
+```
+
+To get risk indication extracted from the completion data returned by BankID and issued as a claim from Active Login [create your own claims transformer](#claims-issuing).
+
+```csharp
+public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
+{
+    public Task TransformClaims(BankIdClaimsTransformationContext context)
+    {
+        if (context.BankIdCompletionData != null && context.BankIdCompletionData.Risk != null)
+            context.AddClaim("user_risk", context.BankIdCompletionData.Risk);
+
+        return Task.CompletedTask;
+    }
+}
+```
+
+#### More information available at:
+ - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
+
 
 ### Verify digital ID card
 
