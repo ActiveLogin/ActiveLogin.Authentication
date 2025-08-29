@@ -41,11 +41,12 @@ The most common scenario is to use Active Login for BankID auth/login, so most o
   + [Event listeners](#event-listeners)
   + [Store data on auth completion](#store-data-on-auth-completion)
   + [Resolve the end user ip](#resolve-the-end-user-ip)
-  + [Resolve the end user device data](#resolve-the-end-user-device-data)
+  + [Resolve the end user device data (app or web)](#resolve-the-end-user-device-data-app-or-web)
   + [Resolve requirements on Auth request](#resolve-requirements-on-auth-request)
   + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
   + [Custom QR code generation](#custom-qr-code-generation)
   + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
+  + [Risk indication](#risk-indication)
   + [Verify digital ID card](#verify-digital-id-card)
   + [Use api wrapper only](#use-api-wrapper-only)
   + [Running on Linux](#running-on-linux)
@@ -577,11 +578,7 @@ BankId options allows you to set and override some options such as the below req
     // If no policy is set, it will fall back to require mobile BankID for OtherDevice flow
     options.BankIdCertificatePolicies = [ BankIdCertificatePolicy.BankIdOnFile, BankIdCertificatePolicy.BankIdOnSmartCard ];
 
-    // If this is set to true a risk indicator will be included in the collect response when the order completes.
-    // If a risk indicator is required for the order to complete, for example, if a risk requirement is applied,
-    // the returnRisk property is ignored, and a risk indicator is always included; otherwise a default value of
-    // false is used. The risk indication requires that the endUserIp is correct. Please note that the assessed
-    // risk will not be returned if the order was blocked, which may happen if a risk requirement is set.
+    // If set to true a risk indication is requested from BankID and returned as part of the collect response.
     options.BankIdReturnRisk = true;
 });
 ```
@@ -774,23 +771,6 @@ public class BankIdPinHintClaimsTransformer : IBankIdClaimsTransformer
     {
         // Specified in: http://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
         return birthdate.Date.ToString("yyyy-MM-dd");
-    }
-}
-```
-
-#### Example: Add risk claim
-
-If the application whats to act on the evaluated risk level for the transaction it could be extracted from the completion data returned by BankID.
-
-```csharp
-public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
-{
-    public Task TransformClaims(BankIdClaimsTransformationContext context)
-    {
-        if (context.BankIdCompletionData != null && context.BankIdCompletionData.Risk != null)
-            context.AddClaim("user_risk", context.BankIdCompletionData.Risk);
-
-        return Task.CompletedTask;
     }
 }
 ```
@@ -1140,24 +1120,19 @@ services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
 ---
-### Device data
+### Resolve the end user device data (app or web)
 
-When initiating a flow with BankID, the objects "app" or "web" can be included in the request.
-The information in these two objects differs, but including either of them allows BankID to
-provide a better risk indication.
+When initiating a flow with BankID, you can include either the **`web`** parameter (for **web applications**) or the **`app`** parameter (for **mobile apps**) in the request. In Active Login, these parameters are collectively referred to as **device data**.
+The metadata included with these parameters differs depending on the device type, but providing either one allows BankID to deliver a more accurate [Risk indication](#risk-indication).
 
-When using BankID, device information provides valuable metadata that enhances security and ensures a smoother user experience.
-Including the **device type** (e.g., `APP` or `WEB`) helps BankID:
-- **Evaluate risk** for each request.
-- **Take automated actions** based on high-risk scenarios (if enabled).
-- Provide **better insights** into the context of the request.
+**Risk Indication** provides an estimated risk level for a BankID transaction. It is a way to enhance the security of your application by, for example, requiring additional controls such as ID card validation for transactions that are assessed as high risk.
 
 #### Configuring Device Data
 
-Active Login has a default implementation of the User Device feature that uses a
-web browser as the device type. You can customize the default implementation or create your own.
+Active Login provides a default implementation of the Device Data feature that assumes it is running from a **web application**.
+You can either customize this default implementation or create your own for other device types.
 
-The following service interface must be implemented to use the User Device feature:
+The following service interface must be implemented to use the Device Data feature:
 - `IBankIdEndUserDeviceDataResolverFactory`: Factory that provides the resolvers for the device type.
 - `IBankIdEndUserDeviceDataResolver`: Resolver that provides the device data for a given device type.
 - `IBankIdEndUserDeviceDataConfiguration`: Configuration that specifies the device type to use.
@@ -1166,16 +1141,24 @@ The following service interface must be implemented to use the User Device featu
 
 | Device Type   | Default Resolver Implementation           | Metadata Included                           |
 |---------------|-------------------------------------------|--------------------------------------------|
-| **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | Referring domain, User-Agent, DeviceIdentifier            |
-| **App**       | `BankIdDefaultEndUserAppDeviceDataResolver` | App Identifier, Device OS, Model, DeviceIdentifier |
+| **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | Referring Domain, User-Agent, Device Identifier            |
+| **App**       | No resolver is configured by default for mobile apps. | App Identifier, Device OS, Model, Device Identifier |
 
-The Device identifier must be identical between requests.
+The **Device Identifier**, included in both the **`web`** and **`app`** parameters, must remain identical across requests.  
 
-The `BankIdDefaultEndUserWebDeviceDataResolver` will set a protected cookie named `__ActiveLogin.BankIdDeviceData` that contains
-unique identifier (DeviceIdentifier) to ensure that the identifier is persistent across requests.
+For **web applications**, the **Device Identifier** should be unique to the user's browser and must not rely on a session cookie, it can be stored in a separate cookie or as a hash of one.
+The `BankIdDefaultEndUserWebDeviceDataResolver` sets a protected cookie named `__ActiveLogin.BankIdDeviceData` containing a unique **Device Identifier**. This ensures that the identifier persists across sessions and requests.
 
-#### Customizing the User Device feature
-To customize the User Device feature, use the `UseDeviceData` extension in the BankID client builder.
+For **mobile apps**, the **Device Identifier** uniquely identifies the device your client is running on. It should not be tied to a single user of the device and ideally should remain the same even if the app is reinstalled.
+
+
+___Note:___
+
+Cookies are protected using ASP.NET Core Data Protection. For more information about the cookies used by the package, including how they are protected and considerations for persistent key storage, see the [Cookies issued](#cookies-issued) section above. This is important, especially in distributed environments.
+
+
+#### Customizing the Device Data feature
+To customize the Device Data feature, use the `UseDeviceData` extension in the BankID client builder.
 This allows you to specify the device type and any relevant metadata using resolvers.
 
 The BankIdFlowService will automatically include the device data in the BankID request,
@@ -1202,7 +1185,7 @@ services
             config.UseResolverFactory<BankIdDefaultEndUserDeviceDataResolverFactory>();
 
             // Add the default resolver for Web
-            config.AddDeviceResolver<BankIdDefaultEndUserWebDeviceDataResolver>();
+            config.UseDeviceResolver<BankIdDefaultEndUserWebDeviceDataResolver>();
         });
     });
 ```
@@ -1223,7 +1206,7 @@ services
 
             // Add a custom resolver for the device type Web
             // that implements IBankIdEndUserDeviceDataResolver
-            config.AddDeviceResolver<MyCustomWebDeviceDataResolver>();
+            config.UseDeviceResolver<MyCustomWebDeviceDataResolver>();
         });
     });
 ```
@@ -1246,7 +1229,7 @@ services
             // Use the default data resolver for the device type app
             // On app devices (e.g. MAUI, Xamarin, etc.) we need to set the
             // device data manually at start
-            config.AddDeviceResolver(s => new BankIdDefaultEndUserAppDeviceDataResolver()
+            config.UseDeviceResolver<IBankIdEndUserDeviceDataResolver>(_ => new BankIdAppDeviceDataResolver()
             {
                 // App ID or package name
                 AppIdentifier = "com.example.app",
@@ -1264,7 +1247,9 @@ services
         });
     });
 ```
-The information for the BankIdDefaultEndUserAppDeviceDataResolver has to be set during startup.
+
+The information for the `BankIdAppDeviceDataResolver` must be configured during application startup. You can also provide your own custom resolver implementation for mobile apps. There is no default resolver that automatically fetches device data for mobile apps because this data must be retrieved from the device hardware, which can vary between devices (iOS, Android, etc.).
+
 
 #### More information available at:
  - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
@@ -1471,6 +1456,43 @@ public class BankIdFacebookAppBrowserConfig : IBankIdLauncherCustomAppCallback
 
 ```
 
+### Risk indication
+
+You can choose to request a risk indication from BankID for both identifications and signatures. It can be used to increase security, protect your customers and reduce the risk of fraud. The indication is categorized as low, medium or high risk.
+You must implement your own logic to act on the assessed risk level from BankID.
+
+You need to provide information to BankID in the auth or sign request, to help them make the risk assessment e.g. the end users IP address and the app or web property (which is part of [Device Data](#resolve-the-end-user-device-data) in Active Login).
+
+Incorrect information in the call gives an incorrect risk indication.
+
+Use the BankID option below to turn on risk indication. Read more about [Customizing BankID options](#customizing-bankid-options).
+
+```csharp
+    services.Configure<BankIdAuthOptions>(options =>
+    {
+        options.BankIdReturnRisk = true;
+    });
+```
+
+To get risk indication extracted from the completion data returned by BankID and issued as a claim from Active Login [create your own claims transformer](#claims-issuing).
+
+```csharp
+public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
+{
+    public Task TransformClaims(BankIdClaimsTransformationContext context)
+    {
+        if (context.BankIdCompletionData != null && context.BankIdCompletionData.Risk != null)
+            context.AddClaim("user_risk", context.BankIdCompletionData.Risk);
+
+        return Task.CompletedTask;
+    }
+}
+```
+
+#### More information available at:
+ - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
+
+
 ### Verify digital ID card
 
 To use the API for "Verify digital ID card" you first need to register the BankID services, select an environment etc.
@@ -1598,9 +1620,16 @@ The `*.AspNetCore` package will issue a cookie to make the auth flow work
   - A more technical deep dive of this cookie can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
 
 - Cookie: `__ActiveLogin.BankIdDeviceData`
-  - This cookie is used to store the device data for the user, in the default implementation,
-  It is used to ensure that the device data is persistent across requests.
+  - This cookie is used to store the device data for the user, in the default implementation, it is used to ensure that the device data is persistent across requests.
+
   
+___Note:___
+
+All cookies issued by this package are **protected using ASP.NET Core Data Protection**. This means their contents are encrypted and tamper-proof.
+
+In certain environments (such as multi-instance deployments or containers) you may need to **configure Data Protection to use a persistent key store** (e.g., a shared file system, Azure Blob Storage, Redis, or SQL Server) so that cookies can be unprotected across app restarts or multiple instances.
+
+For guidance on configuring a persistent key store, see the official documentation: [Data Protection configuration overview](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-8.0).
 
 
 ### Browser support
