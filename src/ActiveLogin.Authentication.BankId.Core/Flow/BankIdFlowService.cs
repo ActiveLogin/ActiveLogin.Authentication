@@ -69,7 +69,9 @@ public class BankIdFlowService : IBankIdFlowService
     public async Task<BankIdFlowInitializeResult> InitializeAuth(BankIdFlowOptions flowOptions, string returnRedirectUrl)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
-        var response = await AuthAsync(flowOptions, detectedUserDevice, returnRedirectUrl);
+        var returnUrl = await GetReturnUrl(flowOptions, returnRedirectUrl);
+
+        var response = await AuthAsync(flowOptions, detectedUserDevice, returnUrl);
 
         await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
 
@@ -91,11 +93,11 @@ public class BankIdFlowService : IBankIdFlowService
         }
     }
 
-    private async Task<AuthResponse> AuthAsync(BankIdFlowOptions flowOptions, BankIdSupportedDevice detectedUserDevice, string returnRedirectUrl)
+    private async Task<AuthResponse> AuthAsync(BankIdFlowOptions flowOptions, BankIdSupportedDevice detectedUserDevice, string? returnUrl)
     {
         try
         {
-            var request = await GetAuthRequest(flowOptions, returnRedirectUrl);
+            var request = await GetAuthRequest(flowOptions, returnUrl);
             return await _bankIdAppApiClient.AuthAsync(request);
         }
         catch (BankIdApiException bankIdApiException)
@@ -105,7 +107,7 @@ public class BankIdFlowService : IBankIdFlowService
         }
     }
 
-    private async Task<AuthRequest> GetAuthRequest(BankIdFlowOptions flowOptions, string returnRedirectUrl)
+    private async Task<AuthRequest> GetAuthRequest(BankIdFlowOptions flowOptions, string? returnUrl)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
         var resolvedRequirements = await _bankIdAuthRequestRequirementsResolver.GetRequirementsAsync();
@@ -130,7 +132,7 @@ public class BankIdFlowService : IBankIdFlowService
             userVisibleData: userData.UserVisibleData,
             userNonVisibleData: userData.UserNonVisibleData,
             userVisibleDataFormat: userData.UserVisibleDataFormat,
-            returnUrl: returnRedirectUrl,
+            returnUrl: returnUrl,
             returnRisk: returnRisk,
             web: webDeviceData,
             app: appDeviceData
@@ -140,7 +142,9 @@ public class BankIdFlowService : IBankIdFlowService
     public async Task<BankIdFlowInitializeResult> InitializeSign(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string returnRedirectUrl)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
-        var response = await SignAsync(flowOptions, bankIdSignData, detectedUserDevice, returnRedirectUrl);
+        var returnUrl = await GetReturnUrl(flowOptions, returnRedirectUrl);
+
+        var response = await SignAsync(flowOptions, bankIdSignData, detectedUserDevice, returnUrl);
 
         await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
 
@@ -162,11 +166,11 @@ public class BankIdFlowService : IBankIdFlowService
         }
     }
 
-    private async Task<SignResponse> SignAsync(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, BankIdSupportedDevice detectedUserDevice, string returnRedirectUrl)
+    private async Task<SignResponse> SignAsync(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, BankIdSupportedDevice detectedUserDevice, string? returnUrl)
     {
         try
         {
-            var request = GetSignRequest(flowOptions, bankIdSignData, returnRedirectUrl);
+            var request = GetSignRequest(flowOptions, bankIdSignData, returnUrl);
             return await _bankIdAppApiClient.SignAsync(request);
         }
         catch (BankIdApiException bankIdApiException)
@@ -176,7 +180,7 @@ public class BankIdFlowService : IBankIdFlowService
         }
     }
 
-    private SignRequest GetSignRequest(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string returnRedirectUrl)
+    private SignRequest GetSignRequest(BankIdFlowOptions flowOptions, BankIdSignData bankIdSignData, string? returnUrl)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
 
@@ -201,7 +205,7 @@ public class BankIdFlowService : IBankIdFlowService
             userNonVisibleData: bankIdSignData.UserNonVisibleData,
             userVisibleDataFormat: bankIdSignData.UserVisibleDataFormat,
             requirement: requestRequirement,
-            returnUrl: returnRedirectUrl,
+            returnUrl: returnUrl,
             returnRisk: returnRisk,
             web: webDeviceData,
             app: appDeviceData
@@ -223,7 +227,9 @@ public class BankIdFlowService : IBankIdFlowService
     public async Task<BankIdFlowInitializeResult> InitializePayment(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, string returnRedirectUrl)
     {
         var detectedUserDevice = _bankIdSupportedDeviceDetector.Detect();
-        var response = await PaymentAsync(flowOptions, bankIdPaymentData, detectedUserDevice, returnRedirectUrl);
+        var returnUrl = await GetReturnUrl(flowOptions, returnRedirectUrl);
+
+        var response = await PaymentAsync(flowOptions, bankIdPaymentData, detectedUserDevice, returnUrl);
 
         await _bankIdEventTrigger.TriggerAsync(new BankIdInitializeSuccessEvent(personalIdentityNumber: null, response.OrderRef, detectedUserDevice, flowOptions));
 
@@ -245,11 +251,11 @@ public class BankIdFlowService : IBankIdFlowService
         }
     }
 
-    private async Task<PaymentResponse> PaymentAsync(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, BankIdSupportedDevice detectedUserDevice, string returnRedirectUrl)
+    private async Task<PaymentResponse> PaymentAsync(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, BankIdSupportedDevice detectedUserDevice, string? returnUrl)
     {
         try
         {
-            var request = GetPaymentRequest(flowOptions, bankIdPaymentData, returnRedirectUrl);
+            var request = GetPaymentRequest(flowOptions, bankIdPaymentData, returnUrl);
             return await _bankIdAppApiClient.PaymentAsync(request);
         }
         catch (BankIdApiException bankIdApiException)
@@ -259,7 +265,7 @@ public class BankIdFlowService : IBankIdFlowService
         }
     }
 
-    private PaymentRequest GetPaymentRequest(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, string returnRedirectUrl)
+    private PaymentRequest GetPaymentRequest(BankIdFlowOptions flowOptions, BankIdPaymentData bankIdPaymentData, string? returnUrl)
     {
         var endUserIp = _bankIdEndUserIpResolver.GetEndUserIp();
 
@@ -293,7 +299,7 @@ public class BankIdFlowService : IBankIdFlowService
             userVisibleDataFormat: bankIdPaymentData.UserVisibleDataFormat,
             requirement: requestRequirement,
             returnRisk: returnRisk,
-            returnUrl: returnRedirectUrl,
+            returnUrl: returnUrl,
             riskFlags: riskFlags,
             app: appDeviceData,
             web: webDeviceData
@@ -325,6 +331,15 @@ public class BankIdFlowService : IBankIdFlowService
         return riskFlags.Select(x => x.ToString()).ToList();
     }
 
+    private async Task<string?> GetReturnUrl(BankIdFlowOptions flowOptions, string returnRedirectUrl)
+    {
+        if (!flowOptions.SameDevice) return null;
+
+        var launchUrlRequest = new LaunchUrlRequest(returnRedirectUrl, "");
+        var launchInfo = await _bankIdLauncher.GetLaunchInfoAsync(launchUrlRequest);
+
+        return launchInfo.ReturnUrl;
+    }
 
     private Task<BankIdLaunchInfo> GetBankIdLaunchInfo(string redirectUrl, string autoStartToken)
     {

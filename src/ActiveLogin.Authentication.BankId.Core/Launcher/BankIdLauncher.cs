@@ -39,8 +39,9 @@ internal class BankIdLauncher : IBankIdLauncher
         var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice, customBrowserConfig);
         var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice, customBrowserConfig);
         var launchUrl = GetLaunchUrl(detectedDevice, request, customBrowserConfig);
+        var returnUrl = GetRedirectUrl(detectedDevice, request, customBrowserConfig);
 
-        return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn);
+        return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn, returnUrl);
     }
 
     private bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
