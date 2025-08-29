@@ -189,7 +189,15 @@ public abstract class Request
     public string? UserNonVisibleData { get; }
 
     /// <summary>
-    /// Orders started on the same device (started with autostart token) will call this URL when the order is completed, ignoring any return URL provided in the start URL when the BankID app was launched.
+    /// Orders started on the same device (started with autostart token) will call this URL when the order is completed,
+    /// ignoring any return URL provided in the start URL when the BankID app was launched.
+    ///
+    /// If the user has a version of the BankID app that does not support getting the returnUrl from the server,
+    /// the order will be cancelled and the user will be asked to update their app.
+    /// 
+    /// The return URL you provide should include a nonce to the session.
+    /// When the user returns to your app or web page, your service should verify that
+    /// the device receiving the returnUrl is the same device that started the order.
     /// </summary>
     [JsonPropertyName("returnUrl"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? ReturnUrl { get; set; }
