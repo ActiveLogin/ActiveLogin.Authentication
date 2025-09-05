@@ -80,7 +80,7 @@ internal class BankIdUiStateSerializer : BankIdDataSerializer<BankIdUiState>
             writer.Write(paymentState.BankIdPaymentProperties.RiskWarning == null);
             writer.Write(paymentState.BankIdPaymentProperties.RiskWarning ?? string.Empty);
 
-            writer.Write(paymentState.BankIdPaymentProperties.RiskFlags == null); 
+            writer.Write(paymentState.BankIdPaymentProperties.RiskFlags == null);
             var riskFlagsStr = paymentState.BankIdPaymentProperties.RiskFlags != null ? string.Join(",", paymentState.BankIdPaymentProperties.RiskFlags.Select(r => r.ToString())) : string.Empty;
             writer.Write(riskFlagsStr);
 

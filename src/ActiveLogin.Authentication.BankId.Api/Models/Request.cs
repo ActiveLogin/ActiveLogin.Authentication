@@ -47,7 +47,7 @@ public abstract class Request
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
     /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    /// 
+    ///
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
@@ -71,7 +71,7 @@ public abstract class Request
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
     /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    /// 
+    ///
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
@@ -93,7 +93,7 @@ public abstract class Request
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
     /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    /// 
+    ///
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
@@ -141,7 +141,7 @@ public abstract class Request
         App = app;
 
         RiskFlags = riskFlags;
-        UserVisibleTransaction = userVisibleTransaction; 
+        UserVisibleTransaction = userVisibleTransaction;
     }
 
     /// <summary>
@@ -189,7 +189,15 @@ public abstract class Request
     public string? UserNonVisibleData { get; }
 
     /// <summary>
-    /// Orders started on the same device (started with autostart token) will call this URL when the order is completed, ignoring any return URL provided in the start URL when the BankID app was launched.
+    /// Orders started on the same device (started with autostart token) will call this URL when the order is completed,
+    /// ignoring any return URL provided in the start URL when the BankID app was launched.
+    ///
+    /// If the user has a version of the BankID app that does not support getting the returnUrl from the server,
+    /// the order will be cancelled and the user will be asked to update their app.
+    /// 
+    /// The return URL you provide should include a nonce to the session.
+    /// When the user returns to your app or web page, your service should verify that
+    /// the device receiving the returnUrl is the same device that started the order.
     /// </summary>
     [JsonPropertyName("returnUrl"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? ReturnUrl { get; set; }
