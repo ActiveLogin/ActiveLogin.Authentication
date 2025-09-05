@@ -212,7 +212,7 @@ public static class IBankIdBuilderExtensions
         this IBankIdBuilder builder,
         bool useBankIdRootCertificate = true,
         bool useBankIdClientCertificate = true,
-        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.P12
+        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX
     )
     {
         builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdUrls.VerifyApiTestBaseUrl, BankIdEnvironments.Test);
