@@ -528,6 +528,18 @@ services.AddBankId(bankId =>
     });
 ```
 
+### Using client certificate from custom certificate service
+
+```csharp
+services.AddBankId(bankId =>
+    {
+        bankId
+            .UseProductionEnvironment()
+            .UseClientCertificate(sp => sp.GetRequiredService<MyCustomCertificateService>().GetCertificate())
+            ...
+    });
+```
+
 ### Adding schemas
 
 * *Same device*: Launches the BankID app on the same device, no need to enter any personal identity number.

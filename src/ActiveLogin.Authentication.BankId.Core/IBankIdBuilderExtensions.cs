@@ -49,7 +49,29 @@ public static class IBankIdBuilderExtensions
         void ConfigureHttpClientHandler(IServiceProvider sp, SocketsHttpHandler httpClientHandler)
         {
             var clientCertificate = configureClientCertificate();
-            httpClientHandler.SslOptions.ClientCertificates = new X509Certificate2Collection { clientCertificate };
+            httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
+            httpClientHandler.SslOptions.ClientCertificates.Add(clientCertificate);
+        }
+    }
+
+    /// <summary>
+    /// Add client certificate for authenticating against the BankID API to the list of available certificates for the http client handler to choose from.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="configureClientCertificate">The certificate to add.</param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseClientCertificate(this IBankIdBuilder builder, Func<IServiceProvider, X509Certificate2> configureClientCertificate)
+    {
+        builder.ConfigureAppApiHttpClientHandler(ConfigureHttpClientHandler);
+        builder.ConfigureVerifyApiHttpClientHandler(ConfigureHttpClientHandler);
+
+        return builder;
+
+        void ConfigureHttpClientHandler(IServiceProvider sp, SocketsHttpHandler httpClientHandler)
+        {
+            var clientCertificate = configureClientCertificate(sp);
+            httpClientHandler.SslOptions.ClientCertificates ??= new X509Certificate2Collection();
+            httpClientHandler.SslOptions.ClientCertificates.Add(clientCertificate);
         }
     }
 
@@ -186,7 +208,12 @@ public static class IBankIdBuilderExtensions
     /// <param name="useBankIdClientCertificate">Use the BankID client certificate (for test) from the BankID documentation.</param>
     /// <param name="clientCertificateFormat">If using the BankID client certificate (for test). Select the preferred format p12, pem or pfx.</param>
     /// <returns></returns>
-    public static IBankIdBuilder UseTestEnvironment(this IBankIdBuilder builder, bool useBankIdRootCertificate = true, bool useBankIdClientCertificate = true, TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX)
+    public static IBankIdBuilder UseTestEnvironment(
+        this IBankIdBuilder builder,
+        bool useBankIdRootCertificate = true,
+        bool useBankIdClientCertificate = true,
+        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX
+    )
     {
         builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdUrls.VerifyApiTestBaseUrl, BankIdEnvironments.Test);
         builder.Services.AddTransient<IBankIdCertificatePolicyResolver, BankIdCertificatePolicyResolverForTest>();
