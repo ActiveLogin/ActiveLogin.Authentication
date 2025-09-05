@@ -34,10 +34,21 @@ public enum CollectHintCode
     Started,
 
     /// <summary>
+    /// Order is pending. A client has launched and received the order but additional steps for providing MRTD (Machine Readable Travel Document) information is required to proceed with the order.
+    /// </summary>
+    UserMrtd,
+
+    /// <summary>
+    /// Order is waiting for the user to confirm that they have received this order while in a call with your organization.
+    /// </summary>
+    UserCallConfirm,
+
+    /// <summary>
     /// The order is pending.
     /// The client has received the order.
     /// </summary>
     UserSign,
+
 
     // Failed
 
@@ -73,7 +84,19 @@ public enum CollectHintCode
     StartFailed,
 
     /// <summary>
-    /// Order is pending. A client has launched and received the order but additional steps for providing MRTD (Machine Readable Travel Document) information is required to proceed with the order.
+    /// The order was cancelled because the user indicated in the app that they are not in a call with your organization.
     /// </summary>
-    UserMrtd
+    UserDeclinedCall,
+
+    /// <summary>
+    /// The order was picked up by a client that does not support the requested feature.
+    /// The BankID client used by the user needs to be updated to a later version that supports
+    /// the features that are required to complete the order.
+    /// </summary>
+    NotSupportedByUserApp,
+
+    /// <summary>
+    /// The risk for the order was too high and the order was blocked.
+    /// </summary>
+    TransactionRiskBlocked,
 }

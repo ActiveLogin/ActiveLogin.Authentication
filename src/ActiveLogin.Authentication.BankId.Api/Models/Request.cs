@@ -47,7 +47,7 @@ public abstract class Request
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
     /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    /// 
+    ///
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
@@ -71,7 +71,7 @@ public abstract class Request
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
     /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    /// 
+    ///
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
@@ -93,7 +93,7 @@ public abstract class Request
     /// The user IP address as seen by RP. IPv4 and IPv6 is allowed.
     /// Note the importance of using the correct IP address.It must be the IP address representing the user agent (the end user device) as seen by the RP.
     /// If there is a proxy for inbound traffic, special considerations may need to be taken to get the correct address.
-    /// 
+    ///
     /// In some use cases the IP address is not available, for instance for voice based services.
     /// In this case, the internal representation of those systems IP address is ok to use.
     /// </param>
@@ -112,12 +112,22 @@ public abstract class Request
     /// <param name="returnRisk">If set to true, a risk indication will be included in the collect response.</param>
     /// <param name="web">Information about the web browser the end user is using.</param>
     /// <param name="app">Information about the App device the end user is using.</param>
-    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null,
-        DeviceDataWeb? web = null, DeviceDataApp ? app = null)
+    /// <param name="riskFlags">
+    /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
+    /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
+    /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
+    /// </param>
+    /// <param name="userVisibleTransaction">Information about the transaction being approved.</param>
+    public Request(string endUserIp, string? userVisibleData, byte[]? userNonVisibleData, Requirement? requirement, string? userVisibleDataFormat, string? returnUrl = null, bool? returnRisk = null, List<string>? riskFlags = null, UserVisibleTransaction? userVisibleTransaction = null, DeviceDataWeb ? web = null, DeviceDataApp? app = null)
     {
         if (this is SignRequest && userVisibleData == null)
         {
             throw new ArgumentNullException(nameof(userVisibleData));
+        }
+
+        if (this is PaymentRequest && userVisibleTransaction == null)
+        {
+            throw new ArgumentNullException(nameof(userVisibleTransaction));
         }
 
         EndUserIp = endUserIp ?? throw new ArgumentNullException(nameof(endUserIp));
@@ -130,6 +140,8 @@ public abstract class Request
         Web = web;
         App = app;
 
+        RiskFlags = riskFlags;
+        UserVisibleTransaction = userVisibleTransaction;
     }
 
     /// <summary>
@@ -177,7 +189,15 @@ public abstract class Request
     public string? UserNonVisibleData { get; }
 
     /// <summary>
-    /// Orders started on the same device (started with autostart token) will call this URL when the order is completed, ignoring any return URL provided in the start URL when the BankID app was launched.
+    /// Orders started on the same device (started with autostart token) will call this URL when the order is completed,
+    /// ignoring any return URL provided in the start URL when the BankID app was launched.
+    ///
+    /// If the user has a version of the BankID app that does not support getting the returnUrl from the server,
+    /// the order will be cancelled and the user will be asked to update their app.
+    /// 
+    /// The return URL you provide should include a nonce to the session.
+    /// When the user returns to your app or web page, your service should verify that
+    /// the device receiving the returnUrl is the same device that started the order.
     /// </summary>
     [JsonPropertyName("returnUrl"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? ReturnUrl { get; set; }
@@ -193,6 +213,20 @@ public abstract class Request
 
     [JsonPropertyName("web"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public DeviceDataWeb? Web { get; set; }
+
+    /// <summary>
+    /// Indicate to the risk assessment system that the payment has a higher risk or is unusual for the user. List of String.
+    /// Possible values: newCard, newCustomer, newRecipient, highRiskRecipient, largeAmount, foreignCurrency,
+    /// cryptoCurrencyPurchase, moneyTransfer, overseasTransaction, recurringPayment, suspiciousPaymentPattern, other
+    /// </summary>
+    [JsonPropertyName("riskFlags"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public List<string>? RiskFlags { get; set; }
+
+    /// <summary>
+    /// Information about the transaction being approved.
+    /// </summary>
+    [JsonPropertyName("userVisibleTransaction"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public UserVisibleTransaction? UserVisibleTransaction { get; set; }
 
     private static string? ToBase64EncodedString(string? value)
     {

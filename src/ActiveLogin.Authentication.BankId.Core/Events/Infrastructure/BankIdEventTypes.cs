@@ -56,4 +56,13 @@ internal static class BankIdEventTypes
 
     public static readonly int SignErrorEventId = EventIdBase + 2_4_2;
     public static readonly string SignErrorEventName = EventNamePrefix + "SignError";
+
+
+    // BankId API - Payment
+
+    public static readonly int PaymentSuccessId = EventIdBase + 2_5_1;
+    public static readonly string PaymentSuccessName = EventNamePrefix + "PaymentSuccess";
+
+    public static readonly int PaymentErrorEventId = EventIdBase + 2_5_2;
+    public static readonly string PaymentErrorEventName = EventNamePrefix + "PaymentError";
 }

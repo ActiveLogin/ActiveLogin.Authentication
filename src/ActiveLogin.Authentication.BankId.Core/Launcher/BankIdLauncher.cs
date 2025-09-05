@@ -39,8 +39,9 @@ internal class BankIdLauncher : IBankIdLauncher
         var deviceMightRequireUserInteractionToLaunch = GetDeviceMightRequireUserInteractionToLaunchBankIdApp(detectedDevice, customBrowserConfig);
         var deviceWillReloadPageOnReturn = GetDeviceWillReloadPageOnReturnFromBankIdApp(detectedDevice, customBrowserConfig);
         var launchUrl = GetLaunchUrl(detectedDevice, request, customBrowserConfig);
+        var returnUrl = GetRedirectUrl(detectedDevice, request, customBrowserConfig);
 
-        return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn);
+        return new BankIdLaunchInfo(launchUrl, deviceMightRequireUserInteractionToLaunch, deviceWillReloadPageOnReturn, returnUrl);
     }
 
     private bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
@@ -129,6 +130,12 @@ internal class BankIdLauncher : IBankIdLauncher
         }
 
         var redirectUrl = GetRedirectUrl(device, request, customBrowserConfig);
+
+        // DEPRECATED: Setting the return URL here is no longer the recommended approach.
+        // The return URL should now be specified in the backend call to BankID when
+        // creating the order (auth, sign, or payment).
+        // This parameter is kept only for backward compatibility. If both values are set,
+        // BankID will use the one provided in the backend call.
         queryStringParams.Add(BankIdRedirectQueryStringParamName, redirectUrl);
 
         return QueryStringGenerator.ToQueryString(queryStringParams);
