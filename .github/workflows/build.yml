@@ -19,7 +19,7 @@ jobs:
             include:
             - os: windows-latest
               artifactName: activelogin-authentication-nuget-windows
-            - os: macos-latest
+            - os: macos-12
               artifactName: activelogin-authentication-nuget-macos
             - os: ubuntu-latest
               artifactName: activelogin-authentication-nuget-ubuntu
@@ -87,7 +87,7 @@ jobs:
         include:
         - os: windows-latest
           artifactName: activelogin-authentication-samples-windows
-        - os: macos-latest
+        - os: macos-12
           artifactName: activelogin-authentication-samples-macos
         - os: ubuntu-latest
           artifactName: activelogin-authentication-samples-ubuntu
