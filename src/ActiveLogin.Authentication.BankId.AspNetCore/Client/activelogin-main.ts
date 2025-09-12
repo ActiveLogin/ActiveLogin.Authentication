@@ -173,7 +173,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     }
 
     function checkStatus(requestVerificationToken: string, returnUrl: string, protectedUiOptions: string, orderRef: string) {
-        if (flowIsCancelledByUser) {
+        if (flowIsCancelledByUser || flowIsFinished) {
             return;
         }
 
