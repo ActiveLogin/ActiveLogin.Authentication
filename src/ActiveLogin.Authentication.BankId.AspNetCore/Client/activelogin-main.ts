@@ -202,7 +202,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     showProgressStatus(data.statusMessage);
                     setTimeout(() => {
                         checkStatus(requestVerificationToken, returnUrl, protectedUiOptions, orderRef);
-                    }, 100);
+                    }, configuration.statusRefreshIntervalMs);
                 }
             })
             .catch(error => {
