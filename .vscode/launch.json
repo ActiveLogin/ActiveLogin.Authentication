@@ -2,6 +2,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "IdentityServer.ClientSample",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/samples/IdentityServer.ClientSample/bin/Debug/net8.0/IdentityServer.ClientSample.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/IdentityServer.ClientSample",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "IdentityServer.ServerSample",
             "type": "coreclr",
             "request": "launch",
