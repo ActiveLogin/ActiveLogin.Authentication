@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/samples/Standalone.MvcSample/bin/Debug/net6.0/Standalone.MvcSample.dll",
+            "program": "${workspaceFolder}/samples/Standalone.MvcSample/bin/Debug/net8.0/Standalone.MvcSample.dll",
             "args": [],
             "cwd": "${workspaceFolder}/samples/Standalone.MvcSample",
             "stopAtEntry": false,
