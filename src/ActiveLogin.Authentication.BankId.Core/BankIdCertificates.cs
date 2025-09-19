@@ -16,7 +16,9 @@ internal static class BankIdCertificates
     private static readonly CertificateResource BankIdApiClientCertificateTestPfx = new() { Filename = "FPTestcert5_20240610-legacy.pfx", Password = "qwerty123" };
 
     public static X509Certificate2 GetBankIdApiRootCertificateProd() => GetCertFromResourceStream(BankIdApiRootCertificateProd);
+
     public static X509Certificate2 GetBankIdApiRootCertificateTest() => GetCertFromResourceStream(BankIdApiRootCertificateTest);
+
     public static X509Certificate2 GetBankIdApiClientCertificateTest(TestCertificateFormat certificateFormat) => certificateFormat switch
     {
         TestCertificateFormat.P12 => GetCertFromResourceStream(BankIdApiClientCertificateTestP12),
@@ -35,12 +37,10 @@ internal static class BankIdCertificates
         var certStream = GetBankIdResourceStream(filename);
         using var memory = new MemoryStream((int)certStream.Length);
         certStream.CopyTo(memory);
-        if (password == null)
-        {
-            return new X509Certificate2(memory.ToArray());
-        }
 
-        return new X509Certificate2(memory.ToArray(), password);
+        return string.IsNullOrWhiteSpace(password)
+            ? X509CertificateLoader.LoadCertificate(memory.ToArray())
+            : X509CertificateLoader.LoadPkcs12(memory.ToArray(), password);
     }
 
     private static X509Certificate2 GetPemCertFromResourceStream(CertificateResource resource)

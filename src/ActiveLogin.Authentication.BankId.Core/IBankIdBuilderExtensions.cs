@@ -10,7 +10,6 @@ using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.ResultStore;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ActiveLogin.Authentication.BankId.Core;
 public static class IBankIdBuilderExtensions
@@ -106,7 +105,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
     {
-        builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
+        builder.UseRootCaCertificate(() => X509CertificateLoader.LoadCertificateFromFile(certificateFilePath));
 
         return builder;
     }
@@ -212,7 +211,7 @@ public static class IBankIdBuilderExtensions
         this IBankIdBuilder builder,
         bool useBankIdRootCertificate = true,
         bool useBankIdClientCertificate = true,
-        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX
+        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.P12
     )
     {
         builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdUrls.VerifyApiTestBaseUrl, BankIdEnvironments.Test);
