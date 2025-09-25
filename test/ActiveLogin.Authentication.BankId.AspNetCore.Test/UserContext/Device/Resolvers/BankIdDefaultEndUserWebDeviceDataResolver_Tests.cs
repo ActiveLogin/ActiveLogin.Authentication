@@ -22,7 +22,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.UserContext.Device.R
 
 public class BankIdDefaultEndUserWebDeviceDataResolver_Tests
 {
-    private class FakeProtector : IBankIdDeviceDataProtector
+    private class FakeProtector : IBankIdDataStateProtector<DeviceDataState>
     {
         public string Protect(DeviceDataState deviceDataState) =>
             JsonSerializer.Serialize(deviceDataState);
@@ -67,8 +67,6 @@ public class BankIdDefaultEndUserWebDeviceDataResolver_Tests
 
         return (new BankIdDefaultEndUserWebDeviceDataResolver(mockedAccessor.Object, fakeProtector), createdIdentifier);
     }
-
-    
 
     [Fact]
     public void GetDeviceData_Returns_DefaultValues()

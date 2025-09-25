@@ -1,5 +1,6 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.State;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.UserContext.Device;
 
@@ -26,7 +27,7 @@ public class UseDeviceDataExtensionTests
         Assert.NotNull(provider.GetService<IBankIdEndUserDeviceDataResolverFactory>());
         Assert.NotNull(provider.GetService<IBankIdEndUserDeviceDataConfiguration>());
         Assert.NotNull(provider.GetService<IBankIdEndUserDeviceDataResolver>());
-        Assert.NotNull(provider.GetService<IBankIdDeviceDataProtector>());
+        Assert.NotNull(provider.GetService<IBankIdDataStateProtector<DeviceDataState>>());
 
     }
 

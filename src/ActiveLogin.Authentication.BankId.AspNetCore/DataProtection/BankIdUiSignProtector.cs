@@ -1,13 +1,13 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.Serialization;
-using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 
 using Microsoft.AspNetCore.DataProtection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 
-internal class BankIdUiResultProtector(
+internal class BankIdUiSignProtector(
     IDataProtectionProvider dataProtectionProvider
-) : BankIdDataStateProtector<BankIdUiResult>(dataProtectionProvider, new BankIdUiResultSerializer()),
-    IBankIdDataStateProtector<BankIdUiResult>
+) : BankIdDataStateProtector<BankIdUiSignState>(dataProtectionProvider, new BankIdUiSignStateSerializer()),
+    IBankIdDataStateProtector<BankIdUiSignState>
 {
 }

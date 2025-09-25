@@ -9,7 +9,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolv
 
 public abstract class BankIdEndUserWebDeviceDataResolverBase(
     IHttpContextAccessor httpContextAccessor,
-    IBankIdDeviceDataProtector deviceDataProtector) : BankIdDeviceDataResolverBase
+    IBankIdDataStateProtector<DeviceDataState> deviceDataProtector
+) : BankIdDeviceDataResolverBase
 {
     protected HttpContext Context => httpContextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
     private const string DeviceDataCookieNameParameterName = "DeviceDataCookie.Name";
@@ -43,9 +44,22 @@ public abstract class BankIdEndUserWebDeviceDataResolverBase(
         Validators.ThrowIfNullOrWhitespace(DeviceDataCookie.Name, DeviceDataCookieNameParameterName);
 
         var protectedState = Context.Request.Cookies[DeviceDataCookie.Name];
-        return string.IsNullOrEmpty(protectedState)
-            ? null
-            : deviceDataProtector.Unprotect(protectedState);
+        if (string.IsNullOrWhiteSpace(protectedState))
+        {
+            return null;
+        }
+
+        try
+        {
+            return deviceDataProtector.Unprotect(protectedState);
+        }
+        catch (Exception)
+        {
+            // If we can't unprotect the cookie (e.g., due to key changes or format changes),
+            // delete the invalid cookie and return null to generate a new device identifier
+            DeleteDeviceDataCookie();
+            return null;
+        }
     }
 
     protected void DeleteDeviceDataCookie()
