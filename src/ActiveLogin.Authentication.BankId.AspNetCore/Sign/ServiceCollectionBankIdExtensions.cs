@@ -69,8 +69,8 @@ public static class ServiceCollectionBankIdSignExtensions
 
         BankIdCommonConfiguration.AddDefaultServices(services);
 
-        services.AddTransient<IBankIdUiStateProtector, BankIdUiStateProtector>();
-        services.AddTransient<IBankIdUiResultProtector, BankIdUiResultProtector>();
+        services.AddSingleton<IStateStorage, CookieStateStorage>();
+        services.AddSingleton<IBankIdDataStateProtector<Models.BankIdUiResult>, BankIdUiResultProtector>();
 
         services.AddTransient<IBankIdSignService, BankIdSignService>();
     }

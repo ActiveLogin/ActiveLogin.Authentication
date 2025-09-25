@@ -6,7 +6,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 
 internal class BankIdUiOptionsCookieManager(
     IHttpContextAccessor httpContextAccessor,
-    IBankIdUiOptionsProtector uiOptionsProtector
+    IBankIdDataStateProtector<BankIdUiOptions> uiOptionsProtector
 ) : IBankIdUiOptionsCookieManager
 {
 

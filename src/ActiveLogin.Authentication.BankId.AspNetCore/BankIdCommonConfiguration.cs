@@ -20,21 +20,24 @@ internal static class BankIdCommonConfiguration
 
     public static void AddDefaultServices(IServiceCollection services)
     {
-        services.AddTransient<IBankIdUiOrderRefProtector, BankIdUiOrderRefProtector>();
-        services.AddTransient<IBankIdQrStartStateProtector, BankIdQrStartStateProtector>();
-        services.AddTransient<IBankIdUiOptionsProtector, BankIdUiOptionsProtector>();
+        services.AddSingleton<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
+        services.AddSingleton<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
+        services.AddSingleton<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
 
-        services.AddTransient<IBankIdInvalidStateHandler, BankIdCancelUrlInvalidStateHandler>();
+        services.AddSingleton<IStateStorage, CookieStateStorage>();
 
-        services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
-
-        services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+        services.AddSingleton<IBankIdDataStateProtector<Auth.BankIdUiAuthState>, BankIdUiAuthProtector>();
+        services.AddSingleton<IBankIdDataStateProtector<Sign.BankIdUiSignState>, BankIdUiSignProtector>();
+        services.AddSingleton<IBankIdDataStateProtector<Payment.BankIdUiPaymentState>, BankIdUiPaymentProtector>();
+        services.AddSingleton<IBankIdDataStateProtector<Models.BankIdUiOptions>, BankIdUiOptionsProtector>();
+        services.AddSingleton<IBankIdDataStateProtector<Models.BankIdUiResult>, BankIdUiResultProtector>();
+        services.AddSingleton<IBankIdDataStateProtector<Core.Models.BankIdQrStartState>, BankIdQrStartStateProtector>();
+        services.AddSingleton<IBankIdDataStateProtector<Areas.ActiveLogin.Models.BankIdUiOrderRef>, BankIdUiOrderRefProtector>();
 
         services.AddHttpContextAccessor();
         services.AddTransient<IBankIdUiOptionsCookieManager, BankIdUiOptionsCookieManager>();
 
         services.AddDefaultDeviceData();
-
     }
 
     public static (string name, string version) GetActiveLoginInfo()

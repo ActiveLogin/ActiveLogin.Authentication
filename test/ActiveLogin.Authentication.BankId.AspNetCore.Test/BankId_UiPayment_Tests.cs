@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 using ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
-using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.State;
 using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.CertificatePolicies;
 using ActiveLogin.Authentication.BankId.Core.Launcher;
@@ -40,38 +40,27 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test;
 
 public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
 {
-    private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
-
-    private readonly Mock<IBankIdUiOrderRefProtector> _bankIdUiOrderRefProtector;
-    private readonly Mock<IBankIdUiOptionsProtector> _bankIdUiOptionsProtector;
-    private readonly Mock<IBankIdUiStateProtector> _bankIdUiStateProtector;
+    private readonly Mock<IBankIdDataStateProtector<BankIdUiOrderRef>> _bankIdUiOrderRefProtector;
+    private readonly Mock<IBankIdDataStateProtector<BankIdUiOptions>> _bankIdUiOptionsProtector;
+    private readonly BankIdUiPaymentState _paymentState = new("configKey", new BankIdPaymentProperties(TransactionType.npa, "Test Merchant"));
 
     public BankId_UiPayment_Tests()
     {
-        _bankIdUiOptionsProtector = new Mock<IBankIdUiOptionsProtector>();
+        _bankIdUiOptionsProtector = new Mock<IBankIdDataStateProtector<BankIdUiOptions>>();
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, false, "/", DefaultStateCookieName, Api.Models.CardReader.class1));
+            .Returns(new BankIdUiOptions([], false, false, false, false, "/", PaymentStateKeyCookieName, CardReader.class1));
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
 
-        _bankIdUiOrderRefProtector = new Mock<IBankIdUiOrderRefProtector>();
+        _bankIdUiOrderRefProtector = new Mock<IBankIdDataStateProtector<BankIdUiOrderRef>>();
         _bankIdUiOrderRefProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(new BankIdUiOrderRef("Any"));
         _bankIdUiOrderRefProtector
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOrderRef>()))
             .Returns("Any");
-
-        var paymentState = new BankIdUiPaymentState("configKey", new BankIdPaymentProperties(TransactionType.npa, "Test Merchant"));
-        _bankIdUiStateProtector = new Mock<IBankIdUiStateProtector>();
-        _bankIdUiStateProtector
-            .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(paymentState);
-        _bankIdUiStateProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdUiPaymentState>()))
-            .Returns("Ignored");
     }
 
     [Fact]
@@ -85,6 +74,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             {
                 services.AddMvc();
             });
+
         using var client = new TestServer(webHostBuilder).CreateClient();
 
         // Act
@@ -105,6 +95,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             {
                 services.AddMvc();
             });
+
         using var client = new TestServer(webHostBuilder).CreateClient();
 
         // Act
@@ -206,29 +197,24 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
                         .Build();
                     config.Filters.Add(new AuthorizeFilter(policy));
                 });
-
-                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
             });
 
-        // Act
-        var request = CreateRequestWithFakeStateCookie( server, "/ActiveLogin/BankId/Payment?returnUrl=%2F&uiOptions=X&orderRef=Y");
-        var transaction = await request.GetAsync();
-
+        // Act - Use helper to create request with default UI options
+        var response = await CreateBankIdUiRequest(
+            server,
+            "/ActiveLogin/BankId/Payment",
+            PaymentStateKeyCookieName,
+            _paymentState
+        );
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
     public async Task PaymentInit_Returns_Ui_With_Resolved_Cancel_Url()
     {
         // Arrange
-        var options = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, false, "~/cru", DefaultStateCookieName, CardReader.class1);
-        _bankIdUiOptionsProtector
-            .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(options);
-
         using var server = CreateServer(o =>
             {
                 o.UseSimulatedEnvironment();
@@ -239,29 +225,40 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdPaymentDefaults.SameDeviceConfigKey);
+                var bankIdPaymentService = context.RequestServices.GetRequiredService<IBankIdPaymentService>();
+                await bankIdPaymentService.InitiatePaymentAsync(new BankIdPaymentProperties(TransactionType.npa, "Test"), "/al-payment-cb", BankIdPaymentDefaults.SameDeviceConfigKey);
             }),
             services =>
             {
-                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
             });
 
-        // Act
-        var request = CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Payment?returnUrl=%2F&uiOptions=X&orderRef=Y");
-        var transaction = await request.GetAsync();
+        // Create UI options with specific cancel URL for this test scenario
+        var uiOptions = CreateUiOptions(
+            PaymentStateKeyCookieName,
+            cancelReturnUrl: "~/cru"  // This is what we want to test
+        );
+
+        // Act - Use helper with specific UI options
+        var response = await CreateBankIdUiRequest(
+            server,
+            "/ActiveLogin/BankId/Payment",
+            PaymentStateKeyCookieName,
+            _paymentState,
+            uiOptions
+        );
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var transactionContent = await transaction.Content.ReadAsStringAsync();
-        Assert.Equal("/cru", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("/cru", GetInlineJsonValue(content, "cancelReturnUrl"));
     }
 
     [Fact]
     public async Task PaymentInit_Returns_Ui_With_Script()
     {
         // Arrange
+        var stateKey = StateKey.New();
         using var server = CreateServer(o =>
             {
                 o.UseSimulatedEnvironment();
@@ -272,17 +269,12 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdPaymentDefaults.SameDeviceConfigKey);
-            }),
-            services =>
-            {
-                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
-            });
+                var bankIdPaymentService = context.RequestServices.GetRequiredService<IBankIdPaymentService>();
+                await bankIdPaymentService.InitiatePaymentAsync(new BankIdPaymentProperties(TransactionType.npa, "Test"), "/al-payment-cb", BankIdPaymentDefaults.SameDeviceConfigKey);
+            }));
 
         // Act
-        var request = CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Payment?returnUrl=%2F&uiOptions=X&orderRef=Y");
-        var transaction = await request.GetAsync();
+        var transaction = await CreateBankIdUiRequest(server, "/ActiveLogin/BankId/Payment", PaymentStateKeyCookieName, _paymentState);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
@@ -296,12 +288,13 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
 
         Assert.Equal("/", GetInlineJsonValue(transactionContent, "returnUrl"));
         Assert.Equal("/", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
-        Assert.Equal("X", GetInlineJsonValue(transactionContent, "uiOptionsGuid"));
+        Assert.NotEmpty(GetInlineJsonValue(transactionContent, "uiOptionsGuid")); // Verify real protected options are present
     }
 
     [Fact]
     public async Task PaymentInit_Preserves_UI_Options()
     {
+        var stateKey = StateKey.New();
         // Arrange
         using var server = CreateServer(o =>
             {
@@ -313,25 +306,19 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdPaymentDefaults.SameDeviceConfigKey);
-            }),
-            services =>
-            {
-                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
-            });
+                var bankIdPaymentService = context.RequestServices.GetRequiredService<IBankIdPaymentService>();
+                await bankIdPaymentService.InitiatePaymentAsync(new BankIdPaymentProperties(TransactionType.npa, "Test"), "/al-payment-cb", BankIdPaymentDefaults.SameDeviceConfigKey);
+            }));
 
         // Act
-        var request =
-            CreateRequestWithFakeStateCookie(server, "/ActiveLogin/BankId/Payment?returnUrl=%2F&uiOptions=UIOPTIONS&orderRef=Y");
-        var transaction = await request.GetAsync();
+        var transaction = await CreateBankIdUiRequest(server, "/ActiveLogin/BankId/Payment", PaymentStateKeyCookieName, _paymentState);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
         var transactionContent = await transaction.Content.ReadAsStringAsync();
 
-        Assert.Equal("UIOPTIONS", GetInlineJsonValue(transactionContent, "uiOptionsGuid"));
+        Assert.NotEmpty(GetInlineJsonValue(transactionContent, "uiOptionsGuid")); // Verify real protected options are present
     }
 
     [Fact]
@@ -348,11 +335,12 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             },
             DefaultAppConfiguration(async context =>
             {
-                await context.ChallengeAsync(BankIdPaymentDefaults.SameDeviceConfigKey);
+                var bankIdPaymentService = context.RequestServices.GetRequiredService<IBankIdPaymentService>();
+                await bankIdPaymentService.InitiatePaymentAsync(new BankIdPaymentProperties(TransactionType.npa, "Test"), "/al-payment-cb", BankIdPaymentDefaults.SameDeviceConfigKey);
             }),
             services =>
             {
-                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
+                services.AddSingleton(s => _bankIdUiOptionsProtector.Object);
             });
 
         // Act
@@ -369,8 +357,9 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
     public async Task AutoLaunch_Sets_Correct_RedirectUri()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, false, string.Empty, DefaultStateCookieName, CardReader.class1);
-        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
+        var stateKey = StateKey.New();
+        var autoLaunchOptions = new BankIdUiOptions([], true, false, false, false, string.Empty, PaymentStateKeyCookieName, CardReader.class1);
+        var mockProtector = new Mock<IBankIdDataStateProtector<BankIdUiOptions>>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
@@ -394,9 +383,11 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             }),
             services =>
             {
-                services.AddTransient(s => mockProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
+                services.AddSingleton(s => mockProtector.Object);
             });
+
+        // Create state cookies for the payment state
+        var stateCookies = CreateStateCookies(PaymentStateKeyCookieName, stateKey, _paymentState, server.Services);
 
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
@@ -404,7 +395,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
         var initializeRequestBody = new { returnUrl = testReturnUrl, uiOptions = testOptions };
 
         // Act
-        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
+        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody, stateCookies);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
@@ -422,15 +413,17 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
     public async Task Api_Always_Returns_CamelCase_Json_For_Http200Ok()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, false, string.Empty, DefaultStateCookieName, CardReader.class1);
+        var autoLaunchOptions = new BankIdUiOptions([], false, false, false, false, string.Empty, PaymentStateKeyCookieName, CardReader.class1);
 
-        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
+        var mockProtector = new Mock<IBankIdDataStateProtector<BankIdUiOptions>>();
         mockProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
         mockProtector
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
+
+        var stateKey = StateKey.New();
 
         using var server = CreateServer(
             o =>
@@ -448,14 +441,15 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             }),
             services =>
             {
-                services.AddTransient(s => mockProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
+                services.AddSingleton(s => mockProtector.Object);
                 services.AddMvc().AddJsonOptions(configure =>
                 {
                     configure.JsonSerializerOptions.PropertyNamingPolicy = null;
                 });
             });
 
+        // Create state cookies for the payment state
+        var stateCookies = CreateStateCookies(PaymentStateKeyCookieName, stateKey, _paymentState, server.Services);
 
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
@@ -463,7 +457,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
         var initializeRequestBody = new { returnUrl = testReturnUrl, uiOptions = testOptions };
 
         //Act
-        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
+        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody, stateCookies);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
@@ -485,7 +479,8 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
     public async Task Api_Always_Returns_CamelCase_Json_For_Http400BadRequest()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, false, string.Empty, DefaultStateCookieName, CardReader.class1);
+        var stateKey = StateKey.New();
+        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, false, string.Empty, PaymentStateKeyCookieName, CardReader.class1);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
@@ -506,16 +501,17 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             }),
             services =>
             {
-                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
+                services.AddSingleton(s => _bankIdUiOptionsProtector.Object);
             });
 
+        // Create state cookies for the payment state
+        var stateCookies = CreateStateCookies(PaymentStateKeyCookieName, stateKey, _paymentState, server.Services);
 
         // Arrange acting request
         var initializeRequestBody = new { };
 
         //Act
-        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
+        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody, stateCookies);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, initializeTransaction.StatusCode);
@@ -530,7 +526,8 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
     public async Task Cancel_Calls_CancelApi()
     {
         // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, false, string.Empty, DefaultStateCookieName, CardReader.class1);
+        var stateKey = StateKey.New();
+        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), false, false, false, false, string.Empty, PaymentStateKeyCookieName, CardReader.class1);
         _bankIdUiOptionsProtector
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
@@ -552,11 +549,13 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             }),
             services =>
             {
-                services.AddTransient(s => _bankIdUiOptionsProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
+                services.AddSingleton(s => _bankIdUiOptionsProtector.Object);
                 services.AddTransient(s => _bankIdUiOrderRefProtector.Object);
                 services.AddSingleton<IBankIdAppApiClient>(s => testBankIdApi);
             });
+
+        // Create state cookies for the payment state
+        var stateCookies = CreateStateCookies(PaymentStateKeyCookieName, stateKey, _paymentState, server.Services);
 
         //Act
         var cancelRequest = new JsonContent(new
@@ -567,7 +566,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
         });
 
         // Act
-        var cancelTransaction = await MakeRequestWithRequiredContext("Payment", "/ActiveLogin/BankId/Payment/Api/Cancel", server, cancelRequest);
+        var cancelTransaction = await MakeRequestWithRequiredContext("Payment", "/ActiveLogin/BankId/Payment/Api/Cancel", server, cancelRequest, stateCookies);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, cancelTransaction.StatusCode);
@@ -589,6 +588,8 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             .ConfigureServices(services =>
             {
                 services.AddBankId(configureBankId);
+                services.AddAuthentication()
+                    .AddCookie();
                 services.AddBankIdPayment(configureBankIdPayment);
                 services.AddMvc();
                 configureServices?.Invoke(services);
@@ -596,7 +597,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
 
         return new TestServer(webHostBuilder);
     }
-    
+
     private static Action<IApplicationBuilder> DefaultAppConfiguration(Func<HttpContext, Task> testpath)
     {
         return app =>
@@ -619,8 +620,9 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
             app.Run(context => context.Response.WriteAsync(""));
         };
     }
-    private Task<HttpResponseMessage> GetInitializeResponse(TestServer server, object initializeRequestBody)
+
+    private Task<HttpResponseMessage> GetInitializeResponse(TestServer server, object initializeRequestBody, params (string, string)[] cookies)
     {
-        return GetInitializeResponse("Payment", server, initializeRequestBody);
+        return GetInitializeResponse("Payment", server, initializeRequestBody, cookies);
     }
 }

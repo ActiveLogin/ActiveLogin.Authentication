@@ -7,7 +7,7 @@ internal abstract class BankIdDataStateProtector<TModel>
 {
     private const string ProtectorVersion = "v2";
 
-    private readonly ISecureDataFormat<TModel> _secureDataFormat;
+    private readonly SecureDataFormat<TModel> _secureDataFormat;
 
     protected BankIdDataStateProtector(
         IDataProtectionProvider dataProtectionProvider,
@@ -32,13 +32,6 @@ internal abstract class BankIdDataStateProtector<TModel>
 
     public virtual TModel Unprotect(string protectedModel)
     {
-        var unprotected = _secureDataFormat.Unprotect(protectedModel);
-
-        if (unprotected == null)
-        {
-            throw new Exception(BankIdConstants.ErrorMessages.CouldNotUnprotect(typeof(TModel).Name));
-        }
-
-        return unprotected;
+        return _secureDataFormat.Unprotect(protectedModel) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotUnprotect(typeof(TModel).Name));
     }
 }
