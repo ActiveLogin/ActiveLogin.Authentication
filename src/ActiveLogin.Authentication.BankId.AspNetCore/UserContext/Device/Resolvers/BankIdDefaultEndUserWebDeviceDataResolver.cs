@@ -13,8 +13,8 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device.Resolv
 /// <inheritdoc cref="IBankIdEndUserDeviceDataResolver"/>
 public sealed class BankIdDefaultEndUserWebDeviceDataResolver(
     IHttpContextAccessor httpContextAccessor,
-    IBankIdDeviceDataProtector protector)
-    : BankIdEndUserWebDeviceDataResolverBase(httpContextAccessor, protector)
+    IBankIdDataStateProtector<DeviceDataState> protector
+) : BankIdEndUserWebDeviceDataResolverBase(httpContextAccessor, protector)
 {
     public override BankIdEndUserDeviceType DeviceType => BankIdEndUserDeviceType.Web;
 

@@ -50,7 +50,7 @@ public class BankIdPaymentOptions
 
     private CookieBuilder _stateCookieBuilder = new()
     {
-        Name = BankIdConstants.DefaultStateCookieName,
+        Name = BankIdConstants.StateKeyCookieName,
         SecurePolicy = CookieSecurePolicy.SameAsRequest,
         HttpOnly = true,
         SameSite = SameSiteMode.Lax,

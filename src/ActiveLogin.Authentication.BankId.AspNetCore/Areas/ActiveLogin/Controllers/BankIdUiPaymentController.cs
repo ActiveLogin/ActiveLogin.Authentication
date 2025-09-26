@@ -1,5 +1,7 @@
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
 
 using Microsoft.AspNetCore.Antiforgery;
@@ -12,21 +14,15 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [Area(BankIdConstants.Routes.ActiveLoginAreaName)]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiPaymentController : BankIdUiControllerBase
+public class BankIdUiPaymentController(
+    IAntiforgery antiforgery,
+    IStringLocalizer<ActiveLoginResources> localizer,
+    IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+    IBankIdDataStateProtector<AspNetCore.Models.BankIdUiOptions> uiOptionsProtector,
+    IBankIdInvalidStateHandler bankIdInvalidStateHandler,
+    IStateStorage stateStorage
+) : BankIdUiControllerBase<BankIdUiPaymentState>(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, stateStorage)
 {
-    public BankIdUiPaymentController(
-        IAntiforgery antiforgery,
-        IStringLocalizer<ActiveLoginResources> localizer,
-        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdInvalidStateHandler bankIdInvalidStateHandler,
-        IBankIdUiStateProtector bankIdUiStateProtector
-    )
-        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, bankIdUiStateProtector)
-    {
-
-    }
-
     [HttpGet]
     [AllowAnonymous]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdPaymentControllerPath}")]

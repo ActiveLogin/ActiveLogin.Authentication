@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 
-internal class BankIdDeviceDataProtector : BankIdDataStateProtector<DeviceDataState>, IBankIdDeviceDataProtector
+internal class BankIdDeviceDataProtector(
+    IDataProtectionProvider dataProtectionProvider
+) : BankIdDataStateProtector<DeviceDataState>(dataProtectionProvider, new BankIdDeviceDataStateSerializer()),
+    IBankIdDataStateProtector<DeviceDataState>
 {
-    public BankIdDeviceDataProtector(IDataProtectionProvider dataProtectionProvider)
-        : base(dataProtectionProvider, new BankIdDeviceDataStateSerializer())
-    {
-    }
 }

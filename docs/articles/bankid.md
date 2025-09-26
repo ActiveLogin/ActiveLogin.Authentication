@@ -6,58 +6,80 @@ The most common scenario is to use Active Login for BankID auth/login, so most o
 
 ## Table of contents
 
-* [Getting started](#getting-started)
-  + [1. Preparation](#1-preparation)
-  + [2. Read the documentation](#2-read-the-documentation)
-  + [3. Install the NuGet package](#3-install-the-nuget-package)
-  + [3. Prepare your project](#3-prepare-your-project)
-  + [4. Get started in development](#4-get-started-in-development)
-  + [5. Use test or production environments](#5-use-test-or-production-environments)
-  + [6. Monitoring](#6-monitoring)
-* [Environments](#environments)
-  + [Simulated environment](#simulated-environment)
-  + [Simulated environment with no config](#simulated-environment-with-no-config)
-  + [Simulated environment with custom person info](#simulated-environment-with-custom-person-info)
-  + [Test environment](#test-environment)
-  + [Production environment](#production-environment)
-  + [Full sample for production](#full-sample-for-production)
-* [Sign](#sign)
-* [Payment](#payment)
-* [Basic configuration samples](#basic-configuration-samples)
-  + [Using client certificate from Azure KeyVault](#using-client-certificate-from-azure-keyvault)
-  + [Using client certificate from custom source](#using-client-certificate-from-custom-source)
-  + [Adding schemas](#adding-schemas)
-  + [Customizing schemas](#customizing-schemas)
-  + [Custom schema](#custom-schema)
-  + [Customizing BankID options](#customizing-bankid-options)
-* [Concepts](#concepts)
-  + [Storing certificates in Azure](#storing-certificates-in-azure)
-  + [Claims Issuing](#claims-issuing)
-  + [Return URL for cancellation](#return-url-for-cancellation)
-  + [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
-  + [Multi tenant scenario](#multi-tenant-scenario)
-  + [Customize the UI](#customize-the-ui)
-  + [Simulate BankID API errors](#simulate-bankid-api-errors)
-  + [Event listeners](#event-listeners)
-  + [Store data on auth completion](#store-data-on-auth-completion)
-  + [Resolve the end user ip](#resolve-the-end-user-ip)
-  + [Resolve the end user device data (app or web)](#resolve-the-end-user-device-data-app-or-web)
-  + [Resolve requirements on Auth request](#resolve-requirements-on-auth-request)
-  + [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
-  + [Custom QR code generation](#custom-qr-code-generation)
-  + [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
-  + [Risk indication](#risk-indication)
-  + [Verify digital ID card](#verify-digital-id-card)
-  + [Use api wrapper only](#use-api-wrapper-only)
-  + [Running on Linux](#running-on-linux)
-  + [Localization](#localization)
-  + [Names of the person might be capitalized](#names-of-the-person-might-be-capitalized)
-  + [Cookies issued](#cookies-issued)
-  + [Browser support](#browser-support)
-
+- [ActiveLogin.Authentication.BankId](#activeloginauthenticationbankid)
+  - [Table of contents](#table-of-contents)
+  - [Getting started](#getting-started)
+    - [1. Preparation](#1-preparation)
+      - [Certificates](#certificates)
+    - [2. Read the documentation](#2-read-the-documentation)
+    - [3. Install the NuGet package](#3-install-the-nuget-package)
+    - [3. Prepare your project](#3-prepare-your-project)
+    - [4. Get started in development](#4-get-started-in-development)
+    - [5. Use test or production environments](#5-use-test-or-production-environments)
+    - [6. Monitoring](#6-monitoring)
+  - [Environments](#environments)
+    - [Simulated environment](#simulated-environment)
+    - [Simulated environment with no config](#simulated-environment-with-no-config)
+    - [Simulated environment with custom person info](#simulated-environment-with-custom-person-info)
+    - [Test environment](#test-environment)
+    - [Production environment](#production-environment)
+    - [Full sample for production](#full-sample-for-production)
+- [Sign](#sign)
+- [Payment](#payment)
+  - [Basic configuration samples](#basic-configuration-samples)
+    - [Using client certificate from Azure KeyVault](#using-client-certificate-from-azure-keyvault)
+    - [Using client certificate from custom source](#using-client-certificate-from-custom-source)
+    - [Using client certificate from custom certificate service](#using-client-certificate-from-custom-certificate-service)
+    - [Adding schemas](#adding-schemas)
+    - [Customizing schemas](#customizing-schemas)
+    - [Customizing BankID options](#customizing-bankid-options)
+  - [Concepts](#concepts)
+    - [Storing certificates in Azure](#storing-certificates-in-azure)
+      - [Certificates are secrets](#certificates-are-secrets)
+      - [KeyVault credentials](#keyvault-credentials)
+    - [Claims Issuing](#claims-issuing)
+      - [Implementing IBankIdClaimsTransformer](#implementing-ibankidclaimstransformer)
+      - [Example: Add orderref as txn claim](#example-add-orderref-as-txn-claim)
+      - [Example: Add birthdate and gender claims](#example-add-birthdate-and-gender-claims)
+    - [Return URL for cancellation](#return-url-for-cancellation)
+    - [Handle missing or invalid state cookie](#handle-missing-or-invalid-state-cookie)
+    - [Multi tenant scenario](#multi-tenant-scenario)
+    - [Customizing StateStorage](#customizing-statestorage)
+    - [Customize the UI](#customize-the-ui)
+    - [Simulate BankID API errors](#simulate-bankid-api-errors)
+      - [Simulated API error usage](#simulated-api-error-usage)
+    - [Event listeners](#event-listeners)
+      - [Event types](#event-types)
+      - [Sample implementation](#sample-implementation)
+      - [Built in event listeners](#built-in-event-listeners)
+        - [BankIdDebugEventListener](#bankiddebugeventlistener)
+        - [BankIdApplicationInsightsEventListener](#bankidapplicationinsightseventlistener)
+        - [BankIdLoggerEventListener](#bankidloggereventlistener)
+      - [Default registered event listeners](#default-registered-event-listeners)
+    - [Store data on auth completion](#store-data-on-auth-completion)
+    - [Resolve the end user ip](#resolve-the-end-user-ip)
+    - [Resolve the end user device data (app or web)](#resolve-the-end-user-device-data-app-or-web)
+      - [Configuring Device Data](#configuring-device-data)
+      - [What is included in the requests?](#what-is-included-in-the-requests)
+      - [Customizing the Device Data feature](#customizing-the-device-data-feature)
+        - [Configuration examples](#configuration-examples)
+      - [More information available at](#more-information-available-at)
+    - [Resolve requirements on Auth request](#resolve-requirements-on-auth-request)
+    - [Resolve user data on Auth request](#resolve-user-data-on-auth-request)
+    - [Custom QR code generation](#custom-qr-code-generation)
+    - [Custom browser detection and launch info](#custom-browser-detection-and-launch-info)
+      - [Use UAParserDeviceDetector for device and browser detection](#use-uaparserdevicedetector-for-device-and-browser-detection)
+      - [Shorthand for only overriding config for custom browsers](#shorthand-for-only-overriding-config-for-custom-browsers)
+    - [Risk indication](#risk-indication)
+      - [More information available at](#more-information-available-at-1)
+    - [Verify digital ID card](#verify-digital-id-card)
+    - [Use api wrapper only](#use-api-wrapper-only)
+    - [Localization](#localization)
+    - [Names of the person might be capitalized](#names-of-the-person-might-be-capitalized)
+    - [Cookies issued](#cookies-issued)
+    - [Browser support](#browser-support)
 
 ---
-
 
 ## Getting started
 
@@ -78,14 +100,12 @@ The root CA-certificates specified in _BankID Relying Party Guidelines_ (#7 for 
 
 It is expected that you have a basic understanding of how [ASP.NET](https://docs.microsoft.com/en-us/aspnet/core/), [ASP.NET MVC](https://docs.microsoft.com/en-us/aspnet/core/mvc/overview) and [ASP.NET Authentication](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity) works before getting started.
 
-
 Active Login is designed to make it very easy to get started with BankID, but in the end you are responsible for making sure that you are compliant with the technical guidelines and/or legal agreements.
 
 Therefore, before you start using Active Login, please read the documentation relevant to your needs. This will also make sure you understand the concepts better.
 
 - [BankID (Swedish)](https://www.bankid.com/utvecklare/guider)
 - [BankID (English)](https://www.bankid.com/en/utvecklare/guider)
-
 
 ### 3. Install the NuGet package
 
@@ -94,7 +114,6 @@ ActiveLogin.Authentication is distributed as [packages on NuGet](https://www.nug
 ```console
 dotnet add package ActiveLogin.Authentication.BankId.AspNetCore
 ```
-
 
 ### 3. Prepare your project
 
@@ -127,7 +146,6 @@ services
             .AddSameDevice();
     });
 ```
-
 
 ### 5. Use test or production environments
 
@@ -167,7 +185,6 @@ ___Note:___ `.UseQrCoderQrCodeGenerator()` requires the [ActiveLogin.Authenticat
 
 ___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentication.BankId.UAParser](https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.UAParser/) package.
 
-
 ### 6. Monitoring
 
 Active Login provides a structured way of generating and logging events. These coould be monitored to get statistics and health status of your BankID login method.
@@ -176,17 +193,13 @@ Read more on the topic in [Active Login Monitor](monitor.md).
 
 ![Active Login Monitor](https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png)
 
-
 ---
 
-
 ## Environments
-
 
 ### Simulated environment
 
 For trying out quickly (without the need of certificates) you can use an in-memory implementation of the API by using `.UseSimulatedEnvironment()`. This could also be good when writing tests.
-
 
 ### Simulated environment with no config
 
@@ -197,7 +210,6 @@ services
         bankId.UseSimulatedEnvironment();
     });
 ```
-
 
 ### Simulated environment with custom person info
 
@@ -211,14 +223,13 @@ services
     });
 ```
 
-
 ### Test environment
 
 This will use the real REST API for BankID, connecting to the Test environment.
 
 It will automatically register both the root and client certificate, even though this behaviour can be disabled. A scenario might be that you want to use the same flow for both test and prod and therefore make sure that fetching the certificate from KeyVault works by trying that out for test. It could also be useful if you are running an older version of Active Login which contains an expired version of the test certificate. You can then disable using the embedded, expired certificate and provide the valid test certificate yourself.
 
-BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx ` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.pfx `is used.
+BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.pfx` is used.
 
 ```csharp
 services
@@ -324,8 +335,8 @@ services
 
 Once that is done you will be able to use these services in your application, for example in your controller:
 
-* `IBankIdSignConfigurationProvider` : List the registered configuraitons (SameDevice / Other Device)
-* `IBankIdSignService` : Initiate and resolve the result of sign flow
+- `IBankIdSignConfigurationProvider` : List the registered configuraitons (SameDevice / Other Device)
+- `IBankIdSignService` : Initiate and resolve the result of sign flow
 
 Here is a minimal sample. See `Standalone.MvcSample` for more details.
 
@@ -418,8 +429,8 @@ services.AddBankIdPayment(bankId =>
 
 Once that is done you will be able to use these services in your application, for example in your controller:
 
-* `IBankIdPaymentConfigurationProvider` : List the registered configuraitons (Same Device / Other Device)
-* `IBankIdPaymentService` : Initiate and resolve the result of payment flow
+- `IBankIdPaymentConfigurationProvider` : List the registered configuraitons (Same Device / Other Device)
+- `IBankIdPaymentService` : Initiate and resolve the result of payment flow
 
 Here is a minimal sample. See `Standalone.MvcSample` for more details.
 
@@ -515,7 +526,6 @@ services.AddBankId(bankId =>
     });
 ```
 
-
 ### Using client certificate from custom source
 
 ```csharp
@@ -542,8 +552,8 @@ services.AddBankId(bankId =>
 
 ### Adding schemas
 
-* *Same device*: Launches the BankID app on the same device, no need to enter any personal identity number.
-* *Other device*: The user manually launches the app the smartphone and scans the QR code.
+- _Same device_: Launches the BankID app on the same device, no need to enter any personal identity number.
+- _Other device_: The user manually launches the app the smartphone and scans the QR code.
 
 ```csharp
 services
@@ -555,7 +565,6 @@ services
             .AddOtherDevice();
     });
 ```
-
 
 ### Customizing schemas
 
@@ -609,7 +618,6 @@ Requirements can also be set dynamically for each authentication, see section [R
 To use dynamic requirements with payments provide the requirements as part the `BankIdPaymentProperties`, see section [Payment](#payment).
 
 ---
-
 
 ## Concepts
 
@@ -685,7 +693,6 @@ They will be evaluated in the order:
 2. `DefaultAzureCredential` with `AzureManagedIdentityClientId` (if specified)
 3. `DefaultAzureCredential`
 
-
 ### Claims Issuing
 
 Active Login aims to issue the most relevant claims that can be extracted from the information provided by BankID. There are scenarios where you might like to change issued claims or add new ones yourself.
@@ -711,7 +718,6 @@ services
 
 The claims beeing issued by default have the names/keys specified in the public class `BankIdClaimTypes` so you can refer to them by these constants.
 
-
 #### Example: Add orderref as txn claim
 
 If the application that uses ActiveLogin BankId needs to keep an audit trail of the sign-in, the _txn_ claim could preferably be used for this.
@@ -732,7 +738,6 @@ public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
 ```
 
 __Note:__ If the _txn_ claim is issued, you are responsible for making sure to keep relevant audit informaiton given that session. See the OpenId Connect spec linked above for more information.
-
 
 #### Example: Add birthdate and gender claims
 
@@ -793,8 +798,8 @@ If a user cancels the login, the user will be redirected to the `cancelReturnUrl
 
 The defaults for cancellation are as follows:
 
-* Same Device Scheme returns to scheme selection
-* Other Device Scheme returns to scheme selection when using QR codes
+- Same Device Scheme returns to scheme selection
+- Other Device Scheme returns to scheme selection when using QR codes
 
 It is possible to override the default navigation when cancelling an authentication request. The URL used for navigation is set through the `cancelReturnUrl` item in the `AuthenticationProperties` passed in the authentication challenge.
 
@@ -813,10 +818,9 @@ var props = new AuthenticationProperties
 return Challenge(props, provider);
 ```
 
-
 ### Handle missing or invalid state cookie
 
-If the user navigates directly to the BankdID status page (*/ActiveLogin/BankId/Auth*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#return-url-for-cancellation).
+If the user navigates directly to the BankdID status page (_/ActiveLogin/BankId/Auth_) the state cookie (___ActiveLogin.BankIdState_) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#return-url-for-cancellation).
 
 This behaviour can be overriden by implementing `IBankIdInvalidStateHandler` and adding that to the IOC-container.
 
@@ -833,7 +837,6 @@ public class SampleInvalidStateHandler : IBankIdInvalidStateHandler
     }
 }
 ```
-
 
 ### Multi tenant scenario
 
@@ -884,6 +887,50 @@ public class Startup
 }
 ```
 
+### Customizing StateStorage
+
+ActiveLogin.Authentication uses an implementation of IStateStorage to persist temporary state during the BankID authentication flow. By default an in-memory implementation is used, which works great for development and testing. However, for production you might want to persist state using a different storage mechanism (for example, in a database or through a distributed cache).
+
+To do so, implement the IStateStorage interface in your own class:
+
+```csharp
+using ActiveLogin.Authentication.BankId.Core;
+
+public class CustomStateStorage : IStateStorage
+{
+    public async Task<StateKey> WriteAsync(object value)
+    {
+        // Implement your custom logic to store the state,
+        // for example, saving data into a database.
+        var key = Guid.NewGuid().ToString();
+        // ...custom persistence logic here...
+        return await Task.FromResult(new StateKey(key));
+    }
+
+    public async Task<object?> ReadAsync(StateKey key)
+    {
+        // Retrieve the state associated with the key.
+        return await Task.FromResult<object?>(null);
+    }
+
+    public async Task<object?> RemoveAsync(StateKey key)
+    {
+        // Remove the stored state.
+        return await Task.FromResult<object?>(null);
+    }
+}
+```
+
+Register your custom implementation during startup:
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.AddStateStorage<IStateStorage, CustomStateStorage>();
+        // ...other configuration...
+    });
+```
 
 ### Customize the UI
 
@@ -906,9 +953,9 @@ In this folder, you can then create any of the partials and MVC will then discov
 
 If you want, you can override the UI for Auth, Sign and Payment with different templates. Do so by placing the files in one of these folders:
 
-* `Areas/ActiveLogin/Views/BankIdUiAuth`
-* `Areas/ActiveLogin/Views/BankIdUiSign`
-* `Areas/ActiveLogin/Views/BankIdUiPayment`
+- `Areas/ActiveLogin/Views/BankIdUiAuth`
+- `Areas/ActiveLogin/Views/BankIdUiSign`
+- `Areas/ActiveLogin/Views/BankIdUiPayment`
 
 See [the MVC sample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample) to see this in action, as demonstrated [here](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample/Areas/ActiveLogin/Views/BankIdUiAuth/_Wrapper.cshtml).
 
@@ -918,6 +965,7 @@ When developing and testing your application, it can be useful to simulate vario
 
 The BankIdBuilder has an extension method `AddSimulatedBankIdApiError` that can be used to simulate errors.
 The method takes the parameters:
+
 - `errorRate`: The rate of errors to simulate, a value between 0 and 1. For example, 0.5 will simulate an error in 50% of the requests.
 - `errors`: The errors that will be used to simulate. The errors are defined in a Dictionary with the key being an `ErrorCod e` Enum and the value being the ErrorDescription.
 - `varyErrorTypes`: If true, the error type will be varied between the errors in the list. If false, the same random error type will be used for all API calls.
@@ -926,6 +974,7 @@ The method takes the parameters:
 
 The example below will fail 20% of the API calls to BankId with either a RequestTimeout or InternalError.
 The error type will be varied between the errors.
+
 ```csharp
 services
     .AddBankId(bankId =>
@@ -953,26 +1002,26 @@ During the login flow, quite a lot of things are happening and using our event l
 At the moment, we trigger the events listed below. They all have unique event properties relevant to the event type.
 
 - AspNet
-    - `BankIdAspNetChallengeSuccessEvent`
-    - `BankIdAspNetAuthenticateSuccessEvent`
-    - `BankIdAspNetAuthenticateFailureEvent`
+  - `BankIdAspNetChallengeSuccessEvent`
+  - `BankIdAspNetAuthenticateSuccessEvent`
+  - `BankIdAspNetAuthenticateFailureEvent`
 - Initialize
-    - `BankIdInitializeSuccessEvent`
-    - `BankIdInitializeErrorEvent`
+  - `BankIdInitializeSuccessEvent`
+  - `BankIdInitializeErrorEvent`
 - Sign
-    - `BankIdSignSuccessEvent`
-    - `BankIdSignFailureEvent`
+  - `BankIdSignSuccessEvent`
+  - `BankIdSignFailureEvent`
 - Payment
-    - `BankIdPaymentSuccessEvent`
-    - `BankIdPaymentFailureEvent`
+  - `BankIdPaymentSuccessEvent`
+  - `BankIdPaymentFailureEvent`
 - Collect
-    - `BankIdCollectPendingEvent`
-    - `BankIdCollectCompletedEvent`
-    - `BankIdCollectFailureEvent`
-    - `BankIdCollectErrorEvent`
+  - `BankIdCollectPendingEvent`
+  - `BankIdCollectCompletedEvent`
+  - `BankIdCollectFailureEvent`
+  - `BankIdCollectErrorEvent`
 - Cancel
-    - `BankIdCancelSuccessEvent`
-    - `BankIdCancelErrorEvent`
+  - `BankIdCancelSuccessEvent`
+  - `BankIdCancelErrorEvent`
 
 #### Sample implementation
 
@@ -1038,7 +1087,6 @@ services
 
 You can also customize what kind of data should be logged together with the Application Insight events. For example:
 
-
 ```csharp
 services
     .AddBankId(bankId =>
@@ -1059,16 +1107,15 @@ services
     });
 ```
 
-
 ##### BankIdLoggerEventListener
 
 `BankIdLoggerEventListener` will listen for all events and write them with a descriptive text to the log using `ILogger.Log(...)`.
 This listener is registered by default on startup, se info below if you want to clear the default listeners.
 
-
 #### Default registered event listeners
 
 By default, two event listeners will be enabled:
+
 - `BankIdLoggerEventListener` (Log all events to `ILogger`)
 - `BankIdResultStoreEventListener` (Map the completion event for `IBankIdResultStore`, see info below under __Store data on auth completion__.)
 
@@ -1078,7 +1125,6 @@ If you want to remove those implementations, remove any class implementing `IBan
 services.RemoveAll(typeof(IBankIdEventListener));
 ```
 
-
 ### Store data on auth completion
 
 When the login flow is completed and the collect request to BankID returns data, any class implementing `IBankIdResultStore` registered in the DI will be called.
@@ -1086,7 +1132,7 @@ There is a shorthand method (`AddResultStore`) on the BankIdBuilder to register 
 
 ___Note:___ `IBankIdResultStore` is just a shorthand for the `BankIdCollectCompletedEvent` as described above.
 
-*Sample implementation:*
+_Sample implementation:_
 
 ```csharp
 public class BankIdResultSampleLoggerStore : IBankIdResultStore
@@ -1120,7 +1166,6 @@ The default implementation will log all data to the tracelog. If you want to rem
 services.RemoveAll(typeof(IBankIdResultStore));
 ```
 
-
 ### Resolve the end user ip
 
 In some scenarios, like running behind a proxy, you might want to resolve the end user IP yourself and override the default implementation.
@@ -1132,19 +1177,21 @@ services.AddTransient<IBankIdEndUserIpResolver, EndUserIpResolver>();
 ```
 
 ---
+
 ### Resolve the end user device data (app or web)
 
-When initiating a flow with BankID, you can include either the **`web`** parameter (for **web applications**) or the **`app`** parameter (for **mobile apps**) in the request. In Active Login, these parameters are collectively referred to as **device data**.
+When initiating a flow with BankID, you can include either the __`web`__ parameter (for __web applications__) or the __`app`__ parameter (for __mobile apps__) in the request. In Active Login, these parameters are collectively referred to as __device data__.
 The metadata included with these parameters differs depending on the device type, but providing either one allows BankID to deliver a more accurate [Risk indication](#risk-indication).
 
-**Risk Indication** provides an estimated risk level for a BankID transaction. It is a way to enhance the security of your application by, for example, requiring additional controls such as ID card validation for transactions that are assessed as high risk.
+__Risk Indication__ provides an estimated risk level for a BankID transaction. It is a way to enhance the security of your application by, for example, requiring additional controls such as ID card validation for transactions that are assessed as high risk.
 
 #### Configuring Device Data
 
-Active Login provides a default implementation of the Device Data feature that assumes it is running from a **web application**.
+Active Login provides a default implementation of the Device Data feature that assumes it is running from a __web application__.
 You can either customize this default implementation or create your own for other device types.
 
 The following service interface must be implemented to use the Device Data feature:
+
 - `IBankIdEndUserDeviceDataResolverFactory`: Factory that provides the resolvers for the device type.
 - `IBankIdEndUserDeviceDataResolver`: Resolver that provides the device data for a given device type.
 - `IBankIdEndUserDeviceDataConfiguration`: Configuration that specifies the device type to use.
@@ -1153,23 +1200,22 @@ The following service interface must be implemented to use the Device Data featu
 
 | Device Type   | Default Resolver Implementation           | Metadata Included                           |
 |---------------|-------------------------------------------|--------------------------------------------|
-| **Web**       | `BankIdDefaultEndUserWebDeviceDataResolver` | Referring Domain, User-Agent, Device Identifier            |
-| **App**       | No resolver is configured by default for mobile apps. | App Identifier, Device OS, Model, Device Identifier |
+| __Web__       | `BankIdDefaultEndUserWebDeviceDataResolver` | Referring Domain, User-Agent, Device Identifier            |
+| __App__       | No resolver is configured by default for mobile apps. | App Identifier, Device OS, Model, Device Identifier |
 
-The **Device Identifier**, included in both the **`web`** and **`app`** parameters, must remain identical across requests.  
+The __Device Identifier__, included in both the __`web`__ and __`app`__ parameters, must remain identical across requests.
 
-For **web applications**, the **Device Identifier** should be unique to the user's browser and must not rely on a session cookie, it can be stored in a separate cookie or as a hash of one.
-The `BankIdDefaultEndUserWebDeviceDataResolver` sets a protected cookie named `__ActiveLogin.BankIdDeviceData` containing a unique **Device Identifier**. This ensures that the identifier persists across sessions and requests.
+For __web applications__, the __Device Identifier__ should be unique to the user's browser and must not rely on a session cookie, it can be stored in a separate cookie or as a hash of one.
+The `BankIdDefaultEndUserWebDeviceDataResolver` sets a protected cookie named `__ActiveLogin.BankIdDeviceData` containing a unique __Device Identifier__. This ensures that the identifier persists across sessions and requests.
 
-For **mobile apps**, the **Device Identifier** uniquely identifies the device your client is running on. It should not be tied to a single user of the device and ideally should remain the same even if the app is reinstalled.
-
+For __mobile apps__, the __Device Identifier__ uniquely identifies the device your client is running on. It should not be tied to a single user of the device and ideally should remain the same even if the app is reinstalled.
 
 ___Note:___
 
 Cookies are protected using ASP.NET Core Data Protection. For more information about the cookies used by the package, including how they are protected and considerations for persistent key storage, see the [Cookies issued](#cookies-issued) section above. This is important, especially in distributed environments.
 
-
 #### Customizing the Device Data feature
+
 To customize the Device Data feature, use the `UseDeviceData` extension in the BankID client builder.
 This allows you to specify the device type and any relevant metadata using resolvers.
 
@@ -1183,7 +1229,8 @@ This implementation will set the device type to `BankIdEndUserDeviceType.Web` an
 the `BankIdDefaultEndUserDeviceDataResolverFactory` to find the correct resolver for the device type.
 The `BankIdDefaultEndUserWebDeviceDataResolver` is used to fetch the web browser information.
 
-*If no custom implementation is made the device data defaults to this:*
+_If no custom implementation is made the device data defaults to this:_
+
 ```csharp
 services
     .AddBankId(bankId =>
@@ -1202,7 +1249,8 @@ services
     });
 ```
 
-*Custom implementation requests initiated by av web browser:*
+_Custom implementation requests initiated by av web browser:_
+
 ```csharp
 services
     .AddBankId(bankId =>
@@ -1223,8 +1271,7 @@ services
     });
 ```
 
-
-*Custom implementation requests initiated by a mobile app:*
+_Custom implementation requests initiated by a mobile app:_
 
 ```csharp
 services
@@ -1262,14 +1309,15 @@ services
 
 The information for the `BankIdAppDeviceDataResolver` must be configured during application startup. You can also provide your own custom resolver implementation for mobile apps. There is no default resolver that automatically fetches device data for mobile apps because this data must be retrieved from the device hardware, which can vary between devices (iOS, Android, etc.).
 
+#### More information available at
 
-#### More information available at:
- - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
- - [BankID Api - Auth](https://developers.bankid.com/api-references/auth--sign/auth)
- - [BankID Api - Sign](https://developers.bankid.com/api-references/auth--sign/sign)
- - [BankID Api - Payment](https://developers.bankid.com/api-references/auth--sign/payment)
+- [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
+- [BankID Api - Auth](https://developers.bankid.com/api-references/auth--sign/auth)
+- [BankID Api - Sign](https://developers.bankid.com/api-references/auth--sign/sign)
+- [BankID Api - Payment](https://developers.bankid.com/api-references/auth--sign/payment)
 
 ---
+
 ### Resolve requirements on Auth request
 
 If you want to set the requirements on how the authentication order must be performed dynamically for each order instead of statically during startup in `Program.cs`, it can be done by overriding the default implementation of the `IBankIdAuthRequestRequirementsResolver`.
@@ -1299,9 +1347,9 @@ BankID allows you to display a text during authentication to describe the intent
 
 <img src="https://alresourcesprod.blob.core.windows.net/docsassets/active-login-bankid-uservisibledata-screenshot_1.jpg" width="250" alt="User visible data" />
 
-* `UserVisibleData`
-* `UserNonVisibleData`
-* `UserVisibleDataFormat`
+- `UserVisibleData`
+- `UserNonVisibleData`
+- `UserVisibleDataFormat`
 
 These can either be set as static data during startup in `Program.cs` or dynamically by overiding the interface `IBankIdAuthRequestUserDataResolver`.
 
@@ -1351,7 +1399,6 @@ services.AddTransient<IBankIdAuthRequestUserDataResolver, BankIdAuthRequestDynam
 
 ___Note:___ For sign, user data is mandatory, and therefore part of the initiate flow.
 
-
 ### Custom QR code generation
 
 By default the `ActiveLogin.Authentication.BankId.QRCoder` package is needed to generate QR codes using the `UseQrCoderQrCodeGenerator` extension method.
@@ -1377,7 +1424,6 @@ By implementing `IBankIdSupportedDeviceDetector` you can override how the client
 ```csharp
 services.AddTransient<IBankIdSupportedDeviceDetector, CustomBankIdSupportedDeviceDetector>();
 ```
-
 
 #### Use UAParserDeviceDetector for device and browser detection
 
@@ -1501,9 +1547,9 @@ public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
 }
 ```
 
-#### More information available at:
- - [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
+#### More information available at
 
+- [BankID Risk Indication](https://www.bankid.com/en/foretag/the-service/risk-indication)
 
 ### Verify digital ID card
 
@@ -1563,8 +1609,6 @@ The constructor for these ApiClients takes an `HttpClient` and you need to confi
 
 For easy use the APIs you register the BankID services, select an environment etc. and then the APIs are ready to be injected using IoC.
 
-
-
 ```csharp
 services
     .AddBankId(bankId =>
@@ -1577,7 +1621,8 @@ services
 
 ___Note:___ The `BankIdApiClient` class below is available in the `ActiveLogin.Authentication.BankId.Api` package.
 
-*App API:*
+_App API:_
+
 ```csharp
 public class BankIdAppApiClient : IBankIdAppApiClient
 {
@@ -1591,14 +1636,14 @@ public class BankIdAppApiClient : IBankIdAppApiClient
 }
 ```
 
-*Verify API:*
+_Verify API:_
+
 ```csharp
 public class BankIdVerifyApiClient : IBankIdVerifyApiClient
 {
     public Task<VerifyResponse> VerifyAsync(VerifyRequest request) { ... }
 }
 ```
-
 
 ### Localization
 
@@ -1610,13 +1655,11 @@ The user messages that will be displayed are provided through the implementation
 services.AddTransient<IBankIdUserMessageLocalizer, CustomBankIdUserMessageLocalizer>();
 ```
 
-
 ### Names of the person might be capitalized
 
 The names comes from the bank that the end user has, and some banks (due to legacy) stores all of the names in all caps (like `ALICE SMITH`).
 
 We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
-
 
 ### Cookies issued
 
@@ -1624,46 +1667,45 @@ The `*.AspNetCore` package will issue a cookie to make the auth flow work
 
 - Cookie: `__ActiveLogin.BankIdUiState`
   - This cookie is there to store state during the auth process, as the user will/might be redirected during the flow. The cookie is session based only and will be deleted once the auth process is finished and/or when the user closes the browser.
-   
+
   - Because it is strictly related to temp storage during auth, you should not have to inform the user about these specific cookies (according to the [EU "cookie law"](https://www.cookielaw.org/the-cookie-law/)).
-   
+
   - With the current implementation (following the convention from Microsoft ASP.NET) the usage of cookies is not optional.
-  
+
   - A more technical deep dive of this cookie can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
 
 - Cookie: `__ActiveLogin.BankIdDeviceData`
   - This cookie is used to store the device data for the user, in the default implementation, it is used to ensure that the device data is persistent across requests.
 
-  
 ___Note:___
 
-All cookies issued by this package are **protected using ASP.NET Core Data Protection**. This means their contents are encrypted and tamper-proof.
+All cookies issued by this package are __protected using ASP.NET Core Data Protection__. This means their contents are encrypted and tamper-proof.
 
-In certain environments (such as multi-instance deployments or containers) you may need to **configure Data Protection to use a persistent key store** (e.g., a shared file system, Azure Blob Storage, Redis, or SQL Server) so that cookies can be unprotected across app restarts or multiple instances.
+In certain environments (such as multi-instance deployments or containers) you may need to __configure Data Protection to use a persistent key store__ (e.g., a shared file system, Azure Blob Storage, Redis, or SQL Server) so that cookies can be unprotected across app restarts or multiple instances.
 
 For guidance on configuring a persistent key store, see the official documentation: [Data Protection configuration overview](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-8.0).
-
 
 ### Browser support
 
 We aim at supporting the latest version of all major browsers both on desktop and on mobile.
 
 All browsers on mobile are supported to show the UI, but the redirect flow have been tested and verified on these:
+
 - iOS
-    - Safari
-    - Chrome
-    - Edge
-    - Firefox
-    - Opera Touch
+  - Safari
+  - Chrome
+  - Edge
+  - Firefox
+  - Opera Touch
 - Android
-    - Chrome
-    - Firefox
-    - Edge
-    - Samsung Internet
-    - Opera Mini
+  - Chrome
+  - Firefox
+  - Edge
+  - Samsung Internet
+  - Opera Mini
 
 ___Note:___ Brave on iOS/Android identifies as Safari or Chrome for privacy reasons and will get wrong configuration, so the redirect flow will fail.
 
 ___Note:___ If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 
-* [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): https://github.com/github/fetch
+- [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): <https://github.com/github/fetch>
