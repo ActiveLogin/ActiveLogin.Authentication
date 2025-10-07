@@ -42,6 +42,7 @@ internal static class BankIdConstants
 
         public const string InvalidStateCookie = "Invalid state cookie";
         public const string InvalidUiResult = "Invalid BankId UI result";
+        public const string InvalidUiOptions = "Invalid or expired UiOptions";
 
         public const string UnknownFlowCollectResultType = "Unknown collect result type";
         public const string UnknownFlowLaunchType = "Unknown launch type";

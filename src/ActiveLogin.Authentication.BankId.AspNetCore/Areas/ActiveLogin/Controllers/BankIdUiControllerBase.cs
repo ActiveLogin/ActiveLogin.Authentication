@@ -1,5 +1,6 @@
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -23,6 +24,7 @@ public abstract class BankIdUiControllerBase : Controller
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
     private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
+    private readonly IBankIdUiOptionsCookieManager _uiOptionsCookieManager;
 
     protected BankIdUiControllerBase(
         IAntiforgery antiforgery,
@@ -30,7 +32,8 @@ public abstract class BankIdUiControllerBase : Controller
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,
-        IBankIdUiStateProtector bankIdUiStateProtector)
+        IBankIdUiStateProtector bankIdUiStateProtector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager)
     {
         _antiforgery = antiforgery;
         _localizer = localizer;
@@ -38,6 +41,7 @@ public abstract class BankIdUiControllerBase : Controller
         _uiOptionsProtector = uiOptionsProtector;
         _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
         _bankIdUiStateProtector = bankIdUiStateProtector;
+        _uiOptionsCookieManager = uiOptionsCookieManager;
     }
 
     protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string protectedUiOptions, string viewName)
@@ -50,7 +54,7 @@ public abstract class BankIdUiControllerBase : Controller
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
-        var uiOptions = _uiOptionsProtector.Unprotect(protectedUiOptions);
+        var uiOptions = _uiOptionsCookieManager.Retrieve(protectedUiOptions) ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidUiOptions);
         if (!HasStateCookie(uiOptions))
         {
             var invalidStateContext = new BankIdInvalidStateContext(uiOptions.CancelReturnUrl);
