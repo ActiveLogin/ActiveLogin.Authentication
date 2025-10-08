@@ -36,9 +36,8 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // QR
 
-    var qrLastRefreshTimestamp: Date = null;
     var qrIsRefreshing = false;
-    var qrRefreshTimeoutId: number = null;
+    var qrRefreshIntervalId: number | null = null;
 
     // OrderRef
 
@@ -62,6 +61,15 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     const uiResultForm = <HTMLFormElement>document.querySelector("form[name=activelogin-bankid-ui--result-form]");
     const uiResultInput = <HTMLInputElement>uiResultForm.querySelector("input[name=uiResult]");
+
+    // Flow control flags
+    var autoStartAttempts = 0;
+    var flowIsCancelledByUser = false;
+    var flowIsFinished = false;
+
+    // Polling state
+    let statusPollingActive = false;
+    let currentOrderRef: string | null = null;
 
     // Events
 
@@ -108,19 +116,14 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         hide(qrCodeElement);
     }
 
-    // BankID
-
-    var autoStartAttempts = 0;
-    var flowIsCancelledByUser = false;
-    var flowIsFinished = false;
-
-    function enableCancelButton(requestVerificationToken: string, cancelUrl: string, protectedUiOptions: string, orderRef: string = null) {
+    function enableCancelButton(requestVerificationToken: string, cancelUrl: string, protectedUiOptions: string, orderRef: string | null = null) {
         var onCancelButtonClick = (event: Event) => {
             cancel(requestVerificationToken, cancelUrl, protectedUiOptions, orderRef);
-            event.target.removeEventListener("click", onCancelButtonClick);
+            event.target?.removeEventListener("click", onCancelButtonClick);
         };
         cancelButtonElement.addEventListener("click", onCancelButtonClick);
     }
+
     function initialize(requestVerificationToken: string, returnUrl: string, cancelUrl: string, protectedUiOptions: string) {
         flowIsCancelledByUser = false;
 
@@ -140,7 +143,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                         var startBankIdAppButtonOnClick = (event: Event) => {
                             window.location.href = data.redirectUri;
                             hide(startBankIdAppButtonElement);
-                            event.target.removeEventListener("click", startBankIdAppButtonOnClick);
+                            event.target?.removeEventListener("click", startBankIdAppButtonOnClick);
                         };
                         startBankIdAppButtonElement.addEventListener("click", startBankIdAppButtonOnClick);
 
@@ -152,8 +155,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
                 if (!!data.qrStartState && !!data.qrCodeAsBase64) {
                     setQrCode(data.qrCodeAsBase64);
-                    qrLastRefreshTimestamp = new Date();
-                    refreshQrCode(requestVerificationToken, data.qrStartState);
+                    startQrCodeRefresh(requestVerificationToken, data.qrStartState);
                 }
 
                 enableCancelButton(requestVerificationToken, cancelUrl, protectedUiOptions, data.orderRef);
@@ -172,92 +174,103 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             });
     }
 
+    // Refactored: non-recursive status polling starter keeping original API name
     function checkStatus(requestVerificationToken: string, returnUrl: string, protectedUiOptions: string, orderRef: string) {
-        if (flowIsCancelledByUser || flowIsFinished) {
-            return;
+        currentOrderRef = orderRef;
+        if (statusPollingActive) {
+            return; // Avoid starting multiple loops
         }
+        statusPollingActive = true;
+        (async () => {
+            while (!flowIsCancelledByUser && !flowIsFinished && currentOrderRef === orderRef) {
+                try {
+                    const data = await postJson(configuration.bankIdStatusApiUrl,
+                        requestVerificationToken,
+                        {
+                            "orderRef": orderRef,
+                            "returnUrl": returnUrl,
+                            "uiOptions": protectedUiOptions,
+                            "autoStartAttempts": autoStartAttempts
+                        },
+                        fetchRetryCountDefault);
 
-        postJson(configuration.bankIdStatusApiUrl,
-            requestVerificationToken,
-            {
-                "orderRef": orderRef,
-                "returnUrl": returnUrl,
-                "uiOptions": protectedUiOptions,
-                "autoStartAttempts": autoStartAttempts
-            }, fetchRetryCountDefault)
-            .then(data => {
-                if (data.retryLogin) {
-                    autoStartAttempts++;
-                    login();
-                } else if (data.isFinished) {
-                    flowIsFinished = true;
-                    clearTimeout(qrRefreshTimeoutId);
+                    if (data.retryLogin) {
+                        autoStartAttempts++;
+                        statusPollingActive = false; // Stop current loop before re-login
+                        login();
+                        return;
+                    } else if (data.isFinished) {
+                        flowIsFinished = true;
+                        stopQrCodeRefresh();
+                        hide(qrCodeElement);
+                        uiResultForm.setAttribute("action", data.redirectUri);
+                        uiResultInput.value = data.result;
+                        uiResultForm.submit();
+                        return;
+                    } else if (!flowIsCancelledByUser) {
+                        autoStartAttempts = 0;
+                        showProgressStatus(data.statusMessage);
+                        await delay(configuration.statusRefreshIntervalMs);
+                    }
+                } catch (error: any) {
+                    stopQrCodeRefresh();
+                    if (!flowIsCancelledByUser) {
+                        showErrorStatus(error.message);
+                        hide(startBankIdAppButtonElement);
+                    }
                     hide(qrCodeElement);
-
-                    uiResultForm.setAttribute("action", data.redirectUri);
-                    uiResultInput.value = data.result;
-                    uiResultForm.submit();
-                } else if (!flowIsCancelledByUser) {
-                    autoStartAttempts = 0;
-                    showProgressStatus(data.statusMessage);
-                    setTimeout(() => {
-                        checkStatus(requestVerificationToken, returnUrl, protectedUiOptions, orderRef);
-                    }, configuration.statusRefreshIntervalMs);
-                }
-            })
-            .catch(error => {
-                clearTimeout(qrRefreshTimeoutId);
-                if (!flowIsCancelledByUser) {
-                    showErrorStatus(error.message);
-                    hide(startBankIdAppButtonElement);
-                }
-                hide(qrCodeElement);
-            });
-    }
-
-    function refreshQrCode(requestVerificationToken: string, qrStartState: string) {
-        if (flowIsCancelledByUser || flowIsFinished || qrIsRefreshing) {
-            return;
-        }
-
-        const currentTime = new Date();
-        const timeSinceLastRefresh = currentTime.getTime() - qrLastRefreshTimestamp.getTime();
-        if (timeSinceLastRefresh < configuration.qrCodeRefreshIntervalMs) {
-            qrRefreshTimeoutId = setTimeout(() => {
-                refreshQrCode(requestVerificationToken, qrStartState);
-            }, configuration.qrCodeRefreshIntervalMs);
-            return;
-        }
-        qrIsRefreshing = true;
-
-        postJson(configuration.bankIdQrCodeApiUrl,
-            requestVerificationToken,
-            {
-                "qrStartState": qrStartState
-            }, fetchRetryCountDefault)
-            .then(data => {
-                if (!!data.qrCodeAsBase64) {
-                    qrLastRefreshTimestamp = new Date();
-                    setQrCode(data.qrCodeAsBase64);
-                    qrRefreshTimeoutId = setTimeout(() => {
-                        refreshQrCode(requestVerificationToken, qrStartState);
-                    }, configuration.qrCodeRefreshIntervalMs);
-                }
-            })
-            .catch(error => {
-                if (flowIsFinished) {
+                    statusPollingActive = false;
                     return;
                 }
+            }
+            statusPollingActive = false;
+        })();
+    }
 
-                if (!flowIsCancelledByUser) {
-                    showErrorStatus(error.message);
-                    hide(startBankIdAppButtonElement);
-                }
-                hide(qrCodeElement);
-            })
-            .finally(() => {
-                qrIsRefreshing = false;
-            });
+    // Refactored: use setInterval instead of recursive timeouts
+    function startQrCodeRefresh(requestVerificationToken: string, qrStartState: string) {
+        stopQrCodeRefresh(); // Ensure single interval
+        qrRefreshIntervalId = window.setInterval(() => {
+            if (flowIsCancelledByUser || flowIsFinished) {
+                stopQrCodeRefresh();
+                return;
+            }
+            if (qrIsRefreshing) {
+                return;
+            }
+            qrIsRefreshing = true;
+            postJson(configuration.bankIdQrCodeApiUrl,
+                requestVerificationToken,
+                {
+                    "qrStartState": qrStartState
+                }, fetchRetryCountDefault)
+                .then(data => {
+                    if (!!data.qrCodeAsBase64) {
+                        setQrCode(data.qrCodeAsBase64);
+                    }
+                })
+                .catch(error => {
+                    if (flowIsFinished) {
+                        return;
+                    }
+                    if (!flowIsCancelledByUser) {
+                        showErrorStatus(error.message);
+                        hide(startBankIdAppButtonElement);
+                    }
+                    hide(qrCodeElement);
+                    stopQrCodeRefresh();
+                })
+                .finally(() => {
+                    qrIsRefreshing = false;
+                });
+        }, configuration.qrCodeRefreshIntervalMs);
+    }
+
+    function stopQrCodeRefresh() {
+        if (qrRefreshIntervalId !== null) {
+            clearInterval(qrRefreshIntervalId);
+            qrRefreshIntervalId = null;
+        }
     }
 
     function setQrCode(qrCodeAsBase64: string) {
@@ -265,8 +278,9 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         show(qrCodeElement);
     }
 
-    function cancel(requestVerificationToken: string, cancelReturnUrl: string, protectedUiOptions: string, orderRef: string = null) {
+    function cancel(requestVerificationToken: string, cancelReturnUrl: string, protectedUiOptions: string, orderRef: string | null = null) {
         flowIsCancelledByUser = true;
+        stopQrCodeRefresh();
 
         if (!orderRef) {
             window.location.href = cancelReturnUrl;
@@ -286,50 +300,48 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // Helpers
 
-    function postJson(url: string, requestVerificationToken: string, data: any, retryCount: number = 0): Promise<any> {
-        return fetch(url,
-            {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                    "RequestVerificationToken": requestVerificationToken
-                },
-                credentials: 'include',
-                body: JSON.stringify(data)
-            })
-            .catch(error => {
-                if (retryCount > 0) {
-                    return delay(fetchRetryDelayMs).then(() => {
-                        return postJson(url, requestVerificationToken, data, retryCount - 1);
-                    });
+    // Refactored: iterative retry instead of recursion
+    async function postJson(url: string, requestVerificationToken: string, data: any, retryCount: number = 0): Promise<any> {
+        for (let attempt = 0; attempt <= retryCount; attempt++) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": requestVerificationToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    if (attempt < retryCount) {
+                        await delay(fetchRetryDelayMs);
+                        continue;
+                    }
+                    throw new Error(response.statusText || configuration.unknownErrorMessage);
                 }
 
-                throw error;
-            })
-            .then(response => {
-                if (!response.ok && retryCount > 0) {
-                    return delay(fetchRetryDelayMs).then(() => {
-                        return postJson(url, requestVerificationToken, data, retryCount - 1)
-                    });
+                const contentType = response.headers.get("content-type") || "";
+                if (!contentType.includes("application/json")) {
+                    throw Error(configuration.unknownErrorMessage);
                 }
 
-                return response;
-            })
-            .then(response => {
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    return response.json();
+                const json = await response.json();
+                if (!!json.errorMessage) {
+                    throw Error(json.errorMessage);
                 }
-
-                throw Error(configuration.unknownErrorMessage);
-            })
-            .then(data => {
-                if (!!data.errorMessage) {
-                    throw Error(data.errorMessage);
+                return json;
+            } catch (err) {
+                if (attempt < retryCount) {
+                    await delay(fetchRetryDelayMs);
+                    continue;
                 }
-                return data;
-            });
+                throw err;
+            }
+        }
+        throw new Error(configuration.unknownErrorMessage); // Fallback (should not reach)
     }
 
     function showProgressStatus(status: string) {
@@ -347,7 +359,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         show(statusWrapperElement);
     }
 
-    function setVisibility(element: HTMLElement, visible: boolean, display: string = null) {
+    function setVisibility(element: HTMLElement, visible: boolean, display: string | null = null) {
         if (visible) {
             show(element, display);
         } else {
@@ -355,8 +367,8 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         }
     }
 
-    function show(element: HTMLElement, display: string = "block") {
-        if (!element) {
+    function show(element: HTMLElement, display: string | null = "block") {
+        if (!element || display === null) {
             return;
         }
 
