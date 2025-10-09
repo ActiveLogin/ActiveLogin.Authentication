@@ -92,6 +92,8 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             case BankIdFlowCollectResultComplete complete:
             {
                 var uiResult = ConstructProtectedUiResult(orderRef.OrderRef, complete.CompletionData);
+                UiOptionsCookieManager.Delete(request.UiOptions);
+
                 return OkJsonResult(BankIdUiApiStatusResponse.Finished(request.ReturnUrl, uiResult));
             }
             case BankIdFlowCollectResultRetry retry:
@@ -100,6 +102,8 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             }
             case BankIdFlowCollectResultFailure failure:
             {
+                UiOptionsCookieManager.Delete(request.UiOptions);
+
                 return BadRequestJsonResult(new BankIdUiApiErrorResponse(failure.StatusMessage));
             }
             default:
