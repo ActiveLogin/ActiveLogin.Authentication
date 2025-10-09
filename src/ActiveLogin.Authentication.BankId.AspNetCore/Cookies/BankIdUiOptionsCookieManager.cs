@@ -9,7 +9,6 @@ internal class BankIdUiOptionsCookieManager(
     IBankIdUiOptionsProtector uiOptionsProtector
 ) : IBankIdUiOptionsCookieManager
 {
-    private const string CookieNamePrefix = "__ActiveLogin.BankId.UiOptions_";
 
     private static CookieOptions CookieOptions(TimeSpan duration) => new()
     {
@@ -30,7 +29,7 @@ internal class BankIdUiOptionsCookieManager(
 
         var protectedUiOptions = uiOptionsProtector.Protect(uiOptions);
 
-        var cookieOptions = CookieOptions(TimeSpan.FromMinutes(2));
+        var cookieOptions = CookieOptions(BankIdConstants.UiOptionsCookieLifeTime);
         httpContext.Response.Cookies.Append(cookieName, protectedUiOptions, cookieOptions);
 
         return guid;
@@ -84,7 +83,7 @@ internal class BankIdUiOptionsCookieManager(
 
     private static string GetCookieName(string guid)
     {
-        return $"{CookieNamePrefix}{guid}";
+        return $"{BankIdConstants.DefaultUiOptionsCookieNamePrefix}{guid}";
     }
 
     private BankIdUiOptions? TryUnprotect(string protectedValue)
