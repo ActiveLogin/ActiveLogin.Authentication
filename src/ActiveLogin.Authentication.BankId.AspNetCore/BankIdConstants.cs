@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Text.Json;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore;
@@ -13,9 +14,10 @@ internal static class BankIdConstants
     public static readonly TimeSpan UiOptionsCookieLifeTime = TimeSpan.FromMinutes(10);
 
     public const string DefaultCancelUrl = "/";
-    public const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
+    public const string StateKeyCookieName = "__ActiveLogin.BankIdStateKey";
     public const string DefaultDeviceDataCookieName = "__ActiveLogin.BankIdDeviceData";
     public const string DefaultUiOptionsCookieNamePrefix = "__ActiveLogin.BankId.UiOptions_";
+    public const string StateKeyPrefix = "__ActiveLogin.BankIdState_";
 
     public const string LocalizationResourcesPath = "Resources";
 
@@ -58,6 +60,10 @@ internal static class BankIdConstants
 
         private const string CouldNotGetUrlForPrefix = "Could not get URL for";
         public static string CouldNotGetUrlFor(string controller, string action) => $"{CouldNotGetUrlForPrefix} {controller}.{action}";
+
+        public const string InvalidState = "Invalid state";
+
+        public const string StateNotFound = "State not found";
     }
 
     public static class LocalizationKeys

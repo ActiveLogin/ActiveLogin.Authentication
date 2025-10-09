@@ -1,12 +1,12 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
+using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
@@ -22,58 +22,47 @@ using Microsoft.Extensions.Primitives;
 
 namespace ActiveLogin.Authentication.BankId.AspNetCore.Auth;
 
-public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
+public class BankIdAuthHandler(
+    IHttpContextAccessor httpContextAccessor,
+    IAntiforgery antiforgery,
+    IOptionsMonitor<BankIdAuthOptions> options,
+    ILoggerFactory loggerFactory,
+    UrlEncoder encoder,
+    IBankIdDataStateProtector<BankIdUiResult> uiResultProtector,
+    IBankIdEventTrigger bankIdEventTrigger,
+    IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
+    IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers,
+    IBankIdUiOptionsCookieManager uiOptionsCookieManager,
+    IStateStorage stateStorage
+) : RemoteAuthenticationHandler<BankIdAuthOptions>(options, loggerFactory, encoder)
 {
-    private const string StateCookieNameParameterName = "StateCookie.Name";
     private readonly PathString _authPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
-
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IAntiforgery _antiforgery;
-    private readonly IBankIdUiStateProtector _uiStateProtector;
-    private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
-    private readonly IBankIdUiResultProtector _uiResultProtector;
-    private readonly IBankIdEventTrigger _bankIdEventTrigger;
-    private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
-    private readonly IBankIdUiOptionsCookieManager _uiOptionsCookieManager;
-    private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers;
-
-    public BankIdAuthHandler(
-        IHttpContextAccessor httpContextAccessor,
-        IAntiforgery antiforgery,
-        IOptionsMonitor<BankIdAuthOptions> options,
-        ILoggerFactory loggerFactory,
-        UrlEncoder encoder,
-        IBankIdUiStateProtector uiStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdUiResultProtector uiResultProtector,
-        IBankIdEventTrigger bankIdEventTrigger,
-        IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
-        IBankIdUiOptionsCookieManager uiOptionsCookieManager,
-        IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
-        : base(options, loggerFactory, encoder)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _antiforgery = antiforgery;
-        _uiStateProtector = uiStateProtector;
-        _uiOptionsProtector = uiOptionsProtector;
-        _uiResultProtector = uiResultProtector;
-        _bankIdEventTrigger = bankIdEventTrigger;
-        _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
-        _uiOptionsCookieManager = uiOptionsCookieManager;
-        _bankIdClaimsTransformers = bankIdClaimsTransformers.ToList();
-    }
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IAntiforgery _antiforgery = antiforgery;
+    private readonly IStateStorage _stateStorage = stateStorage;
+    private readonly IBankIdDataStateProtector<BankIdUiResult> _uiResultProtector = uiResultProtector;
+    private readonly IBankIdEventTrigger _bankIdEventTrigger = bankIdEventTrigger;
+    private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+    private readonly IBankIdUiOptionsCookieManager _uiOptionsCookieManager = uiOptionsCookieManager;
+    private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers = bankIdClaimsTransformers.ToList();
 
     protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
     {
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
 
-        var state = GetStateFromCookie();
+        if (!Request.Cookies.TryGetValue(BankIdConstants.StateKeyCookieName, out var stateKeyString))
+        {
+            return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice);
+        }
+
+        var stateKey = new StateKey(stateKeyString);
+        var state = await GetStateFromCookie(stateKey);
         if (state == null)
         {
             return await HandleRemoteAuthenticateFail(BankIdConstants.ErrorMessages.InvalidStateCookie, detectedDevice);
         }
 
-        DeleteStateCookie();
+        await DeleteCookies(stateKey);
 
         if (!Request.HasFormContentType)
         {
@@ -159,7 +148,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 
     protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
     {
-        AppendStateCookie(properties);
+        await AppendStateCookie(properties);
 
         var uiOptions = new BankIdUiOptions(
             Options.BankIdCertificatePolicies,
@@ -197,9 +186,9 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         return $"{authUrl}{queryBuilder.ToQueryString()}";
     }
 
-    private void AppendStateCookie(AuthenticationProperties properties)
+    private async Task AppendStateCookie(AuthenticationProperties properties)
     {
-        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, BankIdConstants.StateKeyCookieName);
 
         if (Options.TimeProvider == null)
         {
@@ -207,35 +196,28 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         }
 
         var state = new BankIdUiAuthState(properties);
+        var stateKey = await _stateStorage.SetAsync(state);
+
         var cookieOptions = Options.StateCookie.Build(Context, Options.TimeProvider.GetUtcNow());
-        var cookieValue = _uiStateProtector.Protect(state);
-
-        Response.Cookies.Append(Options.StateCookie.Name, cookieValue, cookieOptions);
+        Response.Cookies.Append(Options.StateCookie.Name, stateKey, cookieOptions);
     }
 
-    private BankIdUiAuthState? GetStateFromCookie()
+    private Task<BankIdUiAuthState?> GetStateFromCookie(StateKey stateKey)
     {
-        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
-
-        var protectedState = Request.Cookies[Options.StateCookie.Name];
-        if (string.IsNullOrEmpty(protectedState))
-        {
-            return null;
-        }
-
-        return _uiStateProtector.Unprotect(protectedState) as BankIdUiAuthState;
+        return string.IsNullOrEmpty(stateKey)
+            ? Task.FromResult<BankIdUiAuthState?>(null)
+            : _stateStorage.GetAsync<BankIdUiAuthState>(new(stateKey));
     }
 
-    private void DeleteStateCookie()
+    private async Task DeleteCookies(StateKey stateKey)
     {
-        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, StateCookieNameParameterName);
+        Validators.ThrowIfNullOrWhitespace(Options.StateCookie.Name, BankIdConstants.StateKeyCookieName);
 
         if (Options.TimeProvider == null)
         {
             throw new InvalidOperationException(BankIdConstants.ErrorMessages.TimeProviderNotSet);
         }
 
-        var cookieOptions = Options.StateCookie.Build(Context, Options.TimeProvider.GetUtcNow());
-        Response.Cookies.Delete(Options.StateCookie.Name, cookieOptions);
+        _ = await _stateStorage.RemoveAsync<BankIdUiAuthState>(stateKey);
     }
 }
