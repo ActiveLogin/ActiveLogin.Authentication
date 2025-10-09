@@ -170,12 +170,10 @@ internal class BankIdLauncher : IBankIdLauncher
             BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
             BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
 
-            // Opens a new tab on app launch, so can't launch automatically
-            BankIdSupportedDeviceBrowser.Edge => string.Empty,
-            BankIdSupportedDeviceBrowser.Opera => string.Empty,
+            BankIdSupportedDeviceBrowser.Edge => NullRedirectUrl,
+            BankIdSupportedDeviceBrowser.Opera => NullRedirectUrl,
 
-            // Return empty string so user can go back manually, will catch unknown third party browsers
-            _ => string.Empty
+            _ => NullRedirectUrl
         };
     }
 
