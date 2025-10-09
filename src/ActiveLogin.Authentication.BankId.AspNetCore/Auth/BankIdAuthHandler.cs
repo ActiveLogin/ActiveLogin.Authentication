@@ -3,6 +3,7 @@ using System.Text.Encodings.Web;
 
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -33,6 +34,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     private readonly IBankIdUiResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
+    private readonly IBankIdUiOptionsCookieManager _uiOptionsCookieManager;
     private readonly List<IBankIdClaimsTransformer> _bankIdClaimsTransformers;
 
     public BankIdAuthHandler(
@@ -46,6 +48,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         IBankIdUiResultProtector uiResultProtector,
         IBankIdEventTrigger bankIdEventTrigger,
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager,
         IEnumerable<IBankIdClaimsTransformer> bankIdClaimsTransformers)
         : base(options, loggerFactory, encoder)
     {
@@ -56,6 +59,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         _uiResultProtector = uiResultProtector;
         _bankIdEventTrigger = bankIdEventTrigger;
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
+        _uiOptionsCookieManager = uiOptionsCookieManager;
         _bankIdClaimsTransformers = bankIdClaimsTransformers.ToList();
     }
 
@@ -180,12 +184,14 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         var pathBase = Context.Request.PathBase;
         var authUrl = pathBase.Add(_authPath);
         var returnUrl = pathBase.Add(Options.CallbackPath);
-        var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
+
+        // Store UiOptions in cookie and use GUID in URL to reduce URL length
+        var uiOptionsGuid = _uiOptionsCookieManager.Store(uiOptions);
 
         var queryBuilder = new QueryBuilder(new Dictionary<string, string>
         {
             { BankIdConstants.QueryStringParameters.ReturnUrl, returnUrl },
-            { BankIdConstants.QueryStringParameters.UiOptions, protectedUiOptions }
+            { BankIdConstants.QueryStringParameters.UiOptions, uiOptionsGuid }
         });
 
         return $"{authUrl}{queryBuilder.ToQueryString()}";

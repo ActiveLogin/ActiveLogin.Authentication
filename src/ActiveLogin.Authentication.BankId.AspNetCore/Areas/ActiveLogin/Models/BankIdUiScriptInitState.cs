@@ -17,6 +17,6 @@ public class BankIdUiScriptInitState
     [JsonPropertyName("cancelReturnUrl")]
     public string CancelReturnUrl { get; init; } = string.Empty;
     
-    [JsonPropertyName("protectedUiOptions")]
-    public string ProtectedUiOptions { get; init; } = string.Empty;
+    [JsonPropertyName("uiOptionsGuid")]
+    public string UiOptionsGuid { get; init; } = string.Empty;
 }

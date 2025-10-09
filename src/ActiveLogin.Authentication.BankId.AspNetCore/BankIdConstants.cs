@@ -8,11 +8,14 @@ internal static class BankIdConstants
 
     public static readonly TimeSpan StatusRefreshInterval = TimeSpan.FromSeconds(2);
     public static readonly TimeSpan QrCodeRefreshInterval = TimeSpan.FromSeconds(1);
+
     public static readonly TimeSpan DeviceDataRefreshInterval = TimeSpan.FromDays(365);
+    public static readonly TimeSpan UiOptionsCookieLifeTime = TimeSpan.FromMinutes(10);
 
     public const string DefaultCancelUrl = "/";
     public const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
     public const string DefaultDeviceDataCookieName = "__ActiveLogin.BankIdDeviceData";
+    public const string DefaultUiOptionsCookieNamePrefix = "__ActiveLogin.BankId.UiOptions_";
 
     public const string LocalizationResourcesPath = "Resources";
 
@@ -42,6 +45,7 @@ internal static class BankIdConstants
 
         public const string InvalidStateCookie = "Invalid state cookie";
         public const string InvalidUiResult = "Invalid BankId UI result";
+        public const string InvalidUiOptions = "Invalid or expired UiOptions";
 
         public const string UnknownFlowCollectResultType = "Unknown collect result type";
         public const string UnknownFlowLaunchType = "Unknown launch type";

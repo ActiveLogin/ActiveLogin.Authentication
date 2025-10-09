@@ -1,6 +1,7 @@
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -24,10 +25,11 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
         IBankIdUiOrderRefProtector orderRefProtector,
         IBankIdQrStartStateProtector qrStartStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager,
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiResultProtector uiAuthResultProtector)
-        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
+        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, uiOptionsCookieManager, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
     {
     }
 
@@ -38,7 +40,7 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
         Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
-        var uiOptions = UiOptionsProtector.Unprotect(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions(request.UiOptions);
 
         BankIdFlowInitializeResult bankIdFlowInitializeResult;
         try

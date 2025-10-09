@@ -1,5 +1,6 @@
 using System.Reflection;
 
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
@@ -28,6 +29,9 @@ internal static class BankIdCommonConfiguration
         services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
         services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+
+        services.AddHttpContextAccessor();
+        services.AddTransient<IBankIdUiOptionsCookieManager, BankIdUiOptionsCookieManager>();
 
         services.AddDefaultDeviceData();
 
