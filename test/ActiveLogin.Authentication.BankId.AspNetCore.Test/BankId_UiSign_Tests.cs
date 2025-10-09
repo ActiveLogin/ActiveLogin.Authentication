@@ -293,7 +293,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
 
         Assert.Equal("/", GetInlineJsonValue(transactionContent, "returnUrl"));
         Assert.Equal("/", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
-        Assert.Equal("X", GetInlineJsonValue(transactionContent, "protectedUiOptions"));
+        Assert.Equal("X", GetInlineJsonValue(transactionContent, "uiOptionsGuid"));
     }
 
     [Fact]
@@ -328,7 +328,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
 
         var transactionContent = await transaction.Content.ReadAsStringAsync();
 
-        Assert.Equal("UIOPTIONS", GetInlineJsonValue(transactionContent, "protectedUiOptions"));
+        Assert.Equal("UIOPTIONS", GetInlineJsonValue(transactionContent, "uiOptionsGuid"));
     }
 
     [Fact]
