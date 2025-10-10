@@ -53,7 +53,12 @@ public abstract class BankIdUiControllerBase : Controller
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
-        var uiOptions = _uiOptionsCookieManager.Retrieve() ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidUiOptions);
+        var uiOptions = _uiOptionsCookieManager.Retrieve();
+        if (uiOptions == null)
+        {
+            return new EmptyResult();
+        }
+
         if (!HasStateCookie(uiOptions))
         {
             var invalidStateContext = new BankIdInvalidStateContext(uiOptions.CancelReturnUrl);
