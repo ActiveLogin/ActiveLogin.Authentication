@@ -10,8 +10,5 @@ public class BankIdUiApiCancelRequest
     }
 
     [Required]
-    public string? UiOptions { get; set; }
-
-    [Required]
     public string? OrderRef { get; set; }
 }

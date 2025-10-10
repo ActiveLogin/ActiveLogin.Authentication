@@ -62,7 +62,6 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
-        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
         if (!Url.IsLocalUrl(request.ReturnUrl))
         {
@@ -70,7 +69,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
         }
 
         var orderRef = OrderRefProtector.Unprotect(request.OrderRef);
-        var uiOptions = ResolveProtectedUiOptions(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions();
 
         BankIdFlowCollectResult result;
         try
@@ -92,8 +91,6 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             case BankIdFlowCollectResultComplete complete:
             {
                 var uiResult = ConstructProtectedUiResult(orderRef.OrderRef, complete.CompletionData);
-                UiOptionsCookieManager.Delete(request.UiOptions);
-
                 return OkJsonResult(BankIdUiApiStatusResponse.Finished(request.ReturnUrl, uiResult));
             }
             case BankIdFlowCollectResultRetry retry:
@@ -102,8 +99,6 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             }
             case BankIdFlowCollectResultFailure failure:
             {
-                UiOptionsCookieManager.Delete(request.UiOptions);
-
                 return BadRequestJsonResult(new BankIdUiApiErrorResponse(failure.StatusMessage));
             }
             default:
@@ -130,10 +125,9 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     public async Task<ActionResult> Cancel(BankIdUiApiCancelRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
-        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
         var orderRef = OrderRefProtector.Unprotect(request.OrderRef);
-        var uiOptions = ResolveProtectedUiOptions(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions();
 
         await BankIdFlowService.Cancel(orderRef.OrderRef, uiOptions.ToBankIdFlowOptions());
 
@@ -189,11 +183,10 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     }
 
     /// <summary>
-    /// Resolves the UiOptions from either a GUID (stored in cookie) or the direct protected value.
+    /// Resolves the UiOptions stored in cookie and unprotects value.
     /// </summary>
-    protected BankIdUiOptions ResolveProtectedUiOptions(string protectedUiOptionsOrGuid)
+    protected BankIdUiOptions ResolveProtectedUiOptions()
     {
-        return UiOptionsCookieManager.Retrieve(protectedUiOptionsOrGuid)
-            ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidUiOptions);
+        return UiOptionsCookieManager.Retrieve() ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidUiOptions);
     }
 }

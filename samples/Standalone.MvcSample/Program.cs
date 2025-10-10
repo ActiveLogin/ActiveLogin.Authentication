@@ -99,21 +99,21 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie()
     .AddBankIdAuth(bankId =>
     {
-        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
+        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { options.BankIdReturnRisk = true; });
         bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
     });
 
 // Add Active Login - Sign
 services.AddBankIdSign(bankId =>
 {
-    bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
+    bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { options.BankIdReturnRisk = true; });
     bankId.AddOtherDevice(BankIdSignDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
 });
 
 // Add Active Login - Payment
 services.AddBankIdPayment(bankId =>
 {
-    bankId.AddSameDevice(BankIdPaymentDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
+    bankId.AddSameDevice(BankIdPaymentDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { options.BankIdReturnRisk = true; });
     bankId.AddOtherDevice(BankIdPaymentDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
 });
 

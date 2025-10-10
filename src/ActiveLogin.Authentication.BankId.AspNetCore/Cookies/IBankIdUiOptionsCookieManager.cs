@@ -8,29 +8,20 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 public interface IBankIdUiOptionsCookieManager
 {
     /// <summary>
-    /// Stores the UiOptions in a protected cookie and returns a GUID identifier.
+    /// Stores the UiOptions in a protected cookie.
     /// </summary>
     /// <param name="uiOptions">The UiOptions to store.</param>
-    /// <returns>A GUID that can be used to retrieve the options later.</returns>
-    string Store(BankIdUiOptions uiOptions);
+    /// <param name="expiresFrom">The base <see cref="DateTimeOffset"/> from which the cookie's expiration is calculated.</param>
+    void Store(BankIdUiOptions uiOptions, DateTimeOffset expiresFrom);
 
     /// <summary>
-    /// Retrieves the UiOptions using a GUID identifier.
+    /// Retrieves the UiOptions from the cookie and unprotects it.
     /// </summary>
-    /// <param name="guid">The GUID identifier for the stored options.</param>
     /// <returns>The UiOptions, or null if not found or expired.</returns>
-    BankIdUiOptions? Retrieve(string guid);
+    BankIdUiOptions? Retrieve();
 
     /// <summary>
-    /// Deletes the stored UiOptions for a given GUID.
+    /// Deletes the stored UiOptions cookie.
     /// </summary>
-    /// <param name="guid">The GUID identifier for the stored options.</param>
-    void Delete(string guid);
-
-    /// <summary>
-    /// Checks if a string is a valid GUID format.
-    /// </summary>
-    /// <param name="value">The string to check.</param>
-    /// <returns>True if the string is a valid GUID format.</returns>
-    bool IsGuid(string value);
+    void Delete();
 }

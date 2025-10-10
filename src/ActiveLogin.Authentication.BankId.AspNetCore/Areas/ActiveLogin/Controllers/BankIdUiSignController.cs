@@ -32,8 +32,8 @@ public class BankIdUiSignController : BankIdUiControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}")]
-    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
+    public Task<ActionResult> Init(string returnUrl)
     {
-        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, protectedUiOptions, "Init");
+        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, "Init");
     }
 }
