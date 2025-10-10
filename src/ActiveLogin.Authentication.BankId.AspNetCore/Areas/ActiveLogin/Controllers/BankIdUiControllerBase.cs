@@ -54,14 +54,10 @@ public abstract class BankIdUiControllerBase : Controller
         }
 
         var uiOptions = _uiOptionsCookieManager.Retrieve();
-        if (uiOptions == null)
+        if (uiOptions == null || !HasStateCookie(uiOptions))
         {
-            return new EmptyResult();
-        }
-
-        if (!HasStateCookie(uiOptions))
-        {
-            var invalidStateContext = new BankIdInvalidStateContext(uiOptions.CancelReturnUrl);
+            var cancelReturnUrl = uiOptions?.CancelReturnUrl ?? "/";
+            var invalidStateContext = new BankIdInvalidStateContext(cancelReturnUrl);
             await _bankIdInvalidStateHandler.HandleAsync(invalidStateContext);
 
             return new EmptyResult();
