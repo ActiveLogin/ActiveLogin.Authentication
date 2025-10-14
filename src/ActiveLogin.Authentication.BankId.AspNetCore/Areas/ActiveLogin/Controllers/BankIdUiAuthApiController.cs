@@ -18,21 +18,17 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [ApiController]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiAuthApiController : BankIdUiApiControllerBase
+public class BankIdUiAuthApiController(
+    IBankIdFlowService bankIdFlowService,
+    IBankIdUiOrderRefProtector orderRefProtector,
+    IBankIdQrStartStateProtector qrStartStateProtector,
+    IBankIdUiOptionsProtector uiOptionsProtector,
+    IBankIdUiOptionsCookieManager uiOptionsCookieManager,
+    IBankIdUserMessage bankIdUserMessage,
+    IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+    IBankIdUiResultProtector uiAuthResultProtector
+) : BankIdUiApiControllerBase(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, uiOptionsCookieManager, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
 {
-    public BankIdUiAuthApiController(
-        IBankIdFlowService bankIdFlowService,
-        IBankIdUiOrderRefProtector orderRefProtector,
-        IBankIdQrStartStateProtector qrStartStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdUiOptionsCookieManager uiOptionsCookieManager,
-        IBankIdUserMessage bankIdUserMessage,
-        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiResultProtector uiAuthResultProtector)
-        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, uiOptionsCookieManager, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
-    {
-    }
-
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiInitializeActionName)]
     public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)
@@ -44,12 +40,7 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
         BankIdFlowInitializeResult bankIdFlowInitializeResult;
         try
         {
-            var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdAuthInitActionName, BankIdConstants.Routes.BankIdAuthControllerName, new
-            {
-                returnUrl = request.ReturnUrl
-            }, protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdAuthControllerName, BankIdConstants.Routes.BankIdAuthInitActionName));
-
-            bankIdFlowInitializeResult = await BankIdFlowService.InitializeAuth(uiOptions.ToBankIdFlowOptions(), returnRedirectUrl);
+            bankIdFlowInitializeResult = await BankIdFlowService.InitializeAuth(uiOptions.ToBankIdFlowOptions(), request.ReturnUrl);
         }
         catch (BankIdApiException bankIdApiException)
         {
@@ -65,13 +56,9 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
                 var protectedQrStartState = QrStartStateProtector.Protect(otherDevice.QrStartState);
                 return OkJsonResult(BankIdUiApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDevice.QrCodeBase64Encoded));
             }
-            case BankIdFlowInitializeLaunchTypeSameDevice sameDevice when sameDevice.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp:
-            {
-                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
-            }
             case BankIdFlowInitializeLaunchTypeSameDevice sameDevice:
             {
-                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunchAndReloadPage(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
             }
             default:
             {

@@ -17,6 +17,7 @@ using ActiveLogin.Authentication.BankId.UaParser;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Localization;
+using ActiveLogin.Authentication.BankId.Core.Launcher;
 
 
 //
@@ -76,8 +77,8 @@ services
         bankId.UseQrCoderQrCodeGenerator();
         bankId.UseUaParserDeviceDetection();
 
-        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("Instagram"), "instagram://");
-        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), "fb://");
+        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("Instagram"), context => new BankIdLauncherCustomBrowserConfig(new BrowserScheme("instagram://"), BrowserMightRequireUserInteractionToLaunch.Always));
+        bankId.AddCustomBrowserByUserAgent(userAgent => userAgent.Contains("FBAN") || userAgent.Contains("FBAV"), context => new BankIdLauncherCustomBrowserConfig(new BrowserScheme("fb://"), BrowserMightRequireUserInteractionToLaunch.Always));
 
         if (configuration.GetValue("ActiveLogin:BankId:UseSimulatedEnvironment", false))
         {

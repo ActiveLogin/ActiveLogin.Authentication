@@ -176,11 +176,11 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
 
-        var loginUrl = GetInitUiUrl(uiOptions);
+        var loginUrl = GetInitUiUrl();
         Response.Redirect(loginUrl);
     }
 
-    private string GetInitUiUrl(BankIdUiOptions uiOptions)
+    private string GetInitUiUrl()
     {
         var pathBase = Context.Request.PathBase;
         var authUrl = pathBase.Add(_authPath);

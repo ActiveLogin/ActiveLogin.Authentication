@@ -34,6 +34,6 @@ public class BankIdUiPaymentController : BankIdUiControllerBase
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdPaymentControllerPath}")]
     public Task<ActionResult> Init(string returnUrl)
     {
-        return Initialize(returnUrl, BankIdConstants.Routes.BankIdPaymentApiControllerName, "Init");
+        return Initialize(returnUrl, BankIdConstants.Routes.BankIdPaymentApiControllerName, nameof(Init));
     }
 }
