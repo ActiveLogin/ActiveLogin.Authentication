@@ -38,17 +38,15 @@ public class BankIdUiAuthApiController : BankIdUiApiControllerBase
     public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
-        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
-        var uiOptions = ResolveProtectedUiOptions(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions();
 
         BankIdFlowInitializeResult bankIdFlowInitializeResult;
         try
         {
             var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdAuthInitActionName, BankIdConstants.Routes.BankIdAuthControllerName, new
             {
-                returnUrl = request.ReturnUrl,
-                uiOptions = request.UiOptions
+                returnUrl = request.ReturnUrl
             }, protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdAuthControllerName, BankIdConstants.Routes.BankIdAuthInitActionName));
 
             bankIdFlowInitializeResult = await BankIdFlowService.InitializeAuth(uiOptions.ToBankIdFlowOptions(), returnRedirectUrl);

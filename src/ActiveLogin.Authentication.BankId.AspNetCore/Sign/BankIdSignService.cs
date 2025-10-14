@@ -1,4 +1,5 @@
 using ActiveLogin.Authentication.BankId.Api.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -28,9 +29,9 @@ public class BankIdSignService : IBankIdSignService
     private readonly IBankIdFlowSystemClock _systemClock;
     private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
     private readonly IBankIdUiResultProtector _uiResultProtector;
-    private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
+    private readonly IBankIdUiOptionsCookieManager _uiOptionsCookieManager;
 
     public BankIdSignService(
         IHttpContextAccessor httpContextAccessor,
@@ -38,20 +39,20 @@ public class BankIdSignService : IBankIdSignService
         IOptionsSnapshot<BankIdSignOptions> optionsSnapshot,
         IBankIdFlowSystemClock systemClock,
         IBankIdUiStateProtector bankIdUiStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector,
         IBankIdEventTrigger bankIdEventTrigger,
-        IBankIdUiResultProtector uiResultProtector)
+        IBankIdUiResultProtector uiResultProtector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager)
     {
         _httpContextAccessor = httpContextAccessor;
         _antiforgery = antiforgery;
         _optionsSnapshot = optionsSnapshot;
         _systemClock = systemClock;
         _bankIdUiStateProtector = bankIdUiStateProtector;
-        _uiOptionsProtector = uiOptionsProtector;
         _bankIdSupportedDeviceDetector = bankIdSupportedDeviceDetector;
         _bankIdEventTrigger = bankIdEventTrigger;
         _uiResultProtector = uiResultProtector;
+        _uiOptionsCookieManager = uiOptionsCookieManager;
     }
 
     public Task InitiateSignAsync(BankIdSignProperties properties, string callbackPath, string configKey)
@@ -72,7 +73,9 @@ public class BankIdSignService : IBankIdSignService
             options.CardReader
         );
 
-        var signUrl = GetUiInitUrl(httpContext, callbackPath, uiOptions);
+        AppendUiOptionsCookie(uiOptions);
+
+        var signUrl = GetUiInitUrl(httpContext, callbackPath);
 
         httpContext.Response.Redirect(signUrl);
 
@@ -100,6 +103,7 @@ public class BankIdSignService : IBankIdSignService
         }
 
         DeleteStateCookie(httpContext, options);
+        DeleteUiOptionsCookie();
 
         if (!httpContext.Request.HasFormContentType)
         {
@@ -157,18 +161,20 @@ public class BankIdSignService : IBankIdSignService
         httpContext.Response.Cookies.Append(options.StateCookie.Name, cookieValue, cookieOptions);
     }
 
-    private string GetUiInitUrl(HttpContext httpContext, string callbackPath, BankIdUiOptions uiOptions)
+    private void AppendUiOptionsCookie(BankIdUiOptions uiOptions)
+    {
+        _uiOptionsCookieManager.Store(uiOptions, _systemClock.UtcNow);
+    }
+
+    private string GetUiInitUrl(HttpContext httpContext, string callbackPath)
     {
         var pathBase = httpContext.Request.PathBase;
         var signUrl = pathBase.Add(_signInitPath);
 
-        var protectedUiOptions = _uiOptionsProtector.Protect(uiOptions);
-
         var queryBuilder = QueryStringGenerator.ToQueryString(
             new Dictionary<string, string>
             {
-                { BankIdConstants.QueryStringParameters.ReturnUrl, callbackPath },
-                { BankIdConstants.QueryStringParameters.UiOptions, protectedUiOptions }
+                { BankIdConstants.QueryStringParameters.ReturnUrl, callbackPath }
             });
 
         return $"{signUrl}{queryBuilder}";
@@ -180,5 +186,10 @@ public class BankIdSignService : IBankIdSignService
 
         var cookieOptions = options.StateCookie.Build(httpContext, _systemClock.UtcNow);
         httpContext.Response.Cookies.Delete(options.StateCookie.Name, cookieOptions);
+    }
+
+    private void DeleteUiOptionsCookie()
+    {
+        _uiOptionsCookieManager.Delete();
     }
 }

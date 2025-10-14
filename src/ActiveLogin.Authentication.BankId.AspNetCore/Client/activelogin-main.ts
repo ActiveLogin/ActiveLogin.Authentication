@@ -17,8 +17,6 @@ interface IBankIdUiScriptInitState {
 
     returnUrl: string;
     cancelReturnUrl: string;
-
-    uiOptionsGuid: string;
 }
 
 function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState: IBankIdUiScriptInitState) {
@@ -70,7 +68,6 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             enableCancelButton(
                 initState.antiXsrfRequestToken,
                 initState.cancelReturnUrl,
-                initState.uiOptionsGuid,
                 sessionOrderRef
             );
 
@@ -90,7 +87,6 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         checkStatus(
             initState.antiXsrfRequestToken,
             initState.returnUrl,
-            initState.uiOptionsGuid,
             orderRef
         );
     }
@@ -100,7 +96,6 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             initState.antiXsrfRequestToken,
             initState.returnUrl,
             initState.cancelReturnUrl,
-            initState.uiOptionsGuid
         );
     }
 
@@ -114,21 +109,20 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     var flowIsCancelledByUser = false;
     var flowIsFinished = false;
 
-    function enableCancelButton(requestVerificationToken: string, cancelUrl: string, uiOptionsGuid: string, orderRef: string = null) {
+    function enableCancelButton(requestVerificationToken: string, cancelUrl: string, orderRef: string = null) {
         var onCancelButtonClick = (event: Event) => {
-            cancel(requestVerificationToken, cancelUrl, uiOptionsGuid, orderRef);
+            cancel(requestVerificationToken, cancelUrl, orderRef);
             event.target.removeEventListener("click", onCancelButtonClick);
         };
         cancelButtonElement.addEventListener("click", onCancelButtonClick);
     }
-    function initialize(requestVerificationToken: string, returnUrl: string, cancelUrl: string, uiOptionsGuid: string) {
+    function initialize(requestVerificationToken: string, returnUrl: string, cancelUrl: string) {
         flowIsCancelledByUser = false;
 
         postJson(configuration.bankIdInitializeApiUrl,
             requestVerificationToken,
             {
-                "returnUrl": returnUrl,
-                "uiOptions": uiOptionsGuid
+                "returnUrl": returnUrl
             }, fetchRetryCountDefault)
             .then(data => {
                 if (data.isAutoLaunch) {
@@ -156,23 +150,23 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     refreshQrCode(requestVerificationToken, data.qrStartState);
                 }
 
-                enableCancelButton(requestVerificationToken, cancelUrl, uiOptionsGuid, data.orderRef);
+                enableCancelButton(requestVerificationToken, cancelUrl, data.orderRef);
 
                 showProgressStatus(configuration.initialStatusMessage);
 
                 if (data.checkStatus) {
-                    checkStatus(requestVerificationToken, returnUrl, uiOptionsGuid, data.orderRef);
+                    checkStatus(requestVerificationToken, returnUrl, data.orderRef);
                 }
             })
             .catch(error => {
                 showErrorStatus(error.message);
                 hide(qrCodeElement);
                 hide(startBankIdAppButtonElement);
-                enableCancelButton(requestVerificationToken, cancelUrl, uiOptionsGuid);
+                enableCancelButton(requestVerificationToken, cancelUrl);
             });
     }
 
-    function checkStatus(requestVerificationToken: string, returnUrl: string, uiOptionsGuid: string, orderRef: string) {
+    function checkStatus(requestVerificationToken: string, returnUrl: string, orderRef: string) {
         if (flowIsCancelledByUser || flowIsFinished) {
             return;
         }
@@ -182,7 +176,6 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             {
                 "orderRef": orderRef,
                 "returnUrl": returnUrl,
-                "uiOptions": uiOptionsGuid,
                 "autoStartAttempts": autoStartAttempts
             }, fetchRetryCountDefault)
             .then(data => {
@@ -201,7 +194,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     autoStartAttempts = 0;
                     showProgressStatus(data.statusMessage);
                     setTimeout(() => {
-                        checkStatus(requestVerificationToken, returnUrl, uiOptionsGuid, orderRef);
+                        checkStatus(requestVerificationToken, returnUrl, orderRef);
                     }, configuration.statusRefreshIntervalMs);
                 }
             })
@@ -265,7 +258,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         show(qrCodeElement);
     }
 
-    function cancel(requestVerificationToken: string, cancelReturnUrl: string, uiOptionsGuid: string, orderRef: string = null) {
+    function cancel(requestVerificationToken: string, cancelReturnUrl: string, orderRef: string = null) {
         flowIsCancelledByUser = true;
 
         if (!orderRef) {
@@ -276,8 +269,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         postJson(configuration.bankIdCancelApiUrl,
             requestVerificationToken,
             {
-                "orderRef": orderRef,
-                "uiOptions": uiOptionsGuid
+                "orderRef": orderRef
             })
             .finally(() => {
                 window.location.href = cancelReturnUrl;

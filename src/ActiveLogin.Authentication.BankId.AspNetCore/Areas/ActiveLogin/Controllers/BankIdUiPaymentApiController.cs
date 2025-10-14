@@ -44,9 +44,8 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
     public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
-        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
-        var uiOptions = ResolveProtectedUiOptions(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions();
 
         var state = GetStateFromCookie(uiOptions);
         if(state == null)
@@ -59,8 +58,7 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
         {
             var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdPaymentInitActionName, BankIdConstants.Routes.BankIdPaymentControllerName, new
             {
-                returnUrl = request.ReturnUrl,
-                uiOptions = request.UiOptions
+                returnUrl = request.ReturnUrl
             }, protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdPaymentControllerName, BankIdConstants.Routes.BankIdPaymentInitActionName));
 
             bankIdFlowInitializeResult = await BankIdFlowService.InitializePayment(

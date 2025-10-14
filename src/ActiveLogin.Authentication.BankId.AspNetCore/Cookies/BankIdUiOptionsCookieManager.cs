@@ -10,91 +10,46 @@ internal class BankIdUiOptionsCookieManager(
 ) : IBankIdUiOptionsCookieManager
 {
 
-    private static CookieOptions CookieOptions(TimeSpan duration) => new()
+    private CookieBuilder _uiOptionsCookieBuilder = new()
     {
+        Name = BankIdConstants.DefaultUiOptionsCookieName,
+        SecurePolicy = CookieSecurePolicy.SameAsRequest,
         HttpOnly = true,
-        Secure = true,
         SameSite = SameSiteMode.Lax,
-        IsEssential = true,
-        MaxAge = duration,
+        IsEssential = true
     };
 
-    public string Store(BankIdUiOptions uiOptions)
+    public void Store(BankIdUiOptions uiOptions, DateTimeOffset expiresFrom)
     {
         ArgumentNullException.ThrowIfNull(uiOptions);
 
         var httpContext = GetHttpContext();
-        var guid = Guid.NewGuid().ToString("N"); // Use "N" format for shorter GUID without hyphens
-        var cookieName = GetCookieName(guid);
-
+        var cookieOptions = _uiOptionsCookieBuilder.Build(httpContext, expiresFrom);
         var protectedUiOptions = uiOptionsProtector.Protect(uiOptions);
 
-        var cookieOptions = CookieOptions(BankIdConstants.UiOptionsCookieLifeTime);
-        httpContext.Response.Cookies.Append(cookieName, protectedUiOptions, cookieOptions);
-
-        return guid;
+        httpContext.Response.Cookies.Append(BankIdConstants.DefaultUiOptionsCookieName, protectedUiOptions, cookieOptions);
     }
 
-    public BankIdUiOptions? Retrieve(string guid)
+    public BankIdUiOptions? Retrieve()
     {
-        if (string.IsNullOrWhiteSpace(guid))
-        {
-            return null;
-        }
-        // If the GUID is not valid, attempt to unprotect it directly
-        if (IsGuid(guid) == false)
-        {
-            return TryUnprotect(guid);
-        }
-
         var httpContext = GetHttpContext();
-        var cookieName = GetCookieName(guid);
 
-        return httpContext.Request.Cookies.TryGetValue(cookieName, out var protectedValue)
+        return httpContext.Request.Cookies.TryGetValue(BankIdConstants.DefaultUiOptionsCookieName, out var protectedValue)
             ? !string.IsNullOrWhiteSpace(protectedValue)
                 ? uiOptionsProtector.Unprotect(protectedValue)
                 : null
             : null;
     }
 
-    public void Delete(string guid)
+    public void Delete()
     {
-        if (string.IsNullOrWhiteSpace(guid))
-        {
-            return;
-        }
-
         var httpContext = GetHttpContext();
-        var cookieName = GetCookieName(guid);
-
-        httpContext.Response.Cookies.Delete(cookieName);
-    }
-
-    public bool IsGuid(string value)
-    {
-        return !string.IsNullOrWhiteSpace(value) && Guid.TryParse(value, out _);
+        httpContext.Response.Cookies.Delete(BankIdConstants.DefaultUiOptionsCookieName);
     }
 
     private HttpContext GetHttpContext()
     {
         var httpContext = httpContextAccessor.HttpContext;
         return httpContext ?? throw new InvalidOperationException("HttpContext is not available.");
-    }
-
-    private static string GetCookieName(string guid)
-    {
-        return $"{BankIdConstants.DefaultUiOptionsCookieNamePrefix}{guid}";
-    }
-
-    private BankIdUiOptions? TryUnprotect(string protectedValue)
-    {
-        try
-        {
-            return uiOptionsProtector.Unprotect(protectedValue);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
     }
 }

@@ -15,6 +15,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test;
 public abstract class BankId_Ui_Tests_Base
 {
     private const string DefaultStateCookieName = "__ActiveLogin.BankIdUiState";
+    private const string DefaultUiOptionsCookieName = "__ActiveLogin.BankId.UiOptions";
 
     protected class TestBankIdAppApi : IBankIdAppApiClient
     {
@@ -74,7 +75,7 @@ public abstract class BankId_Ui_Tests_Base
         var stateCookies = stateResponse.Headers.GetValues("set-cookie");
 
         // Arrange csrf info
-        var loginRequest = CreateRequestWithFakeStateCookie(server, $"/ActiveLogin/BankId/{bankIdType}?returnUrl=%2F&uiOptions=X&orderRef=Y");
+        var loginRequest = CreateRequestWithFakeStateAndUiOptionsCookie(server, $"/ActiveLogin/BankId/{bankIdType}?returnUrl=%2F");
         var loginResponse = await loginRequest.GetAsync();
         var loginCookies = loginResponse.Headers.GetValues("set-cookie");
         var loginContent = await loginResponse.Content.ReadAsStringAsync();
@@ -98,10 +99,11 @@ public abstract class BankId_Ui_Tests_Base
         return await MakeRequestWithRequiredContext(bankIdType, $"/ActiveLogin/BankId/{bankIdType}/Api/Initialize", server, initializeRequest);
     }
 
-    protected static RequestBuilder CreateRequestWithFakeStateCookie(TestServer server, string path)
+    protected static RequestBuilder CreateRequestWithFakeStateAndUiOptionsCookie(TestServer server, string path)
     {
         var request = server.CreateRequest(path);
         request.AddHeader("Cookie", $"{DefaultStateCookieName}=TEST");
+        request.AddHeader("Cookie", $"{DefaultUiOptionsCookieName}=TEST");
         return request;
     }
 

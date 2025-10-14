@@ -285,7 +285,7 @@ public class BankIdFlowService : IBankIdFlowService
         var requirePinCode = bankIdPaymentData.RequirePinCode ?? flowOptions.RequirePinCode;
         var requestRequirement = new Requirement(resolvedCertificatePolicies, requirePinCode, requireMrtd, requiredPersonalIdentityNumber?.To12DigitString(), cardReader);
 
-        var returnRisk = bankIdPaymentData.ReturnRisk;
+        var returnRisk = bankIdPaymentData.ReturnRisk ?? flowOptions.ReturnRisk;
 
         var riskFlags = GetResolvedRiskFlags(bankIdPaymentData.RiskFlags);
 

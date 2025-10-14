@@ -15,8 +15,5 @@ public class BankIdUiApiStatusRequest
     [Required]
     public string? ReturnUrl { get; set; }
 
-    [Required]
-    public string? UiOptions { get; set; }
-
     public int AutoStartAttempts { get; set; }
 }
