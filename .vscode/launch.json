@@ -2,11 +2,51 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "IdentityServer.ClientSample",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/samples/IdentityServer.ClientSample/bin/Debug/net8.0/IdentityServer.ClientSample.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/IdentityServer.ClientSample",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "IdentityServer.ServerSample",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/samples/IdentityServer.ServerSample/bin/Debug/net8.0/IdentityServer.ServerSample.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/IdentityServer.ServerSample",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "Standalone.MvcSample",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/samples/Standalone.MvcSample/bin/Debug/net6.0/Standalone.MvcSample.dll",
+            "program": "${workspaceFolder}/samples/Standalone.MvcSample/bin/Debug/net8.0/Standalone.MvcSample.dll",
             "args": [],
             "cwd": "${workspaceFolder}/samples/Standalone.MvcSample",
             "stopAtEntry": false,
