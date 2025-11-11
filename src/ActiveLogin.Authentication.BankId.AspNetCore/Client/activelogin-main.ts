@@ -109,6 +109,15 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     var flowIsCancelledByUser = false;
     var flowIsFinished = false;
 
+    function launchBankIdApp(url: string) {
+        // Use BankID recommended approach for launching the app
+        // See: https://developers.bankid.com/getting-started/autostart
+        const link = document.createElement("a");
+        link.href = url;
+        link.referrerPolicy = "origin";
+        link.click();
+    }
+
     function enableCancelButton(requestVerificationToken: string, cancelUrl: string, orderRef: string = null) {
         var onCancelButtonClick = (event: Event) => {
             cancel(requestVerificationToken, cancelUrl, orderRef);
@@ -132,7 +141,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
                     if (data.deviceMightRequireUserInteractionToLaunchBankIdApp) {
                         var startBankIdAppButtonOnClick = (event: Event) => {
-                            window.location.href = data.redirectUri;
+                            launchBankIdApp(data.redirectUri);
                             hide(startBankIdAppButtonElement);
                             event.target.removeEventListener("click", startBankIdAppButtonOnClick);
                         };
@@ -140,7 +149,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
                         show(startBankIdAppButtonElement);
                     } else {
-                        window.location.href = data.redirectUri;
+                        launchBankIdApp(data.redirectUri);
                     }
                 }
 

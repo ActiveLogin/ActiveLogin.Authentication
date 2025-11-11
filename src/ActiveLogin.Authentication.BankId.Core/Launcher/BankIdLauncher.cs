@@ -47,20 +47,16 @@ internal class BankIdLauncher : IBankIdLauncher
     private bool GetDeviceMightRequireUserInteractionToLaunchBankIdApp(BankIdSupportedDevice detectedDevice, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
     {
         var userInteractionBehaviour = customBrowserConfig?.BrowserMightRequireUserInteractionToLaunch ?? BrowserMightRequireUserInteractionToLaunch.Default;
-
+        
         return userInteractionBehaviour switch
         {
             BrowserMightRequireUserInteractionToLaunch.Always => true,
             BrowserMightRequireUserInteractionToLaunch.Never => false,
 
-            // On Android, some browsers will (for security reasons) not launching a
-            // third party app/scheme (BankID) if there is no user interaction.
-            //
-            // - Chrome, Edge, Samsung Internet Browser and Brave is confirmed to require User Interaction
-            // - Firefox and Opera is confirmed to work without User Interaction
-            _ => detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android
-                 && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
-                 && detectedDevice.DeviceBrowser != BankIdSupportedDeviceBrowser.Opera
+            // Modern recommendation from BankID -> on mobile show fallback button
+            // Ref: https://developers.bankid.com/resources/ui-guide-mobile
+            _ => (detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Ios
+                 || detectedDevice.DeviceOs == BankIdSupportedDeviceOs.Android)
         };
     }
 
@@ -99,20 +95,10 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private static bool CanUseAppLink(BankIdSupportedDevice device)
     {
-        // Only Safari on IOS and Chrome or Edge on Android version >= 6 seems to support
-        //  the https://app.bankid.com/ launch url
+        // Universal Links (https://app.bankid.com/) are the recommended approach for mobile devices
+        // per BankID documentation: https://developers.bankid.com/getting-started/autostart
 
-        return device is
-        {
-            DeviceOs: BankIdSupportedDeviceOs.Ios,
-            DeviceBrowser: BankIdSupportedDeviceBrowser.Safari
-        }
-        or
-        {
-            DeviceOs: BankIdSupportedDeviceOs.Android,
-            DeviceOsVersion.MajorVersion: >= 6,
-            DeviceBrowser: BankIdSupportedDeviceBrowser.Chrome or BankIdSupportedDeviceBrowser.Edge
-        };
+        return device.DeviceOs == BankIdSupportedDeviceOs.Ios || device.DeviceOs == BankIdSupportedDeviceOs.Android;
     }
 
     private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
