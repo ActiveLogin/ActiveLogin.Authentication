@@ -22,8 +22,8 @@ stages:
           vmImage: 'windows-latest'
           artifactName: 'nuget-windows'
         macOS:
-          vmImage: 'macOS-latest'
-          artifactName: 'macOS-13'
+          vmImage: 'macOS-13'
+          artifactName: 'nuget-macos'
         Linux:
           vmImage: 'ubuntu-latest'
           artifactName: 'nuget-linux'
