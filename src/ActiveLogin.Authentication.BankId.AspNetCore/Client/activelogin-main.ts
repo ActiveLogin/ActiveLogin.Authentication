@@ -123,7 +123,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             requestVerificationToken,
             {
                 "returnUrl": returnUrl
-            }, fetchRetryCountDefault)
+            }, fetchRetryCountDefault, true)
             .then(data => {
                 if (data.isAutoLaunch) {
                     if (!data.checkStatus) {
@@ -177,7 +177,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 "orderRef": orderRef,
                 "returnUrl": returnUrl,
                 "autoStartAttempts": autoStartAttempts
-            }, fetchRetryCountDefault)
+            }, fetchRetryCountDefault, false)
             .then(data => {
                 if (data.retryLogin) {
                     autoStartAttempts++;
@@ -227,7 +227,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             requestVerificationToken,
             {
                 "qrStartState": qrStartState
-            }, fetchRetryCountDefault)
+            }, fetchRetryCountDefault, false)
             .then(data => {
                 if (!!data.qrCodeAsBase64) {
                     qrLastRefreshTimestamp = new Date();
@@ -278,7 +278,13 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // Helpers
 
-    function postJson(url: string, requestVerificationToken: string, data: any, retryCount: number = 0): Promise<any> {
+    function postJson(url: string, requestVerificationToken: string, data: any, retryCount: number = 0, retryOnHttpError: boolean = true): Promise<any> {
+
+        const retry = () => {
+            return delay(fetchRetryDelayMs)
+                .then(() => postJson(url, requestVerificationToken, data, retryCount - 1, retryOnHttpError));
+        };
+
         return fetch(url,
             {
                 method: "POST",
@@ -290,22 +296,10 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 credentials: 'include',
                 body: JSON.stringify(data)
             })
-            .catch(error => {
-                if (retryCount > 0) {
-                    return delay(fetchRetryDelayMs).then(() => {
-                        return postJson(url, requestVerificationToken, data, retryCount - 1);
-                    });
-                }
-
-                throw error;
-            })
             .then(response => {
-                if (!response.ok && retryCount > 0) {
-                    return delay(fetchRetryDelayMs).then(() => {
-                        return postJson(url, requestVerificationToken, data, retryCount - 1)
-                    });
+                if (!response.ok && retryOnHttpError && retryCount > 0) {
+                    return retry();
                 }
-
                 return response;
             })
             .then(response => {
@@ -321,6 +315,15 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     throw Error(data.errorMessage);
                 }
                 return data;
+            })
+            .catch(error => {
+                const isNetworkError = error instanceof TypeError;
+
+                if (isNetworkError && retryCount > 0) {
+                    return retry();
+                }
+
+                throw error;
             });
     }
 
