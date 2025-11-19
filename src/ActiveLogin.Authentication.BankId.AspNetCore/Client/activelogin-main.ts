@@ -23,6 +23,13 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     const fetchRetryCountDefault: number = 3;
     const fetchRetryDelayMs: number = 1000;
 
+    const retryOnHttpErrors = {
+        initialize: true,
+        status: false,     // A second call to the BankID collect endpoint is not supported after a status complete or failed is returned.
+        qr: true,                   
+        cancel: true
+    };
+
     // Pre check
 
     const requiredFeatures = [window.fetch, window.sessionStorage];
@@ -123,7 +130,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             requestVerificationToken,
             {
                 "returnUrl": returnUrl
-            }, fetchRetryCountDefault)
+            }, fetchRetryCountDefault, retryOnHttpErrors.initialize)
             .then(data => {
                 if (data.isAutoLaunch) {
                     if (!data.checkStatus) {
@@ -177,7 +184,9 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 "orderRef": orderRef,
                 "returnUrl": returnUrl,
                 "autoStartAttempts": autoStartAttempts
-            }, fetchRetryCountDefault)
+            },
+            fetchRetryCountDefault,
+            retryOnHttpErrors.status)
             .then(data => {
                 if (data.retryLogin) {
                     autoStartAttempts++;
@@ -227,7 +236,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             requestVerificationToken,
             {
                 "qrStartState": qrStartState
-            }, fetchRetryCountDefault)
+            }, fetchRetryCountDefault, retryOnHttpErrors.qr)
             .then(data => {
                 if (!!data.qrCodeAsBase64) {
                     qrLastRefreshTimestamp = new Date();
@@ -278,7 +287,13 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // Helpers
 
-    function postJson(url: string, requestVerificationToken: string, data: any, retryCount: number = 0): Promise<any> {
+    function postJson(url: string, requestVerificationToken: string, data: any, remaingRetryCount: number = 0, retryOnHttpError: boolean = true): Promise<any> {
+        
+        const retry = () => {
+            return delay(fetchRetryDelayMs)
+                .then(() => postJson(url, requestVerificationToken, data, remaingRetryCount - 1, retryOnHttpError));
+        };
+
         return fetch(url,
             {
                 method: "POST",
@@ -290,22 +305,10 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                 credentials: 'include',
                 body: JSON.stringify(data)
             })
-            .catch(error => {
-                if (retryCount > 0) {
-                    return delay(fetchRetryDelayMs).then(() => {
-                        return postJson(url, requestVerificationToken, data, retryCount - 1);
-                    });
-                }
-
-                throw error;
-            })
             .then(response => {
-                if (!response.ok && retryCount > 0) {
-                    return delay(fetchRetryDelayMs).then(() => {
-                        return postJson(url, requestVerificationToken, data, retryCount - 1)
-                    });
+                if (!response.ok && retryOnHttpError && remaingRetryCount > 0) {
+                    return retry();
                 }
-
                 return response;
             })
             .then(response => {
@@ -321,6 +324,25 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                     throw Error(data.errorMessage);
                 }
                 return data;
+            })
+            .catch(error => {
+                // A TypeError here means fetch failed before receiving any HTTP response
+                // (network down, DNS error, CORS block, connection aborted, etc.).
+                // These failures are transient and safe to retry.
+                const isNetworkError = error instanceof TypeError;
+
+                // Other error types should NOT be retried here:
+                // - HTTP-level failures (e.g., non-2xx status codes) are already handled in the
+                //   previous `.then` block, where retry behavior is controlled by `retryOnHttpError`.
+                // - Any error thrown after that stage represents a *valid server response*,
+                //   meaning the request reached the API and should not be repeated.
+                //   Retrying such cases here could cause duplicated API calls or break BankID flows
+                //   (e.g.collect/status), which do not allow repeated calls after a completed/failed state.
+                if (isNetworkError && remaingRetryCount > 0) {
+                    return retry();
+                }
+
+                throw error;
             });
     }
 
