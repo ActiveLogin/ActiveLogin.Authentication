@@ -25,8 +25,8 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     const retryOnHttpErrors = {
         initialize: true,
-        status: false,               // A second call to the BankID collect endpoint is not supported after a status complete or failed is returned.
-        qr: false,                   // No Http calls made by this endpoint
+        status: false,     // A second call to the BankID collect endpoint is not supported after a status complete or failed is returned.
+        qr: true,                   
         cancel: true
     };
 
