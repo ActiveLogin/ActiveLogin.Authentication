@@ -2,11 +2,13 @@ using System.Reflection;
 
 using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
+using ActiveLogin.Authentication.BankId.AspNetCore.Launcher;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.AspNetCore.SupportedDevice;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext;
 using ActiveLogin.Authentication.BankId.AspNetCore.UserContext.Device;
 using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.Core.Launcher;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Authentication.BankId.Core.UserContext;
 
@@ -29,6 +31,9 @@ internal static class BankIdCommonConfiguration
         services.AddTransient<IBankIdSupportedDeviceDetector, BankIdSupportedDeviceDetector>();
 
         services.AddTransient<IBankIdEndUserIpResolver, BankIdRemoteIpAddressEndUserIpResolver>();
+
+        services.AddTransient<ICustomBrowserResolver, BankIdCustomBrowserResolver>();
+        services.AddTransient<IBankIdRedirectUrlResolver, BankIdRedirectUrlResolver>();
 
         services.AddHttpContextAccessor();
         services.AddTransient<IBankIdUiOptionsCookieManager, BankIdUiOptionsCookieManager>();

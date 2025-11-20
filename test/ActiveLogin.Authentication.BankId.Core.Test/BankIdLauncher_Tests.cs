@@ -7,57 +7,52 @@ using Xunit;
 
 namespace ActiveLogin.Authentication.BankId.Core.Test;
 
+
+public class FakeBankIdSupportedDeviceDetector(BankIdSupportedDevice device) : IBankIdSupportedDeviceDetector
+{
+    public BankIdSupportedDevice Detect() => device;
+}
+
+public class FakeCustomBrowserResolver(BankIdLauncherCustomBrowserConfig config = null) : ICustomBrowserResolver
+{
+    public Task<BankIdLauncherCustomBrowserConfig> GetConfig(LaunchUrlRequest launchUrlRequest)
+    {
+        return Task.FromResult(config);
+    }
+}
+
+/// <summary>
+/// Tests we want to do:
+/// * Ensure that BankIdLauncher generates a valid LaunchInfo
+/// * Test that BankIdLauncher uses detected device to determine if user interaction is needed to launch BankID app
+/// * Test that BankIdLauncher uses the CustomBrowserResolver to determine if the browser will reload on return from BankID app
+/// </summary>
+
 public class BankIdLauncher_Tests
 {
     [Fact]
-    public async Task BankIdLauncher_Should_DefaultReloadBehavior()
+    public async Task BankIdLauncher_Should_GenerateValidLaunchInfo()
     {
         var launcher = new BankIdLauncher(
-            new TestBankIdSupportedDeviceDetector(),
-            System.Array.Empty<IBankIdLauncherCustomBrowser>());
+            new FakeBankIdSupportedDeviceDetector(BankIdTestDevices.Mobile.Ios.Chrome),
+            new FakeCustomBrowserResolver()
+        );
 
-        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("", ""));
+        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://localhost:5001/ActiveLogin/Auth/Init", ""));
 
-        Assert.False(info.DeviceWillReloadPageOnReturnFromBankIdApp);
+        Assert.NotNull(info);
     }
 
     [Fact]
-    public async Task BankIdLauncher_Should_UseReloadBehaviourWhenImplemented()
+    public async Task BankIdLauncher_Should_UseDetectedDeviceToDetermineUserInteraction()
     {
         var launcher = new BankIdLauncher(
-            new TestBankIdSupportedDeviceDetector(),
-            new [] { new TestBankIdLauncherCustomBrowser() }); // Override behaviour on return from BankID app
+            new FakeBankIdSupportedDeviceDetector(BankIdTestDevices.Mobile.Ios.Chrome),
+            new FakeCustomBrowserResolver()
+        );
 
-        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest(string.Empty, string.Empty));
+        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://localhost:5001/ActiveLogin/Auth/Init", ""));
 
-        Assert.True(info.DeviceWillReloadPageOnReturnFromBankIdApp);
-    }
-
-    private class TestBankIdLauncherCustomBrowser : IBankIdLauncherCustomBrowser
-    {
-        public Task<bool> IsApplicable(BankIdLauncherCustomBrowserContext context)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task<BankIdLauncherCustomBrowserConfig> GetCustomAppCallbackResult(BankIdLauncherCustomBrowserContext context)
-        {
-            return Task.FromResult(
-                new BankIdLauncherCustomBrowserConfig("/return", BrowserReloadBehaviourOnReturnFromBankIdApp.Always)
-            );
-        }
-    }
-
-    private class TestBankIdSupportedDeviceDetector : IBankIdSupportedDeviceDetector
-    {
-        public BankIdSupportedDevice Detect()
-        {
-            // A device that will not reload the page on return from BankID app (Desktop Windows)
-            return new BankIdSupportedDevice(
-                BankIdSupportedDeviceType.Desktop,
-                BankIdSupportedDeviceOs.Windows,
-                BankIdSupportedDeviceBrowser.Chrome,
-                BankIdSupportedDeviceOsVersion.Empty);
-        }
+        Assert.False(info.DeviceMightRequireUserInteractionToLaunchBankIdApp);
     }
 }

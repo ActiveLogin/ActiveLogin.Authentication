@@ -7,7 +7,7 @@ public class BankIdUiApiInitializeResponse
         bool deviceMightRequireUserInteractionToLaunchBankIdApp,
         bool checkStatus,
         string orderRef,
-        string? redirectUri,
+        string? launchUrl,
         string? qrStartState,
         string? qrCodeAsBase64)
     {
@@ -15,7 +15,7 @@ public class BankIdUiApiInitializeResponse
         DeviceMightRequireUserInteractionToLaunchBankIdApp = deviceMightRequireUserInteractionToLaunchBankIdApp;
         CheckStatus = checkStatus;
         OrderRef = orderRef;
-        RedirectUri = redirectUri;
+        LaunchUrl = launchUrl;
         QrStartState = qrStartState;
         QrCodeAsBase64 = qrCodeAsBase64;
     }
@@ -25,7 +25,7 @@ public class BankIdUiApiInitializeResponse
     public bool DeviceMightRequireUserInteractionToLaunchBankIdApp { get; }
     public bool CheckStatus { get; }
     public string OrderRef { get; }
-    public string? RedirectUri { get; }
+    public string? LaunchUrl { get; }
     public string? QrStartState { get; set; }
     public string? QrCodeAsBase64 { get; set; }
 
@@ -35,9 +35,9 @@ public class BankIdUiApiInitializeResponse
         return new BankIdUiApiInitializeResponse(true, showLaunchButton, false, orderRef, redirectUri, null, null);
     }
 
-    public static BankIdUiApiInitializeResponse AutoLaunchAndCheckStatus(string orderRef, string redirectUri, bool showLaunchButton)
+    public static BankIdUiApiInitializeResponse AutoLaunchAndReloadPage(string orderRef, string launchUrl, bool showLaunchButton)
     {
-        return new BankIdUiApiInitializeResponse(true, showLaunchButton, true, orderRef, redirectUri, null, null);
+        return new BankIdUiApiInitializeResponse(true, showLaunchButton, false, orderRef, launchUrl, null, null);
     }
 
     public static BankIdUiApiInitializeResponse ManualLaunch(string orderRef, string qrStartState, string qrCodeAsBase64)

@@ -34,6 +34,6 @@ public class BankIdUiSignController : BankIdUiControllerBase
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}")]
     public Task<ActionResult> Init(string returnUrl)
     {
-        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, "Init");
+        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, nameof(Init));
     }
 }
