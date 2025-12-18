@@ -10,7 +10,4 @@ public class BankIdUiApiInitializeRequest
 
     [Required]
     public string? ReturnUrl { get; set; }
-
-    [Required]
-    public string? UiOptions { get; set; }
 }

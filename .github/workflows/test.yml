@@ -19,7 +19,7 @@ jobs:
         matrix:
             include:
             - os: windows-latest
-            - os: macos-latest
+            - os: macos-15-intel
             - os: ubuntu-latest
 
     steps:

@@ -1,3 +1,4 @@
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.StateHandling;
 using ActiveLogin.Authentication.BankId.Core.UserMessage;
@@ -20,9 +21,10 @@ public class BankIdUiSignController : BankIdUiControllerBase
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,
-        IBankIdUiStateProtector bankIdUiStateProtector
+        IBankIdUiStateProtector bankIdUiStateProtector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager
     )
-        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, bankIdUiStateProtector)
+        : base(antiforgery, localizer, bankIdUserMessageLocalizer, uiOptionsProtector, bankIdInvalidStateHandler, bankIdUiStateProtector, uiOptionsCookieManager)
     {
 
     }
@@ -30,8 +32,8 @@ public class BankIdUiSignController : BankIdUiControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Route($"/[area]/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}")]
-    public Task<ActionResult> Init(string returnUrl, [FromQuery(Name = BankIdConstants.QueryStringParameters.UiOptions)] string protectedUiOptions)
+    public Task<ActionResult> Init(string returnUrl)
     {
-        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, protectedUiOptions, "Init");
+        return Initialize(returnUrl, BankIdConstants.Routes.BankIdSignApiControllerName, "Init");
     }
 }

@@ -1,5 +1,6 @@
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -23,6 +24,7 @@ public abstract class BankIdUiControllerBase : Controller
     private readonly IBankIdUiOptionsProtector _uiOptionsProtector;
     private readonly IBankIdInvalidStateHandler _bankIdInvalidStateHandler;
     private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
+    private readonly IBankIdUiOptionsCookieManager _uiOptionsCookieManager;
 
     protected BankIdUiControllerBase(
         IAntiforgery antiforgery,
@@ -30,7 +32,8 @@ public abstract class BankIdUiControllerBase : Controller
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiOptionsProtector uiOptionsProtector,
         IBankIdInvalidStateHandler bankIdInvalidStateHandler,
-        IBankIdUiStateProtector bankIdUiStateProtector)
+        IBankIdUiStateProtector bankIdUiStateProtector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager)
     {
         _antiforgery = antiforgery;
         _localizer = localizer;
@@ -38,22 +41,23 @@ public abstract class BankIdUiControllerBase : Controller
         _uiOptionsProtector = uiOptionsProtector;
         _bankIdInvalidStateHandler = bankIdInvalidStateHandler;
         _bankIdUiStateProtector = bankIdUiStateProtector;
+        _uiOptionsCookieManager = uiOptionsCookieManager;
     }
 
-    protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string protectedUiOptions, string viewName)
+    protected async Task<ActionResult> Initialize(string returnUrl, string apiControllerName, string viewName)
     {
         Validators.ThrowIfNullOrWhitespace(returnUrl);
-        Validators.ThrowIfNullOrWhitespace(protectedUiOptions, BankIdConstants.QueryStringParameters.UiOptions);
 
         if (!Url.IsLocalUrl(returnUrl))
         {
             throw new ArgumentException(BankIdConstants.ErrorMessages.InvalidReturnUrl);
         }
 
-        var uiOptions = _uiOptionsProtector.Unprotect(protectedUiOptions);
-        if (!HasStateCookie(uiOptions))
+        var uiOptions = _uiOptionsCookieManager.Retrieve();
+        if (uiOptions == null || !HasStateCookie(uiOptions))
         {
-            var invalidStateContext = new BankIdInvalidStateContext(uiOptions.CancelReturnUrl);
+            var cancelReturnUrl = uiOptions?.CancelReturnUrl ?? "/";
+            var invalidStateContext = new BankIdInvalidStateContext(cancelReturnUrl);
             await _bankIdInvalidStateHandler.HandleAsync(invalidStateContext);
 
             return new EmptyResult();
@@ -71,7 +75,7 @@ public abstract class BankIdUiControllerBase : Controller
         }
         var state = _bankIdUiStateProtector.Unprotect(protectedState);
 
-        var viewModel = GetUiViewModel(returnUrl, apiControllerName, protectedUiOptions, uiOptions, state, antiforgeryTokens);
+        var viewModel = GetUiViewModel(returnUrl, apiControllerName, uiOptions, state, antiforgeryTokens);
 
         return View(viewName, viewModel);
     }
@@ -87,7 +91,7 @@ public abstract class BankIdUiControllerBase : Controller
         return !string.IsNullOrEmpty(HttpContext.Request.Cookies[uiOptions.StateCookieName]);
     }
 
-    private BankIdUiViewModel GetUiViewModel(string returnUrl, string apiControllerName, string protectedUiOptions, BankIdUiOptions unprotectedUiOptions, BankIdUiState uiState, AntiforgeryTokenSet antiforgeryTokens)
+    private BankIdUiViewModel GetUiViewModel(string returnUrl, string apiControllerName, BankIdUiOptions unprotectedUiOptions, BankIdUiState uiState, AntiforgeryTokenSet antiforgeryTokens)
     {
         Validators.ThrowIfNullOrWhitespace(antiforgeryTokens.RequestToken, nameof(antiforgeryTokens.RequestToken));
 
@@ -115,8 +119,6 @@ public abstract class BankIdUiControllerBase : Controller
 
             ReturnUrl = returnUrl,
             CancelReturnUrl = Url.Content(unprotectedUiOptions.CancelReturnUrl),
-
-            ProtectedUiOptions = protectedUiOptions
         };
 
         var localizedStartAppButtonText = _localizer["StartApp_Button"];

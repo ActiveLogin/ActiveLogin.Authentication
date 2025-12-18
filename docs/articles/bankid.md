@@ -1618,20 +1618,21 @@ We have choosen not to normalize the capitalization of the names as it´s hard o
 
 ### Cookies issued
 
-The `*.AspNetCore` package will issue a cookie to make the auth flow work
+The `*.AspNetCore` package will issue cookies to make the auth, sign and payment flow work
 
 - Cookie: `__ActiveLogin.BankIdUiState`
-  - This cookie is there to store state during the auth process, as the user will/might be redirected during the flow. The cookie is session based only and will be deleted once the auth process is finished and/or when the user closes the browser.
-   
-  - Because it is strictly related to temp storage during auth, you should not have to inform the user about these specific cookies (according to the [EU "cookie law"](https://www.cookielaw.org/the-cookie-law/)).
-   
-  - With the current implementation (following the convention from Microsoft ASP.NET) the usage of cookies is not optional.
-  
+  - This cookie is there to store state during the auth process, as the user will/might be redirected during the flow. The cookie is session based only and will be deleted once the auth, sign or payment process is finished and/or when the user closes the browser.
   - A more technical deep dive of this cookie can be found in [this issue](https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/156).
+    
+- Cookie: `__ActiveLogin.BankIdUiOptions`
+  - This cookie temporarily stores information about your configured requirements for Auth, Sign, and Payment requests. The data is retained only for the duration of an ongoing BankID transaction (i.e., Auth, Sign, or Payment). The cookie is session-based and is automatically deleted once the transaction is completed or when the user closes the browser.
 
 - Cookie: `__ActiveLogin.BankIdDeviceData`
   - This cookie is used to store the device data for the user, in the default implementation, it is used to ensure that the device data is persistent across requests.
 
+___Note:___
+
+Because `__ActiveLogin.BankIdUiState` and `__ActiveLogin.BankIdUiOptions` are strictly related to temp storage during auth, sign and payment, you should not have to inform the user about these specific cookies (according to the [EU "cookie law"](https://www.cookielaw.org/the-cookie-law/)). With the current implementation (following the convention from Microsoft ASP.NET) the usage of cookies is not optional.
   
 ___Note:___
 

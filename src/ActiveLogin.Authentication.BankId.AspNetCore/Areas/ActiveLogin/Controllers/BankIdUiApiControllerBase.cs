@@ -5,6 +5,7 @@ using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -25,6 +26,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     protected readonly IBankIdUiOrderRefProtector OrderRefProtector;
     protected readonly IBankIdQrStartStateProtector QrStartStateProtector;
     protected readonly IBankIdUiOptionsProtector UiOptionsProtector;
+    protected readonly IBankIdUiOptionsCookieManager UiOptionsCookieManager;
 
     private readonly IBankIdUserMessage _bankIdUserMessage;
     private readonly IBankIdUserMessageLocalizer _bankIdUserMessageLocalizer;
@@ -35,6 +37,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
         IBankIdUiOrderRefProtector orderRefProtector,
         IBankIdQrStartStateProtector qrStartStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager,
 
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
@@ -46,6 +49,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
         OrderRefProtector = orderRefProtector;
         QrStartStateProtector = qrStartStateProtector;
         UiOptionsProtector = uiOptionsProtector;
+        UiOptionsCookieManager = uiOptionsCookieManager;
 
         _bankIdUserMessage = bankIdUserMessage;
         _bankIdUserMessageLocalizer = bankIdUserMessageLocalizer;
@@ -58,7 +62,6 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
-        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
         if (!Url.IsLocalUrl(request.ReturnUrl))
         {
@@ -66,7 +69,7 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
         }
 
         var orderRef = OrderRefProtector.Unprotect(request.OrderRef);
-        var uiOptions = UiOptionsProtector.Unprotect(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions();
 
         BankIdFlowCollectResult result;
         try
@@ -122,10 +125,9 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
     public async Task<ActionResult> Cancel(BankIdUiApiCancelRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.OrderRef, nameof(request.OrderRef));
-        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
         var orderRef = OrderRefProtector.Unprotect(request.OrderRef);
-        var uiOptions = UiOptionsProtector.Unprotect(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions();
 
         await BankIdFlowService.Cancel(orderRef.OrderRef, uiOptions.ToBankIdFlowOptions());
 
@@ -178,5 +180,13 @@ public abstract class BankIdUiApiControllerBase : ControllerBase
             StatusCode = StatusCodes.Status400BadRequest,
             Content = JsonSerializer.Serialize(model, JsonSerializerOptions)
         };
+    }
+
+    /// <summary>
+    /// Resolves the UiOptions stored in cookie and unprotects value.
+    /// </summary>
+    protected BankIdUiOptions ResolveProtectedUiOptions()
+    {
+        return UiOptionsCookieManager.Retrieve() ?? throw new InvalidOperationException(BankIdConstants.ErrorMessages.InvalidUiOptions);
     }
 }

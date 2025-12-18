@@ -1,6 +1,7 @@
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Api.UserMessage;
 using ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Models;
+using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
 using ActiveLogin.Authentication.BankId.AspNetCore.Models;
@@ -28,11 +29,12 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
         IBankIdUiOrderRefProtector orderRefProtector,
         IBankIdQrStartStateProtector qrStartStateProtector,
         IBankIdUiOptionsProtector uiOptionsProtector,
+        IBankIdUiOptionsCookieManager uiOptionsCookieManager,
         IBankIdUserMessage bankIdUserMessage,
         IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
         IBankIdUiResultProtector uiAuthResultProtector,
         IBankIdUiStateProtector bankIdUiStateProtector)
-        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
+        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, uiOptionsCookieManager, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
     {
         _bankIdUiStateProtector = bankIdUiStateProtector;
     }
@@ -42,9 +44,8 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
     public async Task<ActionResult<BankIdUiApiInitializeResponse>> Initialize(BankIdUiApiInitializeRequest request)
     {
         Validators.ThrowIfNullOrWhitespace(request.ReturnUrl, nameof(request.ReturnUrl));
-        Validators.ThrowIfNullOrWhitespace(request.UiOptions, nameof(request.UiOptions));
 
-        var uiOptions = UiOptionsProtector.Unprotect(request.UiOptions);
+        var uiOptions = ResolveProtectedUiOptions();
 
         var state = GetStateFromCookie(uiOptions);
         if(state == null)
@@ -57,8 +58,7 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
         {
             var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdPaymentInitActionName, BankIdConstants.Routes.BankIdPaymentControllerName, new
             {
-                returnUrl = request.ReturnUrl,
-                uiOptions = request.UiOptions
+                returnUrl = request.ReturnUrl
             }, protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdPaymentControllerName, BankIdConstants.Routes.BankIdPaymentInitActionName));
 
             bankIdFlowInitializeResult = await BankIdFlowService.InitializePayment(
