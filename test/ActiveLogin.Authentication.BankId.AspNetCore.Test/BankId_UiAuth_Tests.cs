@@ -335,60 +335,6 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     }
 
     [Fact]
-    public async Task AutoLaunch_Sets_Correct_RedirectUri()
-    {
-        // Arrange mocks
-        var autoLaunchOptions =
-            new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, false, string.Empty, DefaultStateCookieName, Api.Models.CardReader.class1);
-        var mockProtector = new Mock<IBankIdUiOptionsProtector>();
-        mockProtector
-            .Setup(protector => protector.Unprotect(It.IsAny<string>()))
-            .Returns(autoLaunchOptions);
-        mockProtector
-            .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
-            .Returns("Ignored");
-
-        using var server = CreateServer(
-            o =>
-            {
-                o.UseSimulatedEnvironment();
-                o.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
-            },
-            o =>
-            {
-                o.AddSameDevice();
-            },
-            DefaultAppConfiguration(async context =>
-            {
-                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
-            }),
-            services =>
-            {
-                services.AddTransient(s => mockProtector.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
-            });
-
-        // Arrange acting request
-        var testReturnUrl = "/TestReturnUrl";
-        var initializeRequestBody = new {returnUrl = testReturnUrl};
-
-        // Act
-        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
-
-        var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
-        var responseObject = JsonConvert.DeserializeAnonymousType(responseContent,
-            new {RedirectUri = "", OrderRef = "", IsAutoLaunch = false});
-        Assert.True(responseObject.IsAutoLaunch);
-
-        var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
-        var expectedUrl = $"http://localhost/ActiveLogin/BankId/Auth?returnUrl={encodedReturnParam}";
-        Assert.Equal(expectedUrl, responseObject.RedirectUri);
-    }
-
-    [Fact]
     public async Task Api_Always_Returns_CamelCase_Json_For_Http200Ok()
     {
         // Arrange mocks
@@ -439,7 +385,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
 
         var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
-        Assert.Contains("redirectUri", responseContent);
+        Assert.Contains("launchUrl", responseContent);
         Assert.Contains("orderRef", responseContent);
         Assert.Contains("isAutoLaunch", responseContent);
     }
@@ -568,6 +514,14 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     {
         var webHostBuilder = new WebHostBuilder()
             .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
+            .ConfigureKestrel(options =>
+            {
+                // https
+                options.ListenLocalhost(44300, listenOptions =>
+                {
+                    listenOptions.UseHttps();
+                });
+            })
             .Configure(app =>
             {
                 configureApplication.Invoke(app);

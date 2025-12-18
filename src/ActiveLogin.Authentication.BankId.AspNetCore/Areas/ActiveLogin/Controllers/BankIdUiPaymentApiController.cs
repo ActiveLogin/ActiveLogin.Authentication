@@ -20,24 +20,19 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Areas.ActiveLogin.Control
 [ApiController]
 [AllowAnonymous]
 [NonController]
-public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
+public class BankIdUiPaymentApiController(
+    IBankIdFlowService bankIdFlowService,
+    IBankIdUiOrderRefProtector orderRefProtector,
+    IBankIdQrStartStateProtector qrStartStateProtector,
+    IBankIdUiOptionsProtector uiOptionsProtector,
+    IBankIdUiOptionsCookieManager uiOptionsCookieManager,
+    IBankIdUserMessage bankIdUserMessage,
+    IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
+    IBankIdUiResultProtector uiAuthResultProtector,
+    IBankIdUiStateProtector bankIdUiStateProtector
+) : BankIdUiApiControllerBase(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, uiOptionsCookieManager, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
 {
-    private readonly IBankIdUiStateProtector _bankIdUiStateProtector;
-
-    public BankIdUiPaymentApiController(
-        IBankIdFlowService bankIdFlowService,
-        IBankIdUiOrderRefProtector orderRefProtector,
-        IBankIdQrStartStateProtector qrStartStateProtector,
-        IBankIdUiOptionsProtector uiOptionsProtector,
-        IBankIdUiOptionsCookieManager uiOptionsCookieManager,
-        IBankIdUserMessage bankIdUserMessage,
-        IBankIdUserMessageLocalizer bankIdUserMessageLocalizer,
-        IBankIdUiResultProtector uiAuthResultProtector,
-        IBankIdUiStateProtector bankIdUiStateProtector)
-        : base(bankIdFlowService, orderRefProtector, qrStartStateProtector, uiOptionsProtector, uiOptionsCookieManager, bankIdUserMessage, bankIdUserMessageLocalizer, uiAuthResultProtector)
-    {
-        _bankIdUiStateProtector = bankIdUiStateProtector;
-    }
+    private readonly IBankIdUiStateProtector _bankIdUiStateProtector = bankIdUiStateProtector;
 
     [ValidateAntiForgeryToken]
     [HttpPost(BankIdConstants.Routes.BankIdApiInitializeActionName)]
@@ -56,11 +51,6 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
         BankIdFlowInitializeResult bankIdFlowInitializeResult;
         try
         {
-            var returnRedirectUrl = Url.Action(BankIdConstants.Routes.BankIdPaymentInitActionName, BankIdConstants.Routes.BankIdPaymentControllerName, new
-            {
-                returnUrl = request.ReturnUrl
-            }, protocol: Request.Scheme) ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdPaymentControllerName, BankIdConstants.Routes.BankIdPaymentInitActionName));
-
             bankIdFlowInitializeResult = await BankIdFlowService.InitializePayment(
                 uiOptions.ToBankIdFlowOptions(),
                 new BankIdPaymentData(state.BankIdPaymentProperties.TransactionType, state.BankIdPaymentProperties.RecipientName)
@@ -78,7 +68,7 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
                     CertificatePolicies = state.BankIdPaymentProperties.BankIdCertificatePolicies,
                     CardReader = state.BankIdPaymentProperties.CardReader,
                 },
-                returnRedirectUrl);
+                request.ReturnUrl);
         }
         catch (BankIdApiException bankIdApiException)
         {
@@ -94,13 +84,9 @@ public class BankIdUiPaymentApiController : BankIdUiApiControllerBase
                 var protectedQrStartState = QrStartStateProtector.Protect(otherDevice.QrStartState);
                 return OkJsonResult(BankIdUiApiInitializeResponse.ManualLaunch(protectedOrderRef, protectedQrStartState, otherDevice.QrCodeBase64Encoded));
             }
-            case BankIdFlowInitializeLaunchTypeSameDevice sameDevice when sameDevice.BankIdLaunchInfo.DeviceWillReloadPageOnReturnFromBankIdApp:
-            {
-                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunch(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
-            }
             case BankIdFlowInitializeLaunchTypeSameDevice sameDevice:
             {
-                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunchAndCheckStatus(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
+                return OkJsonResult(BankIdUiApiInitializeResponse.AutoLaunchAndReloadPage(protectedOrderRef, sameDevice.BankIdLaunchInfo.LaunchUrl, sameDevice.BankIdLaunchInfo.DeviceMightRequireUserInteractionToLaunchBankIdApp));
             }
             default:
             {
