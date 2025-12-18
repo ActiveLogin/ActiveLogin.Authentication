@@ -102,4 +102,34 @@ public class BankIdDefaultEndUserWebDeviceDataResolver_Tests
         Assert.Equal(createdIdentifier, data.DeviceIdentifier);
     }
 
+    [Fact]
+    public void GetDeviceData_Truncates_UserAgent_When_Exceeding_MaxLength()
+    {
+        // Arrange
+        const string UserAgent330Characters =
+            "User-Agent: Mozilla/5.0 (Linux; Android 12; 2206122SC Build/SKQ1.220303.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 " +
+            "Chrome/86.0.4240.99 XWEB/4343 MMWEBSDK/20221011 Mobile Safari/537.36 MMWEBID/5638 MicroMessenger/8.0.30.2260(0x28001E3B) WeChat/arm64 " +
+            "Weixin NetType/WIFI Language/en ABI/arm64 MiniProgramEnv/android";
+
+        const string UserAgent256Characters =
+            "User-Agent: Mozilla/5.0 (Linux; Android 12; 2206122SC Build/SKQ1.220303.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 " +
+            "Chrome/86.0.4240.99 XWEB/4343 MMWEBSDK/20221011 Mobile Safari/537.36 MMWEBID/5638 MicroMessenger/8.0.30.2260(0x28001E3B) WeC";
+
+        var (sut, createdIdentifier) = CreateSut(
+            userAgent: UserAgent330Characters,
+            referer: _defaultReferer,
+            deviceIdentifier: _defaultDeviceIdentifier);
+
+        // Act
+        var data = sut.GetDeviceData() as DeviceDataWeb;
+
+        // Assert
+        Assert.NotNull(data);
+        Assert.Equal("example.se", data.ReferringDomain);
+        Assert.Equal(createdIdentifier, data.DeviceIdentifier);
+
+        Assert.NotNull(data.UserAgent);
+        Assert.Equal(256, data.UserAgent.Length);
+        Assert.Equal(UserAgent256Characters,data.UserAgent);
+    }
 }

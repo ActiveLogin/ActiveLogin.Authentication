@@ -42,6 +42,8 @@ public sealed class BankIdDefaultEndUserWebDeviceDataResolver(
             return false;
         }
 
+        userAgent = TruncateUserAgent(userAgent);
+
         parameters = new DeviceDataWeb(
             referringDomain: referringDomain,
             userAgent: userAgent,
@@ -98,6 +100,13 @@ public sealed class BankIdDefaultEndUserWebDeviceDataResolver(
 
         headerValue = headerValues.FirstOrDefault() ?? string.Empty;
         return true;
+    }
+
+    private static string TruncateUserAgent(string userAgent)
+    {
+        return userAgent.Length > BankIdApiLimits.UserAgentMaxLength
+            ? userAgent[..BankIdApiLimits.UserAgentMaxLength]
+            : userAgent;
     }
 
 }
