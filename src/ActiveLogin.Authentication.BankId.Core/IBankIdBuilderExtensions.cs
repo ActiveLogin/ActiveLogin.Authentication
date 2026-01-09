@@ -106,8 +106,7 @@ public static class IBankIdBuilderExtensions
     /// <returns></returns>
     public static IBankIdBuilder UseRootCaCertificate(this IBankIdBuilder builder, string certificateFilePath)
     {
-        builder.UseRootCaCertificate(() => new X509Certificate2(certificateFilePath));
-
+        builder.UseRootCaCertificate(() => X509CertificateLoader.LoadCertificateFromFile(certificateFilePath));
         return builder;
     }
 

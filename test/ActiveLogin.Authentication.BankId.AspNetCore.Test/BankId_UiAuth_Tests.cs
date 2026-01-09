@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 using Moq;
 
@@ -70,19 +71,12 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             .Returns("Ignored");
     }
 
+
     [Fact]
     public async Task BankIdUiAuthController_Returns_404_If_BankId_Is_Not_Registered()
     {
-        // Arrange
-        var webHostBuilder = new WebHostBuilder()
-            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-            .Configure(app => DefaultAppConfiguration(x => Task.CompletedTask))
-            .ConfigureServices(services =>
-            {
-                services.AddAuthentication();
-                services.AddMvc();
-            });
-        using var client = new TestServer(webHostBuilder).CreateClient();
+        var host = TestHostFactory.CreateHostWithAuthentication();
+        using var client = host.GetTestServer().CreateClient();
 
         // Act
         var transaction = await client.GetAsync("/ActiveLogin/BankId/Auth");
@@ -95,15 +89,8 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task BankIdUiAuthApiController_Returns_404_If_BankId_Is_Not_Registered()
     {
         // Arrange
-        var webHostBuilder = new WebHostBuilder()
-            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-            .Configure(app => DefaultAppConfiguration(x => Task.CompletedTask))
-            .ConfigureServices(services =>
-            {
-                services.AddAuthentication();
-                services.AddMvc();
-            });
-        using var client = new TestServer(webHostBuilder).CreateClient();
+        var host = TestHostFactory.CreateHostWithAuthentication();
+        using var client = host.GetTestServer().CreateClient();
 
         // Act
         var transaction = await client.PostAsync("/ActiveLogin/BankId/Auth/Api/Initialize", null);
@@ -116,7 +103,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task Challenge_Redirects_To_Login()
     {
         // Arrange
-        using var client = CreateServer(o =>
+        using var client = TestHostFactory.CreateAuthTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -141,7 +128,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task Challenge_Redirects_To_Login_With_Path_Base()
     {
         // Arrange
-        using var client = CreateServer(o =>
+        using var client = TestHostFactory.CreateAuthTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -192,7 +179,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task Authentication_UI_Should_Be_Accessible_Even_When_Site_Requires_Auth()
     {
         // Arrange
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateAuthTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -233,7 +220,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(options);
 
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateAuthTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -267,7 +254,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task Init_Returns_Ui_With_Script()
     {
         // Arrange
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateAuthTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -307,7 +294,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task Init_Requires_State_And_UiOptions_Cookie_To_Be_Present()
     {
         // Arrange
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateAuthTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -348,7 +335,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateAuthTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -402,7 +389,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateAuthTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -454,7 +441,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateAuthTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -502,7 +489,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         var testBankIdApi = new TestBankIdAppApi(new BankIdSimulatedAppApiClient());
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateAuthTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -558,31 +545,6 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.OK, cancelTransaction.StatusCode);
         Assert.True(testBankIdApi.CancelAsyncIsCalled);
-    }
-
-    private TestServer CreateServer(
-        Action<IBankIdBuilder> configureBankId,
-        Action<IBankIdAuthBuilder> configureBankIdAuth,
-        Action<IApplicationBuilder> configureApplication,
-        Action<IServiceCollection> configureServices = null)
-    {
-        var webHostBuilder = new WebHostBuilder()
-            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-            .Configure(app =>
-            {
-                configureApplication.Invoke(app);
-            })
-            .ConfigureServices(services =>
-            {
-                services.AddBankId(configureBankId);
-                services.AddAuthentication()
-                    .AddCookie()
-                    .AddBankIdAuth(configureBankIdAuth);
-                services.AddMvc();
-                configureServices?.Invoke(services);
-            });
-
-        return new TestServer(webHostBuilder);
     }
 
     private static Action<IApplicationBuilder> DefaultAppConfiguration(Func<HttpContext, Task> testpath)

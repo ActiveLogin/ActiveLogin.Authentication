@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 
 using Azure.Core;
@@ -62,9 +63,21 @@ internal class AzureKeyVaultCertificateClient(SecretClient secretClient)
 
     private static X509Certificate2 GetX509Certificate2(byte[] certificate)
     {
-        var exportedCertCollection = new X509Certificate2Collection();
-        exportedCertCollection.Import(certificate, null, X509KeyStorageFlags.MachineKeySet);
+        var flags = GetPlatformKeyStorageFlags();
 
-        return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
+        var certs = X509CertificateLoader.LoadPkcs12Collection(certificate, password: null, flags);
+
+        return certs.First(c => c.HasPrivateKey);
+    }
+
+    private static X509KeyStorageFlags GetPlatformKeyStorageFlags()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable;
+        }
+
+        // Linux / Azure App Service / Containers
+        return X509KeyStorageFlags.EphemeralKeySet;
     }
 }

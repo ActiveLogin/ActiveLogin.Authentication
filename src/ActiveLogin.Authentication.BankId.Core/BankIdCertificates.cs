@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using ActiveLogin.Authentication.BankId.Core.Certificate;
 
@@ -35,12 +36,21 @@ internal static class BankIdCertificates
         var certStream = GetBankIdResourceStream(filename);
         using var memory = new MemoryStream((int)certStream.Length);
         certStream.CopyTo(memory);
-        if (password == null)
+
+        var certBytes = memory.ToArray();
+
+        if (password is null) return X509CertificateLoader.LoadCertificate(certBytes);
+
+        var flags = GetPlatformKeyStorageFlags();
+
+        var cert = X509CertificateLoader.LoadPkcs12(certBytes, password, flags);
+
+        if (!cert.HasPrivateKey)
         {
-            return new X509Certificate2(memory.ToArray());
+            throw new InvalidOperationException($"Certificate {filename} does not contain a private key.");
         }
 
-        return new X509Certificate2(memory.ToArray(), password);
+        return cert;
     }
 
     private static X509Certificate2 GetPemCertFromResourceStream(CertificateResource resource)
@@ -59,4 +69,16 @@ internal static class BankIdCertificates
         return assembly.GetManifestResourceStream(resourceName)
                ?? throw new InvalidOperationException($"Can´t find resource {resourceName}");
     }
+
+    private static X509KeyStorageFlags GetPlatformKeyStorageFlags()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable;
+        }
+
+        // Linux / Azure App Service / Containers
+        return X509KeyStorageFlags.EphemeralKeySet;
+    }
+
 }
