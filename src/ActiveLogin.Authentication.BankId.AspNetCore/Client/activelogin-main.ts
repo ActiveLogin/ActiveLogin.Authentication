@@ -139,7 +139,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
                     if (data.deviceMightRequireUserInteractionToLaunchBankIdApp) {
                         var startBankIdAppButtonOnClick = (event: Event) => {
-                            window.location.href = data.redirectUri;
+                            window.location.href = data.launchUrl;
                             hide(startBankIdAppButtonElement);
                             event.target.removeEventListener("click", startBankIdAppButtonOnClick);
                         };
@@ -147,7 +147,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
                         show(startBankIdAppButtonElement);
                     } else {
-                        window.location.href = data.redirectUri;
+                        window.location.href = data.launchUrl;
                     }
                 }
 

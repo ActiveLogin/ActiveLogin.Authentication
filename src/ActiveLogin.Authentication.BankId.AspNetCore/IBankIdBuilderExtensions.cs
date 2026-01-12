@@ -16,6 +16,7 @@ public static class IBankIdBuilderExtensions
     /// <param name="isApplicable"></param>
     /// <param name="returnUrl"></param>
     /// <returns></returns>
+    [Obsolete("Use AddCustomBrowserByUserAgent that returns a BankIdLauncherCustomBrowserConfig instead.")]
     public static IBankIdBuilder AddCustomBrowserByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, string returnUrl)
     {
         return AddCustomBrowserByUserAgent(builder, isApplicable, context => returnUrl);
@@ -29,6 +30,7 @@ public static class IBankIdBuilderExtensions
     /// <param name="isApplicable"></param>
     /// <param name="getReturnUrl"></param>
     /// <returns></returns>
+    [Obsolete("Use AddCustomBrowserByUserAgent that returns a BankIdLauncherCustomBrowserConfig instead.")]
     public static IBankIdBuilder AddCustomBrowserByUserAgent(this IBankIdBuilder builder, Func<string, bool> isApplicable, Func<BankIdLauncherCustomBrowserContext, string> getReturnUrl)
     {
         BankIdLauncherCustomBrowserConfig GetResult(BankIdLauncherCustomBrowserContext context) => new(getReturnUrl(context), BrowserReloadBehaviourOnReturnFromBankIdApp.Never);

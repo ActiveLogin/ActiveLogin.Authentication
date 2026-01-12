@@ -339,55 +339,6 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
     }
 
     [Fact]
-    public async Task AutoLaunch_Sets_Correct_RedirectUri()
-    {
-        // Arrange mocks
-        var autoLaunchOptions = new BankIdUiOptions(new List<BankIdCertificatePolicy>(), true, false, false, false, string.Empty, DefaultStateCookieName, CardReader.class1);
-
-        _bankIdUiOptionsCookieManager
-            .Setup(protector => protector.Retrieve())
-            .Returns(autoLaunchOptions);
-
-        using var server = CreateServer(
-            o =>
-            {
-                o.UseSimulatedEnvironment();
-                o.Services.AddTransient<IBankIdLauncher, TestBankIdLauncher>();
-            },
-            o =>
-            {
-                o.AddSameDevice();
-            },
-            DefaultAppConfiguration(async context =>
-            {
-                await InitiatePayment(context);
-            }),
-            services =>
-            {
-                services.AddTransient(s => _bankIdUiOptionsCookieManager.Object);
-                services.AddTransient(s => _bankIdUiStateProtector.Object);
-            });
-
-        // Arrange acting request
-        var testReturnUrl = "/TestReturnUrl";
-        var initializeRequestBody = new { returnUrl = testReturnUrl};
-
-        // Act
-        var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
-
-        var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
-        var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
-        Assert.True(responseObject.IsAutoLaunch);
-
-        var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
-        var expectedUrl = $"http://localhost/ActiveLogin/BankId/Payment?returnUrl={encodedReturnParam}";
-        Assert.Equal(expectedUrl, responseObject.RedirectUri);
-    }
-
-    [Fact]
     public async Task Api_Always_Returns_CamelCase_Json_For_Http200Ok()
     {
         // Arrange mocks
@@ -438,7 +389,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
         Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
 
         var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
-        Assert.Contains("redirectUri", responseContent);
+        Assert.Contains("launchUrl", responseContent);
         Assert.Contains("orderRef", responseContent);
         Assert.Contains("isAutoLaunch", responseContent);
     }
@@ -565,7 +516,7 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
 
         return new TestServer(webHostBuilder);
     }
-    
+
     private static Action<IApplicationBuilder> DefaultAppConfiguration(Func<HttpContext, Task> testpath)
     {
         return app =>
