@@ -77,7 +77,11 @@ internal class AzureKeyVaultCertificateClient(SecretClient secretClient)
             return X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable;
         }
 
-        // Linux / Azure App Service / Containers
-        return X509KeyStorageFlags.EphemeralKeySet;
+        if (OperatingSystem.IsWindows())
+        {
+            return X509KeyStorageFlags.EphemeralKeySet;
+        }
+
+        return X509KeyStorageFlags.DefaultKeySet;
     }
 }
