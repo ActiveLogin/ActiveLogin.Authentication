@@ -84,8 +84,8 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task BankIdUiSignController_Returns_404_If_BankId_Is_Not_Registered()
     {
         // Arrange
-        var webHostBuilder = TestHostFactory.CreateHost();
-        using var client = webHostBuilder.GetTestServer().CreateClient();
+        var server = TestHostFactory.CreateTestServer();
+        using var client = server.CreateClient();
 
         // Act
         var transaction = await client.GetAsync("/ActiveLogin/BankId/Sign");
@@ -98,8 +98,8 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task BankIdUiAuthApiController_Returns_404_If_BankId_Is_Not_Registered()
     {
         // Arrange
-        var webHostBuilder = TestHostFactory.CreateHost();
-        using var client = webHostBuilder.GetTestServer().CreateClient();
+        var server = TestHostFactory.CreateTestServer();
+        using var client = server.CreateClient();
 
         // Act
         var transaction = await client.PostAsync("/ActiveLogin/BankId/Sign/Api/Initialize", null);

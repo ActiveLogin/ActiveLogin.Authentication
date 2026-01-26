@@ -75,8 +75,8 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     [Fact]
     public async Task BankIdUiAuthController_Returns_404_If_BankId_Is_Not_Registered()
     {
-        var host = TestHostFactory.CreateHostWithAuthentication();
-        using var client = host.GetTestServer().CreateClient();
+        var server = TestHostFactory.CreateTestServer();
+        using var client = server.CreateClient();
 
         // Act
         var transaction = await client.GetAsync("/ActiveLogin/BankId/Auth");
@@ -89,8 +89,8 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
     public async Task BankIdUiAuthApiController_Returns_404_If_BankId_Is_Not_Registered()
     {
         // Arrange
-        var host = TestHostFactory.CreateHostWithAuthentication();
-        using var client = host.GetTestServer().CreateClient();
+        var server = TestHostFactory.CreateTestServer();
+        using var client = server.CreateClient();
 
         // Act
         var transaction = await client.PostAsync("/ActiveLogin/BankId/Auth/Api/Initialize", null);
@@ -357,7 +357,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
-        var initializeRequestBody = new {returnUrl = testReturnUrl};
+        var initializeRequestBody = new { returnUrl = testReturnUrl };
 
         // Act
         var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
@@ -367,7 +367,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
 
         var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeAnonymousType(responseContent,
-            new {RedirectUri = "", OrderRef = "", IsAutoLaunch = false});
+            new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
         Assert.True(responseObject.IsAutoLaunch);
 
         var encodedReturnParam = UrlEncoder.Default.Encode(testReturnUrl);
@@ -407,17 +407,13 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             {
                 services.AddTransient(s => mockProtector.Object);
                 services.AddTransient(s => _bankIdUiStateProtector.Object);
-                services.AddMvc().AddJsonOptions(configure =>
-                {
-                    configure.JsonSerializerOptions.PropertyNamingPolicy = null;
-                });
             });
 
 
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
         var testOptions = "TestOptions";
-        var initializeRequestBody = new {returnUrl = testReturnUrl, uiOptions = testOptions};
+        var initializeRequestBody = new { returnUrl = testReturnUrl, uiOptions = testOptions };
 
         //Act
         var initializeTransaction = await GetInitializeResponse(server, initializeRequestBody);
@@ -520,7 +516,7 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         // Arrange acting request
         var testReturnUrl = "/TestReturnUrl";
         var testOptions = "TestOptions";
-        var initializeRequest = new JsonContent(new {returnUrl = testReturnUrl, uiOptions = testOptions});
+        var initializeRequest = new JsonContent(new { returnUrl = testReturnUrl, uiOptions = testOptions });
         initializeRequest.Headers.Add("Cookie", loginCookies);
         initializeRequest.Headers.Add("RequestVerificationToken", csrfToken);
 
@@ -530,11 +526,13 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
             await client.PostAsync("/ActiveLogin/BankId/Auth/Api/Initialize", initializeRequest);
         var initializeResponseContent = await initializeTransaction.Content.ReadAsStringAsync();
         var initializeObject = JsonConvert.DeserializeAnonymousType(initializeResponseContent,
-            new {RedirectUri = "", OrderRef = "", IsAutoLaunch = false});
+            new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
 
         var cancelRequest = new JsonContent(new
         {
-            orderRef = initializeObject.OrderRef, uiOptions = "TestOptions", cancelReturnUrl = "/"
+            orderRef = initializeObject.OrderRef,
+            uiOptions = "TestOptions",
+            cancelReturnUrl = "/"
         });
         cancelRequest.Headers.Add("Cookie", loginCookies);
         cancelRequest.Headers.Add("RequestVerificationToken", csrfToken);

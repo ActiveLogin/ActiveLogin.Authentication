@@ -20,95 +20,89 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Test.Helpers;
 internal static class TestHostFactory
 {
 
-    public static IHost CreateHost()
-    {
-        return new HostBuilder()
-            .ConfigureWebHost(webHostBuilder =>
-            {
-                webHostBuilder
-                    .UseTestServer()
-                    .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-                    .Configure(app => DefaultAppConfiguration(_ => Task.CompletedTask))
-                    .ConfigureServices(services =>
-                    {
-                        services.AddMvc();
-                    });
-            })
-            .Build();
-    }
-
-    public static IHost CreateHostWithAuthentication()
-    {
-        return new HostBuilder()
-            .ConfigureWebHost(webHostBuilder =>
-            {
-                webHostBuilder
-                    .UseTestServer()
-                    .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-                    .Configure(app => DefaultAppConfiguration(_ => Task.CompletedTask))
-                    .ConfigureServices(services =>
-                    {
-                        services.AddAuthentication();
-                        services.AddMvc();
-                    });
-            })
-            .Build();
-    }
-
-    public static TestServer CreateSignTestServer(
-        Action<IBankIdBuilder> configureBankId,
-        Action<IBankIdSignBuilder> configureBankIdSign,
-        Action<IApplicationBuilder> configureApplication,
-        Action<IServiceCollection> configureServices = null)
-    {
-
-        var host = new HostBuilder()
-                .ConfigureWebHost(webHostBuilder =>
-                {
-                    webHostBuilder
-                        .UseTestServer()
-                        .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-                        .Configure(app => configureApplication.Invoke(app))
-                        .ConfigureServices(services =>
-                        {
-                            services.AddBankId(configureBankId);
-                            services.AddBankIdSign(configureBankIdSign);
-                            services.AddMvc();
-                            configureServices?.Invoke(services);
-                        });
-                })
-                .Build();
-
-        return host.GetTestServer();
-    }
-
     public static TestServer CreateAuthTestServer(
         Action<IBankIdBuilder> configureBankId,
         Action<IBankIdAuthBuilder> configureBankIdAuth,
         Action<IApplicationBuilder> configureApplication,
         Action<IServiceCollection> configureServices = null)
     {
+        var solutionRoot = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "../../../../.."));
 
-        var host = new HostBuilder()
-                .ConfigureWebHost(webHostBuilder =>
-                {
-                    webHostBuilder
-                        .UseTestServer()
-                        .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-                        .Configure(app => configureApplication.Invoke(app))
-                        .ConfigureServices(services =>
-                        {
-                            services.AddBankId(configureBankId);
-                            services.AddAuthentication()
-                                .AddCookie()
-                                .AddBankIdAuth(configureBankIdAuth);
-                            services.AddMvc();
-                            configureServices?.Invoke(services);
-                        });
-                })
-                .Build();
+        var contentRoot = Path.Combine(
+            solutionRoot,
+            "test",
+            "ActiveLogin.Authentication.BankId.AspNetCore.Test");
 
-        return host.GetTestServer();
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            ContentRootPath = contentRoot
+        });
+
+        builder.WebHost.UseTestServer();
+
+        builder.Services.AddBankId(configureBankId);
+
+        builder.Services
+            .AddAuthentication()
+            .AddCookie()
+            .AddBankIdAuth(configureBankIdAuth);
+
+        builder.Services
+            .AddControllersWithViews()
+            .AddApplicationPart(
+                typeof(ActiveLogin.Authentication.BankId.AspNetCore.BankIdConstants).Assembly)
+            .AddRazorRuntimeCompilation();
+
+        configureServices?.Invoke(builder.Services);
+
+        var app = builder.Build();
+
+        configureApplication(app);
+
+        app.Start();
+
+        return app.GetTestServer();
+    }
+
+    public static TestServer CreateSignTestServer(
+    Action<IBankIdBuilder> configureBankId,
+    Action<IBankIdSignBuilder> configureBankIdSign,
+    Action<IApplicationBuilder> configureApplication,
+    Action<IServiceCollection> configureServices = null)
+    {
+        var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+
+        var contentRoot = Path.Combine(
+            solutionRoot,
+            "test",
+            "ActiveLogin.Authentication.BankId.AspNetCore.Test");
+
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            ContentRootPath = contentRoot
+        });
+
+        builder.WebHost.UseTestServer();
+
+        builder.Services.AddBankId(configureBankId);
+        builder.Services.AddBankIdSign(configureBankIdSign);
+
+        builder.Services
+            .AddControllersWithViews()
+            .AddApplicationPart(
+                typeof(ActiveLogin.Authentication.BankId.AspNetCore.BankIdConstants).Assembly)
+            .AddRazorRuntimeCompilation();
+
+        configureServices?.Invoke(builder.Services);
+
+        var app = builder.Build();
+
+        configureApplication(app);
+
+        app.Start();
+
+        return app.GetTestServer();
     }
 
     public static TestServer CreatePaymentTestServer(
@@ -118,24 +112,68 @@ internal static class TestHostFactory
         Action<IServiceCollection> configureServices = null)
     {
 
-        var host = new HostBuilder()
-                .ConfigureWebHost(webHostBuilder =>
-                {
-                    webHostBuilder
-                        .UseTestServer()
-                        .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-                        .Configure(app => configureApplication.Invoke(app))
-                        .ConfigureServices(services =>
-                        {
-                            services.AddBankId(configureBankId);
-                            services.AddBankIdPayment(configureBankIdPayment);
-                            services.AddMvc();
-                            configureServices?.Invoke(services);
-                        });
-                })
-                .Build();
+        var solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
 
-        return host.GetTestServer();
+        var contentRoot = Path.Combine(
+            solutionRoot,
+            "test",
+            "ActiveLogin.Authentication.BankId.AspNetCore.Test");
+
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            ContentRootPath = contentRoot
+        });
+
+        builder.WebHost.UseTestServer();
+
+        builder.Services.AddBankId(configureBankId);
+        builder.Services.AddBankIdPayment(configureBankIdPayment);
+
+        builder.Services
+            .AddControllersWithViews()
+            .AddApplicationPart(
+                typeof(ActiveLogin.Authentication.BankId.AspNetCore.BankIdConstants).Assembly)
+            .AddRazorRuntimeCompilation();
+
+        configureServices?.Invoke(builder.Services);
+
+        var app = builder.Build();
+
+        configureApplication(app);
+
+        app.Start();
+
+        return app.GetTestServer();
+    }
+
+
+    public static TestServer CreateTestServer()
+    {
+        var solutionRoot = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+
+        var contentRoot = Path.Combine(
+            solutionRoot,
+            "test",
+            "ActiveLogin.Authentication.BankId.AspNetCore.Test");
+
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+        {
+            ContentRootPath = contentRoot
+        });
+
+        builder.WebHost.UseTestServer();
+
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();
+
+        var app = builder.Build();
+
+        DefaultAppConfiguration(_ => Task.CompletedTask)(app);
+
+        app.Start();
+
+        return app.GetTestServer();
     }
 
     private static Action<IApplicationBuilder> DefaultAppConfiguration(Func<HttpContext, Task> testpath)
@@ -150,17 +188,11 @@ internal static class TestHostFactory
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
             app.Use(async (context, next) =>
             {
                 await testpath(context);
                 await next();
             });
-            app.Run(context => context.Response.WriteAsync(""));
         };
     }
 }
