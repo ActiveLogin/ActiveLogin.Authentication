@@ -84,14 +84,8 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task BankIdUiSignController_Returns_404_If_BankId_Is_Not_Registered()
     {
         // Arrange
-        var webHostBuilder = new WebHostBuilder()
-            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-            .Configure(app => DefaultAppConfiguration(x => Task.CompletedTask))
-            .ConfigureServices(services =>
-            {
-                services.AddMvc();
-            });
-        using var client = new TestServer(webHostBuilder).CreateClient();
+        var server = TestHostFactory.CreateTestServer();
+        using var client = server.CreateClient();
 
         // Act
         var transaction = await client.GetAsync("/ActiveLogin/BankId/Sign");
@@ -104,14 +98,8 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task BankIdUiAuthApiController_Returns_404_If_BankId_Is_Not_Registered()
     {
         // Arrange
-        var webHostBuilder = new WebHostBuilder()
-            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-            .Configure(app => DefaultAppConfiguration(x => Task.CompletedTask))
-            .ConfigureServices(services =>
-            {
-                services.AddMvc();
-            });
-        using var client = new TestServer(webHostBuilder).CreateClient();
+        var server = TestHostFactory.CreateTestServer();
+        using var client = server.CreateClient();
 
         // Act
         var transaction = await client.PostAsync("/ActiveLogin/BankId/Sign/Api/Initialize", null);
@@ -124,7 +112,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task InitiateSign_Redirects_To_Sign()
     {
         // Arrange
-        using var client = CreateServer(o =>
+        using var client = TestHostFactory.CreateSignTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -150,7 +138,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task InitiateSignAsync_Redirects_To_Sign_Without_Path_Base()
     {
         // Arrange
-        using var client = CreateServer(o =>
+        using var client = TestHostFactory.CreateSignTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -194,7 +182,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task Sign_UI_Should_Be_Accessible_Even_When_Site_Requires_Auth()
     {
         // Arrange
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateSignTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -235,7 +223,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(options);
 
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateSignTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -268,7 +256,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task SignInit_Returns_Ui_With_Script()
     {
         // Arrange
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateSignTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -308,7 +296,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
     public async Task SignInit_Requires_State_Cookie_To_Be_Present()
     {
         // Arrange
-        using var server = CreateServer(o =>
+        using var server = TestHostFactory.CreateSignTestServer(o =>
             {
                 o.UseSimulatedEnvironment();
             },
@@ -345,7 +333,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Retrieve())
             .Returns(autoLaunchOptions);
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateSignTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -398,7 +386,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Protect(It.IsAny<BankIdUiOptions>()))
             .Returns("Ignored");
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateSignTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -456,7 +444,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             .Setup(protector => protector.Unprotect(It.IsAny<string>()))
             .Returns(autoLaunchOptions);
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateSignTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -502,7 +490,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             .Returns(autoLaunchOptions);
         var testBankIdApi = new TestBankIdAppApi(new BankIdSimulatedAppApiClient());
 
-        using var server = CreateServer(
+        using var server = TestHostFactory.CreateSignTestServer(
             o =>
             {
                 o.UseSimulatedEnvironment();
@@ -538,29 +526,6 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.OK, cancelTransaction.StatusCode);
         Assert.True(testBankIdApi.CancelAsyncIsCalled);
-    }
-
-    private TestServer CreateServer(
-        Action<IBankIdBuilder> configureBankId,
-        Action<IBankIdSignBuilder> configureBankIdSign,
-        Action<IApplicationBuilder> configureApplication,
-        Action<IServiceCollection> configureServices = null)
-    {
-        var webHostBuilder = new WebHostBuilder()
-            .UseSolutionRelativeContentRoot(Path.Combine("test", "ActiveLogin.Authentication.BankId.AspNetCore.Test"))
-            .Configure(app =>
-            {
-                configureApplication.Invoke(app);
-            })
-            .ConfigureServices(services =>
-            {
-                services.AddBankId(configureBankId);
-                services.AddBankIdSign(configureBankIdSign);
-                services.AddMvc();
-                configureServices?.Invoke(services);
-            });
-
-        return new TestServer(webHostBuilder);
     }
 
     private static Action<IApplicationBuilder> DefaultAppConfiguration(Func<HttpContext, Task> testpath)

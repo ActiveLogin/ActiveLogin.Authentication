@@ -17,35 +17,42 @@ internal static class BankIdCertificates
 
     public static X509Certificate2 GetBankIdApiRootCertificateProd() => GetCertFromResourceStream(BankIdApiRootCertificateProd);
     public static X509Certificate2 GetBankIdApiRootCertificateTest() => GetCertFromResourceStream(BankIdApiRootCertificateTest);
-    public static X509Certificate2 GetBankIdApiClientCertificateTest(TestCertificateFormat certificateFormat) => certificateFormat switch
+    public static X509Certificate2 GetBankIdApiClientCertificateTest(TestCertificateFormat certificateFormat, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) => certificateFormat switch
     {
-        TestCertificateFormat.P12 => GetCertFromResourceStream(BankIdApiClientCertificateTestP12),
+        TestCertificateFormat.P12 => GetCertFromResourceStream(BankIdApiClientCertificateTestP12, keyStorageFlags),
         TestCertificateFormat.PEM => GetPemCertFromResourceStream(BankIdApiClientCertificateTestPem),
-        TestCertificateFormat.PFX => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx),
-        _ => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx)
+        TestCertificateFormat.PFX => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx, keyStorageFlags),
+        _ => GetCertFromResourceStream(BankIdApiClientCertificateTestPfx, keyStorageFlags)
     };
 
-    private static X509Certificate2 GetCertFromResourceStream(CertificateResource resource)
+    private static X509Certificate2 GetCertFromResourceStream(CertificateResource resource, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
-        return GetCertFromResourceStream(resource.Filename, resource.Password);
+        return GetCertFromResourceStream(resource.Filename, resource.Password, keyStorageFlags);
     }
 
-    private static X509Certificate2 GetCertFromResourceStream(string filename, string? password = null)
+    private static X509Certificate2 GetCertFromResourceStream(string filename, string? password = null, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
-        var certStream = GetBankIdResourceStream(filename);
+        using var certStream = GetBankIdResourceStream(filename);
         using var memory = new MemoryStream((int)certStream.Length);
         certStream.CopyTo(memory);
-        if (password == null)
+
+        var certBytes = memory.ToArray();
+
+        if (password is null) return X509CertificateLoader.LoadCertificate(certBytes);
+
+        var cert = X509CertificateLoader.LoadPkcs12(certBytes, password, keyStorageFlags);
+
+        if (!cert.HasPrivateKey)
         {
-            return new X509Certificate2(memory.ToArray());
+            throw new InvalidOperationException($"Certificate {filename} does not contain a private key.");
         }
 
-        return new X509Certificate2(memory.ToArray(), password);
+        return cert;
     }
 
     private static X509Certificate2 GetPemCertFromResourceStream(CertificateResource resource)
     {
-        var certStream = GetBankIdResourceStream(resource.Filename);
+        using var certStream = GetBankIdResourceStream(resource.Filename);
         using var streamReader = new StreamReader(certStream);
         var certAndKeyString = streamReader.ReadToEnd();
 

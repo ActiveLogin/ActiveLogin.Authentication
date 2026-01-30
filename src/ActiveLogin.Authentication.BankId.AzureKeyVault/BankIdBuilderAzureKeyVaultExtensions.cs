@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 using ActiveLogin.Authentication.BankId.Core;
 
 using Microsoft.Extensions.Configuration;
@@ -8,36 +10,48 @@ public static class BankIdBuilderAzureKeyVaultExtensions
     /// <summary>
     /// Use client certificate for authenticating against the BankID API from Azure Key Vault.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="builder">The BankID builder.</param>
     /// <param name="configurationSection">Configuration section to bind the Key Vault options from.</param>
+    /// <param name="keyStorageFlags">
+    /// Specifies how the private key of the certificate is stored and managed when loaded.
+    /// Defaults to <see cref="X509KeyStorageFlags.DefaultKeySet"/>.
+    /// </param>
     /// <returns></returns>
-    public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, IConfigurationSection configurationSection)
+    public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, IConfigurationSection configurationSection, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
         var options = new ClientCertificateFromAzureKeyVaultOptions();
         configurationSection.Bind(options);
-        return UseClientCertificateFromAzureKeyVault(builder, options);
+        return UseClientCertificateFromAzureKeyVault(builder, options, keyStorageFlags);
     }
 
     /// <summary>
     /// Use client certificate for authenticating against the BankID API from Azure KeyVault.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="builder">The BankID builder.</param>
     /// <param name="configureOptions">Callback to configure the Key Vault options.</param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
+    /// <param name="keyStorageFlags">
+    /// Specifies how the private key of the certificate is stored and managed when loaded.
+    /// Defaults to <see cref="X509KeyStorageFlags.DefaultKeySet"/>.
+    /// </param>
+    /// <returns>The updated <see cref="IBankIdBuilder"/>.</returns>
+    public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
         var options = new ClientCertificateFromAzureKeyVaultOptions();
         configureOptions(options);
-        return UseClientCertificateFromAzureKeyVault(builder, options);
+        return UseClientCertificateFromAzureKeyVault(builder, options, keyStorageFlags);
     }
 
     /// <summary>
     /// Use client certificate for authenticating against the BankID API from Azure Key Vault.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="builder">The BankID builder.</param>
     /// <param name="options">The Key Vault options.</param>
-    /// <returns></returns>
-    public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, ClientCertificateFromAzureKeyVaultOptions options)
+    /// <param name="keyStorageFlags">
+    /// Specifies how the private key of the certificate is stored and managed when loaded.
+    /// Defaults to <see cref="X509KeyStorageFlags.DefaultKeySet"/>.
+    /// </param>
+    /// <returns>The updated <see cref="IBankIdBuilder"/>.</returns>
+    public static IBankIdBuilder UseClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, ClientCertificateFromAzureKeyVaultOptions options, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
         if (string.IsNullOrWhiteSpace(options.AzureKeyVaultSecretName))
         {
@@ -48,7 +62,7 @@ public static class BankIdBuilderAzureKeyVaultExtensions
         {
             var keyVaultCertificateClient = AzureKeyVaultCertificateClient.Create(options);
 
-            return keyVaultCertificateClient.GetX509Certificate2(options.AzureKeyVaultSecretName);
+            return keyVaultCertificateClient.GetX509Certificate2(options.AzureKeyVaultSecretName, keyStorageFlags);
         });
 
         return builder;
@@ -58,36 +72,48 @@ public static class BankIdBuilderAzureKeyVaultExtensions
     /// <summary>
     /// Add client certificate for authenticating against the BankID API from Azure Key Vault.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="builder">The BankID builder.</param>
     /// <param name="configurationSection">Configuration section to bind the Key Vault options from.</param>
-    /// <returns></returns>
-    public static IBankIdBuilder AddClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, IConfigurationSection configurationSection)
+    /// <param name="keyStorageFlags">
+    /// Specifies how the private key of the certificate is stored and managed when loaded.
+    /// Defaults to <see cref="X509KeyStorageFlags.DefaultKeySet"/>.
+    /// </param>
+    /// <returns>The updated <see cref="IBankIdBuilder"/>.</returns>
+    public static IBankIdBuilder AddClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, IConfigurationSection configurationSection, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
         var options = new ClientCertificateFromAzureKeyVaultOptions();
         configurationSection.Bind(options);
-        return AddClientCertificateFromAzureKeyVault(builder, options);
+        return AddClientCertificateFromAzureKeyVault(builder, options, keyStorageFlags);
     }
 
     /// <summary>
     /// Add client certificate for authenticating against the BankID API from Azure KeyVault.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="builder">The BankID builder.</param>
     /// <param name="configureOptions">Callback to configure the Key Vault options.</param>
-    /// <returns></returns>
-    public static IBankIdBuilder AddClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions)
+    /// <param name="keyStorageFlags">
+    /// Specifies how the private key of the certificate is stored and managed when loaded.
+    /// Defaults to <see cref="X509KeyStorageFlags.DefaultKeySet"/>.
+    /// </param>
+    /// <returns>The updated <see cref="IBankIdBuilder"/>.</returns>
+    public static IBankIdBuilder AddClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, Action<ClientCertificateFromAzureKeyVaultOptions> configureOptions, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
         var options = new ClientCertificateFromAzureKeyVaultOptions();
         configureOptions(options);
-        return AddClientCertificateFromAzureKeyVault(builder, options);
+        return AddClientCertificateFromAzureKeyVault(builder, options, keyStorageFlags);
     }
 
     /// <summary>
     /// Add client certificate for authenticating against the BankID API from Azure Key Vault.
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="options">The Key Vault options.</param>
-    /// <returns></returns>
-    public static IBankIdBuilder AddClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, ClientCertificateFromAzureKeyVaultOptions options)
+    /// <param name="builder">The BankID builder.</param>
+    /// <param name="options">The Azure Key Vault configuration options.</param>
+    /// <param name="keyStorageFlags">
+    /// Specifies how the private key of the certificate is stored and managed when loaded.
+    /// Defaults to <see cref="X509KeyStorageFlags.DefaultKeySet"/>.
+    /// </param>
+    /// <returns>The updated <see cref="IBankIdBuilder"/>.</returns>
+    public static IBankIdBuilder AddClientCertificateFromAzureKeyVault(this IBankIdBuilder builder, ClientCertificateFromAzureKeyVaultOptions options, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
     {
         if (string.IsNullOrWhiteSpace(options.AzureKeyVaultSecretName))
         {
@@ -98,7 +124,7 @@ public static class BankIdBuilderAzureKeyVaultExtensions
         {
             var keyVaultCertificateClient = AzureKeyVaultCertificateClient.Create(options);
 
-            return keyVaultCertificateClient.GetX509Certificate2(options.AzureKeyVaultSecretName);
+            return keyVaultCertificateClient.GetX509Certificate2(options.AzureKeyVaultSecretName, keyStorageFlags);
         });
 
         return builder;

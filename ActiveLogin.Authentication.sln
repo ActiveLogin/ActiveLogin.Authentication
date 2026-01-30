@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32112.339
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11415.281 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9A0CF459-87CC-448D-B49D-EFC3D6482AA6}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,8 +35,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}"
-EndProject
-Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "AzureProvisioningSample", "samples\AzureProvisioningSample\AzureProvisioningSample.deployproj", "{ABC52082-8A5D-426E-B25A-D92934A51A4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActiveLogin.Authentication.BankId.AzureKeyVault", "src\ActiveLogin.Authentication.BankId.AzureKeyVault\ActiveLogin.Authentication.BankId.AzureKeyVault.csproj", "{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}"
 EndProject
@@ -113,6 +111,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".devcontainer", ".devcontai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phone.ConsoleSample", "samples\Phone.ConsoleSample\Phone.ConsoleSample.csproj", "{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureProvisioningSample", "AzureProvisioningSample", "{D365882F-BCB2-43BF-96B3-D5AC2B4D1810}"
+	ProjectSection(SolutionItems) = preProject
+		samples\AzureProvisioningSample\ActiveLogin-Monitor.json = samples\AzureProvisioningSample\ActiveLogin-Monitor.json
+		samples\AzureProvisioningSample\ActiveLogin.json = samples\AzureProvisioningSample\ActiveLogin.json
+		samples\AzureProvisioningSample\ActiveLogin.parameters.json = samples\AzureProvisioningSample\ActiveLogin.parameters.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,10 +136,6 @@ Global
 		{951B23A8-E123-4223-BF52-D28BD2665748}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{951B23A8-E123-4223-BF52-D28BD2665748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{951B23A8-E123-4223-BF52-D28BD2665748}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABC52082-8A5D-426E-B25A-D92934A51A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABC52082-8A5D-426E-B25A-D92934A51A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABC52082-8A5D-426E-B25A-D92934A51A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABC52082-8A5D-426E-B25A-D92934A51A4D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -195,7 +196,6 @@ Global
 		{A15234E7-CBF9-49CD-8D13-4CB02B045881} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{478B6428-4076-4446-8358-3B0C6FCC29D5} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
 		{951B23A8-E123-4223-BF52-D28BD2665748} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
-		{ABC52082-8A5D-426E-B25A-D92934A51A4D} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 		{D113E0AC-BDF2-4EAB-A2A3-F4B31E7871C6} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{7D32EBEE-65D6-46D3-BC7E-65951C143969} = {4764448D-A014-403F-A956-3F4CFFA00AF2}
 		{2FD5CA1D-04BB-4704-B8D8-B0A566E247A9} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
@@ -214,6 +214,7 @@ Global
 		{61360399-F211-4B18-88EE-2A6F4D2C1FE6} = {9A0CF459-87CC-448D-B49D-EFC3D6482AA6}
 		{D3673E53-A774-46F0-9E44-97DF8F52D6D8} = {12A0FDF2-523E-42C7-81FE-4FDCA5E66A69}
 		{A77ECBA8-5F9F-4C60-A4D0-08CAC023E4BE} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
+		{D365882F-BCB2-43BF-96B3-D5AC2B4D1810} = {8E4C5EA1-1B2E-4B78-9F44-6BC85E42A752}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076F58C-968B-489D-94CA-B3729F5DE10D}

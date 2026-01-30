@@ -4,6 +4,8 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
+using ActiveLogin.Authentication.BankId.Core.Certificate;
+
 namespace ActiveLogin.Authentication.BankId.AzureKeyVault;
 
 internal class AzureKeyVaultCertificateClient(SecretClient secretClient)
@@ -47,9 +49,9 @@ internal class AzureKeyVaultCertificateClient(SecretClient secretClient)
 
     private const string CertificateContentType = "application/x-pkcs12";
 
-    public X509Certificate2 GetX509Certificate2(string keyVaultSecretKey)
+    public X509Certificate2 GetX509Certificate2(string keyVaultSecretName, X509KeyStorageFlags keyStorageFlags)
     {
-        var secret = secretClient.GetSecret(keyVaultSecretKey).Value;
+        var secret = secretClient.GetSecret(keyVaultSecretName).Value;
         if (secret.Properties.ContentType != CertificateContentType)
         {
             throw new ArgumentException($"This certificate must be of type {CertificateContentType}");
@@ -57,14 +59,18 @@ internal class AzureKeyVaultCertificateClient(SecretClient secretClient)
 
         var certificateBytes = Convert.FromBase64String(secret.Value);
 
-        return GetX509Certificate2(certificateBytes);
+        return GetX509Certificate2(certificateBytes, keyStorageFlags);
     }
 
-    private static X509Certificate2 GetX509Certificate2(byte[] certificate)
+    private static X509Certificate2 GetX509Certificate2(byte[] certificate, X509KeyStorageFlags keyStorageFlags)
     {
-        var exportedCertCollection = new X509Certificate2Collection();
-        exportedCertCollection.Import(certificate, null, X509KeyStorageFlags.MachineKeySet);
+        var certs = X509CertificateLoader.LoadPkcs12Collection(certificate, password: null, keyStorageFlags);
+        var cert = certs.FirstOrDefault(c => c.HasPrivateKey);
+        if (cert is null)
+        {
+            throw new InvalidOperationException("The Azure Key Vault secret does not contain a certificate with a private key.");
+        }
 
-        return exportedCertCollection.Cast<X509Certificate2>().First(x => x.HasPrivateKey);
+        return cert;
     }
 }
