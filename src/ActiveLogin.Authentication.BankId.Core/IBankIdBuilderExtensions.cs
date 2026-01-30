@@ -206,12 +206,19 @@ public static class IBankIdBuilderExtensions
     /// <param name="useBankIdRootCertificate">Use the BankID root certificate (for test) from the BankID documentation.</param>
     /// <param name="useBankIdClientCertificate">Use the BankID client certificate (for test) from the BankID documentation.</param>
     /// <param name="clientCertificateFormat">If using the BankID client certificate (for test). Select the preferred format p12, pem or pfx.</param>
+    /// <param name="keyStorageFlags">
+    /// Specifies how the private key for the BankID client certificate is loaded and stored.
+    /// Defaults to <see cref="X509KeyStorageFlags.DefaultKeySet"/>.
+    /// This parameter is only applicable to client certificates that contain a private key
+    /// (P12/PFX). It is ignored for root certificates and PEM-based certificates.
+    /// </param>
     /// <returns></returns>
     public static IBankIdBuilder UseTestEnvironment(
         this IBankIdBuilder builder,
         bool useBankIdRootCertificate = true,
         bool useBankIdClientCertificate = true,
-        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX
+        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX,
+        X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet
     )
     {
         builder.UseEnvironment(BankIdUrls.AppApiTestBaseUrl, BankIdUrls.VerifyApiTestBaseUrl, BankIdEnvironments.Test);
@@ -225,7 +232,7 @@ public static class IBankIdBuilderExtensions
 
         if (useBankIdClientCertificate)
         {
-            var cert = BankIdCertificates.GetBankIdApiClientCertificateTest(clientCertificateFormat);
+            var cert = BankIdCertificates.GetBankIdApiClientCertificateTest(clientCertificateFormat, keyStorageFlags);
             builder.UseClientCertificate(() => cert);
         }
 
