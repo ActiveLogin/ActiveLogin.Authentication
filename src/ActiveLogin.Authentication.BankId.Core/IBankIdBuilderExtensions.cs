@@ -217,7 +217,7 @@ public static class IBankIdBuilderExtensions
         this IBankIdBuilder builder,
         bool useBankIdRootCertificate = true,
         bool useBankIdClientCertificate = true,
-        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.PFX,
+        TestCertificateFormat clientCertificateFormat = TestCertificateFormat.P12,
         X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet
     )
     {
