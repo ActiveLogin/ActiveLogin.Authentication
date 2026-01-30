@@ -7,6 +7,7 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ## TOC
 
+* [Version 12.0.0](#version-1200)
 * [Version 11.0.0](#version-1100)
 * [Version 10.0.0](#version-1000)
 * [Version 9.0.0](#version-900)
@@ -17,8 +18,31 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 * [Version 5.0.0](#version-500)
 * [Version 4.0.0](#version-400)
 
----
+------
 
+## Version 12.0.0
+
+Breaking changes between version 11.0.0 and 12.0.0
+
+### Upgrade to .NET 10
+
+Active Login now requires **.NET 10**.
+
+If you are upgrading from an earlier version, you must update any application or website using Active Login to target .NET 10.
+
+### Embedded BankID certificates
+
+When loading embedded BankID certificates (client test certificate and root certificates for both test and production), we now use `X509KeyStorageFlags.DefaultKeySet` by default.
+
+If this change causes issues in your environment, you can override the `X509KeyStorageFlags` used for the client test certificate. See [the documention](https://docs.activelogin.net/articles/bankid.html#test-environment) for information about how it is done.
+
+### Loading client BankID certificate from Azure Key Vault
+
+When loading the client BankID certificate from Azure Key Vault, we now use `X509KeyStorageFlags.DefaultKeySet` by default.
+
+If this causes issues in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. See [the documention](https://docs.activelogin.net/articles/bankid.html#using-client-certificate-from-azure-keyvault) for information about how it is done.
+
+---
 
 ## Version 11.0.0
 
@@ -110,7 +134,7 @@ We have renamed these things as a result of that:
 * `AddCustomAppCallback` becomes `AddCustomBrowser`
 * `AddCustomAppCallbackByUserAgent` becomes `AddCustomBrowserByUserAgent`
 
-### Upgrade to .NET 7
+### Upgrade to .NET 8
 
 We now require .NET 8 - so this requires you to upgrade your website that uses Active Login.
 

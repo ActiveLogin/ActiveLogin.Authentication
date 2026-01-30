@@ -216,8 +216,6 @@ This will use the real REST API for BankID, connecting to the Test environment.
 
 It will automatically register both the root and client certificate, even though this behaviour can be disabled. A scenario might be that you want to use the same flow for both test and prod and therefore make sure that fetching the certificate from KeyVault works by trying that out for test. It could also be useful if you are running an older version of Active Login which contains an expired version of the test certificate. You can then disable using the embedded, expired certificate and provide the valid test certificate yourself.
 
-BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx ` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.pfx `is used.
-
 ```csharp
 services
     .AddBankId(bankId =>
@@ -226,7 +224,7 @@ services
     });
 ```
 
-Disable adding the certificates:
+#### Disable adding the certificates
 
 ```csharp
 services
@@ -236,7 +234,9 @@ services
     });
 ```
 
-Specify client certificate format:
+#### Specify client certificate format
+
+BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx ` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.pfx `is used.
 
 ```csharp
 services
@@ -245,6 +245,23 @@ services
         bankId.UseTestEnvironment(clientCertificateFormat: TestCertificateFormat.P12);
     });
 ```
+
+#### Override default X509KeyStorageFlags
+
+By default, `X509KeyStorageFlags.DefaultKeySet` is used when loading the embedded client certificate for the test environment.
+
+If this default does not work in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. This allows you to configure certificate handling in a way that is compatible with your specific hosting or security requirements.
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseTestEnvironment(
+            keyStorageFlags: X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable
+        );
+    });
+```
+
 
 ### Production environment
 
@@ -513,6 +530,19 @@ services.AddBankId(bankId =>
     });
 ```
 
+By default, `X509KeyStorageFlags.DefaultKeySet` is used when loding the client Certificate from Azure Key Vault.
+
+If this does not work in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. This allows you to configure certificate handling in a way that is compatible with your specific hosting or security requirements.
+
+```csharp
+services.AddBankId(bankId =>
+    {
+        bankId
+            .UseProductionEnvironment()
+            .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"), X509KeyStorageFlags.EphemeralKeySet)
+            ...
+    });
+```
 
 ### Using client certificate from custom source
 
