@@ -530,6 +530,19 @@ services.AddBankId(bankId =>
     });
 ```
 
+By default, `X509KeyStorageFlags.DefaultKeySet` is used when loding the client Certificate from Azure Key Vault.
+
+If this does not work in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. This allows you to configure certificate handling in a way that is compatible with your specific hosting or security requirements.
+
+```csharp
+services.AddBankId(bankId =>
+    {
+        bankId
+            .UseProductionEnvironment()
+            .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"), X509KeyStorageFlags.EphemeralKeySet)
+            ...
+    });
+```
 
 ### Using client certificate from custom source
 
