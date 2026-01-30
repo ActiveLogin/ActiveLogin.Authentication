@@ -34,13 +34,13 @@ If you are upgrading from an earlier version, you must update any application or
 
 When loading embedded BankID certificates (client test certificate and root certificates for both test and production), we now use `X509KeyStorageFlags.DefaultKeySet` by default.
 
-If this change causes issues in your environment, you can override the `X509KeyStorageFlags` used for the client test certificate.
+If this change causes issues in your environment, you can override the `X509KeyStorageFlags` used for the client test certificate. See [the documention](https://docs.activelogin.net/articles/bankid.html#test-environment) for information about how it is done.
 
 ### Loading client BankID certificate from Azure Key Vault
 
 When loading the client BankID certificate from Azure Key Vault, we now use `X509KeyStorageFlags.DefaultKeySet` by default.
 
-If this causes issues in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate.
+If this causes issues in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. See [the documention](https://docs.activelogin.net/articles/bankid.html#using-client-certificate-from-azure-keyvault) for information about how it is done.
 
 ---
 
