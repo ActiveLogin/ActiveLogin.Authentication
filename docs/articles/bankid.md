@@ -106,7 +106,7 @@ Our Samples might give you an inspiration on how to do all these.
 
 ### 4. Get started in development
 
-BankID requires you to sign an agreement and receive a certificate used to identity you as a company. To get started and try it out the experience there is a simulated environment options available that uses an in-memory implementation. Great for development and testing.
+BankID requires you to sign an agreement and receive a certificate used to identify you as a company. To get started and try it out the experience there is a simulated environment options available that uses an in-memory implementation. Great for development and testing.
 
 ```csharp
 services
@@ -129,7 +129,7 @@ services
 
 ### 5. Use test or production environments
 
-To authenticate using a real BankID you need to receive the certificate. See details under Preperation above.
+To authenticate using a real BankID you need to receive the certificate. See details under Preparation above.
 
 Samples on how to use them in production are:
 
@@ -168,7 +168,7 @@ ___Note:___ `.UseUaParserDeviceDetection()` requires the [ActiveLogin.Authentica
 
 ### 6. Monitoring
 
-Active Login provides a structured way of generating and logging events. These coould be monitored to get statistics and health status of your BankID login method.
+Active Login provides a structured way of generating and logging events. These could be monitored to get statistics and health status of your BankID login method.
 
 Read more on the topic in [Active Login Monitor](monitor.md).
 
@@ -236,7 +236,7 @@ services
 
 #### Specify client certificate format
 
-BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.p12 `is used.
+BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.p12` is used.
 
 ```csharp
 services
@@ -315,7 +315,7 @@ services
 
 Sign works very similar to auth, but can't utilize the "built in" support for schemes etc. So there are some differences.
 
-At first, you need to register both the common BankID logic (environment, cert etc) as well as the sign specific configration (devices).
+At first, you need to register both the common BankID logic (environment, cert etc) as well as the sign specific configuration (devices).
 
 ```csharp
 // Add Active Login - BankID
@@ -339,7 +339,7 @@ services
 
 Once that is done you will be able to use these services in your application, for example in your controller:
 
-* `IBankIdSignConfigurationProvider` : List the registered configuraitons (SameDevice / Other Device)
+* `IBankIdSignConfigurationProvider` : List the registered configurations (SameDevice / Other Device)
 * `IBankIdSignService` : Initiate and resolve the result of sign flow
 
 Here is a minimal sample. See `Standalone.MvcSample` for more details.
@@ -372,8 +372,8 @@ public class SignController : Controller
     {
         var props = new BankIdSignProperties("The info displayed for the user") // The user visible data
         {
-            UserNonVisibleData = new byte[1024], // Whataver data you want to sign
-            UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1, // The format of the user visible data, use empty or the markwodn constant
+            UserNonVisibleData = new byte[1024], // Whatever data you want to sign
+            UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1, // The format of the user visible data, use empty or the markdown constant
             Items =
             {
                 {"returnUrl", "~/"},
@@ -433,7 +433,7 @@ services.AddBankIdPayment(bankId =>
 
 Once that is done you will be able to use these services in your application, for example in your controller:
 
-* `IBankIdPaymentConfigurationProvider` : List the registered configuraitons (Same Device / Other Device)
+* `IBankIdPaymentConfigurationProvider` : List the registered configurations (Same Device / Other Device)
 * `IBankIdPaymentService` : Initiate and resolve the result of payment flow
 
 Here is a minimal sample. See `Standalone.MvcSample` for more details.
@@ -530,7 +530,7 @@ services.AddBankId(bankId =>
     });
 ```
 
-By default, `X509KeyStorageFlags.DefaultKeySet` is used when loding the client Certificate from Azure Key Vault.
+By default, `X509KeyStorageFlags.DefaultKeySet` is used when loading the client certificate from Azure Key Vault.
 
 If this does not work in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. This allows you to configure certificate handling in a way that is compatible with your specific hosting or security requirements.
 
@@ -571,7 +571,7 @@ services.AddBankId(bankId =>
 ### Adding schemas
 
 * *Same device*: Launches the BankID app on the same device, no need to enter any personal identity number.
-* *Other device*: The user manually launches the app the smartphone and scans the QR code.
+* *Other device*: The user manually launches the app on the smartphone and scans the QR code.
 
 ```csharp
 services
@@ -602,7 +602,7 @@ services
 
 ### Customizing BankID options
 
-BankId options allows you to set and override some options such as the below requirements on how the authentication or signature order must be performed.
+BankId options allow you to set and override some options such as the below requirements on how the authentication or signature order must be performed.
 
 ```csharp
 .AddOtherDevice(options =>
@@ -633,7 +633,7 @@ If you want to apply some options for all BankID schemes, you can do so by using
 });
 ```
 
-Requirements can also be set dynamically for each authentication, see section [Resolve requirements on Auth request](#resolve-requirements-on-auth-request). To use dynamic requirements with signatures provide the requirements as part the `BankIdSignProperties`, see section [Sign](#sign).
+Requirements can also be set dynamically for each authentication, see section [Resolve requirements on Auth request](#resolve-requirements-on-auth-request). To use dynamic requirements with signatures provide the requirements as part of the `BankIdSignProperties`, see section [Sign](#sign).
 To use dynamic requirements with payments provide the requirements as part the `BankIdPaymentProperties`, see section [Payment](#payment).
 
 ---
@@ -648,8 +648,8 @@ These are only necessary if you plan to store your certificates in Azure KeyVaul
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FActiveLogin%2FActiveLogin.Authentication%2Fmain%2Fsamples%2FAzureProvisioningSample%2FActiveLogin.json)
 
 1. Deploy Azure KeyVault to your subscription. The ARM-template available in [AzureProvisioningSample](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample)  contains configuration that creates a KeyVault and enables [Managed Service Identity](https://azure.microsoft.com/en-us/resources/samples/app-service-msi-keyvault-dotnet/) for the App Service.
-1. [Import the certificates](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate) to your Azure Key Vault.
-1. Add the following to your config, the secret identifier and auth settings.
+2. [Import the certificates](https://docs.microsoft.com/en-us/azure/key-vault/certificate-scenarios#import-a-certificate) to your Azure Key Vault.
+3. Add the following to your config, the secret identifier and auth settings.
 
 ```json
 {
@@ -759,7 +759,7 @@ public class BankIdTxnClaimsTransformer : IBankIdClaimsTransformer
 }
 ```
 
-__Note:__ If the _txn_ claim is issued, you are responsible for making sure to keep relevant audit informaiton given that session. See the OpenId Connect spec linked above for more information.
+__Note:__ If the _txn_ claim is issued, you are responsible for making sure to keep relevant audit information given that session. See the OpenId Connect spec linked above for more information.
 
 
 #### Example: Add birthdate and gender claims
@@ -844,9 +844,9 @@ return Challenge(props, provider);
 
 ### Handle missing or invalid state cookie
 
-If the user navigates directly to the BankdID status page (*/ActiveLogin/BankId/Auth*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#return-url-for-cancellation).
+If the user navigates directly to the BankID status page (*/ActiveLogin/BankId/Auth*) the state cookie (*__ActiveLogin.BankIdState*) will be missing. If that happens, the flow will fail. By default, the user will be redirected back to the `cancelReturnUrl`, see [Setting the return URL for cancellation](#return-url-for-cancellation).
 
-This behaviour can be overriden by implementing `IBankIdInvalidStateHandler` and adding that to the IOC-container.
+This behaviour can be overridden by implementing `IBankIdInvalidStateHandler` and adding that to the IOC-container.
 
 A simple sample of such handler is:
 
@@ -866,7 +866,7 @@ public class SampleInvalidStateHandler : IBankIdInvalidStateHandler
 ### Multi tenant scenario
 
 With the current architecture of Active Login all services are registered "globally" and you can't call `.AddBankId()` more than once.
-To run Active Login in a multi tenant scenario, where different customers should use different certificates, you could register multiple certificates and on runtime select the correct one per request. To register multiple certificates you need to use the `.AddClientCertificate...()` instead of `.UseClientCertificate...()` as the `.Use...()` version will overwrite any existing certificates registered with the http client handler.
+To run Active Login in a multi tenant scenario, where different customers should use different certificates, you could register multiple certificates and at runtime select the correct one per request. To register multiple certificates you need to use the `.AddClientCertificate...()` instead of `.UseClientCertificate...()` as the `.Use...()` version will overwrite any existing certificates registered with the http client handler.
 
 With our current solution, this requires you to disable pooling of the `SocketsHttpHandler` so we've decided not to ship that code in the NuGet-package, but below you'll find a sample on how it could be configured. We hope to redesign this in the future.
 
@@ -917,7 +917,7 @@ public class Startup
 
 Active Login comes with predefined views that you can use, but maybe you'd rather use your own views to customize layout or behavior.
 
-The UI is bundled into the package as a Razor Class Library, a technique that allows to [override the parts you want to customize](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-2.1&tabs=visual-studio#override-views-partial-views-and-pages). The Views and Controllers that can be customized can be found in the [GitHub repo](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore/Areas/ActiveLogin).
+The UI is bundled into the package as a Razor Class Library, a technique that allows you to [override the parts you want to customize](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-2.1&tabs=visual-studio#override-views-partial-views-and-pages). The Views and Controllers that can be customized can be found in the [GitHub repo](https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore/Areas/ActiveLogin).
 
 To override the default UI your web project, create the following folder:
 `Areas/ActiveLogin/Views/Shared`
@@ -947,7 +947,7 @@ When developing and testing your application, it can be useful to simulate vario
 The BankIdBuilder has an extension method `AddSimulatedBankIdApiError` that can be used to simulate errors.
 The method takes the parameters:
 - `errorRate`: The rate of errors to simulate, a value between 0 and 1. For example, 0.5 will simulate an error in 50% of the requests.
-- `errors`: The errors that will be used to simulate. The errors are defined in a Dictionary with the key being an `ErrorCod e` Enum and the value being the ErrorDescription.
+- `errors`: The errors that will be used to simulate. The errors are defined in a Dictionary with the key being an `ErrorCode` Enum and the value being the ErrorDescription.
 - `varyErrorTypes`: If true, the error type will be varied between the errors in the list. If false, the same random error type will be used for all API calls.
 
 #### Simulated API error usage
@@ -972,7 +972,7 @@ services
 
 ### Event listeners
 
-During the login flow, quite a lot of things are happening and using our event listeners you can listen and act on those events. By implementing and regestering `IBankIdEventListener` you will be notified when an event occurs. A common scenario is logging. Multiple event listeners can be registered.
+During the login flow, quite a lot of things are happening and using our event listeners you can listen and act on those events. By implementing and registering `IBankIdEventListener` you will be notified when an event occurs. A common scenario is logging. Multiple event listeners can be registered.
 
 `BankIdEvent` is the base class for all events which all events will inherit from. Each event might (and in most cases will) have unique properties relevant for that specific event.
 
@@ -1044,7 +1044,7 @@ services
 
 Call `bankId.AddApplicationInsightsEventListener()` to enable it. Note that you can supply options to enable logging of metadata, such as personal identity number, age and IP.
 
-___Note:___ This event listener is available is available through a separate package called `ActiveLogin.Authentication.BankId.AzureMonitor`.
+___Note:___ This event listener is available through a separate package called `ActiveLogin.Authentication.BankId.AzureMonitor`.
 
 ```csharp
 services
@@ -1202,7 +1202,7 @@ To customize the Device Data feature, use the `UseDeviceData` extension in the B
 This allows you to specify the device type and any relevant metadata using resolvers.
 
 The BankIdFlowService will automatically include the device data in the BankID request,
-since it is dependent of the `IBankIdEndUserDeviceDataResolverFactory` service.
+since it is dependent on the `IBankIdEndUserDeviceDataResolverFactory` service.
 
 ##### Configuration examples
 
@@ -1230,7 +1230,7 @@ services
     });
 ```
 
-*Custom implementation requests initiated by av web browser:*
+*Custom implementation requests initiated by a web browser:*
 ```csharp
 services
     .AddBankId(bankId =>
@@ -1331,7 +1331,7 @@ BankID allows you to display a text during authentication to describe the intent
 * `UserNonVisibleData`
 * `UserVisibleDataFormat`
 
-These can either be set as static data during startup in `Program.cs` or dynamically by overiding the interface `IBankIdAuthRequestUserDataResolver`.
+These can either be set as static data during startup in `Program.cs` or dynamically by overriding the interface `IBankIdAuthRequestUserDataResolver`.
 
 Sample of static text without formatting:
 
@@ -1368,7 +1368,7 @@ public class BankIdAuthRequestDynamicUserDataResolver : IBankIdAuthRequestUserDa
         {
             UserVisibleData = "*Time:* " + DateTime.Now.ToLongTimeString(),
             UserVisibleDataFormat = BankIdUserVisibleDataFormats.SimpleMarkdownV1
-        });;
+        });
     }
 }
 ```
@@ -1409,9 +1409,9 @@ services.AddTransient<IBankIdSupportedDeviceDetector, CustomBankIdSupportedDevic
 
 #### Use UAParserDeviceDetector for device and browser detection
 
-In Active Login device and browser detection is required for example to determine which URL to use to launch the BankID app, according to the BankID Relaying party Guidelines. This logic is primarily encapsulated into `IBankIdSupportedDeviceDetector`.
+In Active Login device and browser detection is required for example to determine which URL to use to launch the BankID app, according to the BankID Relying party Guidelines. This logic is primarily encapsulated into `IBankIdSupportedDeviceDetector`.
 
-The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supports the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
+The default implementation provided in `ActiveLogin.Authentication.BankId.AspNetCore` is limited to supporting the ~top 5 most common browsers on both iOS and Android. But since an incorrect browser detection can lead to an incorrect launch URL and result in a broken user flow, `UAParserDeviceDetector` in the `ActiveLogin.Authentication.BankId.UAParser` package should be used to support additional browsers. It has a dependency on package [uap-csharp](https://github.com/ua-parser/uap-csharp) for improved user agent parsing.
 
 #### Shorthand for only overriding config for custom browsers
 
@@ -1501,7 +1501,7 @@ public class BankIdFacebookAppBrowserConfig : IBankIdLauncherCustomAppCallback
 You can choose to request a risk indication from BankID for both identifications and signatures. It can be used to increase security, protect your customers and reduce the risk of fraud. The indication is categorized as low, medium or high risk.
 You must implement your own logic to act on the assessed risk level from BankID.
 
-You need to provide information to BankID in the auth or sign request, to help them make the risk assessment e.g. the end users IP address and the app or web property (which is part of [Device Data](#resolve-the-end-user-device-data) in Active Login).
+You need to provide information to BankID in the auth or sign request, to help them make the risk assessment e.g. the end user’s IP address and the app or web property (which is part of [Device Data](#resolve-the-end-user-device-data) in Active Login).
 
 Incorrect information in the call gives an incorrect risk indication.
 
@@ -1549,7 +1549,7 @@ services
 
 Then you can use the Verify API from, for example, an MVC Controller. The API allows you to send in the content of the QR-code and responds with the verification details.
 
-In the example below the client (HTML/JS for example) have already decoded the QR-code.
+In the example below the client (HTML/JS for example) has already decoded the QR-code.
 
 ```csharp
 public class VerifyRequestModel
@@ -1585,7 +1585,7 @@ public class VerifyController : Controller
 
 ### Use api wrapper only
 
-We have seperated the API-wrapper for BankID into a separate package so that you can use it in other scenarios we have not covered. They look like this and are both well documented using XML-comments.
+We have separated the API-wrapper for BankID into a separate package so that you can use it in other scenarios we have not covered. They look like this and are both well documented using XML-comments.
 
 The constructor for these ApiClients takes an `HttpClient` and you need to configure that `HttpClient` with a `BaseAddress`, `Tls12`, client certificates etc. depending on your needs.
 
@@ -1630,7 +1630,7 @@ public class BankIdVerifyApiClient : IBankIdVerifyApiClient
 
 ### Localization
 
-The messages are already localized to English and Swedish using the official recommended texts. To select what language that is used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization#localization-middleware).
+The messages are already localized to English and Swedish using the official recommended texts. To select which language that is used you can for example use the [localization middleware in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization#localization-middleware).
 
 The user messages that will be displayed are provided through the implementation of `IBankIdUserMessageLocalizer`, so by overriding this you can customize the messages.
 
@@ -1641,14 +1641,14 @@ services.AddTransient<IBankIdUserMessageLocalizer, CustomBankIdUserMessageLocali
 
 ### Names of the person might be capitalized
 
-The names comes from the bank that the end user has, and some banks (due to legacy) stores all of the names in all caps (like `ALICE SMITH`).
+The names come from the bank that the end user has, and some banks (due to legacy) stores all of the names in all caps (like `ALICE SMITH`).
 
-We have choosen not to normalize the capitalization of the names as it´s hard or impossible to do so in a general way.
+We have chosen not to normalize the capitalization of the names as it is hard or impossible to do so in a general way.
 
 
 ### Cookies issued
 
-The `*.AspNetCore` package will issue cookies to make the auth, sign and payment flow work
+The `*.AspNetCore` package will issue cookies to make the auth, sign and payment flow work.
 
 - Cookie: `__ActiveLogin.BankIdUiState`
   - This cookie is there to store state during the auth process, as the user will/might be redirected during the flow. The cookie is session based only and will be deleted once the auth, sign or payment process is finished and/or when the user closes the browser.
@@ -1658,7 +1658,7 @@ The `*.AspNetCore` package will issue cookies to make the auth, sign and payment
   - This cookie temporarily stores information about your configured requirements for Auth, Sign, and Payment requests. The data is retained only for the duration of an ongoing BankID transaction (i.e., Auth, Sign, or Payment). The cookie is session-based and is automatically deleted once the transaction is completed or when the user closes the browser.
 
 - Cookie: `__ActiveLogin.BankIdDeviceData`
-  - This cookie is used to store the device data for the user, in the default implementation, it is used to ensure that the device data is persistent across requests.
+  - This cookie is used to store the device data for the user and to ensure that the device data is persistent across requests.
 
 ___Note:___
 
@@ -1677,7 +1677,7 @@ For guidance on configuring a persistent key store, see the official documentati
 
 We aim at supporting the latest version of all major browsers both on desktop and on mobile.
 
-All browsers on mobile are supported to show the UI, but the redirect flow have been tested and verified on these:
+All browsers on mobile are supported to show the UI, but the redirect flow has been tested and verified on these:
 - iOS
     - Safari
     - Chrome
