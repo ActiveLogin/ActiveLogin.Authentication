@@ -1,0 +1,232 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/a/ActiveLogin.Authentication/ActiveLogin.Authentication/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      },
+      "is_incremental": false
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/BREAKINGCHANGES.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/BREAKINGCHANGES.html",
+          "hash": "wHOFYoixSn66hOyFT0PxhqaedJu9u32H0KClWJmfrF4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/CODE_OF_CONDUCT.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/CODE_OF_CONDUCT.html",
+          "hash": "V37vCy04tLPsozVeQNo1kq9BQUyKPganm2F9WRveI9k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/CONTRIBUTING.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/CONTRIBUTING.html",
+          "hash": "sPrD3fmF9QMmO42NVhGOKcAeOobixfJo1h3nq2HPgUY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/LICENSE.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/LICENSE.html",
+          "hash": "UNVL7i0KvIjkI9uDIkGDPA6l0mwPutKDnxTkzpZOiHU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/README.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/README.html",
+          "hash": "IZdyJMC4FhZivJY0jMOTHafZKPA/lTuNKT84b3xOqUU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/SECURITY.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/SECURITY.html",
+          "hash": "DHA8AU7B+KDsCZo1KgepgCM9kclJkrGF6icaZ4Q6xKI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/bankid-architechture.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/bankid-architechture.html",
+          "hash": "YwJckw2hGpTHT9aG1mWgrVJL9nCTZMBxMSH22/Uc8uY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/bankid.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/bankid.html",
+          "hash": "AOIKrGfSFiiLBVG//8ApoxBzzSwHIV1mfkhuzpZKTPM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/monitor.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/monitor.html",
+          "hash": "GLA9P4sLe5fUqkG8sdkGIUt1cP12sevrrpP+2LeFnzc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "jVvzcyPXo/MBfZVQgiUoGG6NDd3JCp5HK55Dh1SBWiI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/active-login-logo-fingerprint-blue-v2-256x256.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/active-login-logo-fingerprint-blue-v2-256x256.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/favicon.ico",
+      "output": {
+        "resource": {
+          "relative_path": "images/favicon.ico"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "WJ/mdLeDJW/y5zSWwggV6hDdMcmthav5gLYEmlb0Hb4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "LWZ12U9KWBAbr3s1wI/+n0cWX7zxFx/MT1uKaWz6/18="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 10,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

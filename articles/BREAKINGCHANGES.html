@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Breaking changes in Active Login Authentication | Active Login </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Breaking changes in Active Login Authentication | Active Login ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="..//images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h3 id="breaking-changes-in-active-login-authentication">Breaking changes in Active Login Authentication</h3>
+
+<p>Here we try to make a summary of the major breaking changes in things that you as a consumer of Active Login can use/extend/implement.</p>
+<p><em><strong>Note:</strong></em> We might, and will probably, miss to document some of this - if so - please make a PR to this file and add a note on such breaking change.</p>
+<h2 id="toc">TOC</h2>
+<ul>
+<li><a href="#version-1200">Version 12.0.0</a></li>
+<li><a href="#version-1100">Version 11.0.0</a></li>
+<li><a href="#version-1000">Version 10.0.0</a></li>
+<li><a href="#version-900">Version 9.0.0</a></li>
+<li><a href="#version-800">Version 8.0.0</a></li>
+<li><a href="#version-700">Version 7.0.0</a></li>
+<li><a href="#version-603">Version 6.0.3</a></li>
+<li><a href="#version-600">Version 6.0.0</a></li>
+<li><a href="#version-500">Version 5.0.0</a></li>
+<li><a href="#version-400">Version 4.0.0</a></li>
+</ul>
+<hr>
+<h2 id="version-1200">Version 12.0.0</h2>
+<p>Breaking changes between version 11.0.0 and 12.0.0</p>
+<h3 id="upgrade-to-net-10">Upgrade to .NET 10</h3>
+<p>Active Login now requires <strong>.NET 10</strong>.</p>
+<p>If you are upgrading from an earlier version, you must update any application or website using Active Login to target .NET 10.</p>
+<h3 id="embedded-bankid-certificates">Embedded BankID certificates</h3>
+<p>When loading embedded BankID certificates (client test certificate and root certificates for both test and production), we now use <code>X509KeyStorageFlags.DefaultKeySet</code> by default.</p>
+<p>If this change causes issues in your environment, you can override the <code>X509KeyStorageFlags</code> used for the client test certificate. See <a href="https://docs.activelogin.net/articles/bankid.html#test-environment">the documentation</a> for information about how it is done.</p>
+<h3 id="loading-client-bankid-certificate-from-azure-key-vault">Loading client BankID certificate from Azure Key Vault</h3>
+<p>When loading the client BankID certificate from Azure Key Vault, we now use <code>X509KeyStorageFlags.DefaultKeySet</code> by default.</p>
+<p>If this causes issues in your environment, it is possible to override the <code>X509KeyStorageFlags</code> used when loading the certificate. See <a href="https://docs.activelogin.net/articles/bankid.html#using-client-certificate-from-azure-keyvault">the documentation</a> for information about how it is done.</p>
+<h3 id="format-of-client-bankid-certificate">Format of client BankID certificate</h3>
+<p>The default file format for the client BankID certificate in the test environment has changed. Instead of <code>FPTestcert5_20240610-legacy.pfx</code>, the default is now <code>FPTestcert5_20240610.p12</code>.</p>
+<p>This can be overridden if required. See the <a href="https://docs.activelogin.net/articles/bankid.html#specify-client-certificate-format">documentation</a> for further information.</p>
+<hr>
+<h2 id="version-1100">Version 11.0.0</h2>
+<p>Breaking changes between version 11.0.0 and 10.0.0</p>
+<h3 id="remove-allowed-risk-level">Remove allowed risk Level</h3>
+<p>Removed support for blocking auth and sign transactions based on risk level, since no longer supported by BankID.</p>
+<pre><code class="lang-csharp">    services.Configure&lt;BankIdAuthOptions&gt;(options =&gt;
+    {
+        options.BankIdAllowedRiskLevel = BankIdAllowedRiskLevel.Low;
+    });
+</code></pre>
+<p>Use return risk instead and handle risk level in your application.</p>
+<pre><code class="lang-csharp">    services.Configure&lt;BankIdAuthOptions&gt;(options =&gt;
+    {
+        options.BankIdReturnRisk = true;
+    });
+</code></pre>
+<p>BankID provides futher information more about <a href="https://www.bankid.com/en/foretag/the-service/risk-indication">Risk Indication</a>.</p>
+<hr>
+<h2 id="version-1010">Version 10.1.0</h2>
+<h3 id="important-note">Important Note</h3>
+<p>Version 10.1.0 was released as a minor version and should not have introduced breaking changes. However, in practice, some users experienced issues related to the new cookie <code>__ActiveLogin.BankIdDeviceData</code>. If you encountered issues after upgrading, please review the guidance below.</p>
+<h3 id="added-new-cookie-for-device-data">Added New Cookie for Device Data</h3>
+<p>A new Cookie <code>__ActiveLogin.BankIdDeviceData</code> was added to store information about the end user’s device. This information is sent to BankID and used for risk indication.</p>
+<p>The cookie is long lived and persisted across sessions. Since all cookies issued by Active Login are protected using ASP.NET Core Data Protection. In certain environments (such as multi-instance deployments or containers) you may need to configure Data Protection to use a persistent key store (e.g. a shared file system, Azure Blob Storage, Redis, or SQL Server) so that cookies can be unprotected across app restarts or multiple instances.</p>
+<p>This applies also to the existing UI State cookie in Active Login. However, since that cookie has a very short lifetime compared to the device data cookie, the risk of running in to issues related to data protection is significantly lower for that cookie.</p>
+<p>For guidance on configuring a persistent key store, see the official documentation: <a href="https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-8.0">Data Protection configuration overview</a>.</p>
+<hr>
+<h2 id="version-1000">Version 10.0.0</h2>
+<p>Breaking changes between version 10.0.0 and 9.0.0</p>
+<h3 id="policy-handling">Policy handling</h3>
+<ul>
+<li>Remove policy handling from API library into Core</li>
+<li>Fall back to mobile BankID policy for OtherDevice flow</li>
+<li>Enum for setting policy instead of string</li>
+</ul>
+<h3 id="replaced-embedded-bankid-certificate-for-test-environment">Replaced Embedded BankID Certificate for Test Environment</h3>
+<p>Replace embedded BankID certificate for the test environment FPTestcert4_20220818.p12, with the three new versions of the client certificate FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx.</p>
+<p>Make it configurable which version to use. For compatibility reasons use FPTestcert5_20240610-legacy.pfx by default.</p>
+<hr>
+<h2 id="version-900">Version 9.0.0</h2>
+<p>Breaking changes between version 9.0.0 and 8.0.0</p>
+<ul>
+<li>Remove <code>callInitiator</code> from CollectResponse as it's not documented anymore</li>
+<li>Rename <code>CollectCallInitiator</code> into <code>CallInitiator</code></li>
+</ul>
+<hr>
+<h2 id="version-800">Version 8.0.0</h2>
+<p>Breaking changes between version 8.0.0 and 7.0.0</p>
+<h3 id="ibankidlaunchercustomappcallback-becomes-ibankidlaunchercustombrowser">IBankIdLauncherCustomAppCallback becomes IBankIdLauncherCustomBrowser</h3>
+<p>We have broadedned the scope of the interface <code>IBankIdLauncherCustomAppCallback</code> to <code>IBankIdLauncherCustomBrowser</code> to allow for more flexibility in the implementation.</p>
+<p>We have renamed these things as a result of that:</p>
+<ul>
+<li><code>IBankIdLauncherCustomAppCallback</code> becomes <code>IBankIdLauncherCustomBrowser</code></li>
+<li><code>AddCustomAppCallback</code> becomes <code>AddCustomBrowser</code></li>
+<li><code>AddCustomAppCallbackByUserAgent</code> becomes <code>AddCustomBrowserByUserAgent</code></li>
+</ul>
+<h3 id="upgrade-to-net-8">Upgrade to .NET 8</h3>
+<p>We now require .NET 8 - so this requires you to upgrade your website that uses Active Login.</p>
+<hr>
+<h2 id="version-700">Version 7.0.0</h2>
+<p>Breaking changes between version 7.0.0 and 6.0.3</p>
+<h3 id="upgrade-to-net-7">Upgrade to .NET 7</h3>
+<p>We now require .NET 7 - so this requires you to upgrade your website that uses Active Login.</p>
+<h3 id="api-changes">API changes</h3>
+<p>The API has changed to reflect the new BankID API (v 6.0). An overview of those changes can be found <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/issues/402">in this issue</a>.</p>
+<h4 id="rename-api-wrapper">Rename API Wrapper</h4>
+<p>As we've added support for the new Verify API, we have renamed the existing API into App API. These changes should go unnoticed for most of you if you are using the high level abstractions.</p>
+<ul>
+<li><code>IBankIdApiClient</code> is renamed into <code>IBankIdAppApiClient</code></li>
+<li><code>BankIdApiClient</code> is renamed into <code>BankIdAppApiClient</code></li>
+<li><code>BankIdSimulatedApiClient</code> is renamed into <code>BankIdSimulatedAppApiClient</code></li>
+<li><code>BankIdSimulatedApiClient</code> is renamed into <code>BankIdSimulatedAppApiClient</code></li>
+<li><code>BankIdApiClientExtensions</code> is renamed into <code>BankIdAppApiClientExtensions</code></li>
+</ul>
+<h3 id="custom-options">Custom options</h3>
+<p>Some API changes (as described above) propagates to the options you can customize per authentication scheme. The following options have been changed:</p>
+<ul>
+<li><code>BankIdAllowBiometric</code> is removed and replaced by <code>BankIdRequirePinCode</code>. This has the opposite meaning as the old option, so be sure to update your code if you have used this.</li>
+</ul>
+<h3 id="ibankidlaunchergetlaunchinfo-is-now-async">IBankIdLauncher.GetLaunchInfo is now async</h3>
+<p>The method <code>GetLaunchInfo</code> on <code>IBankIdLauncher</code> is now renamed into <code>GetLaunchInfoAsync</code> and made async to allow for dynamic retreival.</p>
+<hr>
+<h2 id="version-603">Version 6.0.3</h2>
+<p>Breaking changes in 6.0.3:</p>
+<ul>
+<li>As stated in #384 we had mixed up the UseClientCertificate() and AddClientCertificate() extension methods. These have now been reversed. This would be a breaking change if you add multiple certificates but should affect the majority of consumers.</li>
+</ul>
+<hr>
+<h2 id="version-600">Version 6.0.0</h2>
+<p>Breaking changes between version 5.0.0 and 6.0.0.</p>
+<p><em><strong>Note:</strong></em> Version is a major release with a large set of refactorings, name changes, and namespace changes. We have not covered it all, but tried to summarize the major ones below. In v6 we introduced Sign and wanted to refactor and rename things to make i consistent and easy to use both/either of them. This will cause some work when upgrading from a previous version.</p>
+<h3 id="renaming-nuget-packages">Renaming NuGet-packages</h3>
+<p>As all of the support packages related to Azure etc. now only depend on the Core package, we have renamed a few packages to reflect this:</p>
+<ul>
+<li><code>ActiveLogin.Authentication.BankId.AspNetCore.Azure</code> is now <code>ActiveLogin.Authentication.BankId.AzureKeyVault</code></li>
+<li><code>ActiveLogin.Authentication.BankId.AspNetCore.AzureMonitor</code> is now <code>ActiveLogin.Authentication.BankId.AzureMonitor</code></li>
+<li><code>ActiveLogin.Authentication.BankId.AspNetCore.QRCoder</code> is now <code>ActiveLogin.Authentication.BankId.QRCoder</code></li>
+<li><code>ActiveLogin.Authentication.BankId.AspNetCore.UAParser</code> is now <code>ActiveLogin.Authentication.BankId.UAParser</code></li>
+</ul>
+<h3 id="auth-functionality-is-now-separate-from-core-functionality">Auth functionality is now separate from core functionality</h3>
+<p>This means that you need to register the common configuration first and then the auth specific conf, like this:</p>
+<pre><code class="lang-csharp">services
+    .AddBankId(bankId =&gt;
+    {
+        bankId.UseQrCoderQrCodeGenerator();
+        bankId.UseUaParserDeviceDetection();
+        ...
+    });
+
+services.AddAuthentication()
+    .AddCookie()
+    .AddBankIdAuth(bankId =&gt;
+    {
+        bankId.AddSameDevice();
+        bankId.AddOtherDevice();
+    });
+</code></pre>
+<h3 id="moving-extension-methods-away-from-microsoftextensionsdependencyinjection">Moving extension methods away from Microsoft.Extensions.DependencyInjection</h3>
+<p>As per the <a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/options-library-authors#namespace-guidance">Microsoft guideline about namespaces</a> in libraries, we have moved our extension methods away from <code>Microsoft.Extensions.DependencyInjection</code> into their &quot;natural&quot; namespaces.</p>
+<p>This means that in your <code>Program.cs</code> you might need to import these namespaces:</p>
+<pre><code class="lang-csharp">using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
+using ActiveLogin.Authentication.BankId.AspNetCore.Sign;
+using ActiveLogin.Authentication.BankId.AzureKeyVault;
+using ActiveLogin.Authentication.BankId.AzureMonitor;
+using ActiveLogin.Authentication.BankId.Core;
+using ActiveLogin.Authentication.BankId.QrCoder;
+using ActiveLogin.Authentication.BankId.UaParser;
+</code></pre>
+<h3 id="requires-static-files">Requires static files</h3>
+<p>The stylesheet and the javascript for the client are now served as *.css and *.js files, so you need to enable static file support.</p>
+<pre><code class="lang-csharp">app.UseStaticFiles();
+</code></pre>
+<h3 id="moving-core-functionality-to-separate-package">Moving core functionality to separate package</h3>
+<p>Core functionality that is not tied to web (AspNetCore) is moved into a separate package called <code>ActiveLogin.Authentication.BankId.Core</code>.</p>
+<p>If you directly use/extend/implement anything related to these areas you might have to update your references:</p>
+<ul>
+<li><code>IBankIdEndUserIpResolver</code></li>
+<li><code>IBankIdLauncher</code></li>
+<li><code>IBankIdResultStore</code></li>
+<li><code>IBankIdQrCodeGenerator</code></li>
+<li><code>IBankIdSupportedDeviceDetector</code></li>
+<li><code>IBankIdAuthRequestUserDataResolver</code></li>
+<li><code>IBankIdUserMessageLocalizer</code></li>
+<li>Events</li>
+</ul>
+<h3 id="renaming-area-and-urls">Renaming area and URL:s</h3>
+<p>The area and URL:s used internally are now renamed:</p>
+<ul>
+<li><code>/BankIdAuthentication/BankId/Login</code> is now <code>/ActiveLogin/BankId/Auth</code></li>
+<li><code>/BankIdAuthentication/BankId/Api/*</code> is now <code>/ActiveLogin/BankId/Api/*</code></li>
+</ul>
+<h3 id="renaming-views">Renaming views</h3>
+<p>These views have been renamed:</p>
+<ul>
+<li><code>Login.cshtml</code> is now  <code>Init.cshtml</code></li>
+<li><code>_Login.cshtml</code> is now  <code>_Wrapper.cshtml</code></li>
+<li><code>_LoginForm.cshtml</code> is now  <code>_Form.cshtml</code></li>
+<li><code>_LoginStatus.cshtml</code> is now  <code>_Status.cshtml</code></li>
+<li><code>_LoginScript.cshtml</code> is now  <code>_Script.cshtml</code></li>
+<li><code>_LoginStyle.cshtml</code> is now  <code>_Style.cshtml</code></li>
+<li><code>_spinner.cshtml</code> is now  <code>_Spinner.cshtml</code></li>
+</ul>
+<p><em><strong>Note:</strong></em> As the area and controller have been renamed these files should now be placed in <code>/Areas/ActiveLogin/Views/BankIdUiAuth/</code> or <code>/Areas/ActiveLogin/Views/Shared/</code>.</p>
+<p><em><strong>Note:</strong></em> Both the html, css and javascript have breaking changes. See history for respective file for exact changes.</p>
+<h3 id="renaming-bankiddefaults">Renaming BankIdDefaults</h3>
+<p><code>BankIdDefaults</code> have been renamed into <code>BankIdAuthDefaults</code> and can now be found in the namespace <code>ActiveLogin.Authentication.BankId.AspNetCore.Auth</code>.</p>
+<p>The default values for <code>SameDeviceAuthenticationScheme</code>, <code>OtherDeviceAuthenticationScheme</code>, <code>SameDeviceCallbackPath</code> and <code>OtherDeviceCallbackPath</code> have also changed.</p>
+<h3 id="removing-dependency-on-httpcontext-in-activeloginauthenticationbankidcore">Removing dependency on HttpContext in ActiveLogin.Authentication.BankId.Core</h3>
+<p>No classes or interfaces in <code>ActiveLogin.Authentication.BankId.Core</code> will have a dependency on ``HttpContext<code>. </code>HttpContext<code>would previously be passed as arguments to some methods defined in our interfaces. If you need</code>HttpContext<code>for your implementation, take a dependency on</code>IHttpContextAccessor` to achieve the same functionality - this is how we solve it internally as well.</p>
+<h3 id="name-changes-for-login">Name changes for *Login</h3>
+<p>To reflect that we now support both auth and sign we have renamed a lot of classes called something with <code>Login</code>. For example:</p>
+<ul>
+<li><code>BankIdLoginResult</code> is now <code>BankIdUiResult</code></li>
+<li><code>BankIdLoginOptions</code> is now <code>BankIdUiOptions</code></li>
+</ul>
+<h3 id="renaming-metadata-for-azure-monitor">Renaming metadata for Azure Monitor</h3>
+<p>These properties have been renamed:</p>
+<ul>
+<li><code>AL_BankId_LoginOptions_LaunchType</code> is now <code>AL_BankId_Options_LaunchType</code></li>
+<li><code>AL_BankId_LoginOptions_UseQrCode</code> is now <code>AL_BankId_Options_UseQrCode</code></li>
+</ul>
+<h3 id="bankiddynamicenduseripresolver-removed">BankIdDynamicEndUserIpResolver removed</h3>
+<p>BankIdDynamicEndUserIpResolver removed is now removed. It was a shorthand for a scenario that should be very uncommon.
+lease use BankIdRemoteIpAddressEndUserIpResolver instead if you need to override end user ip retrieval.</p>
+<h3 id="no-manual-input-of-personalidentitynumber">No manual input of PersonalIdentityNumber</h3>
+<p>The use of personalIdentityNumber in the auth flow is no longer supported as BankID recommends to only using either animated QR codes or autostarttoken on the same device.</p>
+<h3 id="multi-tenant">Multi tenant</h3>
+<p>If you register multiple client certificates (multi-tenant scenarios) you now need to use the <code>.AddClientCertificate...()</code> methods instead of <code>.UseClientCertificate...()</code>. <code>.UseClientCertificate...()</code> will remove any previously registered certificates.</p>
+<p>This applies to:</p>
+<ul>
+<li><code>.AddClientCertificate()</code></li>
+<li><code>.AddClientCertificateFromAzureKeyVault()</code></li>
+</ul>
+<h3 id="application-insights-connection-string-instead-of-instrumentation-key">Application Insights Connection String instead of Instrumentation Key</h3>
+<p>When using Application Insights <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/app/sdk-connection-string?tabs=net">you should nowadays specify a connection string instead of just an instrumentation key</a>. We've updated our methods that explicitly took an instrumentation key to instead take a connection string. This applies to:</p>
+<ul>
+<li><code>AddApplicationInsightsEventListener()</code></li>
+</ul>
+<hr>
+<h2 id="version-500">Version 5.0.0</h2>
+<p>Breaking changes between version 4.0.0 and 5.0.0</p>
+<h3 id="upgrade-to-net-6">Upgrade to .NET 6</h3>
+<p>We now require .NET 6 for the UI parts - so this requires you to upgrade your website that uses Active Login.</p>
+<h3 id="support-bankid-animated-qr-code-in-ui">Support BankID animated QR code in UI</h3>
+<p>When implementing the animated QR code, we have had to update the client side script in <code>LoginScript.cshtml</code>. Look at the Git history for this file if you want to see the exact changes. This is only a breaking change if you have overridden this file with your own imlpementation.</p>
+<h3 id="use-defaultazurecredentials-when-accessing-keyvault">Use DefaultAzureCredentials when accessing KeyVault</h3>
+<p>If using Azure KeyVault for your certificate, we have made chamges to how you authenticate/access that. See <a href="https://docs.activelogin.net/articles/bankid.html#keyvault-credentials">the documentation</a> for how it should be configured now.</p>
+<h3 id="drop-support-for-grandid">Drop support for GrandID</h3>
+<p>When we created Active Login we added support for BankID directly as well as through Svensk E-identitet (GrandID). At the time we had cases where we were using both so it was natural to support them both. As time has gone by we see that basically, all new cases for us use the &quot;native&quot; BankID provider so that's where we have focused our efforts in Active Login.</p>
+<p>We have reached the point where it is not possible for us to support the GrandId packages anymore as part of this open-source project. In the end, we have just so much time that we want to spend where we think it benefits the most users, and the download counts on NuGet tell this is the native BankID parts.</p>
+<p>See more details in this <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions/323">announcement</a>.</p>
+<h3 id="issue-correct-exp-claim">Issue correct <code>exp</code> claim</h3>
+<p>We previously issued an incorrect exp claim. This is now issued correctly, but might be a breaking change for you.</p>
+<h3 id="remove-built-in-support-for-birthdate-and-gender-claim">Remove built in support for Birthdate and Gender claim</h3>
+<p>The Birthdate and Gender claim are not issued by the library, but we have <a href="https://docs.activelogin.net/articles/bankid.html#example-add-birthdate-and-gender-claims">added docs</a> on how to issue them yourself.</p>
+<hr>
+<h2 id="version-400">Version 4.0.0</h2>
+<p>Breaking changes between version 3.0.0 and 4.0.0</p>
+<h3 id="renaming-events">Renaming events</h3>
+<p>We have renamed events and event ids but the log messages should be the same.</p>
+<p>A full list of current event names and ids can be found in <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/master/src/ActiveLogin.Authentication.BankId.AspNetCore/Events/Infrastructure/BankIdEventTypes.cs">BankIdEventTypes.cs</a>.</p>
+<p>The category of events logged to ILogger will now be <code>BankIdLoggerEventListener</code>.</p>
+<h3 id="removed-useclientcertificateresolver">Removed UseClientCertificateResolver</h3>
+<p>The <code>UseClientCertificateResolver</code> extension was removed, but docs was added with sample on how to achieve the same result.</p>
+<h3 id="refactor-ibankidlauncher">Refactor IBankIdLauncher</h3>
+<p><code>IBankIdLauncher</code> was refactored to return an object with launch info, not only launch URL.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/docs/articles/BREAKINGCHANGES.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            © Active Solution
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,410 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>ActiveLogin.Authentication | Active Login </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="ActiveLogin.Authentication | Active Login ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="..//images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="activeloginauthentication">ActiveLogin.Authentication</h1>
+
+<p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-orange.svg" alt="License: MIT"></a>
+<a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/actions/workflows/build.yml"><img src="https://github.com/ActiveLogin/ActiveLogin.Authentication/actions/workflows/build.yml/badge.svg" alt="Build Status"></a>
+<a href="https://demo.activelogin.net/"><img src="https://img.shields.io/static/v1?label=Demo&amp;message=Live%20demo&amp;color=008bc3" alt="Live demo"></a>
+<a href="https://docs.activelogin.net/"><img src="https://img.shields.io/static/v1?label=Docs&amp;message=Documentation&amp;color=008bc3" alt="Docs"></a>
+<a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions"><img src="https://img.shields.io/github/discussions/ActiveLogin/ActiveLogin.Authentication" alt="Discussion"></a>
+<a href="https://twitter.com/ActiveLoginSE"><img src="https://img.shields.io/badge/Twitter-@ActiveLoginSE-blue.svg?logo=twitter" alt="Twitter Follow"></a></p>
+<p>ActiveLogin.Authentication enables an application to support Swedish BankID (svenskt BankID) authentication in .NET.</p>
+<p><a href="LICENSE.html">Active Login is licensed</a> is provided under the very permissive <a href="https://opensource.org/licenses/MIT">MIT license</a> for you to be able to use it in commercial or non-commercial applications without many restrictions.
+Active Login is provided &quot;as is&quot;, without any warrany of any kind. If you need support, <a href="#support--training">commercial support and training</a> is available.</p>
+<p>Active Login is not a product created by BankID. It is an unofficial project that was developed by Active Solution. All trademarks are the property of their respective owners.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>🆔 Supports BankID Auth (API, Flow and UI)</li>
+<li>📝 Supports BankID Sign (API, Flow and UI)</li>
+<li>☎️:id: Supports BankID Phone Auth (API)</li>
+<li>☎️:pencil: Supports BankID Phone Sign (API)</li>
+<li>☺️ Supports BankID Verify digital ID card (API)</li>
+<li>🐧 Cross platform: Targets .NET Standard 2.0 and .NET 8</li>
+<li>6️⃣ Built on V6.0 (the latest) BankID JSON API</li>
+<li>🏁 Supports BankID animated QR code (Secure start)</li>
+<li>☁️ Designed with Microsoft Azure in mind (KeyVault, Monitor, Application Insights, AD B2C etc.)</li>
+<li>🌎 Multi language support with English and Swedish out of the box</li>
+<li>🔧 Customizable and extensible</li>
+<li>💠 Can be used as a <a href="#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c">Custom Identity Provider for Azure AD B2C</a></li>
+</ul>
+<h2 id="screenshots">Screenshots</h2>
+<p><em>Screenshots on how the default UI for Native BankID looks on different devices.</em></p>
+<p><img src="https://alresourcesprod.blob.core.windows.net/docsassets/active-login-screenshots.png" alt="Active Login Screenshots"></p>
+<p><em>Screenshot on monitoring dashboard.</em></p>
+<p><img src="https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png" alt="Active Login Monitor"></p>
+<h2 id="table-of-contents">Table of contents</h2>
+<p><em><strong>Note:</strong></em> This Readme reflects the state of our main branch and the code documented here might not be released as packages on NuGet.org yet. For early access, see our <a href="#projects--packages-overview">CI builds</a>.</p>
+<ul>
+<li><a href="#activeloginauthentication">ActiveLogin.Authentication</a>
+<ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#screenshots">Screenshots</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#projects--packages-overview">Projects &amp; Packages overview</a></li>
+<li><a href="#usage--docs">Usage &amp; Docs</a></li>
+<li><a href="#samples">Samples</a></li>
+<li><a href="#tests">Tests</a></li>
+<li><a href="#faq">FAQ</a>
+<ul>
+<li><a href="#what-version-of-net-is-supported">What version of .NET is supported?</a></li>
+<li><a href="#how-do-i-build-the-solution-locally">How do I build the solution locally?</a>
+<ul>
+<li><a href="#devcontainer-and-github-codespaces">Devcontainer and GitHub Codespaces</a></li>
+</ul>
+</li>
+<li><a href="#how-do-i-run-the-samples-locally">How do I run the samples locally?</a></li>
+<li><a href="#how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c">How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?</a></li>
+</ul>
+</li>
+<li><a href="#active-login">Active Login</a>
+<ul>
+<li><a href="#security">Security</a></li>
+<li><a href="#contribute">Contribute</a>
+<ul>
+<li><a href="#contributors">Contributors</a></li>
+</ul>
+</li>
+<li><a href="#stay-updated-and-join-the-discussion">Stay updated and join the discussion</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
+<li><a href="#sponsors">Sponsors</a></li>
+<li><a href="#support--training">Support &amp; Training</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="projects--packages-overview">Projects &amp; Packages overview</h2>
+<p>CI-builds from main of all packages are available in our <a href="https://github.com/orgs/ActiveLogin/packages">GitHub Packages feed</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Description</th>
+<th>NuGet</th>
+<th>Downloads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.Api">BankId.Api</a></td>
+<td>API client for the Swedish BankID REST API.</td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/"><img src="https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.Api.svg" alt="NuGet"></a></td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Api/"><img src="https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.Api.svg" alt="NuGet (Pre)"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.Core">BankId.Core</a></td>
+<td>Core functionality for the BankID flow.</td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Core/"><img src="https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.Core.svg" alt="NuGet"></a></td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.Core/"><img src="https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.Core.svg" alt="NuGet (Pre)"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AspNetCore">BankId.AspNetCore</a></td>
+<td>ASP.NET authentication module for Swedish BankID.</td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/"><img src="https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AspNetCore.svg" alt="NuGet"></a></td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AspNetCore/"><img src="https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AspNetCore.svg" alt="NuGet (Pre)"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AzureKeyVault">BankId.AzureKeyVault</a></td>
+<td>Azure KeyVault integrations for the AspNetCore package.</td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureKeyVault/"><img src="https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AzureKeyVault.svg" alt="NuGet"></a></td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureKeyVault/"><img src="https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AzureKeyVault.svg" alt="NuGet (Pre)"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.AzureMonitor">BankId.AzureMonitor</a></td>
+<td>Azure Monitor (Application Insights) integrations for the AspNetCore package.</td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureMonitor/"><img src="https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.AzureMonitor.svg" alt="NuGet"></a></td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.AzureMonitor/"><img src="https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.AzureMonitor.svg" alt="NuGet (Pre)"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.QRCoder">BankId.QRCoder</a></td>
+<td>QR code generation using QRCoder the AspNetCore package.</td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.QRCoder/"><img src="https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.QRCoder.svg" alt="NuGet"></a></td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.QRCoder/"><img src="https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.QRCoder.svg" alt="NuGet (Pre)"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/src/ActiveLogin.Authentication.BankId.UACoder">BankId.UAParser</a></td>
+<td>Device and browser detection using UAParser.</td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.UAParser/"><img src="https://img.shields.io/nuget/vpre/ActiveLogin.Authentication.BankId.UAParser.svg" alt="NuGet"></a></td>
+<td><a href="https://www.nuget.org/packages/ActiveLogin.Authentication.BankId.UAParser/"><img src="https://img.shields.io/nuget/dt/ActiveLogin.Authentication.BankId.UAParser.svg" alt="NuGet (Pre)"></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="usage--docs">Usage &amp; Docs</h2>
+<p>Full documentation with step by step instructions, samples, customization and details on how to configure the options is available here:</p>
+<p><a href="bankid.html">Documentation for ActiveLogin.Authentication.BankID</a></p>
+<p>Active Login is designed to make it easy to get started with BankID in .NET. The most basic setup looks like this:</p>
+<pre><code class="lang-csharp">// Common
+services
+    .AddBankId(bankId =&gt;
+    {
+        bankId.UseTestEnvironment();
+    });
+
+// Auth
+services
+    .AddAuthentication()
+    .AddBankIdAuth(bankId =&gt;
+    {
+        bankId.AddSameDevice();
+    });
+
+// Sign
+services
+    .AddBankIdSign(bankId =&gt;
+    {
+        bankId.AddSameDevice();
+    });
+</code></pre>
+<hr>
+<h2 id="samples">Samples</h2>
+<p>For more use cases, samples and inspiration; feel free to browse our <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test">unit tests</a> and <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples">samples</a>.</p>
+<p><em>Note: These are samples on how to use Active Login in different situations and might not represent optimal way of setting up ASP.NET MVC, IdentityServer or other components. Please see them as inspiration.</em></p>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ClientSample">IdentityServer.ClientSample</a></td>
+<td>ASP.NET MVC site using the IdentityServer.ServerSample as auth provider.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/IdentityServer.ServerSample">IdentityServer.ServerSample</a></td>
+<td>IdentityServer with Active Login as auth provider for BankID.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Standalone.MvcSample">Standalone.MvcSample</a></td>
+<td>ASP.NET MVC with Active Login as auth provider for BankID. Also demo of Sign.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/AzureProvisioningSample">AzureProvisioningSample</a></td>
+<td>ARM template with Azure KeyVault, Azure App Service, Azure Monitor / Application Insights etc.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/samples/Phone.ConsoleSample">Phone.ConsoleSample</a></td>
+<td>Console application with a simple Phone Auth/Sign example</td>
+</tr>
+</tbody>
+</table>
+<p><em>Please note that IdentityServer.ClientSample uses IdentityServer.ServerSample as the IdentityProvider, so the IdentityServer.ClientSample is a good place to start.</em></p>
+<p>A live demo is available at <a href="https://demo.activelogin.net/">https://demo.activelogin.net/</a>.</p>
+<h2 id="tests">Tests</h2>
+<ul>
+<li><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.Api.Test">BankId.Api.Test</a></li>
+<li><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.Core.Test">BankId.Core.Test</a></li>
+<li><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AspNetCore.Test">BankId.AspNetCore.Test</a></li>
+<li><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.UAParser.Test">BankId.UAParser.Test</a></li>
+<li><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/tree/main/test/ActiveLogin.Authentication.BankId.AzureKeyVault.Test">BankId.AzureKeyVault.Test</a></li>
+</ul>
+<hr>
+<h2 id="faq">FAQ</h2>
+<p>Here is a summary of common, general technical questions.</p>
+<p>The <a href="bankid.html">docs for ActiveLogin.Authentication.BankId</a> contains an FAQ specific to BankID.</p>
+<p>For commercial / business related questions, see the <a href="https://activelogin.net/#faq">FAQ at ActiveLogin.net</a>.</p>
+<h3 id="what-version-of-net-is-supported">What version of .NET is supported?</h3>
+<p>The API-wrapper (ActiveLogin.Authentication.BankId.Api) target .NET Standard 2.0, so it can be used from .NET &gt;= 5.0, .NET Core &gt;= 2.0 and .NET Framework &gt;= 4.6.1, <a href="https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support">see full reference here</a>. The package that target .NET Standard is strong named as it can be used from .NET Framework where strong naming can be relevant.</p>
+<p>The authentication module (<em>.AspNetCore), depend on ASP.NET 8 and therefore requires .NET 8.
+The core module (</em>.Core), and related packages, depend on and requires .NET 8.</p>
+<p>Our samples target .NET 8 and follow the conventions used there.</p>
+<h3 id="how-do-i-build-the-solution-locally">How do I build the solution locally?</h3>
+<p>Active Login is built using .NET, make sure you have the relevant version of the SDK and runtime installed.</p>
+<p>Run the following command in the root to build all projects:</p>
+<pre><code class="lang-console">dotnet build
+</code></pre>
+<p>Run the following command in the root to run all tests:</p>
+<pre><code class="lang-console">dotnet test
+</code></pre>
+<h4 id="devcontainer-and-github-codespaces">Devcontainer and GitHub Codespaces</h4>
+<p>We also support <a href="https://code.visualstudio.com/docs/remote/containers#_create-a-devcontainerjson-file">devcontainer.json</a> so that you can <a href="https://code.visualstudio.com/docs/remote/containers">build the solution in a container</a> and use <a href="https://docs.github.com/en/codespaces/overview">GitHub Codespaces</a>.</p>
+<h3 id="how-do-i-run-the-samples-locally">How do I run the samples locally?</h3>
+<p>The samples are configured to run for the test environment (no BankID certificate required as it's bundled with the library) by default.
+The <em>Standalone.MvcSample</em> is using the the most basic sample and is a good start.</p>
+<p>To run the sample: Navigate to <code>/Samples/Standalone.MvcSample/</code> and run:</p>
+<pre><code class="lang-console">dotnet run
+</code></pre>
+<h3 id="how-do-i-use-active-login-to-get-support-for-bankid-in-azure-ad-active-directory-b2c">How do I use Active Login to get support for BankID in Azure AD (Active Directory) B2C?</h3>
+<p>Azure AD B2C supports using custom identity providers that supports <a href="https://docs.microsoft.com/sv-se/azure/active-directory-b2c/active-directory-b2c-reference-oidc">Open ID Connect</a>. If you deploy Active Login as part of IdentityServer (see our samples) you can configure your Azure AD B2C to federate to that instance and by doing so get BankID support.</p>
+<p><img src="https://alresourcesprod.blob.core.windows.net/docsassets/active-login-setup-azuread-b2c.png" alt="Active Login with Azure AD B2C"></p>
+<hr>
+<h2 id="active-login">Active Login</h2>
+<p>Active Login is an Open Source project built on .NET that makes it easy to integrate with leading Swedish authentication services like <a href="https://www.bankid.com/">BankID</a>.</p>
+<h3 id="security">Security</h3>
+<p>In our <a href="SECURITY.html">Security Policy</a> you can read about how to report a vulnerability, how to subscribe to security alerts and what packages we currently support.</p>
+<h3 id="contribute">Contribute</h3>
+<p>We are very open to community contributions to Active Login.
+Please see our <a href="CONTRIBUTING.html">contribution guidelines</a> before getting started.</p>
+<h4 id="contributors">Contributors</h4>
+<p>Thank you to all who have and are contributing to this project!</p>
+<p><img src="https://contrib.rocks/image?repo=ActiveLogin/ActiveLogin.Authentication" alt="Contributors"></p>
+<h3 id="stay-updated-and-join-the-discussion">Stay updated and join the discussion</h3>
+<p>The three primary ways to interact and stay updated with Active Login are:</p>
+<ul>
+<li><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/watchers">Watch our GitHub repo</a></li>
+<li><a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/discussions">Interact on GitHub Discussions</a></li>
+<li><a href="https://twitter.com/ActiveLoginSE">Follow us on Twitter</a></li>
+</ul>
+<h3 id="license">License</h3>
+<p><a href="LICENSE.html">Active Login is licensed</a> under the very permissive <a href="https://opensource.org/licenses/MIT">MIT license</a> for you to be able to use it in commercial or non-commercial applications without many restrictions.</p>
+<p>The BankID certificates from the BankID documentation are released as part of Active Login with the permission from BankID (Finansiell ID-Teknik BID AB).</p>
+<p><em>All trademarks are the property of their respective owners.</em></p>
+<h3 id="acknowledgements">Acknowledgements</h3>
+<p>Active Login is built on or uses the following great open source products:</p>
+<ul>
+<li><a href="https://github.com/dotnet/core">.NET</a></li>
+<li><a href="https://github.com/aspnet/Home">ASP.NET</a></li>
+<li><a href="https://github.com/xunit/xunit">XUnit</a></li>
+<li><a href="https://github.com/codebude/QRCoder">QRCoder</a></li>
+<li><a href="https://github.com/ua-parser/uap-csharp">UAParser</a></li>
+<li><a href="https://github.com/AngleSharp/AngleSharp">AngleSharp</a></li>
+<li><a href="https://github.com/moq/moq">Moq</a></li>
+<li><a href="https://github.com/twbs/bootstrap">Bootstrap</a></li>
+<li><a href="https://loading.io/">Loading.io</a></li>
+</ul>
+<p>For samples, these great products are used:</p>
+<ul>
+<li><a href="https://duendesoftware.com/products/identityserver">Duende IdentityServer</a></li>
+</ul>
+<h3 id="sponsors">Sponsors</h3>
+<p>Active Solution is the main sponsor of Active Login. Active Solution is located in Sweden and provides IT consulting with focus on web, Azure and AI.</p>
+<p><img src="https://alresourcesprod.blob.core.windows.net/docsassets/activesolution-logo.svg" alt="Active Solution"></p>
+<p><em>Bright cloud solutions - System development that shines. Together, we create systems that will rocket your business.</em></p>
+<p>And yes, <a href="https://www.activesolution.se/jobb/">we are hiring</a> 👩‍💻 :)</p>
+<p><a href="https://www.activesolution.se/">https://www.activesolution.se/</a></p>
+<h3 id="support--training">Support &amp; Training</h3>
+<p>If you need help with implementing Active Login, there are commercial support &amp; training options available.</p>
+<p>We can help you out with:</p>
+<ul>
+<li>Education and training on:
+<ul>
+<li>Active Login</li>
+<li>IdentityServer</li>
+<li>Azure AD B2C</li>
+<li>Authentication on the .NET platform in general</li>
+</ul>
+</li>
+<li>Hands on implementing BankID using Active Login</li>
+<li>Implement BankID as a custom Identity Provider for Azure AD B2C</li>
+<li>Continuous support for Active Login</li>
+</ul>
+<p>See <a href="https://activelogin.net#support">ActiveLogin.net</a> for more details on how to get in touch with us 📞.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/docs/articles/README.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            © Active Solution
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

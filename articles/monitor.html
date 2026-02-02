@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Active Login Monitor | Active Login </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Active Login Monitor | Active Login ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="..//images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="active-login-monitor">Active Login Monitor</h1>
+
+<p>When using the <code>BankIdApplicationInsightsEventListener</code> (<code>bankId.AddApplicationInsightsEventListener()</code>) structured events from the Active Login flow will be published to Application Insights (Azure Monitor). Below are samples on how to query these using <a href="https://docs.microsoft.com/en-us/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference">KQL</a>.</p>
+<h2 id="dashboard">Dashboard</h2>
+<p>In our provisioning samples we include a way to deploy an Azure Dashboard displaying some of the most important metrics and queries from below. See <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/samples/AzureProvisioningSample/ActiveLogin-Monitor.json">ActiveLogin-Monitor.json</a>.</p>
+<!--(/samples/AzureProvisioningSample/ActiveLogin-Monitor.json)-->
+<p><img src="https://alresourcesprod.blob.core.windows.net/docsassets/active-login-monitor-screenshot_1.png" alt="Active Login Monitor"></p>
+<h1 id="kql-samples">KQL Samples</h1>
+<h2 id="all-info">All info</h2>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    timestamp,
+    client_City,
+    client_CountryOrRegion,
+    Event_Name = name,
+    Event_TypeId = tostring(customDimensions.AL_Event_TypeId),
+    Event_Severity = tostring(customDimensions.AL_Event_Severity),
+    Error_ErrorReason = tostring(customDimensions.AL_Error_ErrorReason),
+    BankId_BankId_Options_LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType),
+    BankId_Options_UseQrCode = tostring(customDimensions.AL_BankId_Options_UseQrCode),
+    BankId_ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),
+    BankId_ErrorDetails = tostring(customDimensions.AL_BankId_ErrorDetails),
+    BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),
+    BankId_CollectHintCode = tostring(customDimensions.AL_BankId_CollectHintCode),
+    BankId_User_CertNotBefore = tostring(customDimensions.AL_BankId_User_CertNotBefore),
+    BankId_User_CertNotAfter = tostring(customDimensions.AL_BankId_User_CertNotAfter),
+    BankId_User_DeviceIpAddress = tostring(customDimensions.AL_BankId_User_DeviceIpAddress),
+    User_Device_Browser = tostring(customDimensions.AL_User_Device_Browser),
+    User_Device_Os = tostring(customDimensions.AL_User_Device_Os),
+    User_Device_Type = tostring(customDimensions.AL_User_Device_Type),
+    User_Device_OsVersion = tostring(customDimensions.AL_User_Device_OsVersion),
+    User_Name = tostring(customDimensions.AL_User_Name),
+    User_GivenName = tostring(customDimensions.AL_User_GivenName),
+    User_Surname = tostring(customDimensions.AL_User_Surname),
+    User_SwedishPersonalIdentityNumber = tostring(customDimensions.AL_User_SwedishPersonalIdentityNumber),
+    User_DateOfBirthHint = tostring(customDimensions.AL_User_DateOfBirthHint),
+    User_AgeHint = tostring(customDimensions.AL_User_AgeHint),
+    User_GenderHint = tostring(customDimensions.AL_User_GenderHint),
+    ProductName = tostring(customDimensions.AL_ProductName),
+    ProductVersion = tostring(customDimensions.AL_ProductVersion),
+    BankId_ApiEnvironment = tostring(customDimensions.AL_BankId_ApiEnvironment),
+    BankId_ApiVersion = tostring(customDimensions.AL_BankId_ApiVersion)
+| order by timestamp desc
+| render table
+</code></pre>
+<h2 id="metadata">Metadata</h2>
+<h3 id="active-login-version">Active Login Version</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetChallengeSuccess&quot;
+| project ActiveLogin_ProductVersion = tostring(customDimensions.AL_ProductVersion)
+| summarize count() by ActiveLogin_ProductVersion
+| render piechart
+</code></pre>
+<h3 id="launch-type-samedevice--otherdevice">Launch Type (SameDevice / OtherDevice)</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetChallengeSuccess&quot;
+| project LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType)
+| summarize count() by LaunchType
+| render piechart
+</code></pre>
+<h3 id="device-type-samedevice--otherdevice">Device Type (SameDevice / OtherDevice)</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetChallengeSuccess&quot;
+| project DeviceType = tostring(customDimensions.AL_User_Device_Type)
+| summarize count() by DeviceType
+| render piechart
+</code></pre>
+<h3 id="launch-type-and-device-type">Launch Type and Device Type</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetChallengeSuccess&quot;
+| project
+    DeviceType = tostring(customDimensions.AL_User_Device_Type),
+    LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType)
+| project DeviceTypeAndLaunchType = strcat(DeviceType, ' - ', LaunchType)
+| summarize count() by DeviceTypeAndLaunchType
+| render piechart
+</code></pre>
+<h3 id="device-type-and-device-os">Device Type and Device OS</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetChallengeSuccess&quot;
+| project
+    DeviceType = tostring(customDimensions.AL_User_Device_Type),
+    DeviceOs = tostring(customDimensions.AL_User_Device_Os)
+| project DeviceAndDeviceOs = strcat(DeviceType, ' - ', DeviceOs)
+| summarize count() by DeviceAndDeviceOs
+| render piechart
+</code></pre>
+<h3 id="device-os-and-device-browser">Device OS and Device Browser</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetChallengeSuccess&quot;
+| project
+    DeviceOs = tostring(customDimensions.AL_User_Device_Os),
+    DeviceBrowser = tostring(customDimensions.AL_User_Device_Browser)
+| project DeviceOsAndDeviceBrowser = strcat(DeviceOs, ' - ', DeviceBrowser)
+| summarize count() by DeviceOsAndDeviceBrowser
+| render piechart
+</code></pre>
+<h3 id="average-age">Average age</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_CollectCompleted&quot;
+| project
+    UserAgeHint = toint(customMeasurements.AL_User_AgeHint)
+| summarize AverageUserAge = avg(UserAgeHint)
+</code></pre>
+<h2 id="success">Success</h2>
+<h3 id="succesful-logins-chart">Succesful logins chart</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetAuthenticateSuccess&quot;
+| project
+    timestamp
+| summarize Logins = count() by bin(timestamp, 1d)
+| render columnchart
+</code></pre>
+<h3 id="succesful-logins-by-week">Succesful logins by week</h3>
+<pre><code class="lang-kql">customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetAuthenticateSuccess&quot;
+| project
+    timestamp,
+    Year = datetime_part(&quot;Year&quot;, timestamp),
+    Week = week_of_year(timestamp)
+| extend
+    YearAndWeek = strcat(Year, ' ' , Week)
+| order by Year, Week
+| summarize Logins = count() by YearAndWeek
+| render table
+</code></pre>
+<h3 id="succesful-logins-by-month">Succesful logins by month</h3>
+<pre><code class="lang-kql">let MonthNames = dynamic([&quot;&quot;, &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;]);
+customEvents
+| where name == &quot;ActiveLogin_BankId_AspNetAuthenticateSuccess&quot;
+| project
+    timestamp,
+    Year = datetime_part(&quot;Year&quot;, timestamp),
+    Month = datetime_part(&quot;Month&quot;, timestamp)
+| extend
+    YearAndMonth = strcat(Year, ' ' , tostring(MonthNames[Month]))
+| order by Year, Month
+| summarize Logins = count() by YearAndMonth
+| render table
+</code></pre>
+<h3 id="success-details">Success details</h3>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    timestamp,
+    Event_ShortName = substring(name, 19),
+    Event_TypeId = tostring(customDimensions.AL_Event_TypeId),
+    Event_Severity = tostring(customDimensions.AL_Event_Severity),
+    BankId_Options_LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType),
+    BankId_Options_UseQrCode = tostring(customDimensions.AL_BankId_Options_UseQrCode),
+    BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),
+    BankId_CollectHintCode = tostring(customDimensions.AL_BankId_CollectHintCode),
+    BankId_User_CertNotBefore = tostring(customDimensions.AL_BankId_User_CertNotBefore),
+    BankId_User_CertNotAfter = tostring(customDimensions.AL_BankId_User_CertNotAfter),
+    BankId_User_DeviceIpAddress = tostring(customDimensions.AL_BankId_User_DeviceIpAddress),
+    User_Device_Browser = tostring(customDimensions.AL_User_Device_Browser),
+    User_Device_Os = tostring(customDimensions.AL_User_Device_Os),
+    User_Device_Type = tostring(customDimensions.AL_User_Device_Type),
+    User_Device_OsVersion = tostring(customDimensions.AL_User_Device_OsVersion),
+    User_Name = tostring(customDimensions.AL_User_Name),
+    User_GivenName = tostring(customDimensions.AL_User_GivenName),
+    User_Surname = tostring(customDimensions.AL_User_Surname),
+    User_SwedishPersonalIdentityNumber = tostring(customDimensions.AL_User_SwedishPersonalIdentityNumber),
+    User_DateOfBirthHint = tostring(customDimensions.AL_User_DateOfBirthHint),
+    User_AgeHint = tostring(customDimensions.AL_User_AgeHint),
+    User_GenderHint = tostring(customDimensions.AL_User_GenderHint),
+    ProductName = tostring(customDimensions.AL_ProductName),
+    ProductVersion = tostring(customDimensions.AL_ProductVersion),
+    BankId_ApiEnvironment = tostring(customDimensions.AL_BankId_ApiEnvironment),
+    BankId_ApiVersion = tostring(customDimensions.AL_BankId_ApiVersion)
+| where Event_Severity == &quot;Success&quot;
+| order by timestamp desc
+| render table
+</code></pre>
+<h2 id="errors">Errors</h2>
+<h3 id="error-chart---by-event-and-error-code">Error chart - By event and error code</h3>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    timestamp,
+    Event_ShortName = substring(name, 19),
+    BankId_ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),
+    EventSeverity = tostring(customDimensions.AL_Event_Severity)
+| where EventSeverity == &quot;Failure&quot; or EventSeverity == &quot;Error&quot;
+| extend
+    EventAndErrorCode = strcat(Event_ShortName, ' - ', BankId_ErrorCode)
+| summarize count() by bin(timestamp, 1d), EventAndErrorCode
+| render columnchart
+</code></pre>
+<h3 id="error-chart---by-error-code">Error chart - By error code</h3>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    timestamp,
+    ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),
+    EventSeverity = tostring(customDimensions.AL_Event_Severity)
+| where EventSeverity == &quot;Failure&quot; or EventSeverity == &quot;Error&quot;
+| summarize count() by bin(timestamp, 1d), ErrorCode
+| render columnchart
+</code></pre>
+<h3 id="error-details">Error details</h3>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    timestamp,
+    Event_ShortName = substring(name, 19),
+    Event_TypeId = tostring(customDimensions.AL_Event_TypeId),
+    Event_Severity = tostring(customDimensions.AL_Event_Severity),
+    Error_ErrorReason = tostring(customDimensions.AL_Error_ErrorReason),
+    BankId_Options_LaunchType = tostring(customDimensions.AL_BankId_Options_LaunchType),
+    BankId_Options_UseQrCode = tostring(customDimensions.AL_BankId_Options_UseQrCode),
+    BankId_ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),
+    BankId_ErrorDetails = tostring(customDimensions.AL_BankId_ErrorDetails),
+    BankId_OrderRef = tostring(customDimensions.AL_BankId_OrderRef),
+    BankId_CollectHintCode = tostring(customDimensions.AL_BankId_CollectHintCode),
+    BankId_User_CertNotBefore = tostring(customDimensions.AL_BankId_User_CertNotBefore),
+    BankId_User_CertNotAfter = tostring(customDimensions.AL_BankId_User_CertNotAfter),
+    BankId_User_DeviceIpAddress = tostring(customDimensions.AL_BankId_User_DeviceIpAddress),
+    User_Device_Browser = tostring(customDimensions.AL_User_Device_Browser),
+    User_Device_Os = tostring(customDimensions.AL_User_Device_Os),
+    User_Device_Type = tostring(customDimensions.AL_User_Device_Type),
+    User_Device_OsVersion = tostring(customDimensions.AL_User_Device_OsVersion),
+    User_Name = tostring(customDimensions.AL_User_Name),
+    User_GivenName = tostring(customDimensions.AL_User_GivenName),
+    User_Surname = tostring(customDimensions.AL_User_Surname),
+    User_SwedishPersonalIdentityNumber = tostring(customDimensions.AL_User_SwedishPersonalIdentityNumber),
+    User_DateOfBirthHint = tostring(customDimensions.AL_User_DateOfBirthHint),
+    User_AgeHint = tostring(customDimensions.AL_User_AgeHint),
+    User_GenderHint = tostring(customDimensions.AL_User_GenderHint),
+    ProductName = tostring(customDimensions.AL_ProductName),
+    ProductVersion = tostring(customDimensions.AL_ProductVersion),
+    BankId_ApiEnvironment = tostring(customDimensions.AL_BankId_ApiEnvironment),
+    BankId_ApiVersion = tostring(customDimensions.AL_BankId_ApiVersion)
+| where Event_Severity == &quot;Failure&quot; or Event_Severity == &quot;Error&quot;
+| order by timestamp desc
+| render table
+</code></pre>
+<h3 id="errors-by-error-code">Errors by error code</h3>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    timestamp,
+    ErrorCode = tostring(customDimensions.AL_BankId_ErrorCode),
+    EventSeverity = tostring(customDimensions.AL_Event_Severity)
+| where EventSeverity == &quot;Failure&quot; or EventSeverity == &quot;Error&quot;
+| summarize count() by ErrorCode
+| render piechart
+</code></pre>
+<h3 id="errors-by-type">Errors by type</h3>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    Event_ShortName = substring(name, 19),
+    Event_Severity = tostring(customDimensions.AL_Event_Severity)
+| where Event_Severity == &quot;Failure&quot; or Event_Severity == &quot;Error&quot;
+| summarize count() by Event_ShortName
+| render piechart
+</code></pre>
+<h2 id="events">Events</h2>
+<h3 id="events-by-severity">Events by severity</h3>
+<pre><code class="lang-kql">customEvents
+| where name startswith &quot;ActiveLogin_BankId_&quot;
+| project
+    timestamp,
+    Severity = tostring(customDimensions.AL_Event_Severity)
+| summarize count() by bin(timestamp, 1d), Severity
+| render columnchart
+</code></pre>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/docs/articles/monitor.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            © Active Solution
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
