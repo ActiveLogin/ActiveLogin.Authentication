@@ -236,7 +236,7 @@ services
 
 #### Specify client certificate format
 
-BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx ` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.pfx `is used.
+BankId provides the client certificate for the test environment in three different versions FPTestcert5_20240610.p12, FPTestcert5_20240610.pem and FPTestcert5_20240610-legacy.pfx. Use `FPTestcert5_20240610.p12` for newer applications and environments that support modern encryption methods. Use `FPTestcert5_20240610.pem` if your application requires PEM format. Use `FPTestcert5_20240610-legacy.pfx` for older applications requiring older algorithms such as Windows Server earlier versions than 2022. The format of the client certificate can be configured. By default `FPTestcert5_20240610-legacy.p12 `is used.
 
 ```csharp
 services
