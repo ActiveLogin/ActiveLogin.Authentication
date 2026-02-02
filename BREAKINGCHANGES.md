@@ -34,13 +34,19 @@ If you are upgrading from an earlier version, you must update any application or
 
 When loading embedded BankID certificates (client test certificate and root certificates for both test and production), we now use `X509KeyStorageFlags.DefaultKeySet` by default.
 
-If this change causes issues in your environment, you can override the `X509KeyStorageFlags` used for the client test certificate. See [the documention](https://docs.activelogin.net/articles/bankid.html#test-environment) for information about how it is done.
+If this change causes issues in your environment, you can override the `X509KeyStorageFlags` used for the client test certificate. See [the documentation](https://docs.activelogin.net/articles/bankid.html#test-environment) for information about how it is done.
 
 ### Loading client BankID certificate from Azure Key Vault
 
 When loading the client BankID certificate from Azure Key Vault, we now use `X509KeyStorageFlags.DefaultKeySet` by default.
 
-If this causes issues in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. See [the documention](https://docs.activelogin.net/articles/bankid.html#using-client-certificate-from-azure-keyvault) for information about how it is done.
+If this causes issues in your environment, it is possible to override the `X509KeyStorageFlags` used when loading the certificate. See [the documentation](https://docs.activelogin.net/articles/bankid.html#using-client-certificate-from-azure-keyvault) for information about how it is done.
+
+### Format of client BankID certificate
+
+The default file format for the client BankID certificate in the test environment has changed. Instead of `FPTestcert5_20240610-legacy.pfx`, the default is now `FPTestcert5_20240610.p12`.
+
+This can be overridden if required. See the [documentation](https://docs.activelogin.net/articles/bankid.html#specify-client-certificate-format) for further information.
 
 ---
 
@@ -353,7 +359,7 @@ When implementing the animated QR code, we have had to update the client side sc
 
 ### Use DefaultAzureCredentials when accessing KeyVault
 
-If using Azure KeyVault for your certificate, we have made chamges to how you authenticate/access that. See [the documention](https://docs.activelogin.net/articles/bankid.html#keyvault-credentials) for how it should be configured now.
+If using Azure KeyVault for your certificate, we have made chamges to how you authenticate/access that. See [the documentation](https://docs.activelogin.net/articles/bankid.html#keyvault-credentials) for how it should be configured now.
 
 ### Drop support for GrandID
 
