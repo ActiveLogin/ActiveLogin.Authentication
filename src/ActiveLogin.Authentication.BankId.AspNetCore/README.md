@@ -26,6 +26,8 @@ services
     });
 ```
 
+For faster automated tests, configure the simulated environment with `BankIdSimulatedAppApiClient.FastCollectStates`. See the [simulated environment documentation](../../docs/articles/bankid.md) for custom collect-state examples.
+
 ### Production
 
 ```csharp
