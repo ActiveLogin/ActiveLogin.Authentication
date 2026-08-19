@@ -267,7 +267,33 @@ public static class IBankIdBuilderExtensions
     public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder)
     {
         return UseSimulatedEnvironment(builder,
-            x => new BankIdSimulatedAppApiClient(),
+            x => new BankIdSimulatedAppApiClient(BankIdSimulatedAppApiClient.NormalCollectStates),
+            x => new BankIdSimulatedVerifyApiClient()
+        );
+    }
+
+    /// <summary>
+    /// Use simulated (in memory) environment. To be used for automated testing.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="configure">Configures the collect-state sequence.</param>
+    /// <returns></returns>
+    public static IBankIdBuilder UseSimulatedEnvironment(this IBankIdBuilder builder, Action<BankIdSimulatedEnvironmentOptions> configure)
+    {
+        if (configure == null)
+        {
+            throw new ArgumentNullException(nameof(configure));
+        }
+
+        var options = new BankIdSimulatedEnvironmentOptions();
+        configure(options);
+        if (options.CollectStates == null || options.CollectStates.Count == 0)
+        {
+            throw new ArgumentException("At least one collect state must be configured.", nameof(configure));
+        }
+
+        return UseSimulatedEnvironment(builder,
+            x => new BankIdSimulatedAppApiClient(options.CollectStates),
             x => new BankIdSimulatedVerifyApiClient()
         );
     }

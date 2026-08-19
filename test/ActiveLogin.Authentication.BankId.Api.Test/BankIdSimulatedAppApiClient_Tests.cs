@@ -193,4 +193,49 @@ public class BankIdSimulatedAppApiClient_Tests
         // Assert
         await Assert.ThrowsAsync<BankIdApiException>(() => bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef)));
     }
+
+    [Fact]
+    public async Task CollectAsync_WithCustomCollectStates__ShouldReturnConfiguredStates()
+    {
+        // Arange
+        var states = new List<BankIdSimulatedAppApiClient.CollectState>
+        {
+            new(CollectStatus.Pending, CollectHintCode.NoClient),
+            new(CollectStatus.Complete, CollectHintCode.UserSign)
+        };
+        var bankIdClient = new BankIdSimulatedAppApiClient(states)
+        {
+            Delay = TimeSpan.Zero
+        };
+
+        // Act
+        var authResponse = await bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        var firstCollectResponse = await bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
+        var secondCollectResponse = await bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
+
+        // Assert
+        Assert.Equal(CollectStatus.Pending, firstCollectResponse.GetCollectStatus());
+        Assert.Equal(CollectHintCode.NoClient, firstCollectResponse.GetCollectHintCode());
+        Assert.Equal(CollectStatus.Complete, secondCollectResponse.GetCollectStatus());
+        Assert.Equal(CollectHintCode.UserSign, secondCollectResponse.GetCollectHintCode());
+    }
+
+    [Fact]
+    public async Task CollectAsync_WithFastCollectStates__ShouldCompleteAfterOnePendingState()
+    {
+        // Arange
+        var bankIdClient = new BankIdSimulatedAppApiClient(BankIdSimulatedAppApiClient.FastCollectStates)
+        {
+            Delay = TimeSpan.Zero
+        };
+
+        // Act
+        var authResponse = await bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        var firstCollectResponse = await bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
+        var secondCollectResponse = await bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
+
+        // Assert
+        Assert.Equal(CollectStatus.Pending, firstCollectResponse.GetCollectStatus());
+        Assert.Equal(CollectStatus.Complete, secondCollectResponse.GetCollectStatus());
+    }
 }

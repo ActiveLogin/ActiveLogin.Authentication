@@ -26,6 +26,34 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
         new CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
     };
 
+    /// <summary>
+    /// Gets a new collect-state sequence that resembles a normal authentication flow.
+    /// </summary>
+    public static List<CollectState> NormalCollectStates => new(DefaultCollectStates);
+
+    /// <summary>
+    /// Gets a new collect-state sequence with the fewest states needed to complete authentication.
+    /// </summary>
+    public static List<CollectState> FastCollectStates => new()
+    {
+        new CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
+        new CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
+    };
+
+    /// <summary>
+    /// Gets a new collect-state sequence that covers the UI-relevant successful hint codes.
+    /// </summary>
+    public static List<CollectState> AllCollectStates => new()
+    {
+        new CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
+        new CollectState(CollectStatus.Pending, CollectHintCode.NoClient),
+        new CollectState(CollectStatus.Pending, CollectHintCode.Started),
+        new CollectState(CollectStatus.Pending, CollectHintCode.UserMrtd),
+        new CollectState(CollectStatus.Pending, CollectHintCode.UserCallConfirm),
+        new CollectState(CollectStatus.Pending, CollectHintCode.UserSign),
+        new CollectState(CollectStatus.Complete, CollectHintCode.UserSign)
+    };
+
     private readonly string _givenName;
     private readonly string _surname;
     private readonly string _name;
@@ -38,7 +66,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
     private TimeSpan _delay = TimeSpan.FromMilliseconds(250);
 
     public BankIdSimulatedAppApiClient()
-        : this(DefaultCollectStates)
+        : this(NormalCollectStates)
     {
     }
 
@@ -53,7 +81,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
     }
 
     public BankIdSimulatedAppApiClient(string givenName, string surname, string personalIdentityNumber)
-        : this(givenName, surname, personalIdentityNumber, DefaultCollectStates)
+        : this(givenName, surname, personalIdentityNumber, NormalCollectStates)
     {
     }
 
@@ -63,7 +91,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
     }
 
     public BankIdSimulatedAppApiClient(string givenName, string surname, string name, string personalIdentityNumber)
-        : this(givenName, surname, name, personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, DefaultCollectStates)
+        : this(givenName, surname, name, personalIdentityNumber, DefaultBankIdIssueDate, DefaultUniqueHardwareId, NormalCollectStates)
     {
     }
 
