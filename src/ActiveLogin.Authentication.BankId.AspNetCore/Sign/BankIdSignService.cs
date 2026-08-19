@@ -1,4 +1,3 @@
-using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
 using ActiveLogin.Authentication.BankId.AspNetCore.Helpers;
@@ -6,7 +5,6 @@ using ActiveLogin.Authentication.BankId.AspNetCore.Models;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 using ActiveLogin.Authentication.BankId.Core.Flow;
-using ActiveLogin.Authentication.BankId.Core.Helpers;
 using ActiveLogin.Authentication.BankId.Core.SupportedDevice;
 using ActiveLogin.Identity.Swedish;
 

@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
@@ -177,11 +176,11 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
 
-        var loginUrl = GetInitUiUrl(uiOptions);
+        var loginUrl = GetInitUiUrl();
         Response.Redirect(loginUrl);
     }
 
-    private string GetInitUiUrl(BankIdUiOptions uiOptions)
+    private string GetInitUiUrl()
     {
         var returnUrl = Context.Request.PathBase.Add(Options.CallbackPath);
 
