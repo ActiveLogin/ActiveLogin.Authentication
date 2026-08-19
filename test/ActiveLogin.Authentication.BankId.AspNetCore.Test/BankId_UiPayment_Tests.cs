@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -135,6 +136,36 @@ public class BankId_UiPayment_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
         Assert.StartsWith("/ActiveLogin/BankId/Payment", transaction.Headers.Location.OriginalString);
+    }
+
+    [Fact]
+    public async Task InitiatePayment_Redirects_To_Payment_Respecting_RouteOptions_LowercaseUrls()
+    {
+        // Arrange
+        using var client = TestHostFactory.CreatePaymentTestServer(o =>
+            {
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
+            },
+            DefaultAppConfiguration(async context =>
+            {
+                var bankIdPaymentService = context.RequestServices.GetRequiredService<IBankIdPaymentService>();
+                await bankIdPaymentService.InitiatePaymentAsync(new BankIdPaymentProperties(TransactionType.npa, "Test Merchant"), "/al-payment-cb", BankIdPaymentDefaults.OtherDeviceConfigKey);
+            }),
+            services =>
+            {
+                services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            }).CreateClient();
+
+        // Act
+        var transaction = await client.GetAsync("/");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
+        Assert.StartsWith("/activelogin/bankid/payment", transaction.Headers.Location.OriginalString);
     }
 
     [Fact]
