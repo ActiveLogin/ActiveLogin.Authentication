@@ -12,6 +12,7 @@ using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
@@ -20,10 +21,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Sign;
 public class BankIdSignService : IBankIdSignService
 {
     private const string StateCookieNameParameterName = "StateCookie.Name";
-    private readonly PathString _signInitPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdSignControllerPath}");
 
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAntiforgery _antiforgery;
+    private readonly LinkGenerator _linkGenerator;
 
     private readonly IOptionsSnapshot<BankIdSignOptions> _optionsSnapshot;
     private readonly IBankIdFlowSystemClock _systemClock;
@@ -36,6 +37,7 @@ public class BankIdSignService : IBankIdSignService
     public BankIdSignService(
         IHttpContextAccessor httpContextAccessor,
         IAntiforgery antiforgery,
+        LinkGenerator linkGenerator,
         IOptionsSnapshot<BankIdSignOptions> optionsSnapshot,
         IBankIdFlowSystemClock systemClock,
         IBankIdUiStateProtector bankIdUiStateProtector,
@@ -46,6 +48,7 @@ public class BankIdSignService : IBankIdSignService
     {
         _httpContextAccessor = httpContextAccessor;
         _antiforgery = antiforgery;
+        _linkGenerator = linkGenerator;
         _optionsSnapshot = optionsSnapshot;
         _systemClock = systemClock;
         _bankIdUiStateProtector = bankIdUiStateProtector;
@@ -168,16 +171,20 @@ public class BankIdSignService : IBankIdSignService
 
     private string GetUiInitUrl(HttpContext httpContext, string callbackPath)
     {
-        var pathBase = httpContext.Request.PathBase;
-        var signUrl = pathBase.Add(_signInitPath);
-
-        var queryBuilder = QueryStringGenerator.ToQueryString(
-            new Dictionary<string, string>
+        // Generate the URL via the routing system so it honours conventions such as
+        // RouteOptions.LowercaseUrls, keeping it consistent with the return URL used
+        // when launching the BankID app.
+        var signUrl = _linkGenerator.GetPathByAction(
+            httpContext,
+            action: BankIdConstants.Routes.BankIdSignInitActionName,
+            controller: BankIdConstants.Routes.BankIdSignControllerName,
+            values: new
             {
-                { BankIdConstants.QueryStringParameters.ReturnUrl, callbackPath }
+                area = BankIdConstants.Routes.ActiveLoginAreaName,
+                returnUrl = callbackPath
             });
 
-        return $"{signUrl}{queryBuilder}";
+        return signUrl ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdSignControllerName, BankIdConstants.Routes.BankIdSignInitActionName));
     }
 
     private void DeleteStateCookie(HttpContext httpContext, BankIdSignOptions options)

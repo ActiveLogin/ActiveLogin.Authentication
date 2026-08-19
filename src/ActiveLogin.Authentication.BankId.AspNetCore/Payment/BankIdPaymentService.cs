@@ -11,6 +11,7 @@ using ActiveLogin.Identity.Swedish;
 
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
@@ -19,10 +20,10 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.Payment;
 public class BankIdPaymentService : IBankIdPaymentService
 {
     private const string StateCookieNameParameterName = "StateCookie.Name";
-    private readonly PathString _paymentInitPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdPaymentControllerPath}");
 
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAntiforgery _antiforgery;
+    private readonly LinkGenerator _linkGenerator;
 
     private readonly IOptionsSnapshot<BankIdPaymentOptions> _optionsSnapshot;
     private readonly IBankIdFlowSystemClock _systemClock;
@@ -35,6 +36,7 @@ public class BankIdPaymentService : IBankIdPaymentService
     public BankIdPaymentService(
         IHttpContextAccessor httpContextAccessor,
         IAntiforgery antiforgery,
+        LinkGenerator linkGenerator,
         IOptionsSnapshot<BankIdPaymentOptions> optionsSnapshot,
         IBankIdFlowSystemClock systemClock,
         IBankIdUiStateProtector bankIdUiStateProtector,
@@ -45,6 +47,7 @@ public class BankIdPaymentService : IBankIdPaymentService
     {
         _httpContextAccessor = httpContextAccessor;
         _antiforgery = antiforgery;
+        _linkGenerator = linkGenerator;
         _optionsSnapshot = optionsSnapshot;
         _systemClock = systemClock;
         _bankIdUiStateProtector = bankIdUiStateProtector;
@@ -167,16 +170,20 @@ public class BankIdPaymentService : IBankIdPaymentService
 
     private string GetUiInitUrl(HttpContext httpContext, string callbackPath)
     {
-        var pathBase = httpContext.Request.PathBase;
-        var paymentUrl = pathBase.Add(_paymentInitPath);
-
-        var queryBuilder = QueryStringGenerator.ToQueryString(
-            new Dictionary<string, string>
+        // Generate the URL via the routing system so it honours conventions such as
+        // RouteOptions.LowercaseUrls, keeping it consistent with the return URL used
+        // when launching the BankID app.
+        var paymentUrl = _linkGenerator.GetPathByAction(
+            httpContext,
+            action: BankIdConstants.Routes.BankIdPaymentInitActionName,
+            controller: BankIdConstants.Routes.BankIdPaymentControllerName,
+            values: new
             {
-                { BankIdConstants.QueryStringParameters.ReturnUrl, callbackPath }
+                area = BankIdConstants.Routes.ActiveLoginAreaName,
+                returnUrl = callbackPath
             });
 
-        return $"{paymentUrl}{queryBuilder}";
+        return paymentUrl ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdPaymentControllerName, BankIdConstants.Routes.BankIdPaymentInitActionName));
     }
 
     private void DeleteStateCookie(HttpContext httpContext, BankIdPaymentOptions options)
