@@ -1394,6 +1394,19 @@ services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();
 
 The functionality provided tries to detect the device by looking at the user agent. We need to know what device is used to launch the BankId app and this differs from iOS/Android/PC/Mac.
 
+#### How the BankID app is launched
+
+By default, Active Login follows [BankID's autostart guidance](https://developers.bankid.com/how-to-guides/autostart):
+
+* **Mobile (iOS and Android):** the app is launched using the universal/app link `https://app.bankid.com/`.
+* **Desktop:** the app is launched using the custom scheme `bankid:///`.
+
+The launch link is opened from the client using an anchor element with `referrerPolicy="origin"`, as recommended by BankID.
+
+Autostart is the default. A manual *"Start the BankID app"* button is only shown as a fallback on Android browsers that block launching a third party app without a user gesture (Chrome, Edge, Samsung Internet and Brave). Firefox and Opera on Android, as well as all browsers on iOS, autostart without user interaction.
+
+The deprecated `redirect` parameter is still included in the launch URL for backwards compatibility. BankID now recommends providing the return URL in the backend call when creating the order instead, see [Return URL](https://developers.bankid.com/how-to-guides/return-url).
+
 By implementing `IBankIdLauncher` you can customize exactly how to launch the app. It is very rare that you need to change this, but could be relevant if you use Active Login for authenticating a user in a native mobile app.
 
 ```csharp
@@ -1690,6 +1703,8 @@ All browsers on mobile are supported to show the UI, but the redirect flow has b
     - Edge
     - Samsung Internet
     - Opera Mini
+
+___Note:___ On mobile, the BankID app is launched using the app link `https://app.bankid.com/` for all iOS and Android browsers. Autostart is enabled by default; on Android, browsers that require a user gesture (Chrome, Edge, Samsung Internet, Brave) show a manual launch button instead.
 
 ___Note:___ Brave on iOS/Android identifies as Safari or Chrome for privacy reasons and will get wrong configuration, so the redirect flow will fail.
 
