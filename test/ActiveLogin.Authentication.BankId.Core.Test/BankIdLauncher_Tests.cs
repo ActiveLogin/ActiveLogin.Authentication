@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Core.Launcher;
@@ -99,6 +100,52 @@ public class BankIdLauncher_Tests
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
 
         Assert.Equal(expected, info.DeviceMightRequireUserInteractionToLaunchBankIdApp);
+    }
+
+    [Fact]
+    public async Task BankIdLauncher_Should_SetRedirectNull_ForAndroid()
+    {
+        // BankID guideline: Android app links should use redirect=null.
+        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Chrome));
+
+        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
+
+        Assert.Contains("redirect=null", info.LaunchUrl);
+    }
+
+    [Fact]
+    public async Task BankIdLauncher_Should_UseReturnUrlAsRedirect_ForIosSafari()
+    {
+        const string returnUrl = "https://example.com/return";
+        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Safari));
+
+        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest(returnUrl, "token"));
+
+        Assert.Contains($"redirect={UrlEncoder.Default.Encode(returnUrl)}", info.LaunchUrl);
+    }
+
+    [Theory]
+    [InlineData(BankIdSupportedDeviceBrowser.Chrome, "googlechromes://")]
+    [InlineData(BankIdSupportedDeviceBrowser.Firefox, "firefox://")]
+    public async Task BankIdLauncher_Should_UseBrowserSchemeAsRedirect_ForIosThirdPartyBrowsers(BankIdSupportedDeviceBrowser browser, string expectedScheme)
+    {
+        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Ios, browser));
+
+        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
+
+        Assert.Contains($"redirect={UrlEncoder.Default.Encode(expectedScheme)}", info.LaunchUrl);
+    }
+
+    [Theory]
+    [InlineData(BankIdSupportedDeviceBrowser.Edge)]
+    [InlineData(BankIdSupportedDeviceBrowser.Opera)]
+    public async Task BankIdLauncher_Should_SetRedirectNull_ForIosEdgeAndOpera(BankIdSupportedDeviceBrowser browser)
+    {
+        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Ios, browser));
+
+        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
+
+        Assert.Contains("redirect=null", info.LaunchUrl);
     }
 
     private static BankIdLauncher CreateLauncher(BankIdSupportedDevice device)
