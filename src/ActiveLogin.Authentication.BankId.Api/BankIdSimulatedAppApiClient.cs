@@ -97,7 +97,12 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 
     public BankIdSimulatedAppApiClient(string givenName, string surname, string name, string personalIdentityNumber, string bankIdIssueDate, string uniqueHardwareId, List<CollectState> collectStates)
     {
-        if (collectStates == null || collectStates.Count == 0)
+        if (collectStates == null)
+        {
+            throw new ArgumentNullException(nameof(collectStates));
+        }
+
+        if (collectStates.Count == 0)
         {
             throw new ArgumentException("At least one collect state must be configured.", nameof(collectStates));
         }

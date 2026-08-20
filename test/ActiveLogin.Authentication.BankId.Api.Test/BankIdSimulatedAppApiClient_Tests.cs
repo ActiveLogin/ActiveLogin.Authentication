@@ -262,4 +262,16 @@ public class BankIdSimulatedAppApiClient_Tests
         Assert.Equal(CollectStatus.Pending, collectResponse.GetCollectStatus());
         Assert.Equal(CollectHintCode.NoClient, collectResponse.GetCollectHintCode());
     }
+
+    [Fact]
+    public void Constructor_WithNullCollectStates__ShouldThrowArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new BankIdSimulatedAppApiClient(null!));
+    }
+
+    [Fact]
+    public void Constructor_WithEmptyCollectStates__ShouldThrowArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => new BankIdSimulatedAppApiClient(new List<BankIdSimulatedAppApiClient.CollectState>()));
+    }
 }
