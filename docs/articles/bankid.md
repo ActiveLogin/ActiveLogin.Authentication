@@ -225,7 +225,7 @@ services
     });
 ```
 
-The `AllCollectStates` sequence can be used to verify that the UI handles the different successful collect hint codes and text lengths.
+The `AllSuccessfulCollectStates` sequence can be used to verify that the UI handles the different successful collect hint codes and text lengths. It intentionally does not include failed terminal states, so the simulated authentication can complete successfully.
 
 ```csharp
 services
@@ -233,7 +233,7 @@ services
     {
         bankId.UseSimulatedEnvironment(options =>
         {
-            options.CollectStates = BankIdSimulatedAppApiClient.AllCollectStates;
+            options.CollectStates = BankIdSimulatedAppApiClient.AllSuccessfulCollectStates;
         });
     });
 ```
@@ -255,7 +255,7 @@ services
     });
 ```
 
-These examples require the `ActiveLogin.Authentication.BankId.Api` and `ActiveLogin.Authentication.BankId.Core` namespaces. The simulated client also applies a response delay to mimic the real flow. Set `Delay` on the resolved `BankIdSimulatedAppApiClient` when a test needs to remove that delay completely.
+These examples require the `ActiveLogin.Authentication.BankId.Api` and `ActiveLogin.Authentication.BankId.Core` namespaces. The simulated client also applies a response delay to mimic the real flow. Delay is not configured by `UseSimulatedEnvironment`; if a test needs to remove it, resolve the registered `BankIdSimulatedAppApiClient` from dependency injection and set its `Delay` property to `TimeSpan.Zero`.
 
 
 ### Test environment
