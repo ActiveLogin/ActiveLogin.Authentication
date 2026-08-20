@@ -238,4 +238,28 @@ public class BankIdSimulatedAppApiClient_Tests
         Assert.Equal(CollectStatus.Pending, firstCollectResponse.GetCollectStatus());
         Assert.Equal(CollectStatus.Complete, secondCollectResponse.GetCollectStatus());
     }
+
+    [Fact]
+    public async Task CollectAsync_WithCustomCollectStates__ShouldNotBeAffectedByChangesToOriginalList()
+    {
+        // Arange
+        var states = new List<BankIdSimulatedAppApiClient.CollectState>
+        {
+            new(CollectStatus.Pending, CollectHintCode.NoClient),
+            new(CollectStatus.Complete, CollectHintCode.UserSign)
+        };
+        var bankIdClient = new BankIdSimulatedAppApiClient(states)
+        {
+            Delay = TimeSpan.Zero
+        };
+        states.Clear();
+
+        // Act
+        var authResponse = await bankIdClient.AuthAsync(new AuthRequest("1.1.1.1"));
+        var collectResponse = await bankIdClient.CollectAsync(new CollectRequest(authResponse.OrderRef));
+
+        // Assert
+        Assert.Equal(CollectStatus.Pending, collectResponse.GetCollectStatus());
+        Assert.Equal(CollectHintCode.NoClient, collectResponse.GetCollectHintCode());
+    }
 }

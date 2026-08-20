@@ -292,8 +292,10 @@ public static class IBankIdBuilderExtensions
             throw new ArgumentException("At least one collect state must be configured.", nameof(configure));
         }
 
+        var collectStates = new List<BankIdSimulatedAppApiClient.CollectState>(options.CollectStates);
+
         return UseSimulatedEnvironment(builder,
-            x => new BankIdSimulatedAppApiClient(options.CollectStates),
+            x => new BankIdSimulatedAppApiClient(collectStates),
             x => new BankIdSimulatedVerifyApiClient()
         );
     }

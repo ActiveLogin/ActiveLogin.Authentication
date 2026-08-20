@@ -43,7 +43,7 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
     /// <summary>
     /// Gets a new collect-state sequence that covers the UI-relevant successful hint codes.
     /// </summary>
-    public static List<CollectState> AllCollectStates => new()
+    public static List<CollectState> AllSuccessfulCollectStates => new()
     {
         new CollectState(CollectStatus.Pending, CollectHintCode.OutstandingTransaction),
         new CollectState(CollectStatus.Pending, CollectHintCode.NoClient),
@@ -97,13 +97,18 @@ public class BankIdSimulatedAppApiClient : IBankIdAppApiClient
 
     public BankIdSimulatedAppApiClient(string givenName, string surname, string name, string personalIdentityNumber, string bankIdIssueDate, string uniqueHardwareId, List<CollectState> collectStates)
     {
+        if (collectStates == null || collectStates.Count == 0)
+        {
+            throw new ArgumentException("At least one collect state must be configured.", nameof(collectStates));
+        }
+
         _givenName = givenName;
         _surname = surname;
         _name = name;
         _personalIdentityNumber = personalIdentityNumber;
         _bankIdIssueDate = bankIdIssueDate;
         _uniqueHardwareId = uniqueHardwareId;
-        _collectStates = collectStates;
+        _collectStates = new List<CollectState>(collectStates);
     }
 
     public TimeSpan Delay
