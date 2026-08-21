@@ -225,18 +225,7 @@ services
     });
 ```
 
-The `AllSuccessfulCollectStates` sequence can be used to verify that the UI handles the different successful collect hint codes and text lengths. It intentionally does not include failed terminal states, so the simulated authentication can complete successfully.
-
-```csharp
-services
-    .AddBankId(bankId =>
-    {
-        bankId.UseSimulatedEnvironment(options =>
-        {
-            options.CollectStates = BankIdSimulatedAppApiClient.AllSuccessfulCollectStates;
-        });
-    });
-```
+The `AllSuccessfulCollectStates` sequence can be used to verify that the UI handles the different successful collect hint codes and text lengths. It intentionally does not include failed terminal states, so the simulated authentication can complete successfully. Set it with `options.CollectStates = BankIdSimulatedAppApiClient.AllSuccessfulCollectStates;`.
 
 For a specialized test, provide your own sequence. The final state should have `CollectStatus.Complete` so that the simulated authentication can finish successfully.
 
