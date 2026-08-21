@@ -288,10 +288,8 @@ public static class IBankIdBuilderExtensions
         var options = new BankIdSimulatedEnvironmentOptions();
         configure(options);
 
-        var collectStates = new List<BankIdSimulatedAppApiClient.CollectState>(options.CollectStates);
-
         return UseSimulatedEnvironment(builder,
-            x => new BankIdSimulatedAppApiClient(collectStates),
+            x => new BankIdSimulatedAppApiClient(options.CollectStates),
             x => new BankIdSimulatedVerifyApiClient()
         );
     }
