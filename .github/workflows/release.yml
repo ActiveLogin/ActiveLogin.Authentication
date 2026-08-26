@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: GitHubPackages
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      actions: read
+      packages: write
     strategy:
       matrix:
         package:
@@ -25,28 +28,11 @@ jobs:
         - ActiveLogin.Authentication.BankId.UAParser
     steps:
       - name: 'Download artifact'
-        uses: actions/github-script@v5
+        uses: actions/download-artifact@v4
         with:
-          script: |
-            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: context.payload.workflow_run.id,
-            });
-            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "activelogin-authentication-nuget-windows"
-            })[0];
-            let download = await github.rest.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            let fs = require('fs');
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/artifact.zip`, Buffer.from(download.data));
-
-      - name: 'Unzip artifact'
-        run: unzip artifact.zip
+          name: activelogin-authentication-nuget-windows
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
