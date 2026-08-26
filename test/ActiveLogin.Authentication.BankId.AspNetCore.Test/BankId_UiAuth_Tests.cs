@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -122,6 +123,35 @@ public class BankId_UiAuth_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
         Assert.StartsWith("/ActiveLogin/BankId/Auth", transaction.Headers.Location.OriginalString);
+    }
+
+    [Fact]
+    public async Task Challenge_Redirects_To_Login_Respecting_RouteOptions_LowercaseUrls()
+    {
+        // Arrange
+        using var client = TestHostFactory.CreateAuthTestServer(o =>
+            {
+                o.UseSimulatedEnvironment();
+            },
+            o =>
+            {
+                o.AddSameDevice();
+            },
+            DefaultAppConfiguration(async context =>
+            {
+                await context.ChallengeAsync(BankIdAuthDefaults.SameDeviceAuthenticationScheme);
+            }),
+            services =>
+            {
+                services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            }).CreateClient();
+
+        // Act
+        var transaction = await client.GetAsync("/");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
+        Assert.StartsWith("/activelogin/bankid/auth", transaction.Headers.Location.OriginalString);
     }
 
     [Fact]

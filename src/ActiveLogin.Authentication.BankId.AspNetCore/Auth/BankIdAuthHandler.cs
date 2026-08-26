@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-using ActiveLogin.Authentication.BankId.Api.Models;
 using ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 using ActiveLogin.Authentication.BankId.AspNetCore.Cookies;
 using ActiveLogin.Authentication.BankId.AspNetCore.DataProtection;
@@ -15,7 +14,7 @@ using ActiveLogin.Identity.Swedish;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
@@ -26,10 +25,9 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
 {
     private const string StateCookieNameParameterName = "StateCookie.Name";
 
-    private readonly PathString _authPath = new($"/{BankIdConstants.Routes.ActiveLoginAreaName}/{BankIdConstants.Routes.BankIdPathName}/{BankIdConstants.Routes.BankIdAuthControllerPath}");
-
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAntiforgery _antiforgery;
+    private readonly LinkGenerator _linkGenerator;
     private readonly IBankIdUiStateProtector _uiStateProtector;
     private readonly IBankIdUiResultProtector _uiResultProtector;
     private readonly IBankIdEventTrigger _bankIdEventTrigger;
@@ -40,6 +38,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     public BankIdAuthHandler(
         IHttpContextAccessor httpContextAccessor,
         IAntiforgery antiforgery,
+        LinkGenerator linkGenerator,
         IOptionsMonitor<BankIdAuthOptions> options,
         ILoggerFactory loggerFactory,
         UrlEncoder encoder,
@@ -53,6 +52,7 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
     {
         _httpContextAccessor = httpContextAccessor;
         _antiforgery = antiforgery;
+        _linkGenerator = linkGenerator;
         _uiStateProtector = uiStateProtector;
         _uiResultProtector = uiResultProtector;
         _bankIdEventTrigger = bankIdEventTrigger;
@@ -176,22 +176,29 @@ public class BankIdAuthHandler : RemoteAuthenticationHandler<BankIdAuthOptions>
         var detectedDevice = _bankIdSupportedDeviceDetector.Detect();
         await _bankIdEventTrigger.TriggerAsync(new BankIdAspNetChallengeSuccessEvent(detectedDevice, uiOptions.ToBankIdFlowOptions()));
 
-        var loginUrl = GetInitUiUrl(uiOptions);
+        var loginUrl = GetInitUiUrl();
         Response.Redirect(loginUrl);
     }
 
-    private string GetInitUiUrl(BankIdUiOptions uiOptions)
+    private string GetInitUiUrl()
     {
-        var pathBase = Context.Request.PathBase;
-        var authUrl = pathBase.Add(_authPath);
-        var returnUrl = pathBase.Add(Options.CallbackPath);
+        var returnUrl = Context.Request.PathBase.Add(Options.CallbackPath);
 
-        var queryBuilder = new QueryBuilder(new Dictionary<string, string>
-        {
-            { BankIdConstants.QueryStringParameters.ReturnUrl, returnUrl }
-        });
+        // Generate the URL via the routing system so it honours conventions such as
+        // RouteOptions.LowercaseUrls. This keeps it consistent with the return URL used
+        // when launching the BankID app, which is also generated via routing. On Safari
+        // on iOS a casing mismatch between the two would otherwise cause the app to launch twice.
+        var loginUrl = _linkGenerator.GetPathByAction(
+            Context,
+            action: BankIdConstants.Routes.BankIdAuthInitActionName,
+            controller: BankIdConstants.Routes.BankIdAuthControllerName,
+            values: new
+            {
+                area = BankIdConstants.Routes.ActiveLoginAreaName,
+                returnUrl
+            });
 
-        return $"{authUrl}{queryBuilder.ToQueryString()}";
+        return loginUrl ?? throw new Exception(BankIdConstants.ErrorMessages.CouldNotGetUrlFor(BankIdConstants.Routes.BankIdAuthControllerName, BankIdConstants.Routes.BankIdAuthInitActionName));
     }
 
     private void AppendStateCookie(AuthenticationProperties properties)
