@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
@@ -90,7 +91,7 @@ services
         else
         {
             bankId.UseProductionEnvironment()
-                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"), X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
         }
     });
 
@@ -99,22 +100,22 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie()
     .AddBankIdAuth(bankId =>
     {
-        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID (SameDevice)", options => { });
-        bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID (OtherDevice)", options => { });
+        bankId.AddSameDevice(BankIdAuthDefaults.SameDeviceAuthenticationScheme, "BankID", options => { });
+        bankId.AddOtherDevice(BankIdAuthDefaults.OtherDeviceAuthenticationScheme, "BankID with QR Code", options => { });
     });
 
 // Add Active Login - Sign
 services.AddBankIdSign(bankId =>
 {
-    bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
-    bankId.AddOtherDevice(BankIdSignDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
+    bankId.AddSameDevice(BankIdSignDefaults.SameDeviceConfigKey, "BankID", options => { });
+    bankId.AddOtherDevice(BankIdSignDefaults.OtherDeviceConfigKey, "BankID with QR Code", options => { });
 });
 
 // Add Active Login - Payment
 services.AddBankIdPayment(bankId =>
 {
-    bankId.AddSameDevice(BankIdPaymentDefaults.SameDeviceConfigKey, "BankID (SameDevice)", options => { });
-    bankId.AddOtherDevice(BankIdPaymentDefaults.OtherDeviceConfigKey, "BankID (OtherDevice)", options => { });
+    bankId.AddSameDevice(BankIdPaymentDefaults.SameDeviceConfigKey, "BankID", options => { });
+    bankId.AddOtherDevice(BankIdPaymentDefaults.OtherDeviceConfigKey, "BankID with QR Code", options => { });
 });
 
 // Add Authorization
