@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 
 using ActiveLogin.Authentication.BankId.AspNetCore;
 using ActiveLogin.Authentication.BankId.AspNetCore.Auth;
@@ -90,7 +91,7 @@ services
         else
         {
             bankId.UseProductionEnvironment()
-                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"));
+                .UseClientCertificateFromAzureKeyVault(configuration.GetSection("ActiveLogin:BankId:ClientCertificate"), X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
         }
     });
 
