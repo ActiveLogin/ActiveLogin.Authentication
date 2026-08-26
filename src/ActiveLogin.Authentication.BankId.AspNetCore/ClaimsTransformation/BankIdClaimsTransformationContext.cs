@@ -7,7 +7,7 @@ namespace ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation;
 
 public class BankIdClaimsTransformationContext
 {
-    internal BankIdClaimsTransformationContext(BankIdAuthOptions bankIdAuthOptions, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, CompletionData bankIdCompletionData)
+    public BankIdClaimsTransformationContext(BankIdAuthOptions bankIdAuthOptions, string bankIdOrderRef, string personalIdentityNumber, string name, string givenName, string surname, CompletionData bankIdCompletionData)
     {
         BankIdAuthOptions = bankIdAuthOptions;
 
