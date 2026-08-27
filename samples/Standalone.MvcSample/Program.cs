@@ -86,7 +86,7 @@ services
         }
         else if (configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
         {
-            bankId.UseTestEnvironment();
+            bankId.UseTestEnvironment(keyStorageFlags: X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
         }
         else
         {
