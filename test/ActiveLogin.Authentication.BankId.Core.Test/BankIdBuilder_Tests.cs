@@ -45,7 +45,6 @@ public class BankIdBuilderTests
         };
 
         builder.UseSimulatedEnvironment(options => options.CollectStates = states);
-        states.Clear();
 
         using var serviceProvider = services.BuildServiceProvider();
         var client = Assert.IsType<BankIdSimulatedAppApiClient>(serviceProvider.GetRequiredService<IBankIdAppApiClient>());
