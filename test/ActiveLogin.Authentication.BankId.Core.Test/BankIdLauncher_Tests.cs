@@ -35,17 +35,25 @@ public class BankIdLauncher_Tests
     }
 
     [Theory]
-    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Safari)]
-    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Chrome)]
-    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Chrome)]
-    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Firefox)]
-    public async Task BankIdLauncher_Should_UseAppLink_ForMobileDevices(BankIdSupportedDeviceOs os, BankIdSupportedDeviceBrowser browser)
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Safari, true)]
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Chrome, true)]
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Edge, true)]
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Firefox, true)]
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Opera, true)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Chrome, true)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Edge, true)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Opera, true)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.SamsungBrowser, false)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Firefox, false)]
+
+    public async Task BankIdLauncher_Should_UseAppLink_SupportedForMobileDevices(BankIdSupportedDeviceOs os, BankIdSupportedDeviceBrowser browser, bool useAppLink)
     {
         var launcher = CreateLauncher(Mobile(os, browser));
 
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
 
-        Assert.StartsWith("https://app.bankid.com/", info.LaunchUrl);
+        if(useAppLink) Assert.StartsWith("https://app.bankid.com/", info.LaunchUrl);
+        else Assert.StartsWith("bankid:///", info.LaunchUrl);
     }
 
     [Fact]
