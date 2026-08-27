@@ -37,15 +37,31 @@ public class BankIdLauncher_Tests
     [Theory]
     [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Safari)]
     [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Chrome)]
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Edge)]
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Firefox)]
+    [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Opera)]
     [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Chrome)]
-    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Firefox)]
-    public async Task BankIdLauncher_Should_UseAppLink_ForMobileDevices(BankIdSupportedDeviceOs os, BankIdSupportedDeviceBrowser browser)
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Edge)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Opera)]
+    public async Task BankIdLauncher_Should_UseAppLink_ForSupportedMobileDevices(BankIdSupportedDeviceOs os, BankIdSupportedDeviceBrowser browser)
     {
         var launcher = CreateLauncher(Mobile(os, browser));
 
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
 
         Assert.StartsWith("https://app.bankid.com/", info.LaunchUrl);
+    }
+
+    [Theory]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.SamsungBrowser)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Firefox)]
+    public async Task BankIdLauncher_Should_UseScheme_ForMobileDevicesNotSupportingAppLink(BankIdSupportedDeviceOs os, BankIdSupportedDeviceBrowser browser)
+    {
+        var launcher = CreateLauncher(Mobile(os, browser));
+
+        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
+
+        Assert.StartsWith("bankid:///", info.LaunchUrl);
     }
 
     [Fact]

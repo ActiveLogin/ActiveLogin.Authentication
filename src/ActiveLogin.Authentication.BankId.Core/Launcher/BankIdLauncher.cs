@@ -103,10 +103,18 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private static bool CanUseAppLink(BankIdSupportedDevice device)
     {
-        // Universal Links (https://app.bankid.com/) are the recommended approach for mobile devices
-        // per BankID documentation: https://developers.bankid.com/how-to-guides/autostart
+        // Universal Links / App Links (https://app.bankid.com/) are the
+        // recommended approach for mobile devices according to BankID:
+        // https://developers.bankid.com/how-to-guides/autostart
+        //
+        // Our Android browser tests show that the App Link does not launch
+        // BankID in Firefox and Samsung Internet. These browsers therefore
+        // fall back to the bankid:// scheme.
 
-        return device.DeviceOs == BankIdSupportedDeviceOs.Ios || device.DeviceOs == BankIdSupportedDeviceOs.Android;
+        return device.DeviceOs == BankIdSupportedDeviceOs.Ios
+            || (device.DeviceOs == BankIdSupportedDeviceOs.Android
+                && device.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
+                && device.DeviceBrowser != BankIdSupportedDeviceBrowser.SamsungBrowser);
     }
 
     private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
