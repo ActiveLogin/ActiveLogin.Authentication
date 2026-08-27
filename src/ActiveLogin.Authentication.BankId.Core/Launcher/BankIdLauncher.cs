@@ -106,7 +106,10 @@ internal class BankIdLauncher : IBankIdLauncher
         // Universal Links (https://app.bankid.com/) are the recommended approach for mobile devices
         // per BankID documentation: https://developers.bankid.com/how-to-guides/autostart
 
-        return device.DeviceOs == BankIdSupportedDeviceOs.Ios || device.DeviceOs == BankIdSupportedDeviceOs.Android;
+        return device.DeviceOs == BankIdSupportedDeviceOs.Ios
+            || (device.DeviceOs == BankIdSupportedDeviceOs.Android
+                && device.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
+                && device.DeviceBrowser != BankIdSupportedDeviceBrowser.SamsungBrowser);
     }
 
     private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
