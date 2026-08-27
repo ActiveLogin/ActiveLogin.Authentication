@@ -1394,6 +1394,21 @@ services.AddTransient<IBankIdQrCodeGenerator, CustomQrCodeGenerator>();
 
 The functionality provided tries to detect the device by looking at the user agent. We need to know what device is used to launch the BankId app and this differs from iOS/Android/PC/Mac.
 
+#### How the BankID app is launched
+
+By default, Active Login follows [BankID's autostart guidance](https://developers.bankid.com/how-to-guides/autostart):
+
+* **Mobile (iOS and Android):** the app is launched using the universal/app link `https://app.bankid.com/`.
+* **Desktop:** the app is launched using the custom scheme `bankid:///`.
+
+On Android, **Firefox and Samsung Internet are exceptions**. Our browser tests show that the BankID app is not launched when using the universal/app link in these browsers. Active Login therefore falls back to the custom `bankid:///` scheme for these browsers. All other supported Android browsers use the universal/app link.
+
+The launch link is opened from the client using an anchor element with `referrerPolicy="origin"`, as recommended by BankID.
+
+Autostart is the default. A manual *"Start the BankID app"* button is shown as a fallback on Android browsers that block launching a third-party app without a user gesture.
+
+The deprecated `redirect` parameter is still included in the launch URL for backwards compatibility. BankID now recommends providing the return URL in the backend call when creating the order instead, see [Return URL](https://developers.bankid.com/how-to-guides/return-url).
+
 By implementing `IBankIdLauncher` you can customize exactly how to launch the app. It is very rare that you need to change this, but could be relevant if you use Active Login for authenticating a user in a native mobile app.
 
 ```csharp
@@ -1683,16 +1698,16 @@ All browsers on mobile are supported to show the UI, but the redirect flow has b
     - Chrome
     - Edge
     - Firefox
-    - Opera Touch
 - Android
     - Chrome
     - Firefox
     - Edge
     - Samsung Internet
-    - Opera Mini
+
+___Note:___ On mobile, the BankID app is launched using the App Link `https://app.bankid.com/` by default, in accordance with [BankID's autostart guidance](https://developers.bankid.com/how-to-guides/autostart). On Android, Firefox and Samsung Internet are exceptions because our tests show that the App Link does not launch the BankID app in these browsers. For these browsers, Active Login falls back to the `bankid:///` custom scheme.
+
+Autostart is enabled by default. A manual launch button is shown as a fallback on Android browsers that require a user gesture to launch a third-party app.
 
 ___Note:___ Brave on iOS/Android identifies as Safari or Chrome for privacy reasons and will get wrong configuration, so the redirect flow will fail.
-
-___Note:___ If you aim to support IE11 a polyfill for some JavaScript features we are using is needed.
 
 * [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API): https://github.com/github/fetch
