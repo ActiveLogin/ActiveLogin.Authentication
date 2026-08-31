@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ActiveLogin.Authentication.BankId.Api;
+using ActiveLogin.Authentication.BankId.Api.Models;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +31,31 @@ public class BankIdBuilderTests
         var exception = Assert.Throws<InvalidOperationException>(() => builder.AddSimulatedApiErrors());
         Assert.Equal("No IBankIdAppApiClient implementation found in the service collection.", exception.Message);
 
+    }
+
+    [Fact]
+    public async Task UseSimulatedEnvironment_WithOptions__RegistersConfiguredCollectStates()
+    {
+        var services = new ServiceCollection();
+        var builder = new BankIdBuilder(services);
+        var states = new List<BankIdSimulatedAppApiClient.CollectState>
+        {
+            new(CollectStatus.Pending, CollectHintCode.NoClient),
+            new(CollectStatus.Complete, CollectHintCode.UserSign)
+        };
+
+        builder.UseSimulatedEnvironment(options => options.CollectStates = states);
+
+        using var serviceProvider = services.BuildServiceProvider();
+        var client = Assert.IsType<BankIdSimulatedAppApiClient>(serviceProvider.GetRequiredService<IBankIdAppApiClient>());
+        client.Delay = TimeSpan.Zero;
+        var authResponse = await client.AuthAsync(new AuthRequest("1.1.1.1"));
+        var firstCollectResponse = await client.CollectAsync(new CollectRequest(authResponse.OrderRef));
+        var secondCollectResponse = await client.CollectAsync(new CollectRequest(authResponse.OrderRef));
+
+        Assert.Equal(CollectStatus.Pending, firstCollectResponse.GetCollectStatus());
+        Assert.Equal(CollectHintCode.NoClient, firstCollectResponse.GetCollectHintCode());
+        Assert.Equal(CollectStatus.Complete, secondCollectResponse.GetCollectStatus());
     }
 
 }

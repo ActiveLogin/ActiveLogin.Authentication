@@ -210,6 +210,43 @@ services
 ```
 
 
+### Simulated environment with custom collect states
+
+The simulated environment uses a normal collect flow by default. For automated tests, a faster flow can be selected. The `FastCollectStates` sequence contains only the states needed to reach a successful result.
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseSimulatedEnvironment(options =>
+        {
+            options.CollectStates = BankIdSimulatedAppApiClient.FastCollectStates;
+        });
+    });
+```
+
+The `AllSuccessfulCollectStates` sequence can be used to verify that the UI handles the different successful collect hint codes and text lengths. It intentionally does not include failed terminal states, so the simulated authentication can complete successfully. Set it with `options.CollectStates = BankIdSimulatedAppApiClient.AllSuccessfulCollectStates;`.
+
+For a specialized test, provide your own sequence. The final state should have `CollectStatus.Complete` so that the simulated authentication can finish successfully.
+
+```csharp
+services
+    .AddBankId(bankId =>
+    {
+        bankId.UseSimulatedEnvironment(options =>
+        {
+            options.CollectStates = new List<BankIdSimulatedAppApiClient.CollectState>
+            {
+                new(CollectStatus.Pending, CollectHintCode.Started),
+                new(CollectStatus.Complete, CollectHintCode.UserSign)
+            };
+        });
+    });
+```
+
+These examples require the `ActiveLogin.Authentication.BankId.Api` and `ActiveLogin.Authentication.BankId.Core` namespaces. The simulated client also applies a response delay to mimic the real flow. Delay is not configured by `UseSimulatedEnvironment`; if a test needs to remove it, resolve the registered `BankIdSimulatedAppApiClient` from dependency injection and set its `Delay` property to `TimeSpan.Zero`.
+
+
 ### Test environment
 
 This will use the real REST API for BankID, connecting to the Test environment.
