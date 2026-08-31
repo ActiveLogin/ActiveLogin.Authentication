@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class BankIdAuthHandler | Active Login </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class BankIdAuthHandler | Active Login ">
+    
+    
+      <link rel="shortcut icon" href="..//images/favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler">
+
+
+
+  <h1 id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler" class="text-break">Class BankIdAuthHandler</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1">AuthenticationHandler</a>&lt;<a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthOptions.html">BankIdAuthOptions</a>&gt;</div>
+    <div class="level2"><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1">RemoteAuthenticationHandler</a>&lt;<a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthOptions.html">BankIdAuthOptions</a>&gt;</div>
+    <div class="level3"><span class="xref">BankIdAuthHandler</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.iauthenticationrequesthandler">IAuthenticationRequestHandler</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.iauthenticationhandler">IAuthenticationHandler</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.createeventsasync">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.CreateEventsAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.shouldhandlerequestasync">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.ShouldHandleRequestAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.handlerequestasync">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleRequestAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.handleauthenticateasync">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleAuthenticateAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.handleforbiddenasync">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleForbiddenAsync(AuthenticationProperties)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.generatecorrelationid">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.GenerateCorrelationId(AuthenticationProperties)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.validatecorrelationid">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.ValidateCorrelationId(AuthenticationProperties)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.handleaccessdeniederrorasync">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleAccessDeniedErrorAsync(AuthenticationProperties)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.signinscheme">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.SignInScheme</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.events">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.Events</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.initializeasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.InitializeAsync(AuthenticationScheme, HttpContext)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.initializeeventsasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.InitializeEventsAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.initializehandlerasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.InitializeHandlerAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.buildredirecturi">AuthenticationHandler&lt;BankIdAuthOptions&gt;.BuildRedirectUri(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.resolvetarget">AuthenticationHandler&lt;BankIdAuthOptions&gt;.ResolveTarget(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.authenticateasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.AuthenticateAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.handleauthenticateonceasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleAuthenticateOnceAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.handleauthenticateoncesafeasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleAuthenticateOnceSafeAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.challengeasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.ChallengeAsync(AuthenticationProperties)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.forbidasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.ForbidAsync(AuthenticationProperties)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.scheme">AuthenticationHandler&lt;BankIdAuthOptions&gt;.Scheme</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.options">AuthenticationHandler&lt;BankIdAuthOptions&gt;.Options</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.context">AuthenticationHandler&lt;BankIdAuthOptions&gt;.Context</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.request">AuthenticationHandler&lt;BankIdAuthOptions&gt;.Request</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.response">AuthenticationHandler&lt;BankIdAuthOptions&gt;.Response</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.originalpath">AuthenticationHandler&lt;BankIdAuthOptions&gt;.OriginalPath</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.originalpathbase">AuthenticationHandler&lt;BankIdAuthOptions&gt;.OriginalPathBase</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.logger">AuthenticationHandler&lt;BankIdAuthOptions&gt;.Logger</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.urlencoder">AuthenticationHandler&lt;BankIdAuthOptions&gt;.UrlEncoder</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.clock">AuthenticationHandler&lt;BankIdAuthOptions&gt;.Clock</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.timeprovider">AuthenticationHandler&lt;BankIdAuthOptions&gt;.TimeProvider</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.optionsmonitor">AuthenticationHandler&lt;BankIdAuthOptions&gt;.OptionsMonitor</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.claimsissuer">AuthenticationHandler&lt;BankIdAuthOptions&gt;.ClaimsIssuer</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.currenturi">AuthenticationHandler&lt;BankIdAuthOptions&gt;.CurrentUri</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="ActiveLogin.html">ActiveLogin</a>.<a class="xref" href="ActiveLogin.Authentication.html">Authentication</a>.<a class="xref" href="ActiveLogin.Authentication.BankId.html">BankId</a>.<a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.html">AspNetCore</a>.<a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.Auth.html">Auth</a></h6>
+  <h6><strong>Assembly</strong>: ActiveLogin.Authentication.BankId.AspNetCore.dll</h6>
+  <h5 id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class BankIdAuthHandler : RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;, IAuthenticationRequestHandler, IAuthenticationHandler</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler__ctor_Microsoft_AspNetCore_Http_IHttpContextAccessor_Microsoft_AspNetCore_Antiforgery_IAntiforgery_Microsoft_AspNetCore_Routing_LinkGenerator_Microsoft_Extensions_Options_IOptionsMonitor_ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthOptions__Microsoft_Extensions_Logging_ILoggerFactory_System_Text_Encodings_Web_UrlEncoder_ActiveLogin_Authentication_BankId_AspNetCore_DataProtection_IBankIdUiStateProtector_ActiveLogin_Authentication_BankId_AspNetCore_DataProtection_IBankIdUiResultProtector_ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_IBankIdEventTrigger_ActiveLogin_Authentication_BankId_Core_SupportedDevice_IBankIdSupportedDeviceDetector_ActiveLogin_Authentication_BankId_AspNetCore_Cookies_IBankIdUiOptionsCookieManager_System_Collections_Generic_IEnumerable_ActiveLogin_Authentication_BankId_AspNetCore_ClaimsTransformation_IBankIdClaimsTransformer__.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.%23ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor%2CMicrosoft.AspNetCore.Antiforgery.IAntiforgery%2CMicrosoft.AspNetCore.Routing.LinkGenerator%2CMicrosoft.Extensions.Options.IOptionsMonitor%7BActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthOptions%7D%2CMicrosoft.Extensions.Logging.ILoggerFactory%2CSystem.Text.Encodings.Web.UrlEncoder%2CActiveLogin.Authentication.BankId.AspNetCore.DataProtection.IBankIdUiStateProtector%2CActiveLogin.Authentication.BankId.AspNetCore.DataProtection.IBankIdUiResultProtector%2CActiveLogin.Authentication.BankId.Core.Events.Infrastructure.IBankIdEventTrigger%2CActiveLogin.Authentication.BankId.Core.SupportedDevice.IBankIdSupportedDeviceDetector%2CActiveLogin.Authentication.BankId.AspNetCore.Cookies.IBankIdUiOptionsCookieManager%2CSystem.Collections.Generic.IEnumerable%7BActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation.IBankIdClaimsTransformer%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AspNetCore/Auth/BankIdAuthHandler.cs/#L38">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler__ctor_" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.#ctor*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler__ctor_Microsoft_AspNetCore_Http_IHttpContextAccessor_Microsoft_AspNetCore_Antiforgery_IAntiforgery_Microsoft_AspNetCore_Routing_LinkGenerator_Microsoft_Extensions_Options_IOptionsMonitor_ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthOptions__Microsoft_Extensions_Logging_ILoggerFactory_System_Text_Encodings_Web_UrlEncoder_ActiveLogin_Authentication_BankId_AspNetCore_DataProtection_IBankIdUiStateProtector_ActiveLogin_Authentication_BankId_AspNetCore_DataProtection_IBankIdUiResultProtector_ActiveLogin_Authentication_BankId_Core_Events_Infrastructure_IBankIdEventTrigger_ActiveLogin_Authentication_BankId_Core_SupportedDevice_IBankIdSupportedDeviceDetector_ActiveLogin_Authentication_BankId_AspNetCore_Cookies_IBankIdUiOptionsCookieManager_System_Collections_Generic_IEnumerable_ActiveLogin_Authentication_BankId_AspNetCore_ClaimsTransformation_IBankIdClaimsTransformer__" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.#ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor,Microsoft.AspNetCore.Antiforgery.IAntiforgery,Microsoft.AspNetCore.Routing.LinkGenerator,Microsoft.Extensions.Options.IOptionsMonitor{ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthOptions},Microsoft.Extensions.Logging.ILoggerFactory,System.Text.Encodings.Web.UrlEncoder,ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.IBankIdUiStateProtector,ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.IBankIdUiResultProtector,ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.IBankIdEventTrigger,ActiveLogin.Authentication.BankId.Core.SupportedDevice.IBankIdSupportedDeviceDetector,ActiveLogin.Authentication.BankId.AspNetCore.Cookies.IBankIdUiOptionsCookieManager,System.Collections.Generic.IEnumerable{ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation.IBankIdClaimsTransformer})">BankIdAuthHandler(IHttpContextAccessor, IAntiforgery, LinkGenerator, IOptionsMonitor&lt;BankIdAuthOptions&gt;, ILoggerFactory, UrlEncoder, IBankIdUiStateProtector, IBankIdUiResultProtector, IBankIdEventTrigger, IBankIdSupportedDeviceDetector, IBankIdUiOptionsCookieManager, IEnumerable&lt;IBankIdClaimsTransformer&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BankIdAuthHandler(IHttpContextAccessor httpContextAccessor, IAntiforgery antiforgery, LinkGenerator linkGenerator, IOptionsMonitor&lt;BankIdAuthOptions&gt; options, ILoggerFactory loggerFactory, UrlEncoder encoder, IBankIdUiStateProtector uiStateProtector, IBankIdUiResultProtector uiResultProtector, IBankIdEventTrigger bankIdEventTrigger, IBankIdSupportedDeviceDetector bankIdSupportedDeviceDetector, IBankIdUiOptionsCookieManager uiOptionsCookieManager, IEnumerable&lt;IBankIdClaimsTransformer&gt; bankIdClaimsTransformers)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.http.ihttpcontextaccessor">IHttpContextAccessor</a></td>
+        <td><span class="parametername">httpContextAccessor</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.antiforgery.iantiforgery">IAntiforgery</a></td>
+        <td><span class="parametername">antiforgery</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.routing.linkgenerator">LinkGenerator</a></td>
+        <td><span class="parametername">linkGenerator</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptionsmonitor-1">IOptionsMonitor</a>&lt;<a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthOptions.html">BankIdAuthOptions</a>&gt;</td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggerfactory">ILoggerFactory</a></td>
+        <td><span class="parametername">loggerFactory</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encodings.web.urlencoder">UrlEncoder</a></td>
+        <td><span class="parametername">encoder</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.IBankIdUiStateProtector.html">IBankIdUiStateProtector</a></td>
+        <td><span class="parametername">uiStateProtector</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.DataProtection.IBankIdUiResultProtector.html">IBankIdUiResultProtector</a></td>
+        <td><span class="parametername">uiResultProtector</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.Events.Infrastructure.IBankIdEventTrigger.html">IBankIdEventTrigger</a></td>
+        <td><span class="parametername">bankIdEventTrigger</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.Core.SupportedDevice.IBankIdSupportedDeviceDetector.html">IBankIdSupportedDeviceDetector</a></td>
+        <td><span class="parametername">bankIdSupportedDeviceDetector</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.Cookies.IBankIdUiOptionsCookieManager.html">IBankIdUiOptionsCookieManager</a></td>
+        <td><span class="parametername">uiOptionsCookieManager</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="ActiveLogin.Authentication.BankId.AspNetCore.ClaimsTransformation.IBankIdClaimsTransformer.html">IBankIdClaimsTransformer</a>&gt;</td>
+        <td><span class="parametername">bankIdClaimsTransformers</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler_HandleChallengeAsync_Microsoft_AspNetCore_Authentication_AuthenticationProperties_.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.HandleChallengeAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AspNetCore/Auth/BankIdAuthHandler.cs/#L159">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler_HandleChallengeAsync_" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.HandleChallengeAsync*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler_HandleChallengeAsync_Microsoft_AspNetCore_Authentication_AuthenticationProperties_" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.HandleChallengeAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties)">HandleChallengeAsync(AuthenticationProperties)</h4>
+  <div class="markdown level1 summary"><p>Override this method to deal with 401 challenge concerns if an authentication scheme in question
+deals an authentication interaction as part of its request flow (like adding a response header, or
+changing the 401 result to 302 of a login page or external sign-in location).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task HandleChallengeAsync(AuthenticationProperties properties)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationproperties">AuthenticationProperties</a></td>
+        <td><span class="parametername">properties</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></td>
+        <td><p>A Task.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.authenticationhandler-1.handlechallengeasync">AuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleChallengeAsync(AuthenticationProperties)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler_HandleRemoteAuthenticateAsync.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.HandleRemoteAuthenticateAsync%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AspNetCore/Auth/BankIdAuthHandler.cs/#L64">View Source</a>
+  </span>
+  <a id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler_HandleRemoteAuthenticateAsync_" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.HandleRemoteAuthenticateAsync*"></a>
+  <h4 id="ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler_HandleRemoteAuthenticateAsync" data-uid="ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler.HandleRemoteAuthenticateAsync">HandleRemoteAuthenticateAsync()</h4>
+  <div class="markdown level1 summary"><p>Authenticate the user identity with the identity provider.</p>
+<p>The method process the request on the endpoint defined by CallbackPath.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override Task&lt;HandleRequestResult&gt; HandleRemoteAuthenticateAsync()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.handlerequestresult">HandleRequestResult</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.remoteauthenticationhandler-1.handleremoteauthenticateasync">RemoteAuthenticationHandler&lt;BankIdAuthOptions&gt;.HandleRemoteAuthenticateAsync()</a></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.iauthenticationrequesthandler">IAuthenticationRequestHandler</a>
+  </div>
+  <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.iauthenticationhandler">IAuthenticationHandler</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/new/main/docs/apiSpec/new?filename=ActiveLogin_Authentication_BankId_AspNetCore_Auth_BankIdAuthHandler.md&amp;value=---%0Auid%3A%20ActiveLogin.Authentication.BankId.AspNetCore.Auth.BankIdAuthHandler%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/ActiveLogin/ActiveLogin.Authentication/blob/main/src/ActiveLogin.Authentication.BankId.AspNetCore/Auth/BankIdAuthHandler.cs/#L24" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      © Active Solution
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
