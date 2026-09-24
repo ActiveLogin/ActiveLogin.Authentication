@@ -18,6 +18,7 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private const string IosChromeScheme = "googlechromes://";
     private const string IosFirefoxScheme = "firefox://";
+    private const string IosEdgeScheme = "microsoft-edge://";
 
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly List<IBankIdLauncherCustomBrowser> _customBrowsers;
@@ -171,8 +172,8 @@ internal class BankIdLauncher : IBankIdLauncher
             // Normally you would supply the URL, but we just want to launch the app again
             BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
             BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
+            BankIdSupportedDeviceBrowser.Edge => IosEdgeScheme,
 
-            BankIdSupportedDeviceBrowser.Edge => NullRedirectUrl,
             BankIdSupportedDeviceBrowser.Opera => NullRedirectUrl,
 
             _ => NullRedirectUrl

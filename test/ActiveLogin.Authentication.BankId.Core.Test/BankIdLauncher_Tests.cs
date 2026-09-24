@@ -143,6 +143,7 @@ public class BankIdLauncher_Tests
     [Theory]
     [InlineData(BankIdSupportedDeviceBrowser.Chrome, "googlechromes://")]
     [InlineData(BankIdSupportedDeviceBrowser.Firefox, "firefox://")]
+    [InlineData(BankIdSupportedDeviceBrowser.Edge, "microsoft-edge://")]
     public async Task BankIdLauncher_Should_UseBrowserSchemeAsRedirect_ForIosThirdPartyBrowsers(BankIdSupportedDeviceBrowser browser, string expectedScheme)
     {
         var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Ios, browser));
@@ -152,12 +153,10 @@ public class BankIdLauncher_Tests
         Assert.Contains($"redirect={UrlEncoder.Default.Encode(expectedScheme)}", info.LaunchUrl);
     }
 
-    [Theory]
-    [InlineData(BankIdSupportedDeviceBrowser.Edge)]
-    [InlineData(BankIdSupportedDeviceBrowser.Opera)]
-    public async Task BankIdLauncher_Should_SetRedirectNull_ForIosEdgeAndOpera(BankIdSupportedDeviceBrowser browser)
+    [Fact]
+    public async Task BankIdLauncher_Should_SetRedirectNull_ForIosOpera()
     {
-        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Ios, browser));
+        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Opera));
 
         var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
 
