@@ -46,6 +46,11 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     var qrRefreshTimeoutId: number = null;
 
     // OrderRef
+    //
+    // Used to resume the status check for an in-progress order after the page is reloaded,
+    // e.g. when the browser navigates back to this page after the BankID app returns control
+    // to it via a redirect URL (currently only Safari on iOS). The orderRef is read (and removed)
+    // as soon as the page loads, before a new value might be stored for the next launch.
 
     const sessionStorageOrderRefKey = "ActiveLogin_BankId_OrderRef";
     const sessionOrderRef = sessionStorage.getItem(sessionStorageOrderRefKey);
@@ -71,6 +76,10 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
     // Events
 
     if (sessionOrderRef) {
+        // The page was reloaded with a previously stored orderRef (see sessionStorage.setItem
+        // in initialize() below), meaning the BankID app has already been launched and control
+        // has now returned to this page via a redirect URL. Resume the status check for that
+        // order instead of starting a new login flow.
         document.addEventListener("DOMContentLoaded", () => {
             enableCancelButton(
                 initState.antiXsrfRequestToken,
@@ -132,6 +141,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         };
         cancelButtonElement.addEventListener("click", onCancelButtonClick);
     }
+
     function initialize(requestVerificationToken: string, returnUrl: string, cancelUrl: string) {
         flowIsCancelledByUser = false;
 
@@ -143,6 +153,14 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
             .then(data => {
                 if (data.isAutoLaunch) {
                     if (!data.checkStatus) {
+                        // The BankID app will be launched with a redirect URL that navigates the
+                        // browser back to this page (instead of just resuming the current tab/session).
+                        // That navigation reloads the page and any in-memory JS state - including the
+                        // status check loop - is lost. Store the orderRef in sessionStorage so that,
+                        // once the page reloads, it can be picked up again (see sessionOrderRef above)
+                        // and the status check can resume for the same order instead of starting a new one.
+                        // This is currently only needed for Safari on iOS, since it's the only
+                        // combination where the page is reloaded on return from the BankID app.
                         sessionStorage.setItem(sessionStorageOrderRefKey, data.orderRef);
                     }
 

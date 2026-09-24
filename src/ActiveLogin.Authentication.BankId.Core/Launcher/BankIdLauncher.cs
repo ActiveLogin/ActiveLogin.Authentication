@@ -18,6 +18,7 @@ internal class BankIdLauncher : IBankIdLauncher
 
     private const string IosChromeScheme = "googlechromes://";
     private const string IosFirefoxScheme = "firefox://";
+    private const string IosEdgeScheme = "microsoft-edge://";
 
     private readonly IBankIdSupportedDeviceDetector _bankIdSupportedDeviceDetector;
     private readonly List<IBankIdLauncherCustomBrowser> _customBrowsers;
@@ -108,13 +109,17 @@ internal class BankIdLauncher : IBankIdLauncher
         // https://developers.bankid.com/how-to-guides/autostart
         //
         // Our Android browser tests show that the App Link does not launch
-        // BankID in Firefox and Samsung Internet. These browsers therefore
-        // fall back to the bankid:// scheme.
+        // BankID in Firefox, Samsung Internet and Edge - these browsers instead
+        // navigate the current tab to app.bankid.com instead of launching the
+        // app, losing/replacing the tab that started the flow. They therefore
+        // fall back to the bankid:// scheme, which launches the app without
+        // navigating the tab away.
 
         return device.DeviceOs == BankIdSupportedDeviceOs.Ios
             || (device.DeviceOs == BankIdSupportedDeviceOs.Android
                 && device.DeviceBrowser != BankIdSupportedDeviceBrowser.Firefox
-                && device.DeviceBrowser != BankIdSupportedDeviceBrowser.SamsungBrowser);
+                && device.DeviceBrowser != BankIdSupportedDeviceBrowser.SamsungBrowser
+                && device.DeviceBrowser != BankIdSupportedDeviceBrowser.Edge);
     }
 
     private string GetQueryStringPart(BankIdSupportedDevice device, LaunchUrlRequest request, BankIdLauncherCustomBrowserConfig? customBrowserConfig)
@@ -171,8 +176,8 @@ internal class BankIdLauncher : IBankIdLauncher
             // Normally you would supply the URL, but we just want to launch the app again
             BankIdSupportedDeviceBrowser.Chrome => IosChromeScheme,
             BankIdSupportedDeviceBrowser.Firefox => IosFirefoxScheme,
+            BankIdSupportedDeviceBrowser.Edge => IosEdgeScheme,
 
-            BankIdSupportedDeviceBrowser.Edge => NullRedirectUrl,
             BankIdSupportedDeviceBrowser.Opera => NullRedirectUrl,
 
             _ => NullRedirectUrl
