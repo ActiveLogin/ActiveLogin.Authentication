@@ -86,10 +86,7 @@ services
         }
         else if (configuration.GetValue("ActiveLogin:BankId:UseTestEnvironment", false))
         {
-            //TODO: remove just for tests in azure.
-            //bankId.UseTestEnvironment();
-            bankId.UseTestEnvironment(keyStorageFlags: X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
-
+            bankId.UseTestEnvironment();
         }
         else
         {
