@@ -78,20 +78,11 @@ internal class BankIdLauncher : IBankIdLauncher
             BrowserReloadBehaviourOnReturnFromBankIdApp.Always => true,
             BrowserReloadBehaviourOnReturnFromBankIdApp.Never => false,
 
-            // By default, Safari on iOS will refresh the page/tab when returned from the BankID app.
-            //
-            // Edge on Android is given an explicit redirect/return URL (see GetRedirectUrl), since it
-            // does not reliably return to the calling tab/app when redirect=null is used. This means
-            // the page will also be reloaded for Edge on Android, just like Safari on iOS.
+            // By default, Safari on iOS will refresh the page/tab when returned from the BankID app
             _ => detectedDevice is
             {
                 DeviceOs: BankIdSupportedDeviceOs.Ios,
                 DeviceBrowser: BankIdSupportedDeviceBrowser.Safari
-            }
-            || detectedDevice is
-            {
-                DeviceOs: BankIdSupportedDeviceOs.Android,
-                DeviceBrowser: BankIdSupportedDeviceBrowser.Edge
             }
         };
     }
@@ -159,14 +150,6 @@ internal class BankIdLauncher : IBankIdLauncher
         if (customBrowserConfig != null && customBrowserConfig.ReturnUrl != null)
         {
             return customBrowserConfig.ReturnUrl;
-        }
-
-        // Edge on Android is an exception to the Android default (redirect=null): unlike other
-        // Android browsers, it does not reliably return to the calling tab/app otherwise, so it
-        // needs to be given the actual return URL to navigate back to.
-        if (device is { DeviceOs: BankIdSupportedDeviceOs.Android, DeviceBrowser: BankIdSupportedDeviceBrowser.Edge })
-        {
-            return request.RedirectUrl;
         }
 
         // Only use redirect url for iOS as recommended in BankID Guidelines 3.1.2

@@ -154,29 +154,6 @@ public class BankIdLauncher_Tests
     }
 
     [Fact]
-    public async Task BankIdLauncher_Should_UseReturnUrlAsRedirect_ForAndroidEdge()
-    {
-        // Unlike other Android browsers, Edge does not reliably return to the calling tab/app when
-        // redirect=null is used, so it needs the actual return URL.
-        const string returnUrl = "https://example.com/return";
-        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Edge));
-
-        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest(returnUrl, "token"));
-
-        Assert.Contains($"redirect={UrlEncoder.Default.Encode(returnUrl)}", info.LaunchUrl);
-    }
-
-    [Fact]
-    public async Task BankIdLauncher_Should_ReloadPageOnReturn_ForAndroidEdge()
-    {
-        var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Edge));
-
-        var info = await launcher.GetLaunchInfoAsync(new LaunchUrlRequest("https://example.com/return", "token"));
-
-        Assert.True(info.DeviceWillReloadPageOnReturnFromBankIdApp);
-    }
-
-    [Fact]
     public async Task BankIdLauncher_Should_SetRedirectNull_ForIosOpera()
     {
         var launcher = CreateLauncher(Mobile(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Opera));
