@@ -109,14 +109,11 @@ internal class BankIdLauncher : IBankIdLauncher
         // https://developers.bankid.com/how-to-guides/autostart
         //
         // Our Android browser tests show that the App Link does not launch
-        // BankID in Firefox and Samsung Internet. These browsers therefore
-        // fall back to the bankid:// scheme.
-        //
-        // Edge on Android does not intercept the App Link before it navigates -
-        // it loads app.bankid.com in the current tab instead of just launching
-        // the BankID app, so the tab that started the flow is lost/replaced.
-        // Edge therefore also falls back to the bankid:// scheme, which launches
-        // the app without navigating the tab away.
+        // BankID in Firefox, Samsung Internet and Edge - these browsers instead
+        // navigate the current tab to app.bankid.com instead of launching the
+        // app, losing/replacing the tab that started the flow. They therefore
+        // fall back to the bankid:// scheme, which launches the app without
+        // navigating the tab away.
 
         return device.DeviceOs == BankIdSupportedDeviceOs.Ios
             || (device.DeviceOs == BankIdSupportedDeviceOs.Android
