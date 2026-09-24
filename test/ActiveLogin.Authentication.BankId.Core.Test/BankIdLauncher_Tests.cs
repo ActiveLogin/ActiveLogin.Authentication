@@ -41,7 +41,6 @@ public class BankIdLauncher_Tests
     [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Firefox)]
     [InlineData(BankIdSupportedDeviceOs.Ios, BankIdSupportedDeviceBrowser.Opera)]
     [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Chrome)]
-    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Edge)]
     [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Opera)]
     public async Task BankIdLauncher_Should_UseAppLink_ForSupportedMobileDevices(BankIdSupportedDeviceOs os, BankIdSupportedDeviceBrowser browser)
     {
@@ -55,6 +54,7 @@ public class BankIdLauncher_Tests
     [Theory]
     [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.SamsungBrowser)]
     [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Firefox)]
+    [InlineData(BankIdSupportedDeviceOs.Android, BankIdSupportedDeviceBrowser.Edge)]
     public async Task BankIdLauncher_Should_UseScheme_ForMobileDevicesNotSupportingAppLink(BankIdSupportedDeviceOs os, BankIdSupportedDeviceBrowser browser)
     {
         var launcher = CreateLauncher(Mobile(os, browser));
