@@ -25,15 +25,19 @@ public class BankIdLocalizationConfiguration_Tests
 
         Assert.NotNull(localizer);
 
-        // Verify the embedded default-culture resource is actually found, not just that a localizer object exists.
-        var defaultCultureValue = localizer["Cancel_Button"];
-        Assert.False(defaultCultureValue.ResourceNotFound);
-        Assert.Equal("Cancel", defaultCultureValue.Value);
-
-        // Verify the embedded Swedish resource is also found.
+        // Use a known, non-Swedish culture for the default-resource assertion so the test is
+        // deterministic regardless of the test runner's ambient CurrentUICulture.
         var originalCulture = CultureInfo.CurrentUICulture;
         try
         {
+            CultureInfo.CurrentUICulture = new CultureInfo("en");
+
+            // Verify the embedded default-culture resource is actually found, not just that a localizer object exists.
+            var defaultCultureValue = localizer["Cancel_Button"];
+            Assert.False(defaultCultureValue.ResourceNotFound);
+            Assert.Equal("Cancel", defaultCultureValue.Value);
+
+            // Verify the embedded Swedish resource is also found.
             CultureInfo.CurrentUICulture = new CultureInfo("sv");
 
             var swedishValue = localizer["Cancel_Button"];
