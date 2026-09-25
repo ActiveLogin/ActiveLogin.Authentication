@@ -18,9 +18,17 @@ internal static class BankIdLocalizationConfiguration
     /// localization configuration, breaking the host's translations. Instead, a dedicated
     /// <see cref="IStringLocalizerFactory"/>/<see cref="IStringLocalizer{T}"/> is registered
     /// specifically for <see cref="ActiveLoginResources"/>, isolated from the host's settings.
+    ///
+    /// A parameterless <c>services.AddLocalization()</c> call is still made to preserve the default
+    /// <see cref="IStringLocalizerFactory"/>/open-generic <see cref="IStringLocalizer{T}"/> registrations
+    /// for the host's own resource types, matching the behavior applications may already depend on.
+    /// This uses <c>TryAdd</c> internally, so it never overrides an already configured
+    /// <see cref="LocalizationOptions.ResourcesPath"/>, regardless of registration order.
     /// </remarks>
     public static void AddBankIdLocalization(this IServiceCollection services)
     {
+        services.AddLocalization();
+
         services.AddSingleton<IStringLocalizer<ActiveLoginResources>>(sp =>
         {
             var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
