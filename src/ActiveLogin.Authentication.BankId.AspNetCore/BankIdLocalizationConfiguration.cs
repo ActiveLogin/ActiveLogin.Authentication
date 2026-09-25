@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,8 +21,6 @@ internal static class BankIdLocalizationConfiguration
     /// </remarks>
     public static void AddBankIdLocalization(this IServiceCollection services)
     {
-        services.TryAddTransient(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
-
         services.AddSingleton<IStringLocalizer<ActiveLoginResources>>(sp =>
         {
             var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
