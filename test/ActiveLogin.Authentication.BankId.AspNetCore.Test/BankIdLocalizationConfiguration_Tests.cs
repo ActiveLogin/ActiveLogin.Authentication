@@ -71,7 +71,7 @@ public class BankIdLocalizationConfiguration_Tests
 
         // Active Login's own resources should still resolve correctly, isolated from the host's options.
         var activeLoginLocalizer = provider.GetRequiredService<IStringLocalizer<ActiveLoginResources>>();
-        Assert.NotNull(activeLoginLocalizer);
+        Assert.False(activeLoginLocalizer["Cancel_Button"].ResourceNotFound);
     }
 
     [Fact]
@@ -95,6 +95,6 @@ public class BankIdLocalizationConfiguration_Tests
         // Active Login's own resources should still resolve correctly, even though the host
         // configured its own (different) ResourcesPath after Active Login was registered.
         var activeLoginLocalizer = provider.GetRequiredService<IStringLocalizer<ActiveLoginResources>>();
-        Assert.NotNull(activeLoginLocalizer);
+        Assert.False(activeLoginLocalizer["Cancel_Button"].ResourceNotFound);
     }
 }
