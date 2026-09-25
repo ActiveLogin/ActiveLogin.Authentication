@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -22,6 +24,26 @@ public class BankIdLocalizationConfiguration_Tests
         var localizer = provider.GetRequiredService<IStringLocalizer<ActiveLoginResources>>();
 
         Assert.NotNull(localizer);
+
+        // Verify the embedded default-culture resource is actually found, not just that a localizer object exists.
+        var defaultCultureValue = localizer["Cancel_Button"];
+        Assert.False(defaultCultureValue.ResourceNotFound);
+        Assert.Equal("Cancel", defaultCultureValue.Value);
+
+        // Verify the embedded Swedish resource is also found.
+        var originalCulture = CultureInfo.CurrentUICulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = new CultureInfo("sv");
+
+            var swedishValue = localizer["Cancel_Button"];
+            Assert.False(swedishValue.ResourceNotFound);
+            Assert.Equal("Avbryt", swedishValue.Value);
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = originalCulture;
+        }
     }
 
     [Fact]
