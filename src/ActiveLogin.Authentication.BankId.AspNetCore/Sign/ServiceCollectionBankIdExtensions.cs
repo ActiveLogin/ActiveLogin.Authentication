@@ -48,10 +48,7 @@ public static class ServiceCollectionBankIdSignExtensions
 
     private static void AddBankIdAuthAspNetServices(IServiceCollection services)
     {
-        services.AddLocalization(options =>
-        {
-            options.ResourcesPath = BankIdConstants.LocalizationResourcesPath;
-        });
+        services.AddBankIdLocalization();
 
         services.AddControllersWithViews()
                 .ConfigureApplicationPartManager(apm =>
