@@ -59,12 +59,12 @@
         </PackageReference>
     </ItemGroup>
 
-    <PropertyGroup>
-        <ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
-            CompileTypeScript;
-            $(ResolveCurrentProjectStaticWebAssetsInputs)
-        </ResolveCurrentProjectStaticWebAssetsInputsDependsOn>
-    </PropertyGroup>
+    <!-- TypeScript 7 compiles during CoreCompile, which is too late for static web asset discovery. -->
+    <Target Name="CompileTypeScriptBeforeStaticWebAssets" BeforeTargets="ResolveProjectStaticWebAssets" DependsOnTargets="RunTscCompile">
+        <ItemGroup>
+            <Content Include="$(MSBuildProjectDirectory)\wwwroot\activelogin-main.js" Condition="Exists('$(MSBuildProjectDirectory)\wwwroot\activelogin-main.js')" />
+        </ItemGroup>
+    </Target>
 
     <PropertyGroup>
         <TypeScriptOutDir>wwwroot</TypeScriptOutDir>
