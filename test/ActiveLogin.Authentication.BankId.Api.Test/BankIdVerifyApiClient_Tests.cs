@@ -72,7 +72,7 @@ public class BankIdVerifyApiClient_Tests
         Assert.Single(_messageHandlerMock.Invocations);
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
         Assert.NotNull(request);
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpMethod.Post, request.Method);
         Assert.Equal(new Uri("https://bankid/verify"), request.RequestUri);

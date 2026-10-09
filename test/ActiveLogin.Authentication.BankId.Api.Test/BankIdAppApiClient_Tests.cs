@@ -89,7 +89,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -110,7 +110,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
@@ -149,7 +149,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -190,7 +190,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertPropertyIsNull(contentString, "web");
         JsonTests.AssertPropertyIsNotNull(contentString, "app");
@@ -232,7 +232,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertPropertyIsNull(contentString, "app");
         JsonTests.AssertPropertyIsNotNull(contentString, "web");
@@ -259,7 +259,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -284,7 +284,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -329,7 +329,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -356,7 +356,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -379,7 +379,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -402,7 +402,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -427,7 +427,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertSubProperty(contentString, "requirement", "certificatePolicies", new List<string> { "req1", "req2" });
@@ -487,7 +487,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertPropertyIsNull(contentString, "web");
         JsonTests.AssertPropertyIsNotNull(contentString, "app");
@@ -529,7 +529,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertPropertyIsNull(contentString, "app");
         JsonTests.AssertPropertyIsNotNull(contentString, "web");
@@ -578,7 +578,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -606,7 +606,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
@@ -630,7 +630,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
@@ -655,7 +655,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertPropertyIsEmptyObject(contentString, "requirement");
@@ -682,7 +682,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "endUserIp", "1.1.1.1");
         JsonTests.AssertSubProperty(contentString, "userVisibleTransaction", "transactionType", "npa");
@@ -741,7 +741,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertPropertyIsNull(contentString, "app");
         JsonTests.AssertPropertyIsNotNull(contentString, "web");
@@ -784,7 +784,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -808,7 +808,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -844,7 +844,7 @@ public class BankIdAppApiClient_Tests
 
         //Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -897,7 +897,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -927,7 +927,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -953,7 +953,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -979,7 +979,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -1008,7 +1008,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "personalNumber", "201801012392");
         JsonTests.AssertProperty(contentString, "callInitiator", "user");
@@ -1071,7 +1071,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "orderRef", "abc123");
         JsonTests.AssertOnlyProperties(contentString, new[]
@@ -1250,7 +1250,7 @@ public class BankIdAppApiClient_Tests
 
         // Assert
         var request = _messageHandlerMock.GetFirstArgumentOfFirstInvocation<HttpMessageHandler, HttpRequestMessage>();
-        var contentString = await request.Content.ReadAsStringAsync();
+        var contentString = await request.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         JsonTests.AssertProperty(contentString, "orderRef", "abc123");
         JsonTests.AssertOnlyProperties(contentString, new[]

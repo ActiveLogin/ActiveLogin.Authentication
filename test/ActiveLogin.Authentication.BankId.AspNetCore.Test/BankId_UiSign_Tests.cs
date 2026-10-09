@@ -89,7 +89,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         using var client = server.CreateClient();
 
         // Act
-        var transaction = await client.GetAsync("/ActiveLogin/BankId/Sign");
+        var transaction = await client.GetAsync("/ActiveLogin/BankId/Sign", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, transaction.StatusCode);
@@ -103,7 +103,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         using var client = server.CreateClient();
 
         // Act
-        var transaction = await client.PostAsync("/ActiveLogin/BankId/Sign/Api/Initialize", null);
+        var transaction = await client.PostAsync("/ActiveLogin/BankId/Sign/Api/Initialize", null, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, transaction.StatusCode);
@@ -128,7 +128,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             })).CreateClient();
 
         // Act
-        var transaction = await client.GetAsync("/");
+        var transaction = await client.GetAsync("/", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
@@ -158,7 +158,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             }).CreateClient();
 
         // Act
-        var transaction = await client.GetAsync("/");
+        var transaction = await client.GetAsync("/", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
@@ -196,7 +196,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
             }).CreateClient();
 
         // Act
-        var transaction = await client.GetAsync("/PathBase");
+        var transaction = await client.GetAsync("/PathBase", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Redirect, transaction.StatusCode);
@@ -279,7 +279,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-        var transactionContent = await transaction.Content.ReadAsStringAsync();
+        var transactionContent = await transaction.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Equal("/cru", GetInlineJsonValue(transactionContent, "cancelReturnUrl"));
     }
 
@@ -312,7 +312,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.OK, transaction.StatusCode);
 
-        var transactionContent = await transaction.Content.ReadAsStringAsync();
+        var transactionContent = await transaction.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var document = await HtmlDocumentHelper.FromContent(transactionContent);
 
         Assert.NotNull(document.GetElement<IHtmlDivElement>("div.activelogin-bankid-ui--wrapper"));
@@ -394,7 +394,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
 
-        var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
+        var responseContent = await initializeTransaction.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var responseObject = JsonConvert.DeserializeAnonymousType(responseContent, new { RedirectUri = "", OrderRef = "", IsAutoLaunch = false });
         Assert.True(responseObject.IsAutoLaunch);
 
@@ -453,7 +453,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.OK, initializeTransaction.StatusCode);
 
-        var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
+        var responseContent = await initializeTransaction.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Contains("redirectUri", responseContent);
         Assert.Contains("orderRef", responseContent);
         Assert.Contains("isAutoLaunch", responseContent);
@@ -505,7 +505,7 @@ public class BankId_UiSign_Tests : BankId_Ui_Tests_Base
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, initializeTransaction.StatusCode);
 
-        var responseContent = await initializeTransaction.Content.ReadAsStringAsync();
+        var responseContent = await initializeTransaction.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         Assert.Contains("title", responseContent);
         Assert.Contains("type", responseContent);
         Assert.Contains("errors", responseContent);
