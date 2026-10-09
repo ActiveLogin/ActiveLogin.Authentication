@@ -41,9 +41,9 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
 
     // QR
 
-    var qrLastRefreshTimestamp: Date = null;
+    var qrLastRefreshTimestamp: Date | null = null;
     var qrIsRefreshing = false;
-    var qrRefreshTimeoutId: number = null;
+    var qrRefreshTimeoutId: number | undefined = undefined;
 
     // OrderRef
     //
@@ -134,10 +134,10 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         link.click();
     }
 
-    function enableCancelButton(requestVerificationToken: string, cancelUrl: string, orderRef: string = null) {
+    function enableCancelButton(requestVerificationToken: string, cancelUrl: string, orderRef: string | null = null) {
         var onCancelButtonClick = (event: Event) => {
             cancel(requestVerificationToken, cancelUrl, orderRef);
-            event.target.removeEventListener("click", onCancelButtonClick);
+            (event.target as EventTarget).removeEventListener("click", onCancelButtonClick);
         };
         cancelButtonElement.addEventListener("click", onCancelButtonClick);
     }
@@ -168,7 +168,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
                         var startBankIdAppButtonOnClick = (event: Event) => {
                             launchBankIdApp(data.redirectUri);
                             hide(startBankIdAppButtonElement);
-                            event.target.removeEventListener("click", startBankIdAppButtonOnClick);
+                            (event.target as EventTarget).removeEventListener("click", startBankIdAppButtonOnClick);
                         };
                         startBankIdAppButtonElement.addEventListener("click", startBankIdAppButtonOnClick);
 
@@ -250,7 +250,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         }
 
         const currentTime = new Date();
-        const timeSinceLastRefresh = currentTime.getTime() - qrLastRefreshTimestamp.getTime();
+        const timeSinceLastRefresh = currentTime.getTime() - qrLastRefreshTimestamp!.getTime();
         if (timeSinceLastRefresh < configuration.qrCodeRefreshIntervalMs) {
             qrRefreshTimeoutId = setTimeout(() => {
                 refreshQrCode(requestVerificationToken, qrStartState);
@@ -294,7 +294,7 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         show(qrCodeElement);
     }
 
-    function cancel(requestVerificationToken: string, cancelReturnUrl: string, orderRef: string = null) {
+    function cancel(requestVerificationToken: string, cancelReturnUrl: string, orderRef: string | null = null) {
         flowIsCancelledByUser = true;
 
         if (!orderRef) {
@@ -388,9 +388,9 @@ function activeloginInit(configuration: IBankIdUiScriptConfiguration, initState:
         show(statusWrapperElement);
     }
 
-    function setVisibility(element: HTMLElement, visible: boolean, display: string = null) {
+    function setVisibility(element: HTMLElement, visible: boolean, display: string | null = null) {
         if (visible) {
-            show(element, display);
+            show(element, display ?? undefined);
         } else {
             hide(element);
         }
