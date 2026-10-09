@@ -31,7 +31,6 @@ stages:
 
     variables:
       pathToBuildProjects: '**/**/*.*sproj'
-      pathToTestProjects: '**/test/**/*.Test.*sproj'
       pathToPackProjects: '**/src/**/*.*sproj'
       pathToNugetPackages: '**/*.nupkg'
 
@@ -78,9 +77,18 @@ stages:
     - task: DotNetCoreCLI@2
       displayName: 'dotnet test'
       inputs:
-        command: test
-        projects: '$(pathToTestProjects)'
-        arguments: '--configuration $(dotnetBuildConfiguration) --collect "Code coverage"'
+        command: custom
+        custom: test
+        arguments: '--solution ActiveLogin.Authentication.sln --configuration $(dotnetBuildConfiguration) --coverage --report-xunit-trx --results-directory "$(Agent.TempDirectory)/test-results"'
+
+    - task: PublishTestResults@2
+      displayName: 'Publish test results'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '$(Agent.TempDirectory)/test-results/**/*.trx'
+        mergeTestResults: true
+        failTaskOnFailedTests: true
 
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: '$(artifactName)'
