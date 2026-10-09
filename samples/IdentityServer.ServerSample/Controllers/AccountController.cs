@@ -67,7 +67,7 @@ public class AccountController : Controller
     [HttpGet]
     public async Task<IActionResult> Logout(string logoutId)
     {
-        var logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
+        var logoutRequest = await _interaction.GetLogoutContextAsync(logoutId, HttpContext.RequestAborted);
         var returnUrl = logoutRequest?.PostLogoutRedirectUri;
 
         return await Logout(new LogoutModel(returnUrl));
