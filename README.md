@@ -187,6 +187,8 @@ Run the following command in the root to run all tests:
 dotnet test
 ```
 
+Tests use xUnit.net v3 with Microsoft.Testing.Platform. From the repository root, `dotnet test` is enough. To target one project, use `dotnet test --project path/to/Project.csproj`.
+
 #### Devcontainer and GitHub Codespaces
 
 We also support [devcontainer.json](https://code.visualstudio.com/docs/remote/containers#_create-a-devcontainerjson-file) so that you can [build the solution in a container](https://code.visualstudio.com/docs/remote/containers) and use [GitHub Codespaces](https://docs.github.com/en/codespaces/overview).

@@ -68,7 +68,7 @@ jobs:
           releaseOutputFolder: ${{ runner.temp }}/release
 
       - name: Dotnet test
-        run: dotnet test --configuration ${{ env.dotnetBuildConfiguration }} --collect "Code coverage"
+        run: dotnet test --solution ActiveLogin.Authentication.sln --configuration ${{ env.dotnetBuildConfiguration }} --coverage
         shell: pwsh
 
       - name: Upload packages
