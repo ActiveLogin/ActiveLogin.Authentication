@@ -80,12 +80,15 @@ public static class BankIdBuilderAzureMonitorExtensions
     /// <returns></returns>
     public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string connectionString, ApplicationInsightsBankIdEventListenerOptions options)
     {
-        builder.Services.AddTransient<IBankIdEventListener>(x =>
+        // The listener is transient, so the configuration and client are created once and shared by all instances
+        var telemetryClient = new Lazy<TelemetryClient>(() =>
         {
             var telemetryConfiguration = new TelemetryConfiguration();
             telemetryConfiguration.ConnectionString = connectionString;
-            return new BankIdApplicationInsightsEventListener(new TelemetryClient(telemetryConfiguration), options);
+            return new TelemetryClient(telemetryConfiguration);
         });
+
+        builder.Services.AddTransient<IBankIdEventListener>(x => new BankIdApplicationInsightsEventListener(telemetryClient.Value, options));
 
         return builder;
     }

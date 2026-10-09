@@ -26,8 +26,16 @@ var configuration = builder.Configuration;
 var environment = builder.Environment;
 
 
-// Add telemetry
-services.AddApplicationInsightsTelemetry(configuration);
+// Add telemetry (Application Insights 3.x requires a connection string)
+var applicationInsightsConnectionString = configuration["ApplicationInsights:ConnectionString"];
+if (string.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+{
+    applicationInsightsConnectionString = configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+}
+if (!string.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+{
+    services.AddApplicationInsightsTelemetry(configuration);
+}
 
 // Add authentication
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();

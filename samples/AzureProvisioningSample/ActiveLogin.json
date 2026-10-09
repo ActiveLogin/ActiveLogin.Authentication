@@ -369,7 +369,7 @@
                         "[resourceId('Microsoft.Insights/components', variables('insights_resource_name'))]"
                     ],
                     "properties": {
-                        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).InstrumentationKey]",
+                        "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('Microsoft.Insights/components', variables('insights_resource_name'))).ConnectionString]",
                         "APPINSIGHTS_PORTALINFO": "ASP.NETCORE",
                         "APPINSIGHTS_PROFILERFEATURE_VERSION": "disabled",
                         "APPINSIGHTS_SNAPSHOTFEATURE_VERSION": "disabled"

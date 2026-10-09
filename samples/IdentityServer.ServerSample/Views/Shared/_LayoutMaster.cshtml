@@ -1,4 +1,8 @@
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Microsoft.Extensions.DependencyInjection
+@{
+    // Only registered when an Application Insights connection string is configured
+    var JavaScriptSnippet = Context.RequestServices.GetService<Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet>();
+}
 <!doctype html>
 <html lang="en">
 <head>
@@ -56,7 +60,10 @@
     </style>
 
     <!-- Application Insights -->
-    @Html.Raw(JavaScriptSnippet.FullScript)
+    @if (JavaScriptSnippet != null)
+    {
+        @Html.Raw(JavaScriptSnippet.FullScript)
+    }
 </head>
 <body>
     @RenderBody()

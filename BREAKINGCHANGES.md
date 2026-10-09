@@ -7,6 +7,7 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ## TOC
 
+* [Version 13.0.0 (TBD)](#version-1300-tbd)
 * [Version 12.0.0](#version-1200)
 * [Version 11.0.0](#version-1100)
 * [Version 10.0.0](#version-1000)
@@ -19,6 +20,30 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 * [Version 4.0.0](#version-400)
 
 ------
+
+## Version 13.0.0 (TBD)
+
+Breaking changes between version 12.0.0 and 13.0.0
+
+### Upgrade to Application Insights 3.x
+
+`ActiveLogin.Authentication.BankId.AzureMonitor` now depends on `Microsoft.ApplicationInsights` 3.x. Application Insights 2.x and 3.x can't be mixed in the same application, so if you use `AddApplicationInsightsEventListener()` you must also upgrade the Application Insights packages in your application (for example `Microsoft.ApplicationInsights.AspNetCore`) to 3.x. Application Insights 3.x requires a connection string (not an instrumentation key) and fails at startup without one. See the [Application Insights migration guide](https://learn.microsoft.com/en-us/azure/azure-monitor/app/migrate-to-opentelemetry) for details.
+
+### Age hint moved from customMeasurements to customDimensions
+
+`AL_User_AgeHint` is no longer sent as a metric (`customMeasurements`). It is now sent as a string property in `customDimensions` on the same event. Update any queries or dashboards that read it:
+
+```kql
+// Before
+UserAgeHint = toint(customMeasurements.AL_User_AgeHint)
+
+// After
+UserAgeHint = toint(customDimensions.AL_User_AgeHint)
+```
+
+The sample queries in [the monitor documentation](https://docs.activelogin.net/articles/monitor.html) have been updated.
+
+---
 
 ## Version 12.0.0
 

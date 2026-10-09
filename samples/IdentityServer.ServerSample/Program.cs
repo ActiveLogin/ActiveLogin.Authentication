@@ -40,8 +40,17 @@ var configuration = builder.Configuration;
 var environment = builder.Environment;
 
 
-// Add telemetry
-services.AddApplicationInsightsTelemetry(configuration);
+// Add telemetry (Application Insights 3.x requires a connection string)
+var applicationInsightsConnectionString = configuration["ApplicationInsights:ConnectionString"];
+if (string.IsNullOrWhiteSpace(applicationInsightsConnectionString))
+{
+    applicationInsightsConnectionString = configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+}
+var useApplicationInsights = !string.IsNullOrWhiteSpace(applicationInsightsConnectionString);
+if (useApplicationInsights)
+{
+    services.AddApplicationInsightsTelemetry(configuration);
+}
 
 // Configure cookie policy
 services.Configure<CookiePolicyOptions>(options =>
@@ -83,17 +92,20 @@ services
     .AddBankId(bankId =>
     {
         bankId.AddDebugEventListener();
-        bankId.AddApplicationInsightsEventListener(options =>
+        if (useApplicationInsights)
         {
-            options.LogUserPersonalIdentityNumber = false;
-            options.LogUserPersonalIdentityNumberHints = true;
+            bankId.AddApplicationInsightsEventListener(options =>
+            {
+                options.LogUserPersonalIdentityNumber = false;
+                options.LogUserPersonalIdentityNumberHints = true;
 
-            options.LogUserNames = false;
-            options.LogUserBankIdIssueDate = false;
+                options.LogUserNames = false;
+                options.LogUserBankIdIssueDate = false;
 
-            options.LogDeviceIpAddress = false;
-            options.LogDeviceUniqueHardwareId = false;
-        });
+                options.LogDeviceIpAddress = false;
+                options.LogDeviceUniqueHardwareId = false;
+            });
+        }
 
         bankId.UseQrCoderQrCodeGenerator();
         bankId.UseUaParserDeviceDetection();
