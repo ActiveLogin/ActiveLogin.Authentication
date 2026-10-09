@@ -79,7 +79,13 @@ stages:
       inputs:
         command: custom
         custom: test
-        arguments: '--solution ActiveLogin.Authentication.sln --configuration $(dotnetBuildConfiguration) --coverage --report-xunit-trx --results-directory "$(Agent.TempDirectory)/test-results"'
+        --coverage --coverage-output-format cobertura --report-xunit-trx --results-directory "$(Agent.TempDirectory)/test-results"'
+
+            - task: PublishCodeCoverageResults@2
+              displayName: 'Publish code coverage'
+              condition: succeededOrFailed()
+              inputs:
+                summaryFileLocation: '$(Agent.TempDirectory)/test-results/**/*.cobertura.xml'
 
     - task: PublishTestResults@2
       displayName: 'Publish test results'
