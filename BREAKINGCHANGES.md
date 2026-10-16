@@ -7,7 +7,7 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ## TOC
 
-* [Version 13.0.0 (TBD)](#version-1300-tbd)
+* [Version 13.0.0](#version-1300)
 * [Version 12.0.0](#version-1200)
 * [Version 11.0.0](#version-1100)
 * [Version 10.0.0](#version-1000)
@@ -21,7 +21,7 @@ ___Note:___ We might, and will probably, miss to document some of this - if so -
 
 ------
 
-## Version 13.0.0 (TBD)
+## Version 13.0.0
 
 Breaking changes between version 12.0.0 and 13.0.0
 
