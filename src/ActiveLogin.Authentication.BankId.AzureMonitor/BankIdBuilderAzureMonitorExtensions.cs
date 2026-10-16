@@ -2,7 +2,6 @@ using ActiveLogin.Authentication.BankId.Core;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
 
 using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ActiveLogin.Authentication.BankId.AzureMonitor;
@@ -80,15 +79,12 @@ public static class BankIdBuilderAzureMonitorExtensions
     /// <returns></returns>
     public static IBankIdBuilder AddApplicationInsightsEventListener(this IBankIdBuilder builder, string connectionString, ApplicationInsightsBankIdEventListenerOptions options)
     {
-        // The listener is transient, so the configuration and client are created once and shared by all instances
-        var telemetryClient = new Lazy<TelemetryClient>(() =>
-        {
-            var telemetryConfiguration = new TelemetryConfiguration();
-            telemetryConfiguration.ConnectionString = connectionString;
-            return new TelemetryClient(telemetryConfiguration);
-        });
-
-        builder.Services.AddTransient<IBankIdEventListener>(x => new BankIdApplicationInsightsEventListener(telemetryClient.Value, options));
+        // The listener is transient, so the configuration and client are owned by a singleton provider.
+        // The container disposes it on shutdown, which flushes buffered telemetry.
+        // The provider is keyed per call so that multiple registrations each use their own connection string.
+        var providerKey = new object();
+        builder.Services.AddKeyedSingleton(providerKey, (_, _) => new BankIdApplicationInsightsTelemetryClientProvider(connectionString));
+        builder.Services.AddTransient<IBankIdEventListener>(x => new BankIdApplicationInsightsEventListener(x.GetRequiredKeyedService<BankIdApplicationInsightsTelemetryClientProvider>(providerKey).TelemetryClient, options));
 
         return builder;
     }
