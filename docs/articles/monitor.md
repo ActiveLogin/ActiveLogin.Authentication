@@ -127,7 +127,7 @@ customEvents
 customEvents
 | where name == "ActiveLogin_BankId_CollectCompleted"
 | project
-    UserAgeHint = toint(customMeasurements.AL_User_AgeHint)
+    UserAgeHint = toint(customDimensions.AL_User_AgeHint)
 | summarize AverageUserAge = avg(UserAgeHint)
 ```
 

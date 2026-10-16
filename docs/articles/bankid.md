@@ -1091,7 +1091,7 @@ services
     });
 ```
 
-By default it will use whatever InstrumentationKey is registered with the application. There are overloads available so you can customize this:
+By default it will use whatever Application Insights connection string is registered with the application. There are overloads available so you can customize this:
 
 ```csharp
 services

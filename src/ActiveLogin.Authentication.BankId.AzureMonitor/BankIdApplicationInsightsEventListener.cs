@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using ActiveLogin.Authentication.BankId.Api;
 using ActiveLogin.Authentication.BankId.Core.Events;
 using ActiveLogin.Authentication.BankId.Core.Events.Infrastructure;
@@ -257,10 +259,9 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
 
     // Helpers
 
-    private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, Dictionary<string, double>? metrics = null, PersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null, BankIdFlowOptions? bankIdOptions = null)
+    private Task Track(BankIdEvent e, Dictionary<string, string>? properties = null, PersonalIdentityNumber? personalIdentityNumber = null, Exception? exception = null, BankIdSupportedDevice? detectedDevice = null, BankIdFlowOptions? bankIdOptions = null)
     {
         var allProperties = properties == null ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
-        var allMetrics = metrics == null ? new Dictionary<string, double>() : new Dictionary<string, double>(metrics);
 
         allProperties.Add(PropertyName_ProductName, e.ActiveLoginProductName);
         allProperties.Add(PropertyName_ProductVersion, e.ActiveLoginProductVersion);
@@ -278,7 +279,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
 
         if (personalIdentityNumber != null)
         {
-            AddPersonalIdentityNumberProperties(allProperties, allMetrics, personalIdentityNumber);
+            AddPersonalIdentityNumberProperties(allProperties, personalIdentityNumber);
         }
 
         if (detectedDevice != null)
@@ -294,15 +295,15 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
                 allProperties.Add(PropertyName_BankIdErrorDetails, bankIdApiException.ErrorDetails);
             }
 
-            _telemetryClient.TrackException(exception, allProperties, metrics);
+            _telemetryClient.TrackException(exception, allProperties);
         }
 
-        _telemetryClient.TrackEvent(e.EventTypeName, allProperties, allMetrics);
+        _telemetryClient.TrackEvent(e.EventTypeName, allProperties);
 
         return Task.CompletedTask;
     }
 
-    private void AddPersonalIdentityNumberProperties(Dictionary<string, string> properties, Dictionary<string, double> metrics, PersonalIdentityNumber personalIdentityNumber)
+    private void AddPersonalIdentityNumberProperties(Dictionary<string, string> properties, PersonalIdentityNumber personalIdentityNumber)
     {
         if (_options.LogUserPersonalIdentityNumber)
         {
@@ -317,7 +318,7 @@ public class BankIdApplicationInsightsEventListener : BankIdTypedEventListener
             var ageHint = personalIdentityNumber?.GetAgeHint();
             if (ageHint != null)
             {
-                metrics.Add(PropertyName_UserAgeHint, ageHint.Value);
+                properties.Add(PropertyName_UserAgeHint, ageHint.Value.ToString(CultureInfo.InvariantCulture));
             }
         }
     }
